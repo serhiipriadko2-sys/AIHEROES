@@ -21,5 +21,10 @@ struct FAIHeroesRoutePlan
 class AIHEROES_API FAIHeroesRoutePlanner
 {
 public:
+    // Deterministic, unique and ranked feasible routes. MaxPlans is capped at
+    // three to keep planning cheap and the player-facing choice understandable.
+    // The highest-ranked entry is always identical to Plan(Snapshot).
+    static TArray<FAIHeroesRoutePlan> Rank(
+        const FAIHeroesAdvisorSnapshot& Snapshot, int32 MaxPlans = 3);
     static FAIHeroesRoutePlan Plan(const FAIHeroesAdvisorSnapshot& Snapshot);
 };

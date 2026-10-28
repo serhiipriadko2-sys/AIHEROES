@@ -208,8 +208,11 @@ bool FAIHeroesRejectSaveWithoutMutationTest::RunTest(const FString& Parameters)
         FAIHeroesSaveSystem::Save(*Save, Slots.Prefix, Slots.Legacy, Message));
 
     Save->Gold = -1;
+    Save->SaveSequence = 77;
     TestFalse(TEXT("Invalid replacement rejected before disk writes"),
         FAIHeroesSaveSystem::Save(*Save, Slots.Prefix, Slots.Legacy, Message));
+    TestEqual(TEXT("Rejected save does not mutate in-memory sequence"),
+        Save->SaveSequence, 77);
     TestFalse(TEXT("No B file created on rejected save"),
         UGameplayStatics::DoesSaveGameExist(FAIHeroesSaveSystem::SlotB(Slots.Prefix), 0));
     const FAIHeroesLoadedCampaign Stable = FAIHeroesSaveSystem::Load(
@@ -230,6 +233,89 @@ bool FAIHeroesRejectSaveWithoutMutationTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Wrong generation B ignored"), Ignored.Snapshot != nullptr &&
         Ignored.SlotName == FAIHeroesSaveSystem::SlotA(Slots.Prefix));
     TestTrue(TEXT("Corrupted B is reported"), Ignored.bRecovered);
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FAIHeroesUnrecoverableSlotsPreservedTest,
+    "AIHeroes.Campaign.UnrecoverableSlotsPreserved",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FAIHeroesUnrecoverableSlotsPreservedTest::RunTest(const FString& Parameters)
+{
+    FTemporaryCampaignSlots Slots;
+
+    UAIHeroesCampaignSave* BadA = MakeRotatingSample();
+    BadA->SaveSequence = 9;
+    BadA->Gold = -9;
+    UAIHeroesCampaignSave* BadB = MakeRotatingSample();
+    BadB->SaveSequence = 10;
+    BadB->Gold = -10;
+
+    if (!TestTrue(TEXT("Create invalid test A"),
+        UGameplayStatics::SaveGameToSlot(
+            BadA, FAIHeroesSaveSystem::SlotA(Slots.Prefix), 0)) ||
+        !TestTrue(TEXT("Create invalid test B"),
+        UGameplayStatics::SaveGameToSlot(
+            BadB, FAIHeroesSaveSystem::SlotB(Slots.Prefix), 0)))
+    {
+        return false;
+    }
+
+    UAIHeroesCampaignSave* Proposed = MakeRotatingSample();
+    Proposed->SaveSequence = 77;
+    Proposed->Day = 4;
+    FString Message;
+
+    TestFalse(TEXT("Both invalid modern slots block new writes"),
+        FAIHeroesSaveSystem::Save(*Proposed, Slots.Prefix, Slots.Legacy, Message));
+    TestTrue(TEXT("Blocked save explains preserved damage"),
+        Message.Contains(TEXT("SAVE BLOCKED")));
+    TestEqual(TEXT("Blocked save leaves in-memory generation unchanged"),
+        Proposed->SaveSequence, 77);
+
+    UAIHeroesCampaignSave* ReadA = Cast<UAIHeroesCampaignSave>(
+        UGameplayStatics::LoadGameFromSlot(
+            FAIHeroesSaveSystem::SlotA(Slots.Prefix), 0));
+    UAIHeroesCampaignSave* ReadB = Cast<UAIHeroesCampaignSave>(
+        UGameplayStatics::LoadGameFromSlot(
+            FAIHeroesSaveSystem::SlotB(Slots.Prefix), 0));
+    if (!TestTrue(TEXT("Invalid A remains accessible for recovery"), IsValid(ReadA)) ||
+        !TestTrue(TEXT("Invalid B remains accessible for recovery"), IsValid(ReadB)))
+    {
+        return false;
+    }
+    TestEqual(TEXT("Damaged A was not overwritten"), ReadA->Gold, -9);
+    TestEqual(TEXT("Damaged B was not overwritten"), ReadB->Gold, -10);
+    TestEqual(TEXT("A retains its recorded generation"), ReadA->SaveSequence, 9);
+    TestEqual(TEXT("B retains its recorded generation"), ReadB->SaveSequence, 10);
+
+    // Even a readable legacy save does not grant permission to overwrite
+    // damaged newer saves. The old legacy file remains a read-only fallback.
+    UAIHeroesCampaignSave* Legacy = MakeRotatingSample();
+    Legacy->Day = 14;
+    if (!TestTrue(TEXT("Write GUID-scoped legacy fallback"),
+        UGameplayStatics::SaveGameToSlot(Legacy, Slots.Legacy, 0)))
+    {
+        return false;
+    }
+    const FAIHeroesLoadedCampaign Fallback = FAIHeroesSaveSystem::Load(
+        Slots.Prefix, Slots.Legacy);
+    TestTrue(TEXT("Legacy fallback is still readable"),
+        Fallback.Snapshot != nullptr && Fallback.bLegacy);
+    TestFalse(TEXT("Legacy fallback cannot overwrite damaged A/B"),
+        FAIHeroesSaveSystem::Save(*Proposed, Slots.Prefix, Slots.Legacy, Message));
+    TestEqual(TEXT("Blocked retry retains caller sequence"),
+        Proposed->SaveSequence, 77);
+
+    ReadA = Cast<UAIHeroesCampaignSave>(UGameplayStatics::LoadGameFromSlot(
+        FAIHeroesSaveSystem::SlotA(Slots.Prefix), 0));
+    ReadB = Cast<UAIHeroesCampaignSave>(UGameplayStatics::LoadGameFromSlot(
+        FAIHeroesSaveSystem::SlotB(Slots.Prefix), 0));
+    TestTrue(TEXT("Damaged A preserved with legacy fallback"),
+        IsValid(ReadA) && ReadA->Gold == -9);
+    TestTrue(TEXT("Damaged B preserved with legacy fallback"),
+        IsValid(ReadB) && ReadB->Gold == -10);
     return true;
 }
 #endif

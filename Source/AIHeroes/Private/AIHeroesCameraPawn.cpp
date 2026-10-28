@@ -30,7 +30,7 @@ void AAIHeroesCameraPawn::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
     // A tactical replay owns the perspective temporarily.
     if (const AAIHeroesGameMode* Game = Cast<AAIHeroesGameMode>(UGameplayStatics::GetGameMode(this));
-        Game && Game->IsBattleReplayActive())
+        Game && (Game->IsBattleReplayActive() || Game->IsLiveBattleActive()))
     {
         return;
     }

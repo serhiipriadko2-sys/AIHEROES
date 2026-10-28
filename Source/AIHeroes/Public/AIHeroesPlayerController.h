@@ -33,6 +33,9 @@ private:
     void PlayBattleIn3D();
     void SkipBattleReplay();
     void AskAdvisor();
+    void AskRecruitmentAdvisor();
     void PlanRoute();
     void EndTurn();
+    void CycleBattleSpeed();
+    void FastFinishBattle();
 };

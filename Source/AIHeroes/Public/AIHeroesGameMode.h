@@ -5,13 +5,20 @@
 #include "AIHeroesTypes.h"
 #include "AIHeroesBattleRecord.h"
 #include "AIHeroesRoutePlanner.h"
+#include "AIHeroesGridBattle.h"
 #include "AIHeroesGameMode.generated.h"
 
 class AAIHeroesWorldNode;
 class AAIHeroesBattleStage;
+class AAIHeroesLiveBattleStage;
 class AStaticMeshActor;
 class APawn;
 struct FAIHeroesBattleOutcome;
+
+enum class EAIHeroesLiveBattlePhase : uint8
+{
+    Exploration, Running, Paused, Result
+};
 
 UCLASS()
 class AIHEROES_API AAIHeroesGameMode : public AGameModeBase
@@ -76,6 +83,7 @@ public:
     void ConfirmSelectedNode();
     void InteractWithNode(AAIHeroesWorldNode* Node);
     void AskAdvisor();
+    void AskRecruitmentAdvisor();
     void PlanRoute();
     // Read-only HUD preview; no automatic movement or combat authority.
     const FAIHeroesRoutePlan& GetRoutePreview() const { return RoutePreview; }
@@ -90,6 +98,16 @@ public:
     void AdvanceBattleReplay();
     FString GetReplayDisplayText() const;
     void PlayLastBattleIn3D();
+    bool IsLiveBattleActive() const { return LiveBattlePhase != EAIHeroesLiveBattlePhase::Exploration; }
+    EAIHeroesLiveBattlePhase GetLiveBattlePhase() const { return LiveBattlePhase; }
+    int32 GetLiveBattleActionCount() const { return LiveSession.Actions.Num(); }
+    FString GetLiveBattleStatus() const;
+    FString GetLiveArmyStatus(bool bPlayer) const;
+    float GetLiveBattleSpeed() const { return LiveBattleSpeed; }
+    void ToggleLiveBattlePause();
+    void CycleLiveBattleSpeed();
+    void FastFinishLiveBattle();
+    void ReturnFromLiveBattle();
     int32 GetSelectedMoveCost() const;
     FString GetSelectionSummary() const;
 
@@ -97,6 +115,34 @@ public:
     FString GetCognitionSummary() const;
 
 private:
+    UPROPERTY()
+    TObjectPtr<AAIHeroesLiveBattleStage> LiveBattleStage;
+
+    UPROPERTY()
+    TObjectPtr<AActor> PreLiveViewTarget;
+
+    TWeakObjectPtr<AAIHeroesWorldNode> LiveBattleNode;
+    FAIHeroesGridSession LiveSession;
+    TArray<FAIHeroesArmyStack> LivePlayerBefore;
+    TArray<FAIHeroesArmyStack> LiveEnemyBefore;
+    FString PreBattleFingerprint;
+    FString LiveResultText;
+    EAIHeroesLiveBattlePhase LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
+    int32 LiveMoveCost = 0;
+    int32 LiveDay = 0;
+    int32 LiveProtocolTier = 0;
+    float LiveBattleSpeed = 1.f;
+    bool bFastFinishingLiveBattle = false;
+    bool bLiveBattleCommitted = false;
+    bool BlockStrategicAction();
+    bool StartLiveBattle(AAIHeroesWorldNode* Node, int32 MoveCost);
+    void TickLiveBattle(float DeltaSeconds);
+    void CommitLiveBattle();
+    void AbortLiveBattle(const FString& Error);
+    void ClearLiveStage(bool bReleaseViewTarget = true);
+    FString CampaignFingerprint() const;
+    void BeginLiveBattleSmoke();
+
     UPROPERTY()
     TObjectPtr<AAIHeroesBattleStage> ActiveBattleStage;
 
@@ -108,6 +154,8 @@ private:
 
     FVector HeroStrategicLocation = FVector(-650.f, 0.f, 155.f);
     FAIHeroesRoutePlan RoutePreview;
+    TArray<FAIHeroesRoutePlan> RouteAlternatives;
+    int32 ActiveRouteIndex = 0;
     FAIHeroesAdvisorSnapshot BuildAdvisorSnapshot() const;
     void InvalidateRoutePreview();
     void SpawnWorld();

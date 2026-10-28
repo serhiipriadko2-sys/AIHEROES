@@ -1,98 +1,136 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "AIHEROES: Build Unreal Editor",
-      "type": "process",
-      "command": "C:\\Program Files\\dotnet\\dotnet.exe",
-      "args": [
-        "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool.dll",
-        "AIHeroesEditor",
-        "Win64",
-        "Development",
-        "-Project=${workspaceFolder}\\AIHeroes.uproject",
-        "-WaitMutex",
-        "-NoHotReload"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated",
-        "clear": true
-      },
-      "problemMatcher": [
-        "$msCompile"
-      ]
-    },
-    {
-      "label": "AIHEROES: Test autonomous battles (4 tests)",
-      "type": "process",
-      "command": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor-Cmd.exe",
-      "args": [
-        "${workspaceFolder}\\AIHeroes.uproject",
-        "-unattended",
-        "-nop4",
-        "-nullrhi",
-        "-nosplash",
-        "-ExecCmds=Automation RunTests AIHeroes",
-        "-TestExit=Automation Test Queue Empty",
-        "-stdout"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated",
-        "clear": true
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "AIHEROES: Verify Iskra SoT30 for Codex",
-      "type": "process",
-      "command": "python",
-      "args": [
-        "Scripts/validate_codex_setup.py"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "test",
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated",
-        "clear": true
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "AIHEROES: Launch playable Windows game",
-      "type": "process",
-      "command": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
-      "args": [
-        "${workspaceFolder}\\AIHeroes.uproject",
-        "-game",
-        "-windowed",
-        "-ResX=1280",
-        "-ResY=720",
-        "-NoSplash",
-        "-NoP4"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
-      "problemMatcher": []
-    }
-  ]
+    "version":  "2.0.0",
+    "tasks":  [
+                  {
+                      "label":  "AIHEROES: Build Unreal Editor",
+                      "type":  "process",
+                      "command":  "C:\\Program Files\\dotnet\\dotnet.exe",
+                      "args":  [
+                                   "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool.dll",
+                                   "AIHeroesEditor",
+                                   "Win64",
+                                   "Development",
+                                   "-Project=${workspaceFolder}\\AIHeroes.uproject",
+                                   "-WaitMutex",
+                                   "-NoHotReload",
+                                   "-NoUBA",
+                                   "-MaxParallelActions=1"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "group":  {
+                                    "kind":  "build",
+                                    "isDefault":  true
+                                },
+                      "presentation":  {
+                                           "reveal":  "always",
+                                           "panel":  "dedicated",
+                                           "clear":  true
+                                       },
+                      "problemMatcher":  [
+                                             "$msCompile"
+                                         ]
+                  },
+                  {
+                      "label":  "AIHEROES: Test all gameplay automation",
+                      "type":  "process",
+                      "command":  "powershell.exe",
+                      "args":  [
+                                   "-NoProfile",
+                                   "-File",
+                                   "${workspaceFolder}\\Tools\\run_aiheroes_automation.ps1"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "presentation":  {
+                                           "reveal":  "always",
+                                           "panel":  "dedicated",
+                                           "clear":  true
+                                       },
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label":  "AIHEROES: Verify Iskra SoT30 for Codex",
+                      "type":  "process",
+                      "command":  "python",
+                      "args":  [
+                                   "Scripts/validate_codex_setup.py"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "group":  "test",
+                      "presentation":  {
+                                           "reveal":  "always",
+                                           "panel":  "dedicated",
+                                           "clear":  true
+                                       },
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label":  "AIHEROES: Launch playable Windows game",
+                      "type":  "process",
+                      "command":  "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+                      "args":  [
+                                   "${workspaceFolder}\\AIHeroes.uproject",
+                                   "-game",
+                                   "-windowed",
+                                   "-ResX=1280",
+                                   "-ResY=720",
+                                   "-NoSplash",
+                                   "-NoP4"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "presentation":  {
+                                           "reveal":  "always",
+                                           "panel":  "dedicated"
+                                       },
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label":  "AIHEROES: Verify recruitment snapshot",
+                      "type":  "process",
+                      "command":  "powershell.exe",
+                      "args":  [
+                                   "-NoProfile",
+                                   "-File",
+                                   "${workspaceFolder}\\Tools\\verify_recruitment_slice.ps1"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "presentation":  {
+                                           "focus":  true,
+                                           "reveal":  "always",
+                                           "panel":  "dedicated",
+                                           "clear":  true
+                                       },
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label": "AIHEROES: Visual live grid V2 smoke",
+                      "type": "process",
+                      "command": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+                      "args": [
+                          "${workspaceFolder}\\AIHeroes.uproject", "-game", "-windowed",
+                          "-ResX=1280", "-ResY=720", "-NoSplash", "-NoP4", "-NoSound",
+                          "-AIHeroesLiveSmoke", "-abslog=${workspaceFolder}\\Docs\\GRID_V2_VISUAL_SMOKE.log"
+                      ],
+                      "options": { "cwd": "${workspaceFolder}" },
+                      "presentation": { "reveal": "always", "panel": "dedicated" },
+                      "problemMatcher": []
+                  }
+              ]
 }

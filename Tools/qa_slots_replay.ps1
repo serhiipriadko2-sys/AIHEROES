@@ -70,12 +70,12 @@ function Capture([string]$name) {
 # Slot 2: independent A/B saves. Existing legacy is never written.
 HitKey 0x43  # C: human save slot 1 -> 2
 Expect '\[AI HEROES\].*SAVE SLOT 2/3'
-HitKey 0x4B  # F5: first slot-2 A save
+HitKey 0x4B  # K: first slot-2 A save
 Expect '\[AI HEROES\].*SLOT 2: GAME SAVED'
 if (-not (Test-Path $slotA)) { throw 'QA_FAIL: slot-2 primary A missing' }
 HitKey 0x20  # SPACE: next day
 Expect '\[AI HEROES\] Day 2:'
-HitKey 0x4B  # F5: next save rotates to B
+HitKey 0x4B  # K: next save rotates to B
 Expect '\[AI HEROES\].*SLOT 2: GAME SAVED'
 if (-not (Test-Path $slotB)) { throw 'QA_FAIL: slot-2 recovery B missing' }
 HitKey 0x4C  # L: load most recent

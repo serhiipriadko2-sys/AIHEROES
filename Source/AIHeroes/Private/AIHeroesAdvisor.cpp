@@ -1,6 +1,7 @@
 #include "AIHeroesAdvisor.h"
 
 #include "AIHeroesBattleEngine.h"
+#include "AIHeroesGridBattle.h"
 #include "AIHeroesRoutePlanner.h"
 #include "AIHeroesTurnRules.h"
 
@@ -80,7 +81,7 @@ FString DescribeTarget(const FAIHeroesAdvisorSnapshot& S, const FAIHeroesAdvisor
         return TEXT("SEED: enemy is guarded. Threat analysis locked; outcome UNKNOWN.");
     }
 
-    const FAIHeroesBattleOutcome Forecast = FAIHeroesBattleEngine::Resolve(
+    const FAIHeroesBattleOutcome Forecast = FAIHeroesGridBattle::RunToEnd(
         S.PlayerArmy, Target.Guards, S.ProtocolTier);
     const int32 LostHP = FMath::Max(0, TotalHP(S.PlayerArmy) - TotalHP(Forecast.PlayerAfter));
     const int32 Survivors = LivingUnits(Forecast.PlayerAfter);
@@ -166,7 +167,7 @@ FString FAIHeroesAdvisor::Advise(const FAIHeroesAdvisorSnapshot& S)
         int32 LossHP = 0;
         if (bGuarded)
         {
-            const FAIHeroesBattleOutcome Forecast = FAIHeroesBattleEngine::Resolve(
+            const FAIHeroesBattleOutcome Forecast = FAIHeroesGridBattle::RunToEnd(
                 S.PlayerArmy, Node.Guards, S.ProtocolTier);
             if (!Forecast.bVictory)
             {

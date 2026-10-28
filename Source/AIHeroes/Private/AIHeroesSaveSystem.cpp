@@ -181,6 +181,18 @@ bool FAIHeroesSaveSystem::Save(
     FString& ResultMessage)
 {
     const FAIHeroesLoadedCampaign Previous = Load(Prefix, LegacySlot);
+    // If modern A/B files exist but neither validates, do not overwrite
+    // potentially recoverable player data. A legacy fallback is read-only.
+    const bool bModernFilesExist =
+        UGameplayStatics::DoesSaveGameExist(SlotA(Prefix), SaveUserIndex) ||
+        UGameplayStatics::DoesSaveGameExist(SlotB(Prefix), SaveUserIndex);
+    if (bModernFilesExist && (!Previous.Snapshot || Previous.bLegacy))
+    {
+        ResultMessage = TEXT(
+            "SAVE BLOCKED: damaged A/B files preserved. "
+            "Select a different campaign slot for new progress.");
+        return false;
+    }
     const int32 LastSequence = Previous.Snapshot ?
         Previous.Snapshot->SaveSequence : 0;
     if (LastSequence >= MaximumSequence)
@@ -189,10 +201,12 @@ bool FAIHeroesSaveSystem::Save(
         return false;
     }
 
+    const int32 OriginalSequence = Snapshot.SaveSequence;
     Snapshot.SaveSequence = LastSequence + 1;
     FString ValidationError;
     if (!FAIHeroesCampaignRules::Validate(Snapshot, ValidationError))
     {
+        Snapshot.SaveSequence = OriginalSequence;
         ResultMessage = TEXT("SAVE BLOCKED: ") + ValidationError;
         return false;
     }
@@ -203,6 +217,7 @@ bool FAIHeroesSaveSystem::Save(
         SlotB(Prefix) : SlotA(Prefix);
     if (!UGameplayStatics::SaveGameToSlot(&Snapshot, Target, SaveUserIndex))
     {
+        Snapshot.SaveSequence = OriginalSequence;
         ResultMessage = TEXT("SAVE FAILED: engine could not write the alternate slot.");
         return false;
     }
@@ -210,6 +225,7 @@ bool FAIHeroesSaveSystem::Save(
     const FSlotStatus Verified = ReadSlot(Target, true);
     if (!Verified.IsValid() || !SameSnapshot(Snapshot, *Verified.Snapshot))
     {
+        Snapshot.SaveSequence = OriginalSequence;
         ResultMessage = TEXT("SAVE FAILED: disk read-back mismatch; prior save preserved.");
         return false;
     }

@@ -1,6 +1,7 @@
 #include "AIHeroesGameMode.h"
 
 #include "AIHeroesAdvisor.h"
+#include "AIHeroesRecruitmentAdvisor.h"
 #include "AIHeroesBattleEngine.h"
 #include "AIHeroesBattleRecord.h"
 #include "AIHeroesCampaignRules.h"
@@ -20,6 +21,8 @@
 #include "Engine/StaticMeshActor.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "UObject/UObjectGlobals.h"
 
 namespace
@@ -75,6 +78,9 @@ void AAIHeroesGameMode::BeginPlay()
     LastHint = TEXT("SEED AI: choose a node and press H. The hero has no threat analysis yet.");
     LastCombatStep = TEXT("No combat yet. The hero will choose targets during battles.");
     SetEvent(TEXT("Select a node, ASK HERO (H), then CONFIRM (Enter). Battles are AI-controlled."));
+#if !UE_BUILD_SHIPPING
+    if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesLiveSmoke"))) BeginLiveBattleSmoke();
+#endif
 }
 
 void AAIHeroesGameMode::SpawnWorld()
@@ -113,7 +119,8 @@ void AAIHeroesGameMode::SpawnWorld()
     SpawnNode(EAIHeroesNodeType::OreMine, TEXT("ORE"), FVector(150.f, 600.f, 120.f),
         {FAIHeroesArmyStack(TEXT("Bandit"), 6, 10, 4, 2, 4)});
     SpawnNode(EAIHeroesNodeType::Outpost, TEXT("OUTPOST"), FVector(700.f, -300.f, 140.f),
-        {FAIHeroesArmyStack(TEXT("Raider"), 10, 11, 5, 2, 5)});
+        {FAIHeroesArmyStack(TEXT("Raider"), 6, 11, 5, 2, 5),
+         FAIHeroesArmyStack(TEXT("Raider"), 4, 11, 5, 2, 5)});
     SpawnNode(EAIHeroesNodeType::Ruins, TEXT("RUINS"), FVector(750.f, 650.f, 165.f),
         {FAIHeroesArmyStack(TEXT("Guardian"), 7, 24, 7, 4, 2)});
 }
@@ -199,28 +206,53 @@ bool AAIHeroesGameMode::HasLivingArmy() const
 
 void AAIHeroesGameMode::RecruitMilitia()
 {
-    if (!FAIHeroesTurnRules::SpendIfAffordable(Gold, Wood, Ore, 50, 5, 0))
+    if (BlockStrategicAction()) return;
+    const FAIHeroesRecruitOffer Offer =
+        FAIHeroesRecruitmentAdvisor::GetOffer(EAIHeroesRecruitChoice::Militia);
+    for (const FAIHeroesArmyStack& Stack : PlayerArmy)
+    {
+        if (Stack.UnitId == Offer.Units.UnitId &&
+            Stack.TotalHealth > 500000 - Offer.Units.TotalHealth)
+        {
+            SetEvent(TEXT("Recruitment blocked: army stack limit reached. No resources spent."));
+            return;
+        }
+    }
+    if (!FAIHeroesTurnRules::SpendIfAffordable(Gold, Wood, Ore, Offer.Gold, Offer.Wood, Offer.Ore))
     {
         SetEvent(TEXT("Need 50 gold and 5 wood for 5 militia."));
         return;
     }
-    AddStack(FAIHeroesArmyStack(TEXT("Militia"), 5, 12, 4, 2, 3));
+    AddStack(Offer.Units);
     SetEvent(TEXT("Recruited 5 militia at HQ."));
 }
 
 void AAIHeroesGameMode::RecruitScouts()
 {
-    if (!FAIHeroesTurnRules::SpendIfAffordable(Gold, Wood, Ore, 70, 0, 4))
+    if (BlockStrategicAction()) return;
+    const FAIHeroesRecruitOffer Offer =
+        FAIHeroesRecruitmentAdvisor::GetOffer(EAIHeroesRecruitChoice::Scouts);
+    for (const FAIHeroesArmyStack& Stack : PlayerArmy)
+    {
+        if (Stack.UnitId == Offer.Units.UnitId &&
+            Stack.TotalHealth > 500000 - Offer.Units.TotalHealth)
+        {
+            SetEvent(TEXT("Recruitment blocked: army stack limit reached. No resources spent."));
+            return;
+        }
+    }
+    if (!FAIHeroesTurnRules::SpendIfAffordable(Gold, Wood, Ore, Offer.Gold, Offer.Wood, Offer.Ore))
     {
         SetEvent(TEXT("Need 70 gold and 4 ore for 2 scouts."));
         return;
     }
-    AddStack(FAIHeroesArmyStack(TEXT("Scout"), 2, 8, 6, 1, 7));
+    AddStack(Offer.Units);
     SetEvent(TEXT("Recruited 2 scouts at HQ."));
 }
 
 void AAIHeroesGameMode::UpgradeProtocol()
 {
+    if (BlockStrategicAction()) return;
     static const int32 WoodCosts[] = {20, 35, 50};
     static const int32 OreCosts[] = {15, 30, 45};
     static const int32 GoldCosts[] = {80, 150, 230};
@@ -247,6 +279,7 @@ void AAIHeroesGameMode::UpgradeProtocol()
 
 void AAIHeroesGameMode::UpgradeModelSlot()
 {
+    if (BlockStrategicAction()) return;
     if (ModelSlotTier >= 2)
     {
         SetEvent(TEXT("8B is the highest prototype MODEL SLOT. No model weights loaded."));
@@ -272,6 +305,7 @@ void AAIHeroesGameMode::UpgradeModelSlot()
 
 void AAIHeroesGameMode::EndTurn()
 {
+    if (BlockStrategicAction()) return;
     InvalidateRoutePreview();
     ++Day;
     MovesLeft = 4;
@@ -335,6 +369,7 @@ FString AAIHeroesGameMode::GetSelectionSummary() const
 
 void AAIHeroesGameMode::SelectNode(AAIHeroesWorldNode* Node)
 {
+    if (BlockStrategicAction()) return;
     if (!IsValid(Node))
     {
         return;
@@ -347,6 +382,7 @@ void AAIHeroesGameMode::SelectNode(AAIHeroesWorldNode* Node)
 
 void AAIHeroesGameMode::ConfirmSelectedNode()
 {
+    if (BlockStrategicAction()) return;
     if (!IsValid(SelectedNode.Get()))
     {
         SetEvent(TEXT("Select a node before confirming your move."));
@@ -357,6 +393,7 @@ void AAIHeroesGameMode::ConfirmSelectedNode()
 
 void AAIHeroesGameMode::InteractWithNode(AAIHeroesWorldNode* Node)
 {
+    if (BlockStrategicAction()) return;
     if (!IsValid(Node))
     {
         SetEvent(TEXT("Invalid destination. No resources or movement spent."));
@@ -406,62 +443,13 @@ void AAIHeroesGameMode::InteractWithNode(AAIHeroesWorldNode* Node)
         return;
     }
 
-    // The player authorizes battle. The hero AI chooses attacks inside rounds.
-    const FAIHeroesBattleOutcome Outcome =
-        FAIHeroesBattleEngine::Resolve(PlayerArmy, Node->Defenders, ProtocolTier);
-    const FAIHeroesBattleRecord NewRecord = FAIHeroesBattleRecordRules::Capture(
-        FName(*Node->GetDisplayName()), Day, ProtocolTier,
-        PlayerArmy, Node->Defenders, Outcome);
-    FString ReplayError;
-    if (!FAIHeroesBattleRecordRules::Verify(NewRecord, ReplayError))
-    {
-        SetEvent(FString::Printf(TEXT("Battle blocked: invalid tactical record (%s)."),
-            *ReplayError));
-        return;
-    }
-    InvalidateRoutePreview();
-    MovesLeft -= Cost;
-    LastBattleRecord = NewRecord;
-    ReplayCursor = INDEX_NONE;
-    PlayerArmy = Outcome.PlayerAfter;
-    Node->Defenders = Outcome.EnemyAfter;
-    BattleJournal.Add(FString::Printf(TEXT("Day %d | %s | %s"),
-        Day, *Node->GetDisplayName(), *Outcome.Summary));
-    if (BattleJournal.Num() > 16)
-    {
-        BattleJournal.RemoveAt(0);
-    }
-    LastCombatStep = Outcome.Trace.IsEmpty()
-        ? TEXT("No tactical actions occurred.")
-        : Outcome.Trace.Last();
-
-    if (Outcome.bVictory)
-    {
-        DataFragments += Node->NodeType == EAIHeroesNodeType::Ruins ? 4 : 2;
-        Node->Defenders.Empty();
-        Node->SetOwned(true);
-        MoveHeroTo(Node->GetActorLocation());
-        if (Node->NodeType == EAIHeroesNodeType::Ruins)
-        {
-            Gold += 100;
-        }
-        SetEvent(FString::Printf(TEXT("%s CAPTURED. AI chose its own targets. %s"),
-            *Node->GetDisplayName(), *Outcome.Summary));
-    }
-    else
-    {
-        SetEvent(FString::Printf(TEXT("%s resisted. Hero stayed put. %s"),
-            *Node->GetDisplayName(), *Outcome.Summary));
-    }
-
-    for (const FString& Line : Outcome.Trace)
-    {
-        UE_LOG(LogTemp, Display, TEXT("[AI HEROES BATTLE] %s"), *Line);
-    }
+    // No future outcome exists: the live session chooses one action at a time.
+    StartLiveBattle(Node, Cost);
 }
 
 void AAIHeroesGameMode::SaveCampaign()
 {
+    if (BlockStrategicAction()) return;
     UAIHeroesCampaignSave* Snapshot = Cast<UAIHeroesCampaignSave>(
         UGameplayStatics::CreateSaveGameObject(UAIHeroesCampaignSave::StaticClass()));
     if (!Snapshot)
@@ -528,6 +516,7 @@ void AAIHeroesGameMode::SaveCampaign()
 
 void AAIHeroesGameMode::LoadCampaign()
 {
+    if (BlockStrategicAction()) return;
     const FAIHeroesLoadedCampaign Loaded = FAIHeroesSaveSystem::Load(
         SaveNamespaceForPlayer(ActiveSaveSlot),
         LegacySlotForPlayer(ActiveSaveSlot));
@@ -625,6 +614,7 @@ void AAIHeroesGameMode::LoadCampaign()
 
 void AAIHeroesGameMode::CycleSaveSlot()
 {
+    if (BlockStrategicAction()) return;
     ActiveSaveSlot = (ActiveSaveSlot % 3) + 1;
     SetEvent(FString::Printf(TEXT("SAVE SLOT %d/3 selected. K writes, L loads; other slots are untouched."),
         ActiveSaveSlot));
@@ -632,6 +622,7 @@ void AAIHeroesGameMode::CycleSaveSlot()
 
 void AAIHeroesGameMode::AdvanceBattleReplay()
 {
+    if (BlockStrategicAction()) return;
     FString Error;
     if (LastBattleRecord.NodeId.IsNone())
     {
@@ -700,43 +691,60 @@ FAIHeroesAdvisorSnapshot AAIHeroesGameMode::BuildAdvisorSnapshot() const
 
 void AAIHeroesGameMode::AskAdvisor()
 {
+    if (BlockStrategicAction()) return;
     LastHint = FAIHeroesAdvisor::Advise(BuildAdvisorSnapshot());
 }
 
 void AAIHeroesGameMode::InvalidateRoutePreview()
 {
     RoutePreview = FAIHeroesRoutePlan();
+    RouteAlternatives.Reset();
+    ActiveRouteIndex = 0;
 }
 
 void AAIHeroesGameMode::PlanRoute()
 {
+    if (BlockStrategicAction()) return;
     if (IsBattleReplayActive())
     {
         SetEvent(TEXT("ROUTE: finish 3D combat replay before planning."));
         return;
     }
 
-    // A new request also clears stale previews after a failed forecast.
-    InvalidateRoutePreview();
     if (ProtocolTier < 3)
     {
+        InvalidateRoutePreview();
         LastHint = TEXT("ROUTE LOCKED: unlock TACTICAL PLANNER (P, protocol tier 3).");
         SetEvent(LastHint);
         return;
     }
 
-    RoutePreview = FAIHeroesRoutePlanner::Plan(BuildAdvisorSnapshot());
-    if (!RoutePreview.IsValid())
+    // Z cycles alternatives without repeating grid combat simulations.
+    // Every meaningful campaign mutation calls InvalidateRoutePreview().
+    if (RouteAlternatives.IsEmpty())
     {
+        RouteAlternatives = FAIHeroesRoutePlanner::Rank(BuildAdvisorSnapshot());
+        ActiveRouteIndex = 0;
+    }
+    else
+    {
+        ActiveRouteIndex = (ActiveRouteIndex + 1) % RouteAlternatives.Num();
+    }
+    if (RouteAlternatives.IsEmpty())
+    {
+        InvalidateRoutePreview();
         LastHint = TEXT("ROUTE: no safe reachable capture this turn. Recruit, reposition or end day.");
         SetEvent(LastHint);
         return;
     }
 
-    LastHint = FString::Printf(TEXT("PLAN: %s. Each step needs player confirmation."),
-        *RoutePreview.Describe());
-    UE_LOG(LogTemp, Display, TEXT("[AI HEROES ROUTE] %s"), *RoutePreview.Describe());
-    SetEvent(TEXT("ROUTE PREVIEW: map markers are advice only. Click a node, then Enter to confirm."));
+    RoutePreview = RouteAlternatives[ActiveRouteIndex];
+    LastHint = FString::Printf(
+        TEXT("PLAN %d/%d (heuristic %d): %s. Confirm each step manually."),
+        ActiveRouteIndex + 1, RouteAlternatives.Num(),
+        RoutePreview.Score, *RoutePreview.Describe());
+    UE_LOG(LogTemp, Display, TEXT("[AI HEROES ROUTE] %s"), *LastHint);
+    SetEvent(TEXT("ROUTE PREVIEW: press Z for alternatives; click a node, Enter to confirm."));
 }
 
 FString AAIHeroesGameMode::GetArmySummary() const

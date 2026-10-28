@@ -1,0 +1,34 @@
+param(
+    [ValidatePattern('^AIHeroes(?:\.[A-Za-z0-9_]+)*$')]
+    [string]$Filter = 'AIHeroes'
+)
+
+$ErrorActionPreference = 'Stop'
+$Root = Split-Path -Parent $PSScriptRoot
+$EditorCmd = 'C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe'
+if (-not (Test-Path -LiteralPath $EditorCmd)) { throw 'Unreal Editor-Cmd is unavailable.' }
+if (Get-Process -Name UnrealEditor-Cmd -ErrorAction SilentlyContinue) {
+    throw 'Another Editor-Cmd is running; shared shader-cache automation was not started.'
+}
+$RunId = [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ')
+$ReportDirectory = Join-Path $Root "Docs\AutomationRuns\$RunId"
+New-Item -ItemType Directory -Path $ReportDirectory | Out-Null
+$ReportPath = Join-Path $ReportDirectory 'index.json'
+& $EditorCmd (Join-Path $Root 'AIHeroes.uproject') -unattended -nop4 -nullrhi -nosplash -nosound `
+    "-ExecCmds=Automation RunTests $Filter" '-TestExit=Automation Test Queue Empty' -stdout `
+    "-abslog=$ReportDirectory\run.log" "-ReportExportPath=$ReportDirectory" `
+    *> (Join-Path $ReportDirectory 'stdout.log')
+$NativeExit = $LASTEXITCODE
+if ($NativeExit -ne 0) { throw "Unreal exited $NativeExit; report directory: $ReportDirectory" }
+if (-not (Test-Path -LiteralPath $ReportPath)) { throw "Fresh automation report is missing: $ReportPath" }
+$Report = Get-Content -LiteralPath $ReportPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$Tests = @($Report.tests)
+$Failures = @($Tests | Where-Object { $_.state -ne 'Success' })
+# Unreal can exit 0 even when an assertion failed. Fresh report is authoritative.
+if ($Tests.Count -eq 0 -or $Failures.Count -gt 0 -or $Report.failed -gt 0 -or
+    $Report.notRun -gt 0 -or $Report.inProcess -gt 0 -or
+    ($Report.succeeded + $Report.succeededWithWarnings) -ne $Tests.Count) {
+    throw "AIHEROES_AUTOMATION_FAIL tests=$($Tests.Count) failed=$($Report.failed) report=$ReportPath"
+}
+Write-Output "AIHEROES_AUTOMATION_PASS tests=$($Tests.Count) warnings=$($Report.succeededWithWarnings) report=$ReportPath"
+exit 0

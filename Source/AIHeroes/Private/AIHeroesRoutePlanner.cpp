@@ -1,11 +1,12 @@
 #include "AIHeroesRoutePlanner.h"
 
 #include "AIHeroesBattleEngine.h"
+#include "AIHeroesGridBattle.h"
 #include "AIHeroesTurnRules.h"
 
 namespace
 {
-int32 TotalHP(const TArray<FAIHeroesArmyStack>& Army)
+int32 RouteTotalHP(const TArray<FAIHeroesArmyStack>& Army)
 {
     int32 HP = 0;
     for (const FAIHeroesArmyStack& Stack : Army)
@@ -74,38 +75,63 @@ bool ConsiderVisit(const FAIHeroesAdvisorNode& Node,
         {
             return false;
         }
-        const FAIHeroesBattleOutcome Forecast = FAIHeroesBattleEngine::Resolve(
+        const FAIHeroesBattleOutcome Forecast = FAIHeroesGridBattle::RunToEnd(
             Army, Node.Guards, Snapshot.ProtocolTier);
         if (!Forecast.bVictory)
         {
             return false;
         }
         Survivors = Forecast.PlayerAfter;
-        LostHP = FMath::Max(0, TotalHP(Army) - TotalHP(Survivors));
+        LostHP = FMath::Max(0, RouteTotalHP(Army) - RouteTotalHP(Survivors));
     }
     return true;
 }
 
-void ConsiderCandidate(const FAIHeroesRoutePlan& Candidate,
-    FAIHeroesRoutePlan& Best)
+FString AIHRouteKey(const FAIHeroesRoutePlan& Plan)
 {
-    // When scores tie, prefer fewer movement points and stable node IDs.
-    auto Key = [](const FAIHeroesRoutePlan& P)
+    FString Key;
+    for (const FName& Stop : Plan.Stops)
     {
-        FString Text;
-        for (const FName& Stop : P.Stops)
+        Key += Stop.ToString() + TEXT("/");
+    }
+    return Key;
+}
+
+bool AIHRouteBetter(const FAIHeroesRoutePlan& A, const FAIHeroesRoutePlan& B)
+{
+    // Do not depend on TArray iteration order when two routes tie.
+    if (A.Score != B.Score) return A.Score > B.Score;
+    if (A.TotalMoves != B.TotalMoves) return A.TotalMoves < B.TotalMoves;
+    return AIHRouteKey(A) < AIHRouteKey(B);
+}
+
+void ConsiderCandidate(const FAIHeroesRoutePlan& Candidate,
+    TArray<FAIHeroesRoutePlan>& Top, int32 Capacity)
+{
+    if (!Candidate.IsValid() || Capacity <= 0)
+    {
+        return;
+    }
+
+    // Two node instances with the same ID are untrusted input, not a
+    // justification to recommend the same route twice.
+    for (FAIHeroesRoutePlan& Existing : Top)
+    {
+        if (Existing.Stops == Candidate.Stops)
         {
-            Text += Stop.ToString() + TEXT("/");
+            if (AIHRouteBetter(Candidate, Existing))
+            {
+                Existing = Candidate;
+                Top.Sort(AIHRouteBetter);
+            }
+            return;
         }
-        return Text;
-    };
-    if (!Best.IsValid() ||
-        Candidate.Score > Best.Score ||
-        (Candidate.Score == Best.Score &&
-            (Candidate.TotalMoves < Best.TotalMoves ||
-                (Candidate.TotalMoves == Best.TotalMoves && Key(Candidate) < Key(Best)))))
+    }
+    Top.Add(Candidate);
+    Top.Sort(AIHRouteBetter);
+    if (Top.Num() > Capacity)
     {
-        Best = Candidate;
+        Top.RemoveAt(Capacity, Top.Num() - Capacity, EAllowShrinking::No);
     }
 }
 }
@@ -130,14 +156,15 @@ FString FAIHeroesRoutePlan::Describe() const
         *Names, TotalMoves, ExpectedHpLoss, RemainingUnits);
 }
 
-FAIHeroesRoutePlan FAIHeroesRoutePlanner::Plan(
-    const FAIHeroesAdvisorSnapshot& Snapshot)
+TArray<FAIHeroesRoutePlan> FAIHeroesRoutePlanner::Rank(
+    const FAIHeroesAdvisorSnapshot& Snapshot, int32 MaxPlans)
 {
-    FAIHeroesRoutePlan Best;
-    if (Snapshot.ProtocolTier != 3 || Snapshot.MovesLeft <= 0 ||
+    TArray<FAIHeroesRoutePlan> Top;
+    const int32 Capacity = FMath::Clamp(MaxPlans, 0, 3);
+    if (Capacity == 0 || Snapshot.ProtocolTier != 3 || Snapshot.MovesLeft <= 0 ||
         Snapshot.Nodes.Num() > 64 || Snapshot.PlayerArmy.Num() > 12)
     {
-        return Best;
+        return Top;
     }
 
     for (int32 FirstIndex = 0; FirstIndex < Snapshot.Nodes.Num(); ++FirstIndex)
@@ -158,7 +185,7 @@ FAIHeroesRoutePlan FAIHeroesRoutePlanner::Plan(
         One.ExpectedHpLoss = FirstHP;
         One.RemainingUnits = LivingCount(Survivors);
         One.Score = StrategicValue(First, Snapshot) - FirstCost * 20 - FirstHP;
-        ConsiderCandidate(One, Best);
+        ConsiderCandidate(One, Top, Capacity);
 
         const int32 MovesRemaining = Snapshot.MovesLeft - FirstCost;
         if (MovesRemaining <= 0)
@@ -190,8 +217,15 @@ FAIHeroesRoutePlan FAIHeroesRoutePlanner::Plan(
             Two.ExpectedHpLoss += SecondHP;
             Two.RemainingUnits = LivingCount(SurvivorsAfterSecond);
             Two.Score += StrategicValue(Second, Snapshot) - SecondCost * 20 - SecondHP;
-            ConsiderCandidate(Two, Best);
+            ConsiderCandidate(Two, Top, Capacity);
         }
     }
-    return Best;
+    return Top;
+}
+
+FAIHeroesRoutePlan FAIHeroesRoutePlanner::Plan(
+    const FAIHeroesAdvisorSnapshot& Snapshot)
+{
+    const TArray<FAIHeroesRoutePlan> Alternatives = Rank(Snapshot, 1);
+    return Alternatives.IsEmpty() ? FAIHeroesRoutePlan() : Alternatives[0];
 }

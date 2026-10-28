@@ -1,4 +1,5 @@
 #include "AIHeroesHUD.h"
+#include "AIHeroesHUDLayout.h"
 
 #include "AIHeroesGameMode.h"
 #include "AIHeroesWorldNode.h"
@@ -27,62 +28,23 @@ const TCHAR* UtilityLabels[5] = {
 void AAIHeroesHUD::GetActionRect(
     int32 Index, float& X, float& Y, float& W, float& H) const
 {
-    X = Y = W = H = 0.f;
-    // HUD Canvas can be unavailable between DrawHUD frames during input.
-    // Use the last observed viewport size for identical rendering and hit tests.
-    if (Index < 0 || Index >= 13 || CachedCanvasSize.X <= 0.f || CachedCanvasSize.Y <= 0.f)
-    {
-        return;
-    }
-
-    if (Index >= 7 && Index <= 11)
-    {
-        W = CachedCanvasSize.X >= 700.f ? 116.f : 91.f;
-        H = 30.f;
-        if (CachedCanvasSize.X >= 1050.f)
-        {
-            X = CachedCanvasSize.X - (12 - Index) * (W + 6.f) - 8.f;
-            Y = 7.f;
-        }
-        else
-        {
-            const int32 Utility = Index - 7;
-            X = CachedCanvasSize.X - (2 - Utility % 2) * (W + 6.f) - 8.f;
-            Y = 5.f + (Utility / 2) * 35.f;
-        }
-        return;
-    }
-
-    const int32 Columns = CachedCanvasSize.X >= 1150.f ? 4 :
-        (CachedCanvasSize.X >= 800.f ? 3 : 2);
-    const float Gap = 10.f;
-    W = FMath::Min(260.f, (CachedCanvasSize.X - 28.f - (Columns - 1) * Gap) / Columns);
-    H = 43.f;
-    const float PanelHeight = 120.f + 53.f * ((7 + Columns - 1) / Columns);
-    const float GridWidth = Columns * W + (Columns - 1) * Gap;
-    const float Left = FMath::Max(14.f, (CachedCanvasSize.X - GridWidth) * 0.5f);
-    // The eighth grid cell was already empty: no existing button moves.
-    const int32 GridIndex = Index == 12 ? 7 : Index;
-    X = Left + (GridIndex % Columns) * (W + Gap);
-    Y = CachedCanvasSize.Y - PanelHeight + 113.f + (GridIndex / Columns) * (H + Gap);
+    const AAIHeroesGameMode* Rules =
+        Cast<AAIHeroesGameMode>(UGameplayStatics::GetGameMode(this));
+    const FAIHeroesHUDActionRect Rect = FAIHeroesHUDLayout::Rect(
+        Index, CachedCanvasSize, Rules && Rules->IsLiveBattleActive());
+    X = Rect.X;
+    Y = Rect.Y;
+    W = Rect.W;
+    H = Rect.H;
 }
 
 int32 AAIHeroesHUD::GetActionAt(const FVector2D& ScreenPoint) const
 {
-    for (int32 Index = 0; Index < 13; ++Index)
-    {
-        float X, Y, W, H;
-        GetActionRect(Index, X, Y, W, H);
-        if (W > 0.f &&
-            ScreenPoint.X >= X && ScreenPoint.X <= X + W &&
-            ScreenPoint.Y >= Y && ScreenPoint.Y <= Y + H)
-        {
-            return Index;
-        }
-    }
-    return INDEX_NONE;
+    const AAIHeroesGameMode* Rules =
+        Cast<AAIHeroesGameMode>(UGameplayStatics::GetGameMode(this));
+    return FAIHeroesHUDLayout::HitTest(
+        ScreenPoint, CachedCanvasSize, Rules && Rules->IsLiveBattleActive());
 }
-
 void AAIHeroesHUD::DrawHUD()
 {
     Super::DrawHUD();
@@ -101,6 +63,41 @@ void AAIHeroesHUD::DrawHUD()
     const float Scale = Width < 700.f ? 0.78f : 1.f;
     const int32 TextLimit = FMath::Clamp(FMath::FloorToInt(Width / 8.f), 40, 152);
     UFont* Font = GEngine->GetSmallFont();
+
+    if (Rules->IsLiveBattleActive())
+    {
+        DrawRect(FLinearColor(0.015f, 0.025f, 0.045f, 0.96f), 0.f, 0.f, Width, 143.f);
+        DrawText(FString::Printf(TEXT("AI HEROES | LIVE GRID V2 | PROTOCOL %d | HERO COMMANDS"), Rules->ProtocolTier),
+            FLinearColor(0.4f, 0.9f, 1.f), 16.f, 12.f, Font, Scale * 1.15f);
+        DrawText(Rules->GetLiveBattleStatus().Left(TextLimit), FLinearColor::White,
+            16.f, 42.f, Font, Scale);
+        DrawText(TEXT("HERO: ") + Rules->GetLiveArmyStatus(true).Left(TextLimit - 6),
+            FLinearColor(0.4f, 0.9f, 1.f), 16.f, 69.f, Font, Scale);
+        DrawText(TEXT("ENEMY: ") + Rules->GetLiveArmyStatus(false).Left(TextLimit - 7),
+            FLinearColor(1.f, 0.65f, 0.3f), 16.f, 95.f, Font, Scale);
+        DrawText(TEXT("Q/E orbit  R/F zoom | SPACE pause | T speed | B fast finish | ENTER return after result"),
+            FLinearColor(0.8f, 0.85f, 0.9f), 16.f, 121.f, Font, Scale * 0.85f);
+        DrawRect(FLinearColor(0.015f, 0.025f, 0.045f, 0.96f),
+            0.f, Height - 126.f, Width, 126.f);
+        DrawText(Rules->LastEvent.Left(TextLimit), FLinearColor::White,
+            16.f, Height - 115.f, Font, Scale);
+        const bool bResult = Rules->GetLiveBattlePhase() == EAIHeroesLiveBattlePhase::Result;
+        const FString Labels[] = {
+            Rules->GetLiveBattlePhase() == EAIHeroesLiveBattlePhase::Paused ? TEXT("RESUME") : TEXT("PAUSE"),
+            FString::Printf(TEXT("SPEED %dx"), FMath::RoundToInt(Rules->GetLiveBattleSpeed())),
+            TEXT("FAST FINISH"), bResult ? TEXT("RETURN TO MAP") : TEXT("RESULT PENDING")};
+        for (int32 I = 0; I < 4; ++I)
+        {
+            float X, Y, W, H;
+            GetActionRect(100 + I, X, Y, W, H);
+            const bool bEnabled = I == 3 ? bResult : !bResult;
+            DrawRect(bEnabled ? FLinearColor(0.04f, 0.28f, 0.34f, 1.f) :
+                FLinearColor(0.08f, 0.1f, 0.13f, 1.f), X, Y, W, H);
+            DrawText(Labels[I], bEnabled ? FLinearColor::White : FLinearColor(0.4f, 0.4f, 0.4f),
+                X + 9.f, Y + 14.f, Font, Scale);
+        }
+        return; // No strategic node labels or hit targets under the arena.
+    }
 
     // World-space nodes receive screen-space labels for readability in 3D.
     if (const APlayerController* PC = GetWorld()->GetFirstPlayerController())
@@ -143,6 +140,71 @@ void AAIHeroesHUD::DrawHUD()
         }
     }
 
+    // A route is a short-lived, READ-ONLY recommendation. HUD never selects
+    // or moves a pawn. Lines are rendered only when both endpoints project
+    // onto the unobstructed 3D map (not beneath HUD controls).
+    const FAIHeroesRoutePlan& Route = Rules->GetRoutePreview();
+    if (Route.IsValid() && !Rules->IsBattleReplayActive())
+    {
+        if (const APlayerController* PC = GetWorld()->GetFirstPlayerController())
+        {
+            const float MapTop = 179.f;
+            const float MapBottom = Height - BottomHeight - 42.f;
+            auto OnMap = [Width, MapTop, MapBottom](const FVector2D& P)
+            {
+                return P.X >= 12.f && P.X <= Width - 12.f &&
+                    P.Y >= MapTop && P.Y <= MapBottom;
+            };
+
+            FVector2D Previous;
+            bool bPreviousOnMap = PC->ProjectWorldLocationToScreen(
+                Rules->GetHeroStrategicLocation() + FVector(0.f, 0.f, 290.f), Previous) &&
+                OnMap(Previous);
+
+            for (int32 StopIndex = 0; StopIndex < Route.Stops.Num(); ++StopIndex)
+            {
+                const AAIHeroesWorldNode* StopNode = nullptr;
+                for (const AAIHeroesWorldNode* Candidate : Rules->Nodes)
+                {
+                    if (IsValid(Candidate) &&
+                        FName(*Candidate->GetDisplayName()) == Route.Stops[StopIndex])
+                    {
+                        StopNode = Candidate;
+                        break;
+                    }
+                }
+                if (!IsValid(StopNode))
+                {
+                    bPreviousOnMap = false;
+                    continue;
+                }
+
+                FVector2D At;
+                const bool bOnMap = PC->ProjectWorldLocationToScreen(
+                    StopNode->GetActorLocation() + FVector(0.f, 0.f, 290.f), At) &&
+                    OnMap(At);
+                const FLinearColor Color = StopIndex == 0
+                    ? FLinearColor(0.24f, 0.94f, 0.89f, 1.f)
+                    : FLinearColor(1.f, 0.78f, 0.29f, 1.f);
+                if (bPreviousOnMap && bOnMap)
+                {
+                    DrawLine(Previous.X, Previous.Y, At.X, At.Y, Color, 3.f);
+                }
+                if (bOnMap)
+                {
+                    const float TagX = FMath::Clamp(At.X - 38.f, 6.f, FMath::Max(6.f, Width - 83.f));
+                    const float TagY = FMath::Clamp(At.Y - 63.f, MapTop, FMath::Max(MapTop, MapBottom - 24.f));
+                    DrawRect(FLinearColor(0.02f, 0.13f, 0.19f, 0.98f),
+                        TagX, TagY, 77.f, 23.f);
+                    DrawText(FString::Printf(TEXT("PLAN %d"), StopIndex + 1),
+                        Color, TagX + 7.f, TagY + 4.f, Font, Scale);
+                }
+                Previous = At;
+                bPreviousOnMap = bOnMap;
+            }
+        }
+    }
+
     DrawRect(FLinearColor(0.015f, 0.022f, 0.04f, 0.92f),
         0.f, 0.f, Width, 175.f);
     DrawText(TEXT("AI HEROES  |  PLAYER DECIDES / AI FIGHTS"),
@@ -156,7 +218,7 @@ void AAIHeroesHUD::DrawHUD()
         FLinearColor(1.f, 0.85f, 0.35f), 18.f, 94.f, Font, Scale);
     DrawText(Rules->GetSelectionSummary().Left(TextLimit),
         FLinearColor(0.4f, 1.f, 0.92f), 18.f, 119.f, Font, Scale);
-    DrawText(TEXT("WASD camera  CLICK select  ENTER confirm  H advise  Z PLAN  SPACE day  K save  L load  C slot  V 3D"),
+    DrawText(TEXT("WASD camera  CLICK select  ENTER confirm  H advise  N recruit?  Z PLAN  SPACE day  K save  L load  C slot  V 3D"),
         FLinearColor(0.72f, 0.78f, 0.87f), 18.f, 147.f, Font, Scale * 0.92f);
 
     if (Rules->IsBattleReplayActive())
@@ -191,15 +253,30 @@ void AAIHeroesHUD::DrawHUD()
     DrawText(TEXT("LOCAL RULE AI  |  1B / 3B / 8B are themed tiers; no actual LLM loaded"),
         FLinearColor(0.78f, 0.75f, 0.79f), 18.f, PanelY + 89.f, Font, Scale * 0.85f);
 
-    for (int32 Index = 0; Index < 7; ++Index)
+    for (int32 Index = 0; Index < 8; ++Index)
     {
+        // Grid slot 7 uses distinct action ID 12; utility IDs 7..11
+        // stay byte-for-byte compatible with existing UI automation.
+        const int32 ActionId = Index == 7 ? 12 : Index;
         float X, Y, W, H;
-        GetActionRect(Index, X, Y, W, H);
+        GetActionRect(ActionId, X, Y, W, H);
+        const bool bActiveRoute = Index == 7 &&
+            Rules->GetRoutePreview().IsValid() && !Rules->IsBattleReplayActive();
         DrawRect(Index == 0 ? FLinearColor(0.05f, 0.34f, 0.39f, 0.97f) :
+            bActiveRoute ? FLinearColor(0.07f, 0.30f, 0.32f, 0.98f) :
             FLinearColor(0.08f, 0.15f, 0.24f, 0.98f), X, Y, W, H);
         DrawText(Index == 0 && Rules->IsBattleReplayActive()
-            ? TEXT("SKIP 3D REPLAY") : ActionLabels[Index], FLinearColor::White,
-            X + 10.f, Y + 11.f, Font, Scale);
+            ? TEXT("SKIP 3D REPLAY") :
+            bActiveRoute ? TEXT("NEXT PLAN Z") : ActionLabels[Index],
+            FLinearColor::White, X + 10.f, Y + 11.f, Font, Scale);
+    }
+
+    {
+        float X, Y, W, H;
+        GetActionRect(200, X, Y, W, H);
+        DrawRect(FLinearColor(0.08f, 0.24f, 0.28f, 0.98f), X, Y, W, H);
+        DrawText(TEXT("RECR N"), FLinearColor(0.65f, 1.f, 0.86f),
+            X + 6.f, Y + 11.f, Font, Scale * 0.9f);
     }
 
     for (int32 Index = 7; Index < 12; ++Index)

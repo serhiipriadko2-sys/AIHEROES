@@ -22,6 +22,10 @@ struct FAIHeroesBattleRecord
     UPROPERTY(SaveGame)
     int32 ProtocolTier = 0;
 
+    // Missing metadata in existing saves must continue to mean legacy combat.
+    UPROPERTY(SaveGame)
+    int32 RuleVersion = 1;
+
     UPROPERTY(SaveGame)
     TArray<FAIHeroesArmyStack> PlayerBefore;
 
@@ -57,7 +61,7 @@ public:
         FName NodeId, int32 Day, int32 ProtocolTier,
         const TArray<FAIHeroesArmyStack>& PlayerBefore,
         const TArray<FAIHeroesArmyStack>& EnemyBefore,
-        const FAIHeroesBattleOutcome& Outcome);
+        const FAIHeroesBattleOutcome& Outcome, int32 RuleVersion = 1);
 
     // An empty record means a legacy save/no battles. It is deliberately valid.
     static bool Verify(const FAIHeroesBattleRecord& Record, FString& Error);

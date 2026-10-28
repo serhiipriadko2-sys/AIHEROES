@@ -134,7 +134,7 @@ bool FAIHeroesCampaignRules::Validate(const UAIHeroesCampaignSave& Save, FString
                 break;
             }
         }
-        if (!Def || Node.Type != Def->Type || Node.Defenders.Num() > 1)
+        if (!Def || Node.Type != Def->Type || Node.Defenders.Num() > 2)
         {
             return Fail(Error, TEXT("Unknown or incompatible map node."));
         }

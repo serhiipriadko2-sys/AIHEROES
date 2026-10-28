@@ -11,6 +11,11 @@
 void AAIHeroesGameMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    if (IsLiveBattleActive())
+    {
+        TickLiveBattle(DeltaSeconds);
+        return;
+    }
     if (!IsValid(ActiveBattleStage.Get()) ||
         !ActiveBattleStage->IsFinished())
     {
@@ -64,6 +69,7 @@ void AAIHeroesGameMode::SkipBattleReplay()
 
 void AAIHeroesGameMode::PlayLastBattleIn3D()
 {
+    if (BlockStrategicAction()) return;
     if (IsValid(ActiveBattleStage.Get()))
     {
         SetEvent(TEXT("3D replay already running or closing. Press Esc to skip."));
@@ -79,6 +85,12 @@ void AAIHeroesGameMode::PlayLastBattleIn3D()
     if (!FAIHeroesBattleRecordRules::Verify(LastBattleRecord, Error))
     {
         SetEvent(FString::Printf(TEXT("3D replay rejected: %s"), *Error));
+        return;
+    }
+
+    if (LastBattleRecord.RuleVersion != 1)
+    {
+        SetEvent(TEXT("V2 battle verified. J reads its full transcript; legacy 3D replay V supports V1 only."));
         return;
     }
 

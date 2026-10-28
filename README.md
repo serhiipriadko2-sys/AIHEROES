@@ -9,13 +9,19 @@ initiative and target-selection policy. This is not a running language model.
 
 Open C:\github\AIHEROES in VS Code, then use Terminal > Run Task:
 - AIHEROES: Build Unreal Editor
-- AIHEROES: Test autonomous battles (runs the full AIHeroes test suite)
+- AIHEROES: Test all gameplay automation (checks the fresh JSON report, not exit code alone)
 - AIHEROES: Launch playable Windows game
+- AIHEROES: Visual live grid V2 smoke (scripted real-window QA; no save writes)
 Close the game window before rebuilding so the Unreal DLL can be replaced.
 
 Or open AIHeroes.uproject in Unreal Engine 5.8 and press Play.
 
 ## PC controls — active AIHeroesGameMode
+
+Confirmed attacks now enter **live Grid V2**, not precomputed replay.
+In battle: Q/E orbit, R/F zoom, Space/Esc pause, T speed 1x/2x/4x,
+B fast finish, Enter return after the result. Strategic actions and save/load
+are blocked until return. See [live battle rules and evidence](Docs/LIVE_GRID_V2.md).
 
 - W/A/S/D = camera pan, Q/E = rotate perspective camera, R/F = camera elevation.
 - Click a node = SELECT only; selection never begins a battle.
@@ -55,7 +61,8 @@ ingestion or actual neural-network checkpoint replacement.
 ## Evidence and boundaries
 
 - Active GameMode: Source/AIHeroes/Private/AIHeroesGameMode.cpp.
-- Active combat AI: Source/AIHeroes/Private/AIHeroesBattleEngine.cpp.
+- Active live combat AI: Source/AIHeroes/Private/AIHeroesGridBattle.cpp.
+- Legacy V1 record/replay rules: Source/AIHeroes/Private/AIHeroesBattleEngine.cpp.
 - Active UI: Source/AIHeroes/Private/AIHeroesHUD.cpp.
 - Old AIH* prototype classes remain for comparison, NOT the active mode.
 - Design: Docs/AI_EVOLUTION_DESIGN.md.
@@ -66,10 +73,12 @@ ingestion or actual neural-network checkpoint replacement.
 - Deterministic typed actions and integrity gate: AIHeroesBattleEngine.cpp.
 - 3D playthrough evidence: Docs/AIHEROES_PLAYTHROUGH_PASS_2026-10-28.png.
 
-The 3D world still uses placeholder cubes/spheres. AI combat results remain
-fully deterministic; an optional 3D scene visualizes verified rounds with
-simple unit proxies and attack pulses. It cannot edit campaign outcomes.
-Animated character assets, interactive tactical combat and animation polish
-remain future milestones.
+The 3D world still uses prototype geometry. Confirmed attacks run a live
+8x6-grid session: the hero chooses movement/attacks during play, and the
+campaign commits casualties/cost/rewards once after completion. Perspective
+camera, HP/initiative, pause/speed/fast-finish are implemented. Historical V1
+3D replay stays separate; V2 transcripts are readable with J, but the old V
+3D replay viewer remains V1-only. Author-created character assets, animation
+polish and manual commands to units are not part of this slice.
 Android SDK is not validated, no Android APK or live 1B/3B/8B checkpoint
 has been tested. No assets or game concepts from Heroes III are copied.
