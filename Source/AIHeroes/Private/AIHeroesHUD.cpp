@@ -1,5 +1,6 @@
 #include "AIHeroesHUD.h"
 #include "AIHeroesHUDLayout.h"
+#include "AIHeroesBasePanel.h"
 
 #include "AIHeroesAdvisorDossier.h"
 #include "AIHeroesGameMode.h"
@@ -47,6 +48,8 @@ int32 AAIHeroesHUD::GetActionAt(const FVector2D& ScreenPoint) const
     {
         return FAIHeroesHUDLayout::HitTest(ScreenPoint, CachedCanvasSize, true);
     }
+    if (Rules && Rules->IsBasePanelVisible())
+        return FAIHeroesBasePanelRules::HitTest(ScreenPoint, CachedCanvasSize);
     if (Rules && Rules->IsAdvisorDossierVisible())
     {
         // Even a click outside the panel is consumed by this read-only modal.
@@ -57,6 +60,9 @@ int32 AAIHeroesHUD::GetActionAt(const FVector2D& ScreenPoint) const
     {
         return FAIHeroesAdvisorDossierRules::ToggleAction;
     }
+    if (Rules && !Rules->IsBattleReplayActive() &&
+        FAIHeroesBasePanelRules::OpenButton(CachedCanvasSize).Contains(ScreenPoint))
+        return FAIHeroesBasePanelRules::ToggleAction;
     return FAIHeroesHUDLayout::HitTest(ScreenPoint, CachedCanvasSize, false);
 }
 void AAIHeroesHUD::DrawHUD()
@@ -73,10 +79,15 @@ void AAIHeroesHUD::DrawHUD()
     const float Width = Canvas->SizeX;
     const float Height = Canvas->SizeY;
     const int32 Columns = Width >= 1150.f ? 4 : (Width >= 800.f ? 3 : 2);
-    const float BottomHeight = 120.f + 53.f * ((7 + Columns - 1) / Columns);
+    const float BottomHeight = FAIHeroesHUDLayout::BottomPanelHeight(Width);
     const float Scale = Width < 700.f ? 0.78f : 1.f;
     const int32 TextLimit = FMath::Clamp(FMath::FloorToInt(Width / 8.f), 40, 152);
     UFont* Font = GEngine->GetSmallFont();
+    if (Rules->IsBasePanelVisible())
+    {
+        DrawBasePanel(*Rules);
+        return;
+    }
 
     if (Rules->IsLiveBattleActive())
     {
@@ -226,14 +237,31 @@ void AAIHeroesHUD::DrawHUD()
     DrawText(FString::Printf(TEXT("DAY %d  |  MOVES %d/4  |  GOLD %d  |  WOOD %d  |  ORE %d  |  DATA %d"),
         Rules->Day, Rules->MovesLeft, Rules->Gold, Rules->Wood, Rules->Ore, Rules->DataFragments),
         FLinearColor::White, 18.f, 42.f, Font, Scale);
-    DrawText(TEXT("ARMY: ") + Rules->GetArmySummary(),
+    DrawText(TEXT("ARMY: ") + Rules->GetArmySummary() + FString::Printf(
+        TEXT("  |  HQ L%d  |  +%d GOLD/DAY"), Rules->BaseTier, Rules->GetDailyGoldIncome()),
         FLinearColor(0.88f, 0.95f, 0.81f), 18.f, 68.f, Font, Scale);
     DrawText(TEXT("AI: ") + Rules->GetCognitionSummary(),
         FLinearColor(1.f, 0.85f, 0.35f), 18.f, 94.f, Font, Scale);
     DrawText(Rules->GetSelectionSummary().Left(TextLimit),
         FLinearColor(0.4f, 1.f, 0.92f), 18.f, 119.f, Font, Scale);
-    DrawText(TEXT("WASD camera  CLICK select  ENTER confirm  H advise  N recruit?  I dossier  Z PLAN  SPACE day  K save  L load  C slot  V 3D"),
+    DrawText(TEXT("WASD camera  CLICK select  ENTER confirm  H advise  O goals  U HQ+  I dossier  N recruit  Z plan  SPACE day  K save  L load  V 3D"),
         FLinearColor(0.72f, 0.78f, 0.87f), 18.f, 147.f, Font, Scale * 0.92f);
+
+    if (!Rules->IsBattleReplayActive() && !Rules->IsLiveBattleActive())
+    {
+        // Non-interactive threat forecast. No action or resource mutation.
+        const float ThreatWidth = FMath::Min(Width - 28.f, 925.f);
+        if (ThreatWidth > 160.f)
+        {
+            DrawRect(FLinearColor(0.19f, 0.075f, 0.04f, 0.93f),
+                14.f, 179.f, ThreatWidth, 25.f);
+            const int32 ForecastLimit = FMath::Max(20,
+                FMath::FloorToInt((ThreatWidth - 18.f) / 7.5f));
+            DrawText(Rules->GetRivalForecast().Left(ForecastLimit),
+                FLinearColor(1.f, 0.79f, 0.51f),
+                22.f, 184.f, Font, Scale * 0.91f);
+        }
+    }
 
     if (Rules->IsBattleReplayActive())
     {
@@ -254,6 +282,40 @@ void AAIHeroesHUD::DrawHUD()
     }
 
     const float PanelY = Height - BottomHeight;
+    // Mission status is reconstructed from saved campaign state every frame.
+    // It never authorizes a movement, recruitment or AI command.
+    if (!Rules->IsBattleReplayActive())
+    {
+        float GoalX, GoalY, GoalW, GoalH;
+        GetActionRect(202, GoalX, GoalY, GoalW, GoalH);
+        if (GoalW > 0.f)
+        {
+            const FAIHeroesCampaignProgress Progress = Rules->GetCampaignProgress();
+            DrawRect(FLinearColor(0.015f, 0.065f, 0.11f, 0.97f),
+                0.f, GoalY - 2.f, Width, GoalH + 4.f);
+            const int32 GoalTextLimit = FMath::Max(18,
+                FMath::FloorToInt((Width - GoalW - 32.f) / 8.f));
+            DrawText(Progress.Headline().Left(GoalTextLimit),
+                Progress.bVictory ? FLinearColor(0.8f, 1.f, 0.55f) :
+                    FLinearColor(0.44f, 0.93f, 0.9f),
+                14.f, GoalY + 6.f, Font, Scale * 0.92f);
+            DrawRect(FLinearColor(0.07f, 0.30f, 0.31f, 0.99f),
+                GoalX, GoalY, GoalW, GoalH);
+            DrawText(TEXT("GOALS O"), FLinearColor::White,
+                GoalX + 8.f, GoalY + 7.f, Font, Scale * 0.9f);
+        }
+        // The protocol comparison is a peer of GOALS, not another
+        // strategic command; mobile touch and mouse use this same rect.
+        float LabX, LabY, LabW, LabH;
+        GetActionRect(203, LabX, LabY, LabW, LabH);
+        if (LabW > 0.f)
+        {
+            DrawRect(FLinearColor(0.12f, 0.23f, 0.34f, 0.99f),
+                LabX, LabY, LabW, LabH);
+            DrawText(TEXT("LAB Y"), FLinearColor(0.75f, 0.93f, 1.f),
+                LabX + 8.f, LabY + 7.f, Font, Scale * 0.9f);
+        }
+    }
     DrawRect(FLinearColor(0.015f, 0.023f, 0.046f, 0.94f),
         0.f, PanelY, Width, BottomHeight);
     DrawText(TEXT("EVENT: ") + Rules->LastEvent.Left(TextLimit),
@@ -264,7 +326,7 @@ void AAIHeroesHUD::DrawHUD()
         ? Rules->GetBattleReplayStatus() : Rules->GetReplayDisplayText();
     DrawText(BattleDisplay.Left(TextLimit),
         FLinearColor(0.87f, 0.77f, 0.5f), 18.f, PanelY + 67.f, Font, Scale);
-    DrawText(Width < 700.f ? TEXT("RULE AI | NO LLM") :
+    DrawText(Width < 500.f ? TEXT("RULE AI") : Width < 700.f ? TEXT("RULE AI | NO LLM") :
         TEXT("LOCAL RULE AI  |  1B / 3B / 8B are themed tiers; no actual LLM loaded"),
         FLinearColor(0.78f, 0.75f, 0.79f), 18.f, PanelY + 89.f, Font, Scale * 0.85f);
 
@@ -294,6 +356,14 @@ void AAIHeroesHUD::DrawHUD()
             X + 6.f, Y + 11.f, Font, Scale * 0.9f);
     }
 
+    {
+        float X, Y, W, H;
+        GetActionRect(201, X, Y, W, H);
+        DrawRect(FLinearColor(0.20f, 0.24f, 0.12f, 0.98f), X, Y, W, H);
+        DrawText(TEXT("HQ + U"), FLinearColor(1.f, 0.91f, 0.55f),
+            X + 6.f, Y + 11.f, Font, Scale * 0.9f);
+    }
+
     for (int32 Index = 7; Index < 12; ++Index)
     {
         float X, Y, W, H;
@@ -316,6 +386,16 @@ void AAIHeroesHUD::DrawHUD()
             DrawRect(FLinearColor(0.06f, 0.25f, 0.31f, 1.f), R.X, R.Y, R.W, R.H);
             DrawText(TEXT("DOSSIER I"), FLinearColor(0.6f, 0.95f, 1.f),
                 R.X + 10.f, R.Y + 6.f, Font, Scale * 0.95f);
+        }
+    }
+    if (!Rules->IsBattleReplayActive())
+    {
+        const auto R = FAIHeroesBasePanelRules::OpenButton(CachedCanvasSize);
+        if (R.W > 0)
+        {
+            DrawRect(FLinearColor(0.17f, 0.25f, 0.12f), R.X, R.Y, R.W, R.H);
+            DrawText(TEXT("BASE G"), FLinearColor(1.f, 0.93f, 0.62f),
+                R.X + 10, R.Y + 6, Font, Scale * 0.95f);
         }
     }
     if (Rules->IsAdvisorDossierVisible())

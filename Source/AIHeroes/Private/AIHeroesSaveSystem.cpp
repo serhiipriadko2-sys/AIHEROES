@@ -26,6 +26,7 @@ bool SameSnapshot(const UAIHeroesCampaignSave& A, const UAIHeroesCampaignSave& B
 {
     if (A.SchemaVersion != B.SchemaVersion ||
         A.SaveSequence != B.SaveSequence ||
+        A.BaseTier != B.BaseTier ||
         A.Day != B.Day || A.Gold != B.Gold ||
         A.Wood != B.Wood || A.Ore != B.Ore ||
         A.MovesLeft != B.MovesLeft || A.ProtocolTier != B.ProtocolTier ||

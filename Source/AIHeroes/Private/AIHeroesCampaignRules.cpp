@@ -1,6 +1,7 @@
 #include "AIHeroesCampaignRules.h"
 
 #include "AIHeroesCampaignSave.h"
+#include "AIHeroesBaseRules.h"
 #include "AIHeroesBattleRecord.h"
 
 namespace
@@ -74,6 +75,8 @@ bool FAIHeroesCampaignRules::Validate(const UAIHeroesCampaignSave& Save, FString
     {
         return Fail(Error, TEXT("Unsupported save version."));
     }
+    if (!FAIHeroesBaseRules::IsValidTier(Save.BaseTier))
+        return Fail(Error, TEXT("Invalid headquarters level."));
     if (Save.Day < 1 || Save.Day > 1000000 ||
         Save.SaveSequence < 0 || Save.SaveSequence > 1000000 ||
         Save.MovesLeft < 0 || Save.MovesLeft > 4 ||

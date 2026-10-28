@@ -3,10 +3,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "AIHeroesTypes.h"
+#include "AIHeroesBasePanel.h"
 #include "AIHeroesBattleRecord.h"
 #include "AIHeroesRoutePlanner.h"
 #include "AIHeroesGridBattle.h"
+#include "AIHeroesGridReplay.h"
 #include "AIHeroesAdvisorDossier.h"
+#include "AIHeroesCampaignObjectives.h"
+#include "AIHeroesRivalStrategy.h"
 #include "AIHeroesGameMode.generated.h"
 
 class AAIHeroesWorldNode;
@@ -44,6 +48,9 @@ public:
     int32 Ore = 30;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32 BaseTier = 0;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     int32 ProtocolTier = 0;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -77,14 +84,31 @@ public:
 
     void RecruitMilitia();
     void RecruitScouts();
+    void UpgradeHeadquarters();
+    void ToggleBasePanel();
+    void CloseBasePanel();
+    bool IsBasePanelVisible() const;
+    void PreviewBasePurchase(EAIHeroesBasePurchase Kind);
+    void ConfirmBasePurchase();
+    bool CanConfirmBasePurchase() const;
+    FAIHeroesBasePanelOffer GetBasePanelOffer(EAIHeroesBasePurchase Kind) const;
+    EAIHeroesBasePurchase GetSelectedBasePurchase() const { return PendingBaseQuote.Kind; }
+    const FString& GetBasePanelMessage() const { return BasePanelMessage; }
+    FString GetHeadquartersSummary() const;
+    int32 GetDailyGoldIncome() const;
     void UpgradeProtocol();
     void UpgradeModelSlot();
     void EndTurn();
+    FString GetRivalForecast() const;
     void SelectNode(AAIHeroesWorldNode* Node);
     void ConfirmSelectedNode();
     void InteractWithNode(AAIHeroesWorldNode* Node);
     void AskAdvisor();
     void AskRecruitmentAdvisor();
+    FAIHeroesCampaignProgress GetCampaignProgress() const;
+    void ShowCampaignObjectives();
+    void OpenProtocolLab();
+    void AnnounceCampaignVictoryIfEarned();
     const FAIHeroesAdvisorDossier& GetAdvisorDossier() const { return AdvisorDossier; }
     int32 GetAdvisorDossierPage() const { return AdvisorDossierPage; }
     bool IsAdvisorDossierVisible() const;
@@ -101,6 +125,8 @@ public:
     FString GetBattleReplayStatus() const;
     FString GetBattleReplayArmyStatus(bool bPlayer) const;
     void SkipBattleReplay();
+    void ToggleGridReplayPause();
+    void CycleGridReplaySpeed();
     void SaveCampaign();
     void LoadCampaign();
     void CycleSaveSlot();
@@ -124,12 +150,19 @@ public:
     FString GetCognitionSummary() const;
 
 private:
+    // Transient UI quote, never a campaign save or an AI authorization.
+    bool bBasePanelOpen = false;
+    FAIHeroesBasePanelOffer PendingBaseQuote;
+    FString PendingBaseFingerprint;
+    FString BasePanelMessage;
     // UI evidence is transient. It is neither a campaign save nor AI memory.
     FAIHeroesAdvisorDossier AdvisorDossier;
     int32 AdvisorDossierPage = 0;
     bool bAdvisorDossierOpen = false;
     void RecordAdvisorDossier(
-        const FString& Title, const TArray<FString>& Paragraphs, bool bRecruitment);
+        const FString& Title, const TArray<FString>& Paragraphs,
+        bool bRecruitment, bool bObjectives = false, bool bProtocolLab = false);
+    FString BuildAIProposalGateStatus() const;
 
     UPROPERTY()
     TObjectPtr<AAIHeroesLiveBattleStage> LiveBattleStage;
@@ -157,10 +190,27 @@ private:
     void AbortLiveBattle(const FString& Error);
     void ClearLiveStage(bool bReleaseViewTarget = true);
     FString CampaignFingerprint() const;
+    bool BuildRivalSnapshot(int32 NewDay, int32 NewGold, int32 NewWood, int32 NewOre,
+        FAIHeroesRivalSnapshot& Out, FString& Error) const;
     void BeginLiveBattleSmoke();
 
     UPROPERTY()
     TObjectPtr<AAIHeroesBattleStage> ActiveBattleStage;
+
+    // V2 uses the same disposable 3D arena as live combat, but only
+    // presents preverified receipts. It never owns campaign authority.
+    UPROPERTY()
+    TObjectPtr<AAIHeroesLiveBattleStage> GridReplayStage;
+    TWeakObjectPtr<AActor> PreGridReplayViewTarget;
+    FAIHeroesGridReplay GridReplay;
+    int32 GridReplayCursor = 0;
+    float GridReplayHoldClock = 0.f;
+    float GridReplaySpeed = 1.f;
+    bool bGridReplayPaused = false;
+    bool bGridReplayResultShown = false;
+    FString PreGridReplayFingerprint;
+    void TickGridReplay(float DeltaSeconds);
+    void FinishGridReplay(const FString& Reason);
 
     UPROPERTY()
     TObjectPtr<APawn> ReplayCameraPawn;
@@ -174,6 +224,8 @@ private:
     int32 ActiveRouteIndex = 0;
     FAIHeroesAdvisorSnapshot BuildAdvisorSnapshot() const;
     void InvalidateRoutePreview();
+    bool IsAtSelectedOwnedHeadquarters() const;
+    void RefreshHeadquartersVisual();
     void SpawnWorld();
     void SpawnHeroMarker();
     void MoveHeroTo(const FVector& Location);

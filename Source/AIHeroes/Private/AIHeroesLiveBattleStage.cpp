@@ -492,6 +492,21 @@ FString AAIHeroesLiveBattleStage::GetStatusText() const
     return bPresentationPaused && bPresenting ? TEXT("PAUSED | ") + Status : Status;
 }
 
+FString AAIHeroesLiveBattleStage::GetArmyStatus(bool bPlayer) const
+{
+    const TArray<FAIHeroesArmyStack>& Army = bPlayer ? PlayerState : EnemyState;
+    FString Summary;
+    for (int32 Index = 0; Index < Army.Num(); ++Index)
+    {
+        const FAIHeroesArmyStack& Stack = Army[Index];
+        Summary += FString::Printf(TEXT("%s%s #%d: %d units / %d HP"),
+            Summary.IsEmpty() ? TEXT("") : TEXT(" | "),
+            *Stack.UnitId.ToString(), Index + 1,
+            Stack.Count(), Stack.TotalHealth);
+    }
+    return Summary.IsEmpty() ? TEXT("NO UNITS") : Summary;
+}
+
 void AAIHeroesLiveBattleStage::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     CleanupPresentationActors();

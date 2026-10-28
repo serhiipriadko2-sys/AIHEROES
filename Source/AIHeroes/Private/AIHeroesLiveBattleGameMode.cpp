@@ -23,6 +23,11 @@ void AppendArmy(FString& Text, const TArray<FAIHeroesArmyStack>& Army)
 
 bool AAIHeroesGameMode::BlockStrategicAction()
 {
+    if (IsBasePanelVisible())
+    {
+        SetEvent(TEXT("BASE PANEL OPEN: review and confirm a purchase, or close before other orders."));
+        return true;
+    }
     if (IsAdvisorDossierVisible())
     {
         SetEvent(TEXT("REPORT OPEN: close the read-only dossier before giving orders. Campaign unchanged."));
@@ -38,6 +43,7 @@ FString AAIHeroesGameMode::CampaignFingerprint() const
     FString Text = FString::Printf(TEXT("%d/%d/%d/%d/%d/%d/%d/%d/%d/%s/%p/"),
         Day, Gold, Wood, Ore, MovesLeft, ProtocolTier, ModelSlotTier,
         DataFragments, ActiveSaveSlot, *HeroStrategicLocation.ToString(), SelectedNode.Get());
+    Text += FString::Printf(TEXT("HQ=%d/"), BaseTier);
     AppendArmy(Text, PlayerArmy);
     for (const AAIHeroesWorldNode* Node : Nodes)
     {
@@ -262,6 +268,7 @@ void AAIHeroesGameMode::ReturnFromLiveBattle()
     bFastFinishingLiveBattle = false;
     LiveBattleNode.Reset();
     SetEvent(TEXT("Returned to map. Battle result already applied once; K saves, L loads."));
+    AnnounceCampaignVictoryIfEarned();
 }
 
 FString AAIHeroesGameMode::GetLiveBattleStatus() const

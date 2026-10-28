@@ -1,11 +1,14 @@
 #include "AIHeroesGameMode.h"
 
 void AAIHeroesGameMode::RecordAdvisorDossier(
-    const FString& Title, const TArray<FString>& Paragraphs, bool bRecruitment)
+    const FString& Title, const TArray<FString>& Paragraphs,
+    bool bRecruitment, bool bObjectives, bool bProtocolLab)
 {
     AdvisorDossier = FAIHeroesAdvisorDossier();
     AdvisorDossier.Title = Title;
     AdvisorDossier.bRecruitment = bRecruitment;
+    AdvisorDossier.bObjectives = bObjectives;
+    AdvisorDossier.bProtocolLab = bProtocolLab;
     AdvisorDossier.ObservedDay = Day;
     AdvisorDossier.EvidenceKey = CampaignFingerprint();
     const FAIHeroesAdvisorSnapshot Snapshot = BuildAdvisorSnapshot();
@@ -14,6 +17,10 @@ void AAIHeroesGameMode::RecordAdvisorDossier(
         Day, Snapshot.SelectedNodeId.IsNone() ? TEXT("NONE") : *Snapshot.SelectedNodeId.ToString(),
         MovesLeft, ProtocolTier, Gold, Wood, Ore));
     AdvisorDossier.Paragraphs.Append(Paragraphs);
+    if (!bRecruitment && !bObjectives && !bProtocolLab)
+    {
+        AdvisorDossier.Paragraphs.Add(BuildAIProposalGateStatus());
+    }
     AdvisorDossier.Paragraphs.Add(TEXT("BOUNDARY: offline rules, not a language model. This report never recruits, moves, attacks, saves or unlocks a protocol."));
     AdvisorDossierPage = 0;
 }
@@ -32,7 +39,7 @@ bool AAIHeroesGameMode::IsAdvisorDossierFresh() const
 
 void AAIHeroesGameMode::ToggleAdvisorDossier()
 {
-    if (IsLiveBattleActive() || IsBattleReplayActive()) return;
+    if (IsLiveBattleActive() || IsBattleReplayActive() || IsBasePanelVisible()) return;
     if (bAdvisorDossierOpen)
     {
         CloseAdvisorDossier();
@@ -41,7 +48,9 @@ void AAIHeroesGameMode::ToggleAdvisorDossier()
     if (!AdvisorDossier.HasContent()) AskAdvisor();
     bAdvisorDossierOpen = true;
     UE_LOG(LogTemp, Display, TEXT("[AI HEROES DOSSIER] OPEN fresh=%d kind=%s"),
-        IsAdvisorDossierFresh(), AdvisorDossier.bRecruitment ? TEXT("recruitment") : TEXT("strategy"));
+        IsAdvisorDossierFresh(), AdvisorDossier.bProtocolLab ? TEXT("protocol_lab") :
+        AdvisorDossier.bRecruitment ? TEXT("recruitment") :
+        AdvisorDossier.bObjectives ? TEXT("objectives") : TEXT("strategy"));
 }
 
 void AAIHeroesGameMode::CloseAdvisorDossier()
@@ -53,13 +62,17 @@ void AAIHeroesGameMode::CloseAdvisorDossier()
 
 void AAIHeroesGameMode::RefreshAdvisorDossier()
 {
-    if (IsLiveBattleActive() || IsBattleReplayActive()) return;
+    if (IsLiveBattleActive() || IsBattleReplayActive() || IsBasePanelVisible()) return;
     const bool bWasOpen = bAdvisorDossierOpen;
     const bool bRecruitment = AdvisorDossier.bRecruitment;
+    const bool bObjectives = AdvisorDossier.bObjectives;
+    const bool bLab = AdvisorDossier.bProtocolLab;
     // Temporarily release the UI-only command lock for a read-only query.
     // Neither query owns a campaign mutation path.
     bAdvisorDossierOpen = false;
-    if (bRecruitment) AskRecruitmentAdvisor();
+    if (bLab) OpenProtocolLab();
+    else if (bObjectives) ShowCampaignObjectives();
+    else if (bRecruitment) AskRecruitmentAdvisor();
     else AskAdvisor();
     bAdvisorDossierOpen = bWasOpen;
     UE_LOG(LogTemp, Display, TEXT("[AI HEROES DOSSIER] REFRESH fresh=%d no_order=1"),

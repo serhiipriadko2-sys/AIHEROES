@@ -42,9 +42,15 @@ public:
 
     void Configure(EAIHeroesNodeType InType, const FString& InName, const TArray<FAIHeroesArmyStack>& InDefenders);
     void SetOwned(bool bNewOwned);
+    bool SetHeadquartersTier(int32 Tier);
+    int32 GetHeadquartersTier() const { return HeadquartersTier; }
+    int32 GetVisibleHeadquartersParts() const;
     FString GetDisplayName() const;
 
 private:
     FString DisplayName;
+    int32 HeadquartersTier = 0;
+    UPROPERTY()
+    TArray<TObjectPtr<UStaticMeshComponent>> HeadquartersParts;
     void RefreshVisual();
 };

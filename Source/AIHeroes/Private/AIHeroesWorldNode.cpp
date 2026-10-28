@@ -1,4 +1,5 @@
 #include "AIHeroesWorldNode.h"
+#include "AIHeroesBaseRules.h"
 
 #include "Components/PointLightComponent.h"
 #include "Components/SceneComponent.h"
@@ -24,6 +25,21 @@ AAIHeroesWorldNode::AAIHeroesWorldNode()
     }
     Visual->SetCollisionResponseToAllChannels(ECR_Ignore);
     Visual->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+    for (int32 Index = 0; Index < 3; ++Index)
+    {
+        UStaticMeshComponent* Part = CreateDefaultSubobject<UStaticMeshComponent>(
+            *FString::Printf(TEXT("HQUpgradePart%d"), Index));
+        Part->SetupAttachment(SceneRoot);
+        Part->SetMobility(EComponentMobility::Movable);
+        if (Cube.Succeeded()) Part->SetStaticMesh(Cube.Object);
+        Part->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        Part->SetVisibility(false);
+        Part->SetRelativeLocation(Index < 2
+            ? FVector(-170.f, Index == 0 ? -180.f : 180.f, 55.f) : FVector(60.f, 0.f, 235.f));
+        Part->SetRelativeScale3D(Index < 2 ? FVector(0.8f, 0.8f, 4.f) : FVector(0.35f, 0.35f, 1.6f));
+        HeadquartersParts.Add(Part);
+    }
 
     Label = CreateDefaultSubobject<UTextRenderComponent>(TEXT("NameLabel"));
     Label->SetupAttachment(SceneRoot); // Do not inherit the scaled mesh transform.
@@ -79,6 +95,22 @@ FString AAIHeroesWorldNode::GetDisplayName() const
     return DisplayName;
 }
 
+bool AAIHeroesWorldNode::SetHeadquartersTier(int32 Tier)
+{
+    if (NodeType != EAIHeroesNodeType::Headquarters || !FAIHeroesBaseRules::IsValidTier(Tier)) return false;
+    HeadquartersTier = Tier;
+    RefreshVisual();
+    return true;
+}
+
+int32 AAIHeroesWorldNode::GetVisibleHeadquartersParts() const
+{
+    int32 Count = 0;
+    for (const UStaticMeshComponent* Part : HeadquartersParts)
+        if (IsValid(Part) && Part->IsVisible()) ++Count;
+    return Count;
+}
+
 void AAIHeroesWorldNode::RefreshVisual()
 {
     FVector Scale(1.8f, 1.8f, 2.0f);
@@ -91,6 +123,9 @@ void AAIHeroesWorldNode::RefreshVisual()
         case EAIHeroesNodeType::Ruins: Scale = FVector(2.8f, 1.8f, 3.4f); break;
     }
     Visual->SetRelativeScale3D(Scale);
+    for (int32 Index = 0; Index < HeadquartersParts.Num(); ++Index)
+        HeadquartersParts[Index]->SetVisibility(NodeType == EAIHeroesNodeType::Headquarters &&
+            bOwned && Index < HeadquartersTier);
     Label->SetText(FText::FromString(FString::Printf(
         TEXT("%s%s"), *DisplayName, bOwned ? TEXT(" [OURS]") : TEXT(""))));
     const FColor StateColor = bOwned ? FColor(70, 255, 150) :

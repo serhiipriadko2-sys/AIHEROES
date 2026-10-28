@@ -65,13 +65,33 @@ FAIHeroesHUDActionRect FAIHeroesHUDLayout::Rect(
         return Rect;
     }
 
-    if (ActionId == 200)
+    if (ActionId == 200 || ActionId == 201)
     {
-        const FAIHeroesHUDActionRect AskCell = BaseStrategicRect(1, Viewport);
+        const FAIHeroesHUDActionRect AskCell = BaseStrategicRect(ActionId == 200 ? 1 : 6, Viewport);
         Rect.W = RecruitTipWidth(AskCell.W);
         Rect.H = AskCell.H;
         Rect.X = AskCell.X + AskCell.W - Rect.W;
         Rect.Y = AskCell.Y;
+        return Rect;
+    }
+    if (ActionId == 203)
+    {
+        const FAIHeroesHUDActionRect Goals = FAIHeroesHUDLayout::Rect(202, Viewport, false);
+        if (Goals.W <= 0.f) return Rect;
+        Rect.W = Viewport.X < 700.f ? 100.f : 128.f;
+        Rect.H = Goals.H;
+        Rect.X = Goals.X - Rect.W - 8.f;
+        Rect.Y = Goals.Y;
+        if (Rect.X < 8.f) return FAIHeroesHUDActionRect();
+        return Rect;
+    }
+    if (ActionId == 202)
+    {
+        Rect.W = Viewport.X < 700.f ? 108.f : 144.f;
+        Rect.H = 29.f;
+        Rect.X = FMath::Max(8.f, Viewport.X - Rect.W - 12.f);
+        Rect.Y = Viewport.Y - BottomPanelHeight(Viewport.X) - 33.f;
+        if (Rect.Y < 185.f) return FAIHeroesHUDActionRect();
         return Rect;
     }
     if (ActionId < 0 || ActionId >= 13)
@@ -97,7 +117,7 @@ FAIHeroesHUDActionRect FAIHeroesHUDLayout::Rect(
     }
 
     Rect = BaseStrategicRect(ActionId, Viewport);
-    if (ActionId == 1)
+    if (ActionId == 1 || ActionId == 6)
     {
         Rect.W -= RecruitTipWidth(Rect.W) + 6.f;
     }
@@ -125,6 +145,9 @@ int32 FAIHeroesHUDLayout::HitTest(
     {
         return 200;
     }
+    if (Rect(201, Viewport).Contains(Point)) return 201;
+    if (Rect(202, Viewport).Contains(Point)) return 202;
+    if (Rect(203, Viewport).Contains(Point)) return 203;
     for (int32 Action = 0; Action < 13; ++Action)
     {
         if (Rect(Action, Viewport).Contains(Point))

@@ -1,0 +1,245 @@
+{
+  "schema": "aiheroes.headquarters.receipt.v1",
+  "observed_at_utc": "2026-10-28T20:12:35.826860+00:00",
+  "surface": "authorized Windows Remote Desktop Commander",
+  "root": "C:\\github\\AIHEROES",
+  "baseline_head": "d6ee2059ffc2daa50b9882754c2c854d0dedf387",
+  "head_at_receipt": "d6ee2059ffc2daa50b9882754c2c854d0dedf387",
+  "feature": "Headquarters economy and progression, tiers 0..3",
+  "status": "PASS_SCOPED_WINDOWS",
+  "lifecycle": [
+    "written",
+    "compiled",
+    "automation_verified",
+    "windows_input_verified"
+  ],
+  "out_of_scope": [
+    "Android APK/device QA",
+    "real neural inference",
+    "published release",
+    "balance playtesting",
+    "finished art"
+  ],
+  "commands": {
+    "build": "UnrealBuildTool AIHeroesEditor Win64 Development -WaitMutex -NoHotReload -NoUBA -MaxParallelActions=1",
+    "tests": "Tools/run_aiheroes_automation.ps1; -Filter AIHeroes.Base",
+    "visual": "Tools/qa_headquarters.ps1 -ExpectedPid 57040 -Mode Frame / Exercise"
+  },
+  "source_file_count": 16,
+  "scoped_file_count": 19,
+  "scoped_files_total_bytes": 139598,
+  "files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesBaseRules.h",
+      "bytes": 783,
+      "sha256": "a9d057c324050b5396acf8cada264963d3349410973cf7e9ebefb7056c1ace0d"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBaseRules.cpp",
+      "bytes": 1714,
+      "sha256": "8958fc47f64eb11a61ff130bf8edfd64fe600a6db102168b7fea89f0bec11649"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBaseGameMode.cpp",
+      "bytes": 2343,
+      "sha256": "4e81c83b8b9c82b5e731d75fdf4db8adcfabc2336a6ef43d44fcd01398b2269e"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesBaseTests.cpp",
+      "bytes": 16548,
+      "sha256": "4b4000c0ec5e0b0a03629a6e0ed0b8e6789f86f7240ce2c6fd65d8f8726deeff"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+      "bytes": 7391,
+      "sha256": "123eae01bb48488bb8cf17bc82babad60d1f56bc0ea09a73f85f66dfe60b9ae1"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesCampaignSave.h",
+      "bytes": 2202,
+      "sha256": "4b7dede5c59b604c053664b95416d1d7148251f1870dfedfe4db9bfb755cbfa3"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+      "bytes": 26244,
+      "sha256": "22a5cec15dc0211f45829e35eac6b4a1eaa1d84af8feea20eb303f38ae2c33ed"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+      "bytes": 11897,
+      "sha256": "b21a324a518bdd2285dbc929c6ab8e3d1b4197bfb2bd4051440774e381a814df"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesCampaignRules.cpp",
+      "bytes": 7509,
+      "sha256": "79325fd6d6d63ad4ede50ff3a45f93717cf6d53657330409c82e4f1a7f9621da"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesSaveSystem.cpp",
+      "bytes": 8306,
+      "sha256": "b4745a96bfc59e45b18c4b4f4db3ad7428e97a43ae85753f7ce59426e03d3757"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesPlayerController.h",
+      "bytes": 1239,
+      "sha256": "80e58531b7b15fdf3660b1a0c3428b989f81b724e60bdc3eaa2c1e90345d9135"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesPlayerController.cpp",
+      "bytes": 10985,
+      "sha256": "4c84bb028f956d5409fdf5d795f70cebb44c8d2846ff6e6dd85505b8c0352ed6"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesHUDLayout.cpp",
+      "bytes": 4410,
+      "sha256": "9d648722091654f603785e02474f0c63d18b052a60cdca1ee7803df86ac42d57"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesHUD.cpp",
+      "bytes": 16221,
+      "sha256": "aa5c0a32e8bce23ba680f82bb37e26349c1daf0c3a4de578d85a94fbbf4fe865"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesWorldNode.h",
+      "bytes": 1575,
+      "sha256": "640635a37ce6acff89a64e6481092e0e4c00036580ea271b4aa6cc3b5b3da43f"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesWorldNode.cpp",
+      "bytes": 4956,
+      "sha256": "5118571799e8f6dcbbba0c7fe323fcbc3abd0be437f772a85acfd489f44129af"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6725,
+      "sha256": "f92c9c2988574ec41b75b4580235405f4f30203997b0c3e2e431fdc103832898"
+    },
+    {
+      "path": "Docs/BASE_DEVELOPMENT.md",
+      "bytes": 4871,
+      "sha256": "3a54ac5577c313401e0f36188ddef5656b192f0696aa72775cdf9ad74dd28128"
+    },
+    {
+      "path": "Tools/qa_headquarters.ps1",
+      "bytes": 3679,
+      "sha256": "96c83a81768c31504816c563588ba88517c4268f1ed79b6210016f2f1f2a9075"
+    }
+  ],
+  "reports": [
+    {
+      "kind": "baseline",
+      "tests": 58,
+      "failures": 0,
+      "warnings": 0,
+      "not_run": 0,
+      "path": "Docs/AutomationRuns/20261028T195815013Z/index.json",
+      "bytes": 23119,
+      "sha256": "f726ae0139a4d5978421b4d4816943cfec846266095fdb467120d78fb55b56e4"
+    },
+    {
+      "kind": "headquarters",
+      "tests": 7,
+      "failures": 0,
+      "warnings": 0,
+      "not_run": 0,
+      "path": "Docs/AutomationRuns/20261028T200707446Z/index.json",
+      "bytes": 3429,
+      "sha256": "3594b192c8b715dbc0411c82d2d692cb3d1739a52197a252d8b70f2439f640c9"
+    },
+    {
+      "kind": "integrated_compiled_snapshot",
+      "tests": 77,
+      "failures": 0,
+      "warnings": 0,
+      "not_run": 0,
+      "path": "Docs/AutomationRuns/20261028T200750062Z/index.json",
+      "bytes": 30482,
+      "sha256": "1ca37ab38b338d582e1013fdb29d24c7edd3ed873b8b54bb4a8831775c38c15b"
+    }
+  ],
+  "base_test_groups": [
+    "AIHeroes.Base.DayAndResourceBounds",
+    "AIHeroes.Base.LegacyPropertyAbsent",
+    "AIHeroes.Base.LocationIncomeAndAdvice",
+    "AIHeroes.Base.ModalLocksAndBattleConflict",
+    "AIHeroes.Base.PricingAndAtomicPurchase",
+    "AIHeroes.Base.SaveValidationAndRecovery",
+    "AIHeroes.Base.VisualAndInputIsolation"
+  ],
+  "build": {
+    "path": "Saved/QA/BaseDevelopment/build3.log",
+    "bytes": 2658,
+    "sha256": "7b5e3ed1ed1e3b73a50946263acc93cd3728a205124191024fdcd63d092f0392"
+  },
+  "visual": {
+    "process_id": 57040,
+    "client_size": [
+      1280,
+      720
+    ],
+    "result": "PASS",
+    "method": "window-targeted messages plus log assertions and visual screenshot inspection",
+    "final_campaign": {
+      "day": 3,
+      "gold": 100,
+      "wood": 5,
+      "ore": 5,
+      "base_tier": 2,
+      "protocol_tier": 0,
+      "model_slot_tier": 0
+    },
+    "screenshots": [
+      {
+        "path": "Saved/QA/BaseDevelopment/HQ_before.png",
+        "bytes": 326240,
+        "sha256": "3a40068683ac539ea32cb1e61e3c851fc0bdf29eccd9fa48fec0463663622f4e"
+      },
+      {
+        "path": "Saved/QA/BaseDevelopment/HQ_level1.png",
+        "bytes": 327917,
+        "sha256": "c4542a2dcf68a6098b5433474607b855fe38eebe343daa68308851af2aff4313"
+      },
+      {
+        "path": "Saved/QA/BaseDevelopment/HQ_level2.png",
+        "bytes": 323298,
+        "sha256": "366914f44379a491b71aa11ae90d3121c97505c35c9d94d2cd4abb7a80afd202"
+      }
+    ],
+    "log": {
+      "path": "Saved/QA/BaseDevelopment/visual-qa.log",
+      "bytes": 2392,
+      "sha256": "5a290f3dced4755fcc796ac4ca0259ac07423d686c78171911e39d794032206d"
+    },
+    "own_game_closed": true
+  },
+  "player_saves": {
+    "before_count": 4,
+    "after_count": 4,
+    "unchanged": true,
+    "compared": "name+bytes+SHA256",
+    "qa_save_commands": 0
+  },
+  "concurrency": {
+    "own_source_drift_since_verified_build": [],
+    "other_test_changed_during_full_run": [
+      "Source/AIHeroes/Private/Tests/AIHeroesGridReplayTests.cpp"
+    ],
+    "loaded_dll_unchanged_during_full_test": true,
+    "boundary": "77/77 attests the compiled snapshot. Later parallel working-tree edits are not implied tested."
+  },
+  "actions_not_performed": [
+    "git commit",
+    "git push",
+    "branch switch",
+    "deployment",
+    "model download",
+    "global configuration change",
+    "player-save overwrite"
+  ],
+  "rollback": "Review current diffs and scoped pre-edit backups under Saved/QA/BaseDevelopment/baseline; never reset unrelated concurrent work.",
+  "nonclaims": [
+    "No new LLM is installed by base upgrades.",
+    "No Android readiness claim.",
+    "No authorship claim for parallel objectives, proposal gate or grid replay changes."
+  ]
+}

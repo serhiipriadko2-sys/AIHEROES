@@ -24,6 +24,8 @@ private:
     void HandleHudAction(int32 ActionIndex);
     void RecruitMilitia();
     void RecruitScouts();
+    void UpgradeHeadquarters();
+    void ToggleBasePanel();
     void UpgradeProtocol();
     void UpgradeModelSlot();
     void SaveCampaign();
@@ -34,6 +36,8 @@ private:
     void SkipBattleReplay();
     void AskAdvisor();
     void AskRecruitmentAdvisor();
+    void ShowCampaignObjectives();
+    void OpenProtocolLab();
     void ToggleAdvisorDossier();
     void PreviousAdvisorDossierPage();
     void NextAdvisorDossierPage();

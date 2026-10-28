@@ -45,6 +45,8 @@ public:
     void OrbitCamera(float YawDelta, float ZoomDelta);
     AActor* GetViewTarget();
     FString GetStatusText() const;
+    // Read-only view of the stage's current HP, including historical V2 replay.
+    FString GetArmyStatus(bool bPlayer) const;
 
 private:
     UPROPERTY()

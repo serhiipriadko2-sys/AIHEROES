@@ -11,6 +11,8 @@ struct FAIHeroesAdvisorDossier
     FString EvidenceKey;
     int32 ObservedDay = 0;
     bool bRecruitment = false;
+    bool bObjectives = false;
+    bool bProtocolLab = false;
 
     bool HasContent() const { return !Title.IsEmpty() && !Paragraphs.IsEmpty(); }
 };

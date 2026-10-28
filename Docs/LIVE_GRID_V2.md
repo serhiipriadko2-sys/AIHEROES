@@ -52,10 +52,17 @@ and final record, then commits casualties/cost/capture/rewards once.
 
 Saved battle RuleVersion defaults to 1 for old files. V1 keeps the legacy
 resolver; V2 uses grid rules, two enemies and a 256-event record bound
-(normal engine maximum240). Unknown versions fail closed. Existing V1 3D
-replay remains separate; J reads the transcript of either version, while
-the old V-key 3D replay currently supports V1 only. V2 replay playback is
-not part of this live-battle slice.
+(normal engine maximum 240). Unknown versions fail closed.
+
+Post-slice verified V2 historical replay (2026-10-28): V opens the 3D viewer
+for either valid V1 or valid V2 records. V1 retains its separate original
+visual stage; V2 reconstructs every typed Move/Attack/Wait action from
+verified grid rules before presenting anything in the 3D live arena.
+The viewer never re-applies campaign consequences. In V2 replay,
+Space pauses, T changes 1x/2x/4x playback, B/Esc/Enter skip, and
+Q/E/R/F operate its independent camera. J keeps showing the text
+transcript of either version. See Docs/GRID_V2_REPLAY_QA_2026-10-28.md
+for the build, 77/77 tests, game-window smoke and SHA-256 evidence.
 
 ## Verification
 

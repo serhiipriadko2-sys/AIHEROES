@@ -23,4 +23,5 @@ private:
     float DossierGlyphWidth = 8.f;
     void GetActionRect(int32 Index, float& X, float& Y, float& W, float& H) const;
     void DrawAdvisorDossier(const AAIHeroesGameMode& Rules);
+    void DrawBasePanel(const AAIHeroesGameMode& Rules);
 };

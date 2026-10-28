@@ -29,6 +29,10 @@ void AAIHeroesPlayerController::SetupInputComponent()
         this, &AAIHeroesPlayerController::RecruitMilitia);
     InputComponent->BindKey(EKeys::Two, IE_Pressed,
         this, &AAIHeroesPlayerController::RecruitScouts);
+    InputComponent->BindKey(EKeys::G, IE_Pressed,
+        this, &AAIHeroesPlayerController::ToggleBasePanel);
+    InputComponent->BindKey(EKeys::U, IE_Pressed,
+        this, &AAIHeroesPlayerController::UpgradeHeadquarters);
     InputComponent->BindKey(EKeys::P, IE_Pressed,
         this, &AAIHeroesPlayerController::UpgradeProtocol);
     InputComponent->BindKey(EKeys::M, IE_Pressed,
@@ -51,6 +55,10 @@ void AAIHeroesPlayerController::SetupInputComponent()
         this, &AAIHeroesPlayerController::AskAdvisor);
     InputComponent->BindKey(EKeys::I, IE_Pressed,
         this, &AAIHeroesPlayerController::ToggleAdvisorDossier);
+    InputComponent->BindKey(EKeys::O, IE_Pressed,
+        this, &AAIHeroesPlayerController::ShowCampaignObjectives);
+    InputComponent->BindKey(EKeys::Y, IE_Pressed,
+        this, &AAIHeroesPlayerController::OpenProtocolLab);
     InputComponent->BindKey(EKeys::PageUp, IE_Pressed,
         this, &AAIHeroesPlayerController::PreviousAdvisorDossierPage);
     InputComponent->BindKey(EKeys::PageDown, IE_Pressed,
@@ -100,7 +108,8 @@ void AAIHeroesPlayerController::SelectAtScreenPoint(const FVector2D& ScreenPoint
 
     // No map click-through, including when the HUD is temporarily unavailable.
     if (AAIHeroesGameMode* Game = Rules(); Game &&
-        (Game->IsBattleReplayActive() || Game->IsLiveBattleActive() || Game->IsAdvisorDossierVisible()))
+        (Game->IsBattleReplayActive() || Game->IsLiveBattleActive() ||
+         Game->IsAdvisorDossierVisible() || Game->IsBasePanelVisible()))
     {
         return;
     }
@@ -155,6 +164,20 @@ void AAIHeroesPlayerController::HandleHudAction(int32 ActionIndex)
         }
         if (Game->IsAdvisorDossierVisible()) return;
     }
+    if (AAIHeroesGameMode* Game = Rules())
+    {
+        if (Game->IsBasePanelVisible())
+        {
+            if (ActionIndex == FAIHeroesBasePanelRules::CloseAction) Game->CloseBasePanel();
+            else if (ActionIndex == FAIHeroesBasePanelRules::ConfirmAction) Game->ConfirmBasePurchase();
+            else if (ActionIndex >= FAIHeroesBasePanelRules::FirstOfferAction &&
+                ActionIndex < FAIHeroesBasePanelRules::FirstOfferAction + FAIHeroesBasePanelRules::OfferCount)
+                Game->PreviewBasePurchase(static_cast<EAIHeroesBasePurchase>(
+                    ActionIndex - FAIHeroesBasePanelRules::FirstOfferAction));
+            return;
+        }
+        if (ActionIndex == FAIHeroesBasePanelRules::ToggleAction) { Game->ToggleBasePanel(); return; }
+    }
     switch (ActionIndex)
     {
         case 0: ConfirmSelection(); break;
@@ -171,6 +194,9 @@ void AAIHeroesPlayerController::HandleHudAction(int32 ActionIndex)
         case 11: PlayBattleIn3D(); break;
         case 12: PlanRoute(); break;
         case 200: AskRecruitmentAdvisor(); break;
+        case 201: UpgradeHeadquarters(); break;
+        case 202: ShowCampaignObjectives(); break;
+        case 203: OpenProtocolLab(); break;
         default: break;
     }
 }
@@ -179,7 +205,8 @@ void AAIHeroesPlayerController::ConfirmSelection()
 {
     if (AAIHeroesGameMode* Game = Rules())
     {
-        if (Game->IsLiveBattleActive()) Game->ReturnFromLiveBattle();
+        if (Game->IsBasePanelVisible()) Game->ConfirmBasePurchase();
+        else if (Game->IsLiveBattleActive()) Game->ReturnFromLiveBattle();
         else if (Game->IsBattleReplayActive()) Game->SkipBattleReplay();
         else Game->ConfirmSelectedNode();
     }
@@ -187,22 +214,52 @@ void AAIHeroesPlayerController::ConfirmSelection()
 
 void AAIHeroesPlayerController::RecruitMilitia()
 {
-    if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive()) Game->RecruitMilitia();
+    if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive())
+    {
+        if (Game->IsBasePanelVisible()) Game->PreviewBasePurchase(EAIHeroesBasePurchase::Militia);
+        else Game->RecruitMilitia();
+    }
 }
 
 void AAIHeroesPlayerController::RecruitScouts()
 {
-    if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive()) Game->RecruitScouts();
+    if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive())
+    {
+        if (Game->IsBasePanelVisible()) Game->PreviewBasePurchase(EAIHeroesBasePurchase::Scouts);
+        else Game->RecruitScouts();
+    }
+}
+
+void AAIHeroesPlayerController::ToggleBasePanel()
+{
+    if (AAIHeroesGameMode* Game = Rules()) Game->ToggleBasePanel();
+}
+
+void AAIHeroesPlayerController::UpgradeHeadquarters()
+{
+    if (AAIHeroesGameMode* Game = Rules())
+    {
+        if (Game->IsBasePanelVisible()) Game->PreviewBasePurchase(EAIHeroesBasePurchase::Headquarters);
+        else Game->UpgradeHeadquarters();
+    }
 }
 
 void AAIHeroesPlayerController::UpgradeProtocol()
 {
-    if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive()) Game->UpgradeProtocol();
+    if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive())
+    {
+        if (Game->IsBasePanelVisible()) Game->PreviewBasePurchase(EAIHeroesBasePurchase::Protocol);
+        else Game->UpgradeProtocol();
+    }
 }
 
 void AAIHeroesPlayerController::UpgradeModelSlot()
 {
-    if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive()) Game->UpgradeModelSlot();
+    if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive())
+    {
+        if (Game->IsBasePanelVisible()) Game->PreviewBasePurchase(EAIHeroesBasePurchase::ModelSlot);
+        else Game->UpgradeModelSlot();
+    }
 }
 
 void AAIHeroesPlayerController::SaveCampaign()
@@ -238,7 +295,8 @@ void AAIHeroesPlayerController::SkipBattleReplay()
 {
     if (AAIHeroesGameMode* Game = Rules())
     {
-        if (Game->IsAdvisorDossierVisible()) Game->CloseAdvisorDossier();
+        if (Game->IsBasePanelVisible()) Game->CloseBasePanel();
+        else if (Game->IsAdvisorDossierVisible()) Game->CloseAdvisorDossier();
         else if (Game->IsLiveBattleActive()) Game->ToggleLiveBattlePause();
         else Game->SkipBattleReplay();
     }
@@ -253,6 +311,16 @@ void AAIHeroesPlayerController::AskRecruitmentAdvisor()
 void AAIHeroesPlayerController::AskAdvisor()
 {
     if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive()) Game->AskAdvisor();
+}
+
+void AAIHeroesPlayerController::ShowCampaignObjectives()
+{
+    if (AAIHeroesGameMode* Game = Rules()) Game->ShowCampaignObjectives();
+}
+
+void AAIHeroesPlayerController::OpenProtocolLab()
+{
+    if (AAIHeroesGameMode* Game = Rules()) Game->OpenProtocolLab();
 }
 
 void AAIHeroesPlayerController::ToggleAdvisorDossier()
@@ -280,19 +348,28 @@ void AAIHeroesPlayerController::PlanRoute()
 
 void AAIHeroesPlayerController::EndTurn()
 {
-    if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive())
+    if (AAIHeroesGameMode* Game = Rules())
     {
-        if (Game->IsLiveBattleActive()) Game->ToggleLiveBattlePause();
+        if (Game->IsBattleReplayActive()) Game->ToggleGridReplayPause();
+        else if (Game->IsLiveBattleActive()) Game->ToggleLiveBattlePause();
         else Game->EndTurn();
     }
 }
 
 void AAIHeroesPlayerController::CycleBattleSpeed()
 {
-    if (AAIHeroesGameMode* Game = Rules()) Game->CycleLiveBattleSpeed();
+    if (AAIHeroesGameMode* Game = Rules())
+    {
+        if (Game->IsBattleReplayActive()) Game->CycleGridReplaySpeed();
+        else Game->CycleLiveBattleSpeed();
+    }
 }
 
 void AAIHeroesPlayerController::FastFinishBattle()
 {
-    if (AAIHeroesGameMode* Game = Rules()) Game->FastFinishLiveBattle();
+    if (AAIHeroesGameMode* Game = Rules())
+    {
+        if (Game->IsBattleReplayActive()) Game->SkipBattleReplay();
+        else Game->FastFinishLiveBattle();
+    }
 }

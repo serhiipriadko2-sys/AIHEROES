@@ -1,0 +1,140 @@
+{
+  "schema": "aiheroes.hota-research-adventure-path.v1",
+  "observed_utc": "2026-10-28T20:38:31.025485+00:00",
+  "root": "C:\\github\\AIHEROES",
+  "baseline_head": "d6ee2059ffc2daa50b9882754c2c854d0dedf387",
+  "head_at_receipt": "d6ee2059ffc2daa50b9882754c2c854d0dedf387",
+  "status": "PARTIAL_NATIVE_CORE_PASS_UNREAL_ADAPTER_NOT_VERIFIED",
+  "research": {
+    "version": "HotA 1.8.1",
+    "release_date": "2026-08-25",
+    "source_count": 22,
+    "coverage": "major gameplay systems, not exhaustive entity catalog or campaign playthrough",
+    "path": "Docs/HOTA_GAMEPLAY_RESEARCH_2026-10-28.md"
+  },
+  "scope_file_count": 9,
+  "scope_bytes": 71279,
+  "files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesAdventurePath.h",
+      "bytes": 1680,
+      "sha256": "6f20749326701bc98662c172a505bdf8ac3343a3e26b5f83bae6b50a8923921a",
+      "lines": 59
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesAdventurePathCore.h",
+      "bytes": 5078,
+      "sha256": "7a4fa5e0d4823ae558e8d48a2befd41a5898a241f2c7721f33a89e6160b62e23",
+      "lines": 121
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesAdventurePath.cpp",
+      "bytes": 2312,
+      "sha256": "a32d4480531b26801f30846f9cd6150bdfe2b759d9964e6105b6ecba90c845f6",
+      "lines": 45
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesAdventurePathTests.cpp",
+      "bytes": 10467,
+      "sha256": "ff207f22e7cf56afb779bcc7123d2e98abd5bfe225ca44de79fd4cca22c6f2f8",
+      "lines": 196
+    },
+    {
+      "path": "Tests/adventure_path_native.cpp",
+      "bytes": 8233,
+      "sha256": "fe7d1e198ed0289b31bb15ac8707aaf3fb7f6c28c28becc84edd840baff23a17",
+      "lines": 168
+    },
+    {
+      "path": "Tools/verify_adventure_path.ps1",
+      "bytes": 4277,
+      "sha256": "a32d07245eafa983b8d27836893d0ecf4cd5e0ad7ee544b45a58933382663943",
+      "lines": 71
+    },
+    {
+      "path": "Tools/verify_adventure_native.ps1",
+      "bytes": 2571,
+      "sha256": "f09e028e175f2f82a4388b35ea2446872340e4295984c565717acc82db76625a",
+      "lines": 41
+    },
+    {
+      "path": "Docs/HOTA_GAMEPLAY_RESEARCH_2026-10-28.md",
+      "bytes": 30528,
+      "sha256": "a7b3382ef053495555f84aab287419df0e383c6260cde71ce4e5f465cda00b2c",
+      "lines": 295
+    },
+    {
+      "path": "Docs/ADVENTURE_PATH_CONTRACT.md",
+      "bytes": 6133,
+      "sha256": "619fbc410196cc055abde998211915c493d29ab29ad58e5676d0625c08078d1b",
+      "lines": 107
+    }
+  ],
+  "native_tests": {
+    "checks": 5872,
+    "observed_utc": "2026-10-28T20:36:03.5418408Z",
+    "player_save_writes": 0,
+    "generated_queries": 1600,
+    "campaign_integration": false,
+    "engine_adapter_verified": false,
+    "files": [
+      {
+        "path": "Source/AIHeroes/Public/AIHeroesAdventurePathCore.h",
+        "bytes": 5078,
+        "sha256": "7A4FA5E0D4823AE558E8D48A2BEFD41A5898A241F2C7721F33A89E6160B62E23"
+      },
+      {
+        "path": "Tests/adventure_path_native.cpp",
+        "bytes": 8233,
+        "sha256": "FE7D1E198ED0289B31BB15AC8707AAF3FB7F6C28C28BECC84EDD840BAFF23A17"
+      }
+    ],
+    "generated_graphs": 200,
+    "status": "PASS_NATIVE_CPP_KERNEL_ONLY",
+    "executable_sha256": "7CF900A1DCD6600E9CED19E2270EF8A4AB96D51DAFC4BAF02A73F84166DA31B8"
+  },
+  "native_receipt_file": {
+    "path": "Saved/QA/AdventureNative_20261028T203556776Z/receipt.json",
+    "bytes": 951,
+    "sha256": "8c2ffe5ee699d629a3cc9f721e5ac74f7d87769acf4ac0ae679a339ab5346d2a",
+    "lines": 23
+  },
+  "unreal_build": {
+    "status": "BLOCKED_BEFORE_COMPILATION",
+    "reason": "Live Coding active in existing editor session",
+    "log": {
+      "path": "Saved/QA/AdventurePath_20261028T202907034Z/build.log",
+      "bytes": 2490,
+      "sha256": "803d53cfb8e29c6805f4299b77d63614a994c1b9300c98fd7270f89f6c76f1ef",
+      "lines": 33
+    },
+    "final_adapter": "NOT_COMPILED",
+    "authored_test_groups": 8,
+    "test_groups_executed": 0
+  },
+  "qc": {
+    "nonempty": true,
+    "unique_paths": true,
+    "source_hash_readback": true,
+    "native_source_drift": false,
+    "source_reference_ids": 22,
+    "credential_pattern_scan": "PASS_SCOPE_ONLY"
+  },
+  "nonclaims": [
+    "No live campaign travel-rule replacement",
+    "No generated roads or rendered fog of war",
+    "No Android APK or performance verification",
+    "No real 1B/3B/8B model installed",
+    "No full current working-tree regression PASS",
+    "No original HotA assets/code/maps copied"
+  ],
+  "actions_not_performed": [
+    "git commit",
+    "git push",
+    "branch switch",
+    "global settings changes",
+    "existing editor termination",
+    "player save writes"
+  ],
+  "next_gate": "When the existing Live Coding session is safely idle, run Tools/verify_adventure_path.ps1; then implement a versioned map provider and advisor/executor parity tests."
+}

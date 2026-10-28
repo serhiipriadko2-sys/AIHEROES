@@ -1,6 +1,8 @@
 #include "AIHeroesGameMode.h"
 
 #include "AIHeroesAdvisor.h"
+#include "AIHeroesBaseRules.h"
+#include "AIHeroesDevelopmentRules.h"
 #include "AIHeroesRecruitmentAdvisor.h"
 #include "AIHeroesBattleEngine.h"
 #include "AIHeroesBattleRecord.h"
@@ -12,6 +14,7 @@
 #include "AIHeroesPlayerController.h"
 #include "AIHeroesTurnRules.h"
 #include "AIHeroesWorldNode.h"
+#include "AIHeroesWorldWeek.h"
 #include "Components/DirectionalLightComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -56,6 +59,7 @@ void AAIHeroesGameMode::BeginPlay()
     AddStack(FAIHeroesArmyStack(TEXT("Militia"), 8, 12, 4, 2, 3));
     AddStack(FAIHeroesArmyStack(TEXT("Scout"), 3, 8, 6, 1, 7));
     SpawnWorld();
+    RefreshHeadquartersVisual();
     SpawnHeroMarker();
 
     // The generated map intentionally has no authored PlayerStart asset.
@@ -253,83 +257,166 @@ void AAIHeroesGameMode::RecruitScouts()
 void AAIHeroesGameMode::UpgradeProtocol()
 {
     if (BlockStrategicAction()) return;
-    static const int32 WoodCosts[] = {20, 35, 50};
-    static const int32 OreCosts[] = {15, 30, 45};
-    static const int32 GoldCosts[] = {80, 150, 230};
-    static const TCHAR* Protocols[] = {TEXT("THREAT ANALYSIS"), TEXT("MEMORY LEDGER"), TEXT("TACTICAL PLANNER")};
-
-    if (ProtocolTier >= 3)
+    const auto Offer = FAIHeroesDevelopmentRules::Protocol(ProtocolTier);
+    FString Error;
+    if (!FAIHeroesDevelopmentRules::TryProtocol(ProtocolTier, Gold, Wood, Ore, Error))
     {
-        SetEvent(TEXT("All prototype protocols installed. Real LLM adapter is NOT connected."));
-        return;
-    }
-
-    const int32 Index = ProtocolTier;
-    if (!FAIHeroesTurnRules::SpendIfAffordable(
-        Gold, Wood, Ore, GoldCosts[Index], WoodCosts[Index], OreCosts[Index]))
-    {
-        SetEvent(FString::Printf(TEXT("Next protocol needs %d wood, %d ore, %d gold."),
-            WoodCosts[Index], OreCosts[Index], GoldCosts[Index]));
+        SetEvent(Error);
         return;
     }
     InvalidateRoutePreview();
-    ++ProtocolTier;
-    SetEvent(FString::Printf(TEXT("Unlocked %s. Strategy policy improved (offline)."), Protocols[Index]));
+    SetEvent(FString::Printf(TEXT("Unlocked %s. Strategy policy improved (offline)."), *Offer.Name));
+    AnnounceCampaignVictoryIfEarned();
 }
 
 void AAIHeroesGameMode::UpgradeModelSlot()
 {
     if (BlockStrategicAction()) return;
-    if (ModelSlotTier >= 2)
+    FString Error;
+    if (!FAIHeroesDevelopmentRules::TryModelSlot(ModelSlotTier, Gold, DataFragments, Error))
     {
-        SetEvent(TEXT("8B is the highest prototype MODEL SLOT. No model weights loaded."));
-        return;
-    }
-    static const int32 DataCosts[2] = {2, 6};
-    static const int32 GoldCosts[2] = {60, 120};
-    const int32 Index = ModelSlotTier;
-    if (!FAIHeroesTurnRules::SpendModelSlotTokens(
-        Gold, DataFragments, GoldCosts[Index], DataCosts[Index]))
-    {
-        SetEvent(FString::Printf(
-            TEXT("Need %d gold + %d DATA for the next model SLOT; no weights are installed."),
-            GoldCosts[Index], DataCosts[Index]));
+        SetEvent(Error);
         return;
     }
     InvalidateRoutePreview();
-    ++ModelSlotTier;
     SetEvent(FString::Printf(
         TEXT("MODEL SLOT %s unlocked. NO actual LLM checkpoint loaded; combat is still rule-based."),
         ModelSlotTier == 1 ? TEXT("3B") : TEXT("8B")));
+    AnnounceCampaignVictoryIfEarned();
 }
 
 void AAIHeroesGameMode::EndTurn()
 {
     if (BlockStrategicAction()) return;
+    if (!FAIHeroesBaseRules::IsValidTier(BaseTier) || Day < 1 ||
+        Day >= FAIHeroesBaseRules::MaxDay || Gold < 0 || Wood < 0 || Ore < 0)
+    {
+        SetEvent(TEXT("DAY BLOCKED: invalid progress or campaign day limit. Nothing changed."));
+        return;
+    }
+    int64 NextGold = int64(Gold) + FAIHeroesBaseRules::DailyGold(BaseTier);
+    int64 NextWood = Wood, NextOre = Ore;
+    for (const AAIHeroesWorldNode* Node : Nodes)
+    {
+        if (!IsValid(Node))
+        {
+            SetEvent(TEXT("DAY BLOCKED: missing map node. Nothing changed."));
+            return;
+        }
+        if (!Node->bOwned) continue;
+        if (Node->NodeType == EAIHeroesNodeType::ForestMine) NextWood += 15;
+        else if (Node->NodeType == EAIHeroesNodeType::OreMine) NextOre += 12;
+        else if (Node->NodeType == EAIHeroesNodeType::Outpost) NextGold += 30;
+    }
+    if (NextGold > FAIHeroesBaseRules::MaxResource ||
+        NextWood > FAIHeroesBaseRules::MaxResource || NextOre > FAIHeroesBaseRules::MaxResource)
+    {
+        SetEvent(TEXT("DAY BLOCKED: resource limit reached. Nothing changed."));
+        return;
+    }
+    // Prepare the entire next day before touching the authoritative campaign.
+    // This preserves the existing save schema: defender HP already lives in
+    // NodeStates. A malformed map or overflowing reinforcement blocks the
+    // ENTIRE day, including income, rather than partially advancing it.
+    TArray<FAIHeroesWeekNode> WorldBefore;
+    WorldBefore.Reserve(Nodes.Num());
+    for (const AAIHeroesWorldNode* Node : Nodes)
+    {
+        FAIHeroesWeekNode Snapshot;
+        Snapshot.Id = FName(*Node->GetDisplayName());
+        Snapshot.Type = Node->NodeType;
+        Snapshot.bOwned = Node->bOwned;
+        Snapshot.Guards = Node->Defenders;
+        WorldBefore.Add(MoveTemp(Snapshot));
+    }
+
+    FAIHeroesWeekPlan WeekPlan;
+    FString WeekError;
+    if (!FAIHeroesWorldWeekRules::PlanNextDay(
+            Day, WorldBefore, WeekPlan, WeekError))
+    {
+        SetEvent(TEXT("DAY BLOCKED: ") + WeekError + TEXT(" No changes applied."));
+        return;
+    }
+
+    // Preflight the original rival's action against the next-day world.
+    // The world-week rules already applied neutral growth to the proposal;
+    // do not replace or lose it by reading the previous OUTPOST army.
+    FAIHeroesRivalSnapshot RivalBefore;
+    FString RivalError;
+    if (!BuildRivalSnapshot(Day + 1,
+        static_cast<int32>(NextGold), static_cast<int32>(NextWood),
+        static_cast<int32>(NextOre), RivalBefore, RivalError))
+    {
+        SetEvent(TEXT("DAY BLOCKED: ") + RivalError + TEXT(" Nothing changed."));
+        return;
+    }
+    for (const FAIHeroesWeekNode& Proposed : WeekPlan.Nodes)
+    {
+        if (Proposed.Id == FName(TEXT("OUTPOST")))
+        {
+            RivalBefore.OutpostDefenders = Proposed.Guards;
+        }
+    }
+    FAIHeroesRivalSnapshot RivalAfter;
+    FAIHeroesRivalTurn RivalTurn;
+    if (!FAIHeroesRivalStrategy::Resolve(
+            RivalBefore, RivalAfter, RivalTurn, RivalError))
+    {
+        SetEvent(TEXT("DAY BLOCKED: ") + RivalError + TEXT(" Nothing changed."));
+        return;
+    }
+
+    const int32 Income = static_cast<int32>(NextGold) - Gold;
     InvalidateRoutePreview();
     ++Day;
     MovesLeft = 4;
-    Gold += 40;
-    for (const AAIHeroesWorldNode* Node : Nodes)
+    Gold = RivalAfter.Gold;
+    Wood = RivalAfter.Wood;
+    Ore = RivalAfter.Ore;
+    if (WeekPlan.bNewWeek)
     {
-        if (!Node || !Node->bOwned)
+        // Commit only after the full resource and world-transition checks.
+        for (int32 Index = 0; Index < Nodes.Num(); ++Index)
         {
-            continue;
-        }
-        if (Node->NodeType == EAIHeroesNodeType::ForestMine)
-        {
-            Wood += 15;
-        }
-        else if (Node->NodeType == EAIHeroesNodeType::OreMine)
-        {
-            Ore += 12;
-        }
-        else if (Node->NodeType == EAIHeroesNodeType::Outpost)
-        {
-            Gold += 30;
+            if (!Nodes[Index]->bOwned)
+            {
+                Nodes[Index]->Defenders = MoveTemp(WeekPlan.Nodes[Index].Guards);
+            }
         }
     }
-    SetEvent(FString::Printf(TEXT("Day %d: income collected; movement restored to %d."), Day, MovesLeft));
+    if (RivalTurn.Action == EAIHeroesRivalAction::RecruitAtOutpost)
+    {
+        for (AAIHeroesWorldNode* Node : Nodes)
+        {
+            if (Node->NodeType == EAIHeroesNodeType::Outpost &&
+                Node->GetDisplayName() == TEXT("OUTPOST"))
+            {
+                Node->Defenders = RivalAfter.OutpostDefenders;
+                Node->SetOwned(false); // Preserve the neutral-growth result as well.
+                break;
+            }
+        }
+    }
+    FString DayReport = FString::Printf(
+        TEXT("Day %d: income collected (+%d gold); movement restored to %d. [W%d D%d/7]"),
+        Day, Income, MovesLeft, WeekPlan.Week, WeekPlan.DayInWeek);
+    if (WeekPlan.bNewWeek)
+    {
+        DayReport += FString::Printf(
+            TEXT(" NEW WEEK: neutral guards +%d units. Capture sites early."),
+            WeekPlan.NewNeutralUnits);
+        UE_LOG(LogTemp, Display, TEXT("[AI HEROES WEEK] week=%d day=%d recruits=%d"),
+            WeekPlan.Week, Day, WeekPlan.NewNeutralUnits);
+    }
+    if (RivalTurn.IsActive())
+    {
+        DayReport += TEXT(" ") + RivalTurn.Description;
+        UE_LOG(LogTemp, Display,
+            TEXT("[AI HEROES RIVAL] day=%d action=%d amount=%d wood=%d ore=%d player_order=0"),
+            Day, static_cast<int32>(RivalTurn.Action), RivalTurn.Amount, Wood, Ore);
+    }
+    SetEvent(DayReport);
 }
 
 int32 AAIHeroesGameMode::GetSelectedMoveCost() const
@@ -356,6 +443,8 @@ FString AAIHeroesGameMode::GetSelectionSummary() const
     {
         return TEXT("TARGET: none | Click or tap a node");
     }
+    if (SelectedNode->NodeType == EAIHeroesNodeType::Headquarters)
+        return GetHeadquartersSummary();
     int32 Guards = 0;
     for (const FAIHeroesArmyStack& Stack : SelectedNode->Defenders)
     {
@@ -434,6 +523,7 @@ void AAIHeroesGameMode::InteractWithNode(AAIHeroesWorldNode* Node)
         MoveHeroTo(Node->GetActorLocation());
         SetEvent(FString::Printf(TEXT("%s secured without a fight. Income begins next turn."),
             *Node->GetDisplayName()));
+        AnnounceCampaignVictoryIfEarned();
         return;
     }
 
@@ -462,6 +552,7 @@ void AAIHeroesGameMode::SaveCampaign()
     Snapshot->Gold = Gold;
     Snapshot->Wood = Wood;
     Snapshot->Ore = Ore;
+    Snapshot->BaseTier = BaseTier;
     Snapshot->MovesLeft = MovesLeft;
     Snapshot->ProtocolTier = ProtocolTier;
     Snapshot->ModelSlotTier = ModelSlotTier;
@@ -587,6 +678,7 @@ void AAIHeroesGameMode::LoadCampaign()
     Gold = Snapshot->Gold;
     Wood = Snapshot->Wood;
     Ore = Snapshot->Ore;
+    BaseTier = Snapshot->BaseTier;
     MovesLeft = Snapshot->MovesLeft;
     ProtocolTier = Snapshot->ProtocolTier;
     ModelSlotTier = Snapshot->ModelSlotTier;
@@ -605,11 +697,13 @@ void AAIHeroesGameMode::LoadCampaign()
         Node->SetOwned(Saved->bOwned);
     }
 
+    RefreshHeadquartersVisual();
     SelectedNode = NewSelection;
     MoveHeroTo(HeroDestination->GetActorLocation());
     LastHint = TEXT("Loaded local campaign; ask H for a fresh tactical assessment.");
     SetEvent(FString::Printf(TEXT("GAME LOADED SLOT %d: day %d, %d nodes, protocol tier %d. %s"),
         ActiveSaveSlot, Day, Snapshot->NodeStates.Num(), ProtocolTier, *Loaded.Message));
+    AnnounceCampaignVictoryIfEarned();
 }
 
 void AAIHeroesGameMode::CycleSaveSlot()
@@ -692,7 +786,9 @@ FAIHeroesAdvisorSnapshot AAIHeroesGameMode::BuildAdvisorSnapshot() const
 void AAIHeroesGameMode::AskAdvisor()
 {
     if (BlockStrategicAction()) return;
-    LastHint = FAIHeroesAdvisor::Advise(BuildAdvisorSnapshot());
+    LastHint = IsValid(SelectedNode.Get()) &&
+        SelectedNode->NodeType == EAIHeroesNodeType::Headquarters
+        ? GetHeadquartersSummary() : FAIHeroesAdvisor::Advise(BuildAdvisorSnapshot());
     RecordAdvisorDossier(TEXT("HERO STRATEGY REPORT"), {LastHint}, false);
 }
 

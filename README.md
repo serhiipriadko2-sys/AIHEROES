@@ -30,6 +30,7 @@ Esc closes it. Close the report before giving strategic orders.
 - H = ask the hero for advice about the selected node, or get a safe-target suggestion without a selection.
 - Enter = CONFIRM movement and any battle at that node.
 - 1 = recruit 5 Militia, 2 = recruit 2 Scouts.
+- U / HQ + = upgrade the selected owned headquarters while the hero is there; the displayed price is charged once.
 - P = unlock next cognitive protocol (resource costs).
 - M = unlock the next 3B/8B model SLOT after earning DATA in battles.
 - C = choose one of three independent local campaign slots (1 -> 2 -> 3 -> 1).
@@ -43,6 +44,50 @@ The bottom HUD has seven strategic-action buttons; SAVE, LOAD, SLOT, text REPLAY
 Touch taps work through the same controller path, but Android device QA is pending.
 Each day grants 4 movement points; distant targets cost more moves.
 An attack cannot start without a living army or enough movement.
+
+## Campaign objectives and victory
+
+The prototype now has a real **campaign completion condition**, not just an
+endless resource loop. **O** or the touch **GOALS** button opens a read-only
+mission dossier; a progress strip remains visible on the map. Complete all
+four goals: capture both supply mines, liberate the Outpost and Ruins, unlock
+all 3 offline AI protocols, and upgrade to the **8B-themed game slot**.
+The slot is not a real LLM; no checkpoint has been installed.
+
+When all goals are satisfied, the HUD says **CAMPAIGN VICTORY**. This does not
+automatically spend resources, close the game, or save without permission.
+Press K to save the victory, or continue playing. Old SaveGames work because
+objective progress is derived from previously saved fields.
+See [mission contract](Docs/CAMPAIGN_OBJECTIVES_V1.md).
+
+## Headquarters economy
+
+Select HQ and bring the hero there, then use U or HQ +. Construction is blocked
+while a live battle, replay or adviser dossier is open. Levels 0/1/2/3 pay
+40/60/80/100 gold on the next day; an owned outpost adds its usual 30.
+Upgrade costs (gold/wood/ore): 100/10/10, 180/20/15, 300/35/25.
+Prices appear in the HQ selection/advice line. Purchases do not award instant
+income or alter combat protocols/model slots. Towers appear as the base grows.
+The level is saved and validated; old saves without the field start at level 0.
+These initial prices are a balance hypothesis, not playtest-validated tuning.
+See Docs/BASE_DEVELOPMENT.md for the exact verification boundary.
+
+## Strategic opposition and HotA research
+
+The original OUTPOST raider faction makes the campaign react to player turns.
+Only the human player's SPACE / NEXT DAY command allows the NPC to act.
+Uncaptured OUTPOST raises bounded reinforcements on week transitions and
+may raid a player-owned Forest or Ore mine on a scheduled day. A readable
+**next-rival-turn warning** appears on the adventure map; capturing OUTPOST
+ends raiding. NPC actions are deterministic, have preflight bounds and are
+applied with the weekly neutral-growth phase, without issuing orders to the
+player hero or changing the SaveGame v1 schema.
+
+Read [Rival Outpost rules](Docs/RIVAL_FACTION_V1.md) for the mechanics and
+[the system-level study of Heroes III: Horn of the Abyss](Docs/HOTA_GAMEPLAY_RESEARCH_2026-10-28.md)
+for the original reference, mapping to AI HEROES and prioritized future
+features. AI HEROES does **not** import HotA art, code, campaigns, characters,
+unit names or game assets. This is not a clone of the HotA factions.
 
 ## Hero evolution — independent tracks
 

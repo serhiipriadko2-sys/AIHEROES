@@ -56,6 +56,10 @@ public:
     UPROPERTY(SaveGame)
     int32 Ore = 30;
 
+    // Optional additive schema-1 field: legacy saves default to level zero.
+    UPROPERTY(SaveGame)
+    int32 BaseTier = 0;
+
     UPROPERTY(SaveGame)
     int32 MovesLeft = 4;
 
