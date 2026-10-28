@@ -18,6 +18,10 @@ public:
 private:
     AAIHeroesGameMode* Rules() const;
     void SelectNode();
+    void SelectAtScreenPoint(const FVector2D& ScreenPoint);
+    void SelectByTouch(ETouchIndex::Type FingerIndex, FVector Location);
+    void ConfirmSelection();
+    void HandleHudAction(int32 ActionIndex);
     void RecruitMilitia();
     void RecruitScouts();
     void UpgradeProtocol();

@@ -6,6 +6,7 @@
 #include "AIHeroesGameMode.generated.h"
 
 class AAIHeroesWorldNode;
+class AStaticMeshActor;
 
 UCLASS()
 class AIHEROES_API AAIHeroesGameMode : public AGameModeBase
@@ -32,27 +33,44 @@ public:
     int32 ProtocolTier = 0;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32 MovesLeft = 4;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TArray<FAIHeroesArmyStack> PlayerArmy;
 
     UPROPERTY()
     TArray<TObjectPtr<AAIHeroesWorldNode>> Nodes;
 
+    UPROPERTY()
+    TObjectPtr<AAIHeroesWorldNode> SelectedNode;
+
+    UPROPERTY()
+    TObjectPtr<AStaticMeshActor> HeroMarker;
+
     FString LastEvent;
     FString LastHint;
+    FString LastCombatStep;
     TArray<FString> BattleJournal;
 
     void RecruitMilitia();
     void RecruitScouts();
     void UpgradeProtocol();
     void EndTurn();
+    void SelectNode(AAIHeroesWorldNode* Node);
+    void ConfirmSelectedNode();
     void InteractWithNode(AAIHeroesWorldNode* Node);
     void AskAdvisor();
+    int32 GetSelectedMoveCost() const;
+    FString GetSelectionSummary() const;
 
     FString GetArmySummary() const;
     FString GetCognitionSummary() const;
 
 private:
+    FVector HeroStrategicLocation = FVector(-650.f, 0.f, 155.f);
     void SpawnWorld();
+    void SpawnHeroMarker();
+    void MoveHeroTo(const FVector& Location);
     AAIHeroesWorldNode* SpawnNode(
         EAIHeroesNodeType Type,
         const FString& Name,

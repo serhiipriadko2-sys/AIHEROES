@@ -17,3 +17,7 @@ Saved/
 # Python helper output
 __pycache__/
 *.pyc
+
+# Local, pinned Iskra SoT30 knowledge; do not publish to the public game repo
+.iskra/sot30/
+.iskra/.sot30-stage-*/

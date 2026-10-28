@@ -7,11 +7,59 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
+namespace
+{
+const TCHAR* ActionLabels[6] = {
+    TEXT("CONFIRM MOVE / FIGHT"),
+    TEXT("ASK HERO"),
+    TEXT("NEXT DAY"),
+    TEXT("RECRUIT MILITIA"),
+    TEXT("RECRUIT SCOUTS"),
+    TEXT("UNLOCK AI PROTOCOL")
+};
+}
+
+void AAIHeroesHUD::GetActionRect(
+    int32 Index, float& X, float& Y, float& W, float& H) const
+{
+    X = Y = W = H = 0.f;
+    if (!Canvas || Index < 0 || Index >= 6)
+    {
+        return;
+    }
+
+    const int32 Columns = Canvas->SizeX >= 800.f ? 3 : 2;
+    const float Gap = 10.f;
+    W = FMath::Min(280.f, (Canvas->SizeX - 28.f - (Columns - 1) * Gap) / Columns);
+    H = 43.f;
+    const float PanelHeight = Columns == 3 ? 226.f : 290.f;
+    const float GridWidth = Columns * W + (Columns - 1) * Gap;
+    const float Left = FMath::Max(14.f, (Canvas->SizeX - GridWidth) * 0.5f);
+    X = Left + (Index % Columns) * (W + Gap);
+    Y = Canvas->SizeY - PanelHeight + 113.f + (Index / Columns) * (H + Gap);
+}
+
+int32 AAIHeroesHUD::GetActionAt(const FVector2D& ScreenPoint) const
+{
+    for (int32 Index = 0; Index < 6; ++Index)
+    {
+        float X, Y, W, H;
+        GetActionRect(Index, X, Y, W, H);
+        if (W > 0.f &&
+            ScreenPoint.X >= X && ScreenPoint.X <= X + W &&
+            ScreenPoint.Y >= Y && ScreenPoint.Y <= Y + H)
+        {
+            return Index;
+        }
+    }
+    return INDEX_NONE;
+}
+
 void AAIHeroesHUD::DrawHUD()
 {
     Super::DrawHUD();
-
-    const AAIHeroesGameMode* Rules = Cast<AAIHeroesGameMode>(UGameplayStatics::GetGameMode(this));
+    const AAIHeroesGameMode* Rules =
+        Cast<AAIHeroesGameMode>(UGameplayStatics::GetGameMode(this));
     if (!Rules || !Canvas || !GEngine)
     {
         return;
@@ -19,11 +67,14 @@ void AAIHeroesHUD::DrawHUD()
 
     const float Width = Canvas->SizeX;
     const float Height = Canvas->SizeY;
+    const int32 Columns = Width >= 800.f ? 3 : 2;
+    const float BottomHeight = Columns == 3 ? 226.f : 290.f;
+    const float Scale = Width < 700.f ? 0.78f : 1.f;
+    const int32 TextLimit = FMath::Clamp(FMath::FloorToInt(Width / 8.f), 40, 152);
     UFont* Font = GEngine->GetSmallFont();
 
-    // Readable 2D labels for genuine 3D world locations, independent of lighting.
-    const APlayerController* PC = GetWorld()->GetFirstPlayerController();
-    if (PC)
+    // World-space nodes receive screen-space labels for readability in 3D.
+    if (const APlayerController* PC = GetWorld()->GetFirstPlayerController())
     {
         for (const AAIHeroesWorldNode* Node : Rules->Nodes)
         {
@@ -32,47 +83,72 @@ void AAIHeroesHUD::DrawHUD()
                 continue;
             }
             FVector2D Screen;
-            const FVector AboveNode = Node->GetActorLocation() + FVector(0.f, 0.f, 260.f);
-            if (!PC->ProjectWorldLocationToScreen(AboveNode, Screen))
+            if (!PC->ProjectWorldLocationToScreen(
+                Node->GetActorLocation() + FVector(0.f, 0.f, 260.f), Screen))
             {
                 continue;
             }
-            if (Screen.X < -130.f || Screen.X > Width + 130.f)
+            if (Screen.X < -150.f || Screen.X > Width + 150.f)
             {
                 continue;
             }
 
-            const float X = FMath::Clamp(static_cast<float>(Screen.X) - 75.f, 8.f, Width - 160.f);
-            const float Y = FMath::Clamp(static_cast<float>(Screen.Y) - 26.f, 184.f, Height - 196.f);
-            const FLinearColor Color = Node->bOwned
-                ? FLinearColor(0.35f, 1.f, 0.52f)
-                : (Node->Defenders.IsEmpty()
-                    ? FLinearColor(1.f, 0.91f, 0.35f)
-                    : FLinearColor(1.f, 0.42f, 0.3f));
+            const float LabelX = FMath::Clamp(
+                static_cast<float>(Screen.X) - 75.f, 6.f, FMath::Max(6.f, Width - 158.f));
+            const float LabelY = FMath::Clamp(
+                static_cast<float>(Screen.Y) - 26.f, 182.f,
+                FMath::Max(182.f, Height - BottomHeight - 32.f));
+            const bool bSelected = Rules->SelectedNode.Get() == Node;
+            const FLinearColor Color = bSelected
+                ? FLinearColor(0.3f, 1.f, 1.f)
+                : Node->bOwned ? FLinearColor(0.3f, 1.f, 0.55f)
+                : Node->Defenders.IsEmpty() ? FLinearColor(1.f, 0.92f, 0.33f)
+                : FLinearColor(1.f, 0.45f, 0.31f);
 
-            DrawRect(FLinearColor(0.012f, 0.027f, 0.045f, 0.88f), X, Y, 150.f, 28.f);
-            DrawText(FString::Printf(TEXT("%s%s"), *Node->GetDisplayName(),
-                Node->bOwned ? TEXT(" [OURS]") : TEXT("")),
-                Color, X + 9.f, Y + 6.f, Font, 1.03f);
+            DrawRect(bSelected ? FLinearColor(0.02f, 0.16f, 0.21f, 0.98f) :
+                FLinearColor(0.012f, 0.027f, 0.045f, 0.88f),
+                LabelX, LabelY, 150.f, 28.f);
+            DrawText(FString::Printf(TEXT("%s%s"),
+                *Node->GetDisplayName(), Node->bOwned ? TEXT(" [OURS]") : TEXT("")),
+                Color, LabelX + 9.f, LabelY + 6.f, Font, Scale);
         }
     }
 
-    DrawRect(FLinearColor(0.015f, 0.022f, 0.04f, 0.88f), 0.f, 0.f, Width, 178.f);
-    DrawText(TEXT("AI HEROES  |  3D TURN-BASED STRATEGY"), FLinearColor(0.4f, 0.85f, 1.f), 18.f, 12.f, Font, 1.35f);
-    DrawText(FString::Printf(TEXT("DAY %d   GOLD %d   WOOD %d   ORE %d"), Rules->Day, Rules->Gold, Rules->Wood, Rules->Ore),
-        FLinearColor::White, 18.f, 42.f, Font, 1.15f);
-    DrawText(FString::Printf(TEXT("ARMY: %s"), *Rules->GetArmySummary()),
-        FLinearColor(0.85f, 0.9f, 0.8f), 18.f, 70.f, Font, 1.08f);
-    DrawText(FString::Printf(TEXT("HERO AI: %s"), *Rules->GetCognitionSummary()),
-        FLinearColor(1.f, 0.85f, 0.35f), 18.f, 95.f, Font, 1.07f);
-    DrawText(TEXT("WASD move | Q E turn | R F zoom | Click attack | 1 militia | 2 scouts | P protocol | H advise | Space end turn"),
-        FLinearColor(0.7f, 0.76f, 0.85f), 18.f, 127.f, Font, 0.98f);
+    DrawRect(FLinearColor(0.015f, 0.022f, 0.04f, 0.92f),
+        0.f, 0.f, Width, 175.f);
+    DrawText(TEXT("AI HEROES  |  PLAYER DECIDES / AI FIGHTS"),
+        FLinearColor(0.42f, 0.88f, 1.f), 18.f, 12.f, Font, Scale * 1.3f);
+    DrawText(FString::Printf(TEXT("DAY %d  |  MOVES %d/4  |  GOLD %d  |  WOOD %d  |  ORE %d"),
+        Rules->Day, Rules->MovesLeft, Rules->Gold, Rules->Wood, Rules->Ore),
+        FLinearColor::White, 18.f, 42.f, Font, Scale);
+    DrawText(TEXT("ARMY: ") + Rules->GetArmySummary(),
+        FLinearColor(0.88f, 0.95f, 0.81f), 18.f, 68.f, Font, Scale);
+    DrawText(TEXT("AI: ") + Rules->GetCognitionSummary(),
+        FLinearColor(1.f, 0.85f, 0.35f), 18.f, 94.f, Font, Scale);
+    DrawText(Rules->GetSelectionSummary().Left(TextLimit),
+        FLinearColor(0.4f, 1.f, 0.92f), 18.f, 119.f, Font, Scale);
+    DrawText(TEXT("WASD pan  Q/E rotate  R/F zoom  CLICK select  H ask  ENTER confirm  SPACE next day"),
+        FLinearColor(0.72f, 0.78f, 0.87f), 18.f, 147.f, Font, Scale * 0.92f);
 
-    DrawRect(FLinearColor(0.015f, 0.022f, 0.04f, 0.88f), 0.f, Height - 148.f, Width, 148.f);
-    DrawText(FString::Printf(TEXT("EVENT: %s"), *Rules->LastEvent.Left(155)),
-        FLinearColor::White, 18.f, Height - 132.f, Font, 0.98f);
-    DrawText(FString::Printf(TEXT("ADVISOR: %s"), *Rules->LastHint.Left(175)),
-        FLinearColor(0.48f, 0.94f, 0.82f), 18.f, Height - 99.f, Font, 0.97f);
-    DrawText(TEXT("AI BATTLES ARE AUTOMATIC. PROTOCOL / MODEL SIZES ARE PROTOTYPE TIERS, NOT LIVE LLMS."),
-        FLinearColor(0.9f, 0.76f, 0.62f), 18.f, Height - 54.f, Font, 0.94f);
+    const float PanelY = Height - BottomHeight;
+    DrawRect(FLinearColor(0.015f, 0.023f, 0.046f, 0.94f),
+        0.f, PanelY, Width, BottomHeight);
+    DrawText(TEXT("EVENT: ") + Rules->LastEvent.Left(TextLimit),
+        FLinearColor::White, 18.f, PanelY + 11.f, Font, Scale);
+    DrawText(TEXT("HERO ADVICE: ") + Rules->LastHint.Left(TextLimit),
+        FLinearColor(0.45f, 0.96f, 0.84f), 18.f, PanelY + 39.f, Font, Scale);
+    DrawText(TEXT("LAST TACTIC: ") + Rules->LastCombatStep.Left(TextLimit),
+        FLinearColor(0.87f, 0.77f, 0.5f), 18.f, PanelY + 67.f, Font, Scale);
+    DrawText(TEXT("LOCAL RULE AI  |  1B / 3B / 8B are themed tiers; no actual LLM loaded"),
+        FLinearColor(0.78f, 0.75f, 0.79f), 18.f, PanelY + 89.f, Font, Scale * 0.85f);
+
+    for (int32 Index = 0; Index < 6; ++Index)
+    {
+        float X, Y, W, H;
+        GetActionRect(Index, X, Y, W, H);
+        DrawRect(Index == 0 ? FLinearColor(0.05f, 0.34f, 0.39f, 0.97f) :
+            FLinearColor(0.08f, 0.15f, 0.24f, 0.98f), X, Y, W, H);
+        DrawText(ActionLabels[Index], FLinearColor::White,
+            X + 10.f, Y + 11.f, Font, Scale);
+    }
 }

@@ -11,4 +11,8 @@ class AIHEROES_API AAIHeroesHUD : public AHUD
 
 public:
     virtual void DrawHUD() override;
+    int32 GetActionAt(const FVector2D& ScreenPoint) const;
+
+private:
+    void GetActionRect(int32 Index, float& X, float& Y, float& W, float& H) const;
 };
