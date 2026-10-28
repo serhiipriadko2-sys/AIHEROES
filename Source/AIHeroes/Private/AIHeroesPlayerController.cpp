@@ -30,6 +30,12 @@ void AAIHeroesPlayerController::SetupInputComponent()
         this, &AAIHeroesPlayerController::RecruitScouts);
     InputComponent->BindKey(EKeys::P, IE_Pressed,
         this, &AAIHeroesPlayerController::UpgradeProtocol);
+    InputComponent->BindKey(EKeys::M, IE_Pressed,
+        this, &AAIHeroesPlayerController::UpgradeModelSlot);
+    InputComponent->BindKey(EKeys::F5, IE_Pressed,
+        this, &AAIHeroesPlayerController::SaveCampaign);
+    InputComponent->BindKey(EKeys::L, IE_Pressed,
+        this, &AAIHeroesPlayerController::LoadCampaign);
     InputComponent->BindKey(EKeys::H, IE_Pressed,
         this, &AAIHeroesPlayerController::AskAdvisor);
     InputComponent->BindKey(EKeys::SpaceBar, IE_Pressed,
@@ -84,6 +90,7 @@ void AAIHeroesPlayerController::SelectAtScreenPoint(const FVector2D& ScreenPoint
 
 void AAIHeroesPlayerController::HandleHudAction(int32 ActionIndex)
 {
+    UE_LOG(LogTemp, Display, TEXT("[AI HEROES UI] Button action=%d"), ActionIndex);
     switch (ActionIndex)
     {
         case 0: ConfirmSelection(); break;
@@ -92,6 +99,9 @@ void AAIHeroesPlayerController::HandleHudAction(int32 ActionIndex)
         case 3: RecruitMilitia(); break;
         case 4: RecruitScouts(); break;
         case 5: UpgradeProtocol(); break;
+        case 6: UpgradeModelSlot(); break;
+        case 7: SaveCampaign(); break;
+        case 8: LoadCampaign(); break;
         default: break;
     }
 }
@@ -117,6 +127,21 @@ void AAIHeroesPlayerController::RecruitScouts()
 void AAIHeroesPlayerController::UpgradeProtocol()
 {
     if (AAIHeroesGameMode* Game = Rules()) Game->UpgradeProtocol();
+}
+
+void AAIHeroesPlayerController::UpgradeModelSlot()
+{
+    if (AAIHeroesGameMode* Game = Rules()) Game->UpgradeModelSlot();
+}
+
+void AAIHeroesPlayerController::SaveCampaign()
+{
+    if (AAIHeroesGameMode* Game = Rules()) Game->SaveCampaign();
+}
+
+void AAIHeroesPlayerController::LoadCampaign()
+{
+    if (AAIHeroesGameMode* Game = Rules()) Game->LoadCampaign();
 }
 
 void AAIHeroesPlayerController::AskAdvisor()

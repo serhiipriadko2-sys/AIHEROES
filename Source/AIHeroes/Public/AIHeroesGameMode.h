@@ -33,6 +33,12 @@ public:
     int32 ProtocolTier = 0;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32 ModelSlotTier = 0;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32 DataFragments = 0;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     int32 MovesLeft = 4;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -55,11 +61,14 @@ public:
     void RecruitMilitia();
     void RecruitScouts();
     void UpgradeProtocol();
+    void UpgradeModelSlot();
     void EndTurn();
     void SelectNode(AAIHeroesWorldNode* Node);
     void ConfirmSelectedNode();
     void InteractWithNode(AAIHeroesWorldNode* Node);
     void AskAdvisor();
+    void SaveCampaign();
+    void LoadCampaign();
     int32 GetSelectedMoveCost() const;
     FString GetSelectionSummary() const;
 

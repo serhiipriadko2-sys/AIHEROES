@@ -25,6 +25,9 @@ private:
     void RecruitMilitia();
     void RecruitScouts();
     void UpgradeProtocol();
+    void UpgradeModelSlot();
+    void SaveCampaign();
+    void LoadCampaign();
     void AskAdvisor();
     void EndTurn();
 };

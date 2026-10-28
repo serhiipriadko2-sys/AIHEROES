@@ -53,6 +53,46 @@
         "clear": true
       },
       "problemMatcher": []
+    },
+    {
+      "label": "AIHEROES: Verify Iskra SoT30 for Codex",
+      "type": "process",
+      "command": "python",
+      "args": [
+        "Scripts/validate_codex_setup.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "AIHEROES: Launch playable Windows game",
+      "type": "process",
+      "command": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "args": [
+        "${workspaceFolder}\\AIHeroes.uproject",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=720",
+        "-NoSplash",
+        "-NoP4"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
     }
   ]
 }

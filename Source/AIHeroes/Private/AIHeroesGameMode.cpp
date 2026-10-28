@@ -1,6 +1,9 @@
 #include "AIHeroesGameMode.h"
 
+#include "AIHeroesAdvisor.h"
 #include "AIHeroesBattleEngine.h"
+#include "AIHeroesCampaignRules.h"
+#include "AIHeroesCampaignSave.h"
 #include "AIHeroesCameraPawn.h"
 #include "AIHeroesHUD.h"
 #include "AIHeroesPlayerController.h"
@@ -14,6 +17,7 @@
 #include "Engine/SkyLight.h"
 #include "Engine/StaticMeshActor.h"
 #include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 #include "UObject/UObjectGlobals.h"
 
 AAIHeroesGameMode::AAIHeroesGameMode()
@@ -219,6 +223,30 @@ void AAIHeroesGameMode::UpgradeProtocol()
     SetEvent(FString::Printf(TEXT("Unlocked %s. Strategy policy improved (offline)."), Protocols[Index]));
 }
 
+void AAIHeroesGameMode::UpgradeModelSlot()
+{
+    if (ModelSlotTier >= 2)
+    {
+        SetEvent(TEXT("8B is the highest prototype MODEL SLOT. No model weights loaded."));
+        return;
+    }
+    static const int32 DataCosts[2] = {2, 6};
+    static const int32 GoldCosts[2] = {60, 120};
+    const int32 Index = ModelSlotTier;
+    if (!FAIHeroesTurnRules::SpendModelSlotTokens(
+        Gold, DataFragments, GoldCosts[Index], DataCosts[Index]))
+    {
+        SetEvent(FString::Printf(
+            TEXT("Need %d gold + %d DATA for the next model SLOT; no weights are installed."),
+            GoldCosts[Index], DataCosts[Index]));
+        return;
+    }
+    ++ModelSlotTier;
+    SetEvent(FString::Printf(
+        TEXT("MODEL SLOT %s unlocked. NO actual LLM checkpoint loaded; combat is still rule-based."),
+        ModelSlotTier == 1 ? TEXT("3B") : TEXT("8B")));
+}
+
 void AAIHeroesGameMode::EndTurn()
 {
     ++Day;
@@ -372,6 +400,7 @@ void AAIHeroesGameMode::InteractWithNode(AAIHeroesWorldNode* Node)
 
     if (Outcome.bVictory)
     {
+        DataFragments += Node->NodeType == EAIHeroesNodeType::Ruins ? 4 : 2;
         Node->Defenders.Empty();
         Node->SetOwned(true);
         MoveHeroTo(Node->GetActorLocation());
@@ -394,49 +423,201 @@ void AAIHeroesGameMode::InteractWithNode(AAIHeroesWorldNode* Node)
     }
 }
 
-void AAIHeroesGameMode::AskAdvisor()
+void AAIHeroesGameMode::SaveCampaign()
 {
-    AAIHeroesWorldNode* Target = SelectedNode.Get();
-    if (!IsValid(Target))
+    UAIHeroesCampaignSave* Snapshot = Cast<UAIHeroesCampaignSave>(
+        UGameplayStatics::CreateSaveGameObject(UAIHeroesCampaignSave::StaticClass()));
+    if (!Snapshot)
     {
-        LastHint = TEXT("Select a target first. I will assess your target, not choose one secretly.");
-        return;
-    }
-    if (Target->bOwned)
-    {
-        LastHint = TEXT("That node is already yours. More mines mean more resources each day.");
-        return;
-    }
-    if (GetSelectedMoveCost() > MovesLeft)
-    {
-        LastHint = TEXT("Out of movement range this turn. Wait or choose a nearer node.");
-        return;
-    }
-    if (!HasLivingArmy())
-    {
-        LastHint = TEXT("No army. Recruit Militia or Scouts at HQ before attacking.");
-        return;
-    }
-    if (ProtocolTier == 0)
-    {
-        LastHint = TEXT("SEED AI: no threat-analysis protocol. Battle outcome unknown.");
+        SetEvent(TEXT("SAVE FAILED: unable to allocate campaign snapshot."));
         return;
     }
 
-    const FAIHeroesBattleOutcome Forecast =
-        FAIHeroesBattleEngine::Resolve(PlayerArmy, Target->Defenders, ProtocolTier);
-    LastHint = FString::Printf(
-        TEXT("TRACE %s: forecast %s in %d rounds. Attack is your choice."),
-        *Target->GetDisplayName(), Forecast.bVictory ? TEXT("WIN") : TEXT("DANGER"),
-        Forecast.Rounds);
-    if (ProtocolTier >= 2 && !BattleJournal.IsEmpty())
+    Snapshot->Day = Day;
+    Snapshot->Gold = Gold;
+    Snapshot->Wood = Wood;
+    Snapshot->Ore = Ore;
+    Snapshot->MovesLeft = MovesLeft;
+    Snapshot->ProtocolTier = ProtocolTier;
+    Snapshot->ModelSlotTier = ModelSlotTier;
+    Snapshot->DataFragments = DataFragments;
+    Snapshot->PlayerArmy = PlayerArmy;
+    Snapshot->BattleJournal = BattleJournal;
+    Snapshot->LastCombatStep = LastCombatStep;
+
+    for (const AAIHeroesWorldNode* Node : Nodes)
     {
-        LastHint += FString::Printf(TEXT(" Last battle: %s."), *BattleJournal.Last().Left(64));
+        if (!IsValid(Node))
+        {
+            SetEvent(TEXT("SAVE FAILED: a map node is missing."));
+            return;
+        }
+
+        FAIHeroesSavedNode State;
+        State.NodeId = FName(*Node->GetDisplayName());
+        State.Type = Node->NodeType;
+        State.bOwned = Node->bOwned;
+        State.Defenders = Node->Defenders;
+        Snapshot->NodeStates.Add(MoveTemp(State));
+
+        if (FVector::DistSquared(Node->GetActorLocation(), HeroStrategicLocation) < 1.0)
+        {
+            Snapshot->HeroNodeId = FName(*Node->GetDisplayName());
+        }
+        if (SelectedNode.Get() == Node)
+        {
+            Snapshot->SelectedNodeId = FName(*Node->GetDisplayName());
+        }
     }
-    if (ProtocolTier >= 3)
+
+    FString ValidationError;
+    if (!FAIHeroesCampaignRules::Validate(*Snapshot, ValidationError))
     {
-        LastHint += TEXT(" PLANNER prioritizes lethal target attacks.");
+        SetEvent(FString::Printf(TEXT("SAVE BLOCKED: %s"), *ValidationError));
+        return;
     }
+    if (!UGameplayStatics::SaveGameToSlot(Snapshot, UAIHeroesCampaignSave::SlotName(), 0))
+    {
+        SetEvent(TEXT("SAVE FAILED: could not write the local save slot."));
+        return;
+    }
+
+    SetEvent(FString::Printf(TEXT("GAME SAVED: day %d, %d nodes, protocol tier %d."),
+        Day, Snapshot->NodeStates.Num(), ProtocolTier));
+}
+
+void AAIHeroesGameMode::LoadCampaign()
+{
+    const FString& Slot = UAIHeroesCampaignSave::SlotName();
+    if (!UGameplayStatics::DoesSaveGameExist(Slot, 0))
+    {
+        SetEvent(TEXT("LOAD BLOCKED: no saved campaign. Save with F5 first."));
+        return;
+    }
+
+    UAIHeroesCampaignSave* Snapshot =
+        Cast<UAIHeroesCampaignSave>(UGameplayStatics::LoadGameFromSlot(Slot, 0));
+    if (!Snapshot)
+    {
+        SetEvent(TEXT("LOAD FAILED: unreadable or incompatible save class."));
+        return;
+    }
+
+    FString ValidationError;
+    if (!FAIHeroesCampaignRules::Validate(*Snapshot, ValidationError))
+    {
+        SetEvent(FString::Printf(TEXT("LOAD BLOCKED: %s State unchanged."), *ValidationError));
+        return;
+    }
+
+    // Preflight ALL actor references before changing a single game variable.
+    if (Nodes.Num() != Snapshot->NodeStates.Num())
+    {
+        SetEvent(TEXT("LOAD BLOCKED: active map layout differs from the save."));
+        return;
+    }
+
+    TMap<FName, const FAIHeroesSavedNode*> SavedById;
+    for (const FAIHeroesSavedNode& State : Snapshot->NodeStates)
+    {
+        SavedById.Add(State.NodeId, &State);
+    }
+
+    AAIHeroesWorldNode* HeroDestination = nullptr;
+    AAIHeroesWorldNode* NewSelection = nullptr;
+    for (AAIHeroesWorldNode* Node : Nodes)
+    {
+        if (!IsValid(Node))
+        {
+            SetEvent(TEXT("LOAD BLOCKED: active map contains a missing node."));
+            return;
+        }
+
+        const FName Id(*Node->GetDisplayName());
+        const FAIHeroesSavedNode* const* Saved = SavedById.Find(Id);
+        if (!Saved || !(*Saved) || (*Saved)->Type != Node->NodeType)
+        {
+            SetEvent(TEXT("LOAD BLOCKED: node identifiers do not match this map."));
+            return;
+        }
+
+        if (Id == Snapshot->HeroNodeId)
+        {
+            HeroDestination = Node;
+        }
+        if (Id == Snapshot->SelectedNodeId)
+        {
+            NewSelection = Node;
+        }
+    }
+
+    if (!HeroDestination || !SavedById.Contains(Snapshot->HeroNodeId))
+    {
+        SetEvent(TEXT("LOAD BLOCKED: hero position cannot be restored."));
+        return;
+    }
+
+    // Commit validated state atomically, after successful read and preflight.
+    Day = Snapshot->Day;
+    Gold = Snapshot->Gold;
+    Wood = Snapshot->Wood;
+    Ore = Snapshot->Ore;
+    MovesLeft = Snapshot->MovesLeft;
+    ProtocolTier = Snapshot->ProtocolTier;
+    ModelSlotTier = Snapshot->ModelSlotTier;
+    DataFragments = Snapshot->DataFragments;
+    PlayerArmy = Snapshot->PlayerArmy;
+    BattleJournal = Snapshot->BattleJournal;
+    LastCombatStep = Snapshot->LastCombatStep;
+
+    for (AAIHeroesWorldNode* Node : Nodes)
+    {
+        const FAIHeroesSavedNode* Saved =
+            SavedById.FindChecked(FName(*Node->GetDisplayName()));
+        Node->Defenders = Saved->Defenders;
+        Node->SetOwned(Saved->bOwned);
+    }
+
+    SelectedNode = NewSelection;
+    MoveHeroTo(HeroDestination->GetActorLocation());
+    LastHint = TEXT("Loaded local campaign; ask H for a fresh tactical assessment.");
+    SetEvent(FString::Printf(TEXT("GAME LOADED: day %d, %d nodes, protocol tier %d."),
+        Day, Snapshot->NodeStates.Num(), ProtocolTier));
+}
+
+void AAIHeroesGameMode::AskAdvisor()
+{
+    // The advisor sees only a typed snapshot, never actor mutation functions.
+    FAIHeroesAdvisorSnapshot Request;
+    Request.ProtocolTier = ProtocolTier;
+    Request.MovesLeft = MovesLeft;
+    Request.Gold = Gold;
+    Request.Wood = Wood;
+    Request.Ore = Ore;
+    Request.HeroPosition = HeroStrategicLocation;
+    Request.PlayerArmy = PlayerArmy;
+    Request.SelectedNodeId = IsValid(SelectedNode.Get())
+        ? FName(*SelectedNode->GetDisplayName()) : NAME_None;
+    if (!BattleJournal.IsEmpty())
+    {
+        Request.LastBattle = BattleJournal.Last();
+    }
+
+    for (const AAIHeroesWorldNode* Node : Nodes)
+    {
+        if (!IsValid(Node))
+        {
+            continue;
+        }
+        FAIHeroesAdvisorNode Snapshot;
+        Snapshot.Id = FName(*Node->GetDisplayName());
+        Snapshot.Type = Node->NodeType;
+        Snapshot.Location = Node->GetActorLocation();
+        Snapshot.bOwned = Node->bOwned;
+        Snapshot.Guards = Node->Defenders;
+        Request.Nodes.Add(MoveTemp(Snapshot));
+    }
+    LastHint = FAIHeroesAdvisor::Advise(Request);
 }
 
 FString AAIHeroesGameMode::GetArmySummary() const
@@ -458,11 +639,11 @@ FString AAIHeroesGameMode::GetArmySummary() const
 
 FString AAIHeroesGameMode::GetCognitionSummary() const
 {
-    switch (ProtocolTier)
-    {
-        case 0: return TEXT("SEED / 1B-themed (NO MODEL LOADED)");
-        case 1: return TEXT("ANALYST / 3B-themed (RULE AI)");
-        case 2: return TEXT("ARCHIVIST / 3B-themed (RULE AI)");
-        default: return TEXT("STRATEGIST / 8B-themed (RULE AI)");
-    }
+    static const TCHAR* ProtocolNames[4] = {
+        TEXT("SEED"), TEXT("ANALYST"), TEXT("ARCHIVIST"), TEXT("STRATEGIST")
+    };
+    static const TCHAR* SlotNames[3] = { TEXT("1B"), TEXT("3B"), TEXT("8B") };
+    return FString::Printf(TEXT("%s | MODEL SLOT %s (NO CHECKPOINT)"),
+        ProtocolNames[FMath::Clamp(ProtocolTier, 0, 3)],
+        SlotNames[FMath::Clamp(ModelSlotTier, 0, 2)]);
 }

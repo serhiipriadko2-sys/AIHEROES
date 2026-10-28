@@ -19,6 +19,18 @@ struct FAIHeroesTurnRules
             RequiredMoves <= AvailableMoves;
     }
 
+    static bool SpendModelSlotTokens(
+        int32& Gold, int32& Data, int32 GoldCost, int32 DataCost)
+    {
+        if (GoldCost < 0 || DataCost < 0 || Gold < GoldCost || Data < DataCost)
+        {
+            return false;
+        }
+        Gold -= GoldCost;
+        Data -= DataCost;
+        return true;
+    }
+
     static bool SpendIfAffordable(
         int32& Gold, int32& Wood, int32& Ore,
         int32 GoldCost, int32 WoodCost, int32 OreCost)

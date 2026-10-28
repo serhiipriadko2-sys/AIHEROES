@@ -53,4 +53,25 @@ bool FAIHeroesAtomicSpendTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("Reject leaves ore unchanged"), Ore, 30);
     return true;
 }
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FAIHeroesModelSlotSpendTest,
+    "AIHeroes.Core.ModelSlotPurchase",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FAIHeroesModelSlotSpendTest::RunTest(const FString& Parameters)
+{
+    int32 Gold = 100;
+    int32 Data = 2;
+    TestTrue(TEXT("Opening a real future adapter SLOT consumes its own currency"),
+        FAIHeroesTurnRules::SpendModelSlotTokens(Gold, Data, 60, 2));
+    TestEqual(TEXT("First slot gold cost"), Gold, 40);
+    TestEqual(TEXT("First slot data cost"), Data, 0);
+    TestFalse(TEXT("Unfunded next model slot is rejected"),
+        FAIHeroesTurnRules::SpendModelSlotTokens(Gold, Data, 120, 6));
+    TestFalse(TEXT("Negative model upgrade cost is rejected"),
+        FAIHeroesTurnRules::SpendModelSlotTokens(Gold, Data, -1, 1));
+    TestEqual(TEXT("Failed slot upgrade does not modify gold"), Gold, 40);
+    TestEqual(TEXT("Failed slot upgrade does not modify data"), Data, 0);
+    return true;
+}
 #endif

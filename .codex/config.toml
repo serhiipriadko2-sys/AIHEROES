@@ -1,0 +1,9 @@
+# AIHEROES-only Codex settings. The project must be marked trusted for
+# this file to load. User-wide Codex defaults remain unchanged.
+model = "gpt-6-sol" # project-only fallback; global gpt-6.1-sol returned unsupported
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+model_instructions_file = "../.iskra/sot30/support/PROJECT_INSTRUCTIONS_SOT30.md"
+
+[sandbox_workspace_write]
+network_access = false
