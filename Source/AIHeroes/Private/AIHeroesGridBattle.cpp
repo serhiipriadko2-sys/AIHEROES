@@ -44,7 +44,7 @@ bool AnyAlive(const TArray<FAIHeroesArmyStack>& Army)
     return false;
 }
 
-int32 LivingUnits(const TArray<FAIHeroesArmyStack>& Army)
+int32 GridLivingUnits(const TArray<FAIHeroesArmyStack>& Army)
 {
     int32 Count = 0;
     for (const FAIHeroesArmyStack& Stack : Army) Count += Stack.Count();
@@ -486,7 +486,7 @@ FAIHeroesBattleOutcome FAIHeroesGridBattle::GetOutcome(const FAIHeroesGridSessio
     for (const FAIHeroesGridAction& Action : Session.Actions) Outcome.Trace.Add(Action.ToLogLine());
     Outcome.Summary = FString::Printf(TEXT("%s | %d rounds | your units: %d | enemy units: %d"),
         Outcome.bVictory ? TEXT("VICTORY") : Outcome.bDefeat ? TEXT("DEFEAT") : TEXT("STALEMATE"),
-        Outcome.Rounds, LivingUnits(Session.PlayerArmy), LivingUnits(Session.EnemyArmy));
+        Outcome.Rounds, GridLivingUnits(Session.PlayerArmy), GridLivingUnits(Session.EnemyArmy));
     // Legacy Outcome.Actions contains attack-only V1 receipts and is intentionally unused.
     return Outcome;
 }

@@ -23,6 +23,11 @@ void AppendArmy(FString& Text, const TArray<FAIHeroesArmyStack>& Army)
 
 bool AAIHeroesGameMode::BlockStrategicAction()
 {
+    if (IsAdvisorDossierVisible())
+    {
+        SetEvent(TEXT("REPORT OPEN: close the read-only dossier before giving orders. Campaign unchanged."));
+        return true;
+    }
     if (!IsLiveBattleActive() && !IsBattleReplayActive()) return false;
     SetEvent(TEXT("STRATEGY LOCKED: finish the battle and return to the map first. No campaign changes."));
     return true;

@@ -1,6 +1,7 @@
 #include "AIHeroesHUD.h"
 #include "AIHeroesHUDLayout.h"
 
+#include "AIHeroesAdvisorDossier.h"
 #include "AIHeroesGameMode.h"
 #include "AIHeroesWorldNode.h"
 #include "Engine/Canvas.h"
@@ -42,8 +43,21 @@ int32 AAIHeroesHUD::GetActionAt(const FVector2D& ScreenPoint) const
 {
     const AAIHeroesGameMode* Rules =
         Cast<AAIHeroesGameMode>(UGameplayStatics::GetGameMode(this));
-    return FAIHeroesHUDLayout::HitTest(
-        ScreenPoint, CachedCanvasSize, Rules && Rules->IsLiveBattleActive());
+    if (Rules && Rules->IsLiveBattleActive())
+    {
+        return FAIHeroesHUDLayout::HitTest(ScreenPoint, CachedCanvasSize, true);
+    }
+    if (Rules && Rules->IsAdvisorDossierVisible())
+    {
+        // Even a click outside the panel is consumed by this read-only modal.
+        return FAIHeroesAdvisorDossierRules::HitTest(ScreenPoint, CachedCanvasSize);
+    }
+    if (Rules && !Rules->IsBattleReplayActive() &&
+        FAIHeroesAdvisorDossierRules::OpenButton(CachedCanvasSize).Contains(ScreenPoint))
+    {
+        return FAIHeroesAdvisorDossierRules::ToggleAction;
+    }
+    return FAIHeroesHUDLayout::HitTest(ScreenPoint, CachedCanvasSize, false);
 }
 void AAIHeroesHUD::DrawHUD()
 {
@@ -218,7 +232,7 @@ void AAIHeroesHUD::DrawHUD()
         FLinearColor(1.f, 0.85f, 0.35f), 18.f, 94.f, Font, Scale);
     DrawText(Rules->GetSelectionSummary().Left(TextLimit),
         FLinearColor(0.4f, 1.f, 0.92f), 18.f, 119.f, Font, Scale);
-    DrawText(TEXT("WASD camera  CLICK select  ENTER confirm  H advise  N recruit?  Z PLAN  SPACE day  K save  L load  C slot  V 3D"),
+    DrawText(TEXT("WASD camera  CLICK select  ENTER confirm  H advise  N recruit?  I dossier  Z PLAN  SPACE day  K save  L load  C slot  V 3D"),
         FLinearColor(0.72f, 0.78f, 0.87f), 18.f, 147.f, Font, Scale * 0.92f);
 
     if (Rules->IsBattleReplayActive())
@@ -250,7 +264,8 @@ void AAIHeroesHUD::DrawHUD()
         ? Rules->GetBattleReplayStatus() : Rules->GetReplayDisplayText();
     DrawText(BattleDisplay.Left(TextLimit),
         FLinearColor(0.87f, 0.77f, 0.5f), 18.f, PanelY + 67.f, Font, Scale);
-    DrawText(TEXT("LOCAL RULE AI  |  1B / 3B / 8B are themed tiers; no actual LLM loaded"),
+    DrawText(Width < 700.f ? TEXT("RULE AI | NO LLM") :
+        TEXT("LOCAL RULE AI  |  1B / 3B / 8B are themed tiers; no actual LLM loaded"),
         FLinearColor(0.78f, 0.75f, 0.79f), 18.f, PanelY + 89.f, Font, Scale * 0.85f);
 
     for (int32 Index = 0; Index < 8; ++Index)
@@ -289,5 +304,22 @@ void AAIHeroesHUD::DrawHUD()
             : FString(UtilityLabels[Index - 7]);
         DrawText(UtilityText, FLinearColor(0.84f, 0.95f, 1.f),
             X + 6.f, Y + 7.f, Font, Scale * 0.87f);
+    }
+
+    if (!Rules->IsBattleReplayActive())
+    {
+        // Shared helper keeps rendering and hit tests identical. This lives in
+        // the bottom information strip, not over the top SAVE/REPLAY utilities.
+        const FAIHeroesHUDActionRect R = FAIHeroesAdvisorDossierRules::OpenButton(CachedCanvasSize);
+        if (R.W > 0.f)
+        {
+            DrawRect(FLinearColor(0.06f, 0.25f, 0.31f, 1.f), R.X, R.Y, R.W, R.H);
+            DrawText(TEXT("DOSSIER I"), FLinearColor(0.6f, 0.95f, 1.f),
+                R.X + 10.f, R.Y + 6.f, Font, Scale * 0.95f);
+        }
+    }
+    if (Rules->IsAdvisorDossierVisible())
+    {
+        DrawAdvisorDossier(*Rules); // Modal is always the final rendered layer.
     }
 }

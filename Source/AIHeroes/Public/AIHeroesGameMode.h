@@ -6,6 +6,7 @@
 #include "AIHeroesBattleRecord.h"
 #include "AIHeroesRoutePlanner.h"
 #include "AIHeroesGridBattle.h"
+#include "AIHeroesAdvisorDossier.h"
 #include "AIHeroesGameMode.generated.h"
 
 class AAIHeroesWorldNode;
@@ -84,6 +85,14 @@ public:
     void InteractWithNode(AAIHeroesWorldNode* Node);
     void AskAdvisor();
     void AskRecruitmentAdvisor();
+    const FAIHeroesAdvisorDossier& GetAdvisorDossier() const { return AdvisorDossier; }
+    int32 GetAdvisorDossierPage() const { return AdvisorDossierPage; }
+    bool IsAdvisorDossierVisible() const;
+    bool IsAdvisorDossierFresh() const;
+    void ToggleAdvisorDossier();
+    void CloseAdvisorDossier();
+    void RefreshAdvisorDossier();
+    void ChangeAdvisorDossierPage(int32 Direction, int32 PageCount);
     void PlanRoute();
     // Read-only HUD preview; no automatic movement or combat authority.
     const FAIHeroesRoutePlan& GetRoutePreview() const { return RoutePreview; }
@@ -115,6 +124,13 @@ public:
     FString GetCognitionSummary() const;
 
 private:
+    // UI evidence is transient. It is neither a campaign save nor AI memory.
+    FAIHeroesAdvisorDossier AdvisorDossier;
+    int32 AdvisorDossierPage = 0;
+    bool bAdvisorDossierOpen = false;
+    void RecordAdvisorDossier(
+        const FString& Title, const TArray<FString>& Paragraphs, bool bRecruitment);
+
     UPROPERTY()
     TObjectPtr<AAIHeroesLiveBattleStage> LiveBattleStage;
 

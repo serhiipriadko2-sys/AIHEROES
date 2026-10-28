@@ -30,6 +30,7 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
         TArray<FDateTime> PreviousScreenshotTimes;
         TWeakObjectPtr<AActor> InitialViewTarget;
         FTransform InitialViewTransform;
+        FString BeforeDossierFingerprint;
     };
     TSharedRef<FSmokeState> State = MakeShared<FSmokeState>();
     State->InitialMoves = MovesLeft;
@@ -151,6 +152,22 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
                 ++State->Phase;
                 break;
             case 8:
+                State->BeforeDossierFingerprint = G->CampaignFingerprint();
+                G->AskAdvisor();
+                G->ToggleAdvisorDossier();
+                if (!G->IsAdvisorDossierVisible()) return Fail(TEXT("dossier did not open"));
+                G->EndTurn(); // The read-only modal must not authorize an order.
+                if (G->CampaignFingerprint() != State->BeforeDossierFingerprint)
+                    return Fail(TEXT("dossier changed campaign state"));
+                State->Due = State->Elapsed + 0.3f;
+                State->Phase = 20;
+                break;
+            case 20:
+                Capture(TEXT("LIVE_GRID_V2_DOSSIER.png"));
+                State->Phase = 21;
+                break;
+            case 21:
+                G->CloseAdvisorDossier();
                 for (int32 I = 0; I < State->Screenshots.Num(); ++I)
                 {
                     const FString& Path = State->Screenshots[I];
@@ -158,7 +175,7 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
                         IFileManager::Get().GetTimeStamp(*Path) <= State->PreviousScreenshotTimes[I])
                         return Fail(TEXT("fresh screenshot write failed"));
                 }
-                UE_LOG(LogTemp, Display, TEXT("[LIVE GRID SMOKE] PASS real actor ticks, pause, normal2x, fastfinish at4x, one commit, return; no save writes"));
+                UE_LOG(LogTemp, Display, TEXT("[LIVE GRID SMOKE] PASS real actor ticks, pause, normal2x, fastfinish at4x, one commit, exact camera return, read-only dossier; no save writes"));
                 FPlatformMisc::RequestExitWithStatus(false, 0);
                 return false;
             default: return Fail(TEXT("unknown harness phase"));

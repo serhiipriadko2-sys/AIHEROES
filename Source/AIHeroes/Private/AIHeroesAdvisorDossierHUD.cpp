@@ -8,7 +8,8 @@
 
 void AAIHeroesHUD::PageAdvisorDossier(int32 Direction)
 {
-    if (AAIHeroesGameMode* Rules = Cast<AAIHeroesGameMode>(UGameplayStatics::GetGameMode(this)))
+    if (AAIHeroesGameMode* Rules = Cast<AAIHeroesGameMode>(UGameplayStatics::GetGameMode(this));
+        Rules && Rules->IsAdvisorDossierVisible())
         Rules->ChangeAdvisorDossierPage(Direction, CachedDossierPageCount);
 }
 

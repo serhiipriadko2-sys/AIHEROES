@@ -1,5 +1,6 @@
 #include "AIHeroesPlayerController.h"
 
+#include "AIHeroesAdvisorDossier.h"
 #include "AIHeroesGameMode.h"
 #include "AIHeroesHUD.h"
 #include "AIHeroesWorldNode.h"
@@ -48,6 +49,12 @@ void AAIHeroesPlayerController::SetupInputComponent()
         this, &AAIHeroesPlayerController::AskRecruitmentAdvisor);
     InputComponent->BindKey(EKeys::H, IE_Pressed,
         this, &AAIHeroesPlayerController::AskAdvisor);
+    InputComponent->BindKey(EKeys::I, IE_Pressed,
+        this, &AAIHeroesPlayerController::ToggleAdvisorDossier);
+    InputComponent->BindKey(EKeys::PageUp, IE_Pressed,
+        this, &AAIHeroesPlayerController::PreviousAdvisorDossierPage);
+    InputComponent->BindKey(EKeys::PageDown, IE_Pressed,
+        this, &AAIHeroesPlayerController::NextAdvisorDossierPage);
     InputComponent->BindKey(EKeys::Z, IE_Pressed,
         this, &AAIHeroesPlayerController::PlanRoute);
     InputComponent->BindKey(EKeys::SpaceBar, IE_Pressed,
@@ -91,8 +98,9 @@ void AAIHeroesPlayerController::SelectAtScreenPoint(const FVector2D& ScreenPoint
         }
     }
 
-    // Never select a strategic target through a cinematic replay stage.
-    if (AAIHeroesGameMode* Game = Rules(); Game && (Game->IsBattleReplayActive() || Game->IsLiveBattleActive()))
+    // No map click-through, including when the HUD is temporarily unavailable.
+    if (AAIHeroesGameMode* Game = Rules(); Game &&
+        (Game->IsBattleReplayActive() || Game->IsLiveBattleActive() || Game->IsAdvisorDossierVisible()))
     {
         return;
     }
@@ -132,6 +140,20 @@ void AAIHeroesPlayerController::HandleHudAction(int32 ActionIndex)
             Game->SkipBattleReplay();
         }
         return;
+    }
+    if (AAIHeroesGameMode* Game = Rules())
+    {
+        switch (ActionIndex)
+        {
+            case FAIHeroesAdvisorDossierRules::ToggleAction: ToggleAdvisorDossier(); return;
+            case FAIHeroesAdvisorDossierRules::PreviousAction: PreviousAdvisorDossierPage(); return;
+            case FAIHeroesAdvisorDossierRules::NextAction: NextAdvisorDossierPage(); return;
+            case FAIHeroesAdvisorDossierRules::RefreshAction: Game->RefreshAdvisorDossier(); return;
+            case FAIHeroesAdvisorDossierRules::CloseAction: Game->CloseAdvisorDossier(); return;
+            case FAIHeroesAdvisorDossierRules::ConsumeAction: return;
+            default: break;
+        }
+        if (Game->IsAdvisorDossierVisible()) return;
     }
     switch (ActionIndex)
     {
@@ -216,7 +238,8 @@ void AAIHeroesPlayerController::SkipBattleReplay()
 {
     if (AAIHeroesGameMode* Game = Rules())
     {
-        if (Game->IsLiveBattleActive()) Game->ToggleLiveBattlePause();
+        if (Game->IsAdvisorDossierVisible()) Game->CloseAdvisorDossier();
+        else if (Game->IsLiveBattleActive()) Game->ToggleLiveBattlePause();
         else Game->SkipBattleReplay();
     }
 }
@@ -230,6 +253,21 @@ void AAIHeroesPlayerController::AskRecruitmentAdvisor()
 void AAIHeroesPlayerController::AskAdvisor()
 {
     if (AAIHeroesGameMode* Game = Rules(); Game && !Game->IsBattleReplayActive()) Game->AskAdvisor();
+}
+
+void AAIHeroesPlayerController::ToggleAdvisorDossier()
+{
+    if (AAIHeroesGameMode* Game = Rules()) Game->ToggleAdvisorDossier();
+}
+
+void AAIHeroesPlayerController::PreviousAdvisorDossierPage()
+{
+    if (AAIHeroesHUD* GameHUD = Cast<AAIHeroesHUD>(GetHUD())) GameHUD->PageAdvisorDossier(-1);
+}
+
+void AAIHeroesPlayerController::NextAdvisorDossierPage()
+{
+    if (AAIHeroesHUD* GameHUD = Cast<AAIHeroesHUD>(GetHUD())) GameHUD->PageAdvisorDossier(1);
 }
 
 void AAIHeroesPlayerController::PlanRoute()

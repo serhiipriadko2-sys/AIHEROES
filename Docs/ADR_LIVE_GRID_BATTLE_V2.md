@@ -123,19 +123,22 @@ Required before integrated acceptance:
   Editor-Cmd shader-cache user, plus the repository Unreal build and pinned
   SoT integrity check. Record fresh commands, results and screenshots.
 
-Fresh integration evidence: UBT build succeeded; all 51 current AIHeroes
+Fresh integration evidence: UBT build succeeded; all 58 current AIHeroes
 automation tests succeeded with zero warnings. An opt-in real-window smoke
-captured start/pause/normal2x/result/return and verified an exact camera
+captured start/pause/normal2x/result/return/dossier and verified an exact camera
 return, one campaign commit and fresh screenshot writes. It performs no
 save writes. See LIVE_GRID_V2_RECEIPT_2026-10-28.json for hashes and logs.
 Manual mouse/keyboard save/load acceptance remains unverified because the
 Windows UI bridge failed its sandbox metadata handshake. Scripted rendering
 QA is not represented as manual graphics/input QA.
 
-Post-QA concurrency boundary: additional route/save/dossier/HUD edits arrived
-from another process after the verified run. The receipt distinguishes the
-recorded passing run from the changing current source tree; no current-tree
-PASS is asserted until writers are coordinated and verification is repeated.
+Concurrency boundary resolved: the user paused other writers and authorized
+minimal completion of their unfinished dossier. Missing GameMode/HUD
+declarations, full-report query hooks, modal hit routing and I/PgUp/PgDn/Esc
+controls were connected without changing the dossier's read-only intent.
+A unity-build helper-name collision was fixed without changing V2 rules.
+All 75 source hashes and the DLL hash match the compiled snapshot after
+the final 58-test run and real-window smoke. No post-QA source drift remains.
 
 Integration ruling: the parallel recruitment adviser must allow equal
 enemy UnitIds in distinct formations (Raider6+4), while continuing to reject

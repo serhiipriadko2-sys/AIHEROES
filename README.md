@@ -22,6 +22,8 @@ Confirmed attacks now enter **live Grid V2**, not precomputed replay.
 In battle: Q/E orbit, R/F zoom, Space/Esc pause, T speed 1x/2x/4x,
 B fast finish, Enter return after the result. Strategic actions and save/load
 are blocked until return. See [live battle rules and evidence](Docs/LIVE_GRID_V2.md).
+I opens/closes the full read-only adviser dossier; PgUp/PgDn browse pages,
+Esc closes it. Close the report before giving strategic orders.
 
 - W/A/S/D = camera pan, Q/E = rotate perspective camera, R/F = camera elevation.
 - Click a node = SELECT only; selection never begins a battle.

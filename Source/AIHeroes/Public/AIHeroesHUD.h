@@ -4,6 +4,8 @@
 #include "GameFramework/HUD.h"
 #include "AIHeroesHUD.generated.h"
 
+class AAIHeroesGameMode;
+
 UCLASS()
 class AIHEROES_API AAIHeroesHUD : public AHUD
 {
@@ -12,8 +14,13 @@ class AIHEROES_API AAIHeroesHUD : public AHUD
 public:
     virtual void DrawHUD() override;
     int32 GetActionAt(const FVector2D& ScreenPoint) const;
+    void PageAdvisorDossier(int32 Direction);
 
 private:
     FVector2D CachedCanvasSize = FVector2D::ZeroVector;
+    int32 CachedDossierPageCount = 1;
+    float DossierFontScale = -1.f;
+    float DossierGlyphWidth = 8.f;
     void GetActionRect(int32 Index, float& X, float& Y, float& W, float& H) const;
+    void DrawAdvisorDossier(const AAIHeroesGameMode& Rules);
 };

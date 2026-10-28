@@ -693,6 +693,7 @@ void AAIHeroesGameMode::AskAdvisor()
 {
     if (BlockStrategicAction()) return;
     LastHint = FAIHeroesAdvisor::Advise(BuildAdvisorSnapshot());
+    RecordAdvisorDossier(TEXT("HERO STRATEGY REPORT"), {LastHint}, false);
 }
 
 void AAIHeroesGameMode::InvalidateRoutePreview()

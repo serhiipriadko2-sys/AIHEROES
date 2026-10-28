@@ -21,6 +21,13 @@ During battle:
   are blocked at GameMode authority level while the arena is modal.
 - After return: K saves; L loads; existing three-slot/A-B recovery is retained.
 
+The preserved parallel adviser dossier is now minimally integrated:
+I or DOSSIER opens the complete latest report; PgUp/PgDn browse pages,
+Esc closes it. REFRESH re-queries the current snapshot without issuing an
+order. A stale report is labelled, and the modal consumes background clicks
+and blocks strategic orders until closed. Dossier is transient UI, not AI
+memory or a saved campaign field.
+
 ## Frozen rules
 
 8x6 square grid, four-neighbor BFS, no obstacles/LOS/retaliation/randomness.
@@ -66,7 +73,7 @@ recruitment adviser; friendly duplicate groups remain invalid.
 
 `AIHEROES: Visual live grid V2 smoke` is an explicit non-shipping launch
 harness. It drives the real GameMode/actor ticks, captures start/pause/2x/
-result/returned-map PNGs under Docs, and exits. It performs NO save writes.
+result/returned-map/dossier PNGs under Docs, and exits. It performs NO save writes.
 It is scripted rendering QA, not proof of manual mouse/touch acceptance.
 Ordinary launches do not enable the harness.
 

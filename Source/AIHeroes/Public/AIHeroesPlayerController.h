@@ -34,6 +34,9 @@ private:
     void SkipBattleReplay();
     void AskAdvisor();
     void AskRecruitmentAdvisor();
+    void ToggleAdvisorDossier();
+    void PreviousAdvisorDossierPage();
+    void NextAdvisorDossierPage();
     void PlanRoute();
     void EndTurn();
     void CycleBattleSpeed();
