@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
 #include "AIHeroesTypes.h"
+#include "AIHeroesBattleRecord.h"
 #include "AIHeroesCampaignSave.generated.h"
 
 // Stable map IDs, not actor pointers, are persisted across game sessions.
@@ -37,6 +38,11 @@ public:
 
     UPROPERTY(SaveGame)
     int32 SchemaVersion = CurrentSchema;
+
+    // Optional for legacy v1 saves (defaults to 0), used to rank two
+    // validated rotating snapshots without overwriting the previous one.
+    UPROPERTY(SaveGame)
+    int32 SaveSequence = 0;
 
     UPROPERTY(SaveGame)
     int32 Day = 1;
@@ -80,4 +86,8 @@ public:
 
     UPROPERTY(SaveGame)
     FString LastCombatStep;
+
+    // Optional for old v1 saves; schema stays compatible.
+    UPROPERTY(SaveGame)
+    FAIHeroesBattleRecord LastBattleRecord;
 };

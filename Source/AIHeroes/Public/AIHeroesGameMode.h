@@ -3,10 +3,15 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "AIHeroesTypes.h"
+#include "AIHeroesBattleRecord.h"
+#include "AIHeroesRoutePlanner.h"
 #include "AIHeroesGameMode.generated.h"
 
 class AAIHeroesWorldNode;
+class AAIHeroesBattleStage;
 class AStaticMeshActor;
+class APawn;
+struct FAIHeroesBattleOutcome;
 
 UCLASS()
 class AIHEROES_API AAIHeroesGameMode : public AGameModeBase
@@ -16,6 +21,7 @@ class AIHEROES_API AAIHeroesGameMode : public AGameModeBase
 public:
     AAIHeroesGameMode();
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     int32 Day = 1;
@@ -57,6 +63,9 @@ public:
     FString LastHint;
     FString LastCombatStep;
     TArray<FString> BattleJournal;
+    FAIHeroesBattleRecord LastBattleRecord;
+    int32 ActiveSaveSlot = 1;
+    int32 ReplayCursor = INDEX_NONE;
 
     void RecruitMilitia();
     void RecruitScouts();
@@ -67,8 +76,20 @@ public:
     void ConfirmSelectedNode();
     void InteractWithNode(AAIHeroesWorldNode* Node);
     void AskAdvisor();
+    void PlanRoute();
+    // Read-only HUD preview; no automatic movement or combat authority.
+    const FAIHeroesRoutePlan& GetRoutePreview() const { return RoutePreview; }
+    FVector GetHeroStrategicLocation() const { return HeroStrategicLocation; }
+    bool IsBattleReplayActive() const;
+    FString GetBattleReplayStatus() const;
+    FString GetBattleReplayArmyStatus(bool bPlayer) const;
+    void SkipBattleReplay();
     void SaveCampaign();
     void LoadCampaign();
+    void CycleSaveSlot();
+    void AdvanceBattleReplay();
+    FString GetReplayDisplayText() const;
+    void PlayLastBattleIn3D();
     int32 GetSelectedMoveCost() const;
     FString GetSelectionSummary() const;
 
@@ -76,7 +97,19 @@ public:
     FString GetCognitionSummary() const;
 
 private:
+    UPROPERTY()
+    TObjectPtr<AAIHeroesBattleStage> ActiveBattleStage;
+
+    UPROPERTY()
+    TObjectPtr<APawn> ReplayCameraPawn;
+
+    FTransform PreReplayCameraTransform;
+    bool bSavedReplayCamera = false;
+
     FVector HeroStrategicLocation = FVector(-650.f, 0.f, 155.f);
+    FAIHeroesRoutePlan RoutePreview;
+    FAIHeroesAdvisorSnapshot BuildAdvisorSnapshot() const;
+    void InvalidateRoutePreview();
     void SpawnWorld();
     void SpawnHeroMarker();
     void MoveHeroTo(const FVector& Location);

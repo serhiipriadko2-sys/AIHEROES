@@ -1,6 +1,7 @@
 #include "AIHeroesCampaignRules.h"
 
 #include "AIHeroesCampaignSave.h"
+#include "AIHeroesBattleRecord.h"
 
 namespace
 {
@@ -74,6 +75,7 @@ bool FAIHeroesCampaignRules::Validate(const UAIHeroesCampaignSave& Save, FString
         return Fail(Error, TEXT("Unsupported save version."));
     }
     if (Save.Day < 1 || Save.Day > 1000000 ||
+        Save.SaveSequence < 0 || Save.SaveSequence > 1000000 ||
         Save.MovesLeft < 0 || Save.MovesLeft > 4 ||
         Save.ProtocolTier < 0 || Save.ProtocolTier > 3 ||
         Save.ModelSlotTier < 0 || Save.ModelSlotTier > 2 ||
@@ -176,6 +178,54 @@ bool FAIHeroesCampaignRules::Validate(const UAIHeroesCampaignSave& Save, FString
         if (Line.Len() > 300)
         {
             return Fail(Error, TEXT("Saved journal entry is too large."));
+        }
+    }
+
+    if (!FAIHeroesBattleRecordRules::Verify(Save.LastBattleRecord, Error))
+    {
+        return false;
+    }
+    if (!Save.LastBattleRecord.NodeId.IsNone())
+    {
+        if (Save.LastBattleRecord.Day > Save.Day ||
+            !SeenNodes.Contains(Save.LastBattleRecord.NodeId))
+        {
+            return Fail(Error, TEXT("Replay references an unknown or future battle."));
+        }
+        const FAIHeroesBattleRecord& Replay = Save.LastBattleRecord;
+        for (const FAIHeroesArmyStack& Unit : Replay.PlayerBefore)
+        {
+            if ((Unit.UnitId != FName(TEXT("Militia")) &&
+                 Unit.UnitId != FName(TEXT("Scout"))) ||
+                !ValidateStack(Unit, Unit.UnitId))
+            {
+                return Fail(Error, TEXT("Replay contains an impossible friendly unit."));
+            }
+        }
+        const FAIHeroesSavedNode* BattleNode = Save.NodeStates.FindByPredicate(
+            [&Replay](const FAIHeroesSavedNode& Node)
+            {
+                return Node.NodeId == Replay.NodeId;
+            });
+        if (!BattleNode || BattleNode->Type == EAIHeroesNodeType::Headquarters)
+        {
+            return Fail(Error, TEXT("Replay references a non-combat node."));
+        }
+        const TCHAR* ExpectedGuard = nullptr;
+        switch (BattleNode->Type)
+        {
+            case EAIHeroesNodeType::ForestMine: ExpectedGuard = TEXT("Wolf"); break;
+            case EAIHeroesNodeType::OreMine: ExpectedGuard = TEXT("Bandit"); break;
+            case EAIHeroesNodeType::Outpost: ExpectedGuard = TEXT("Raider"); break;
+            case EAIHeroesNodeType::Ruins: ExpectedGuard = TEXT("Guardian"); break;
+            default: break;
+        }
+        for (const FAIHeroesArmyStack& Guard : Replay.EnemyBefore)
+        {
+            if (!ExpectedGuard || !ValidateStack(Guard, FName(ExpectedGuard)))
+            {
+                return Fail(Error, TEXT("Replay contains an impossible neutral defender."));
+            }
         }
     }
 

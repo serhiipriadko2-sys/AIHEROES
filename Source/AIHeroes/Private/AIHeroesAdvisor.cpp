@@ -1,6 +1,7 @@
 #include "AIHeroesAdvisor.h"
 
 #include "AIHeroesBattleEngine.h"
+#include "AIHeroesRoutePlanner.h"
 #include "AIHeroesTurnRules.h"
 
 namespace
@@ -125,6 +126,21 @@ FString FAIHeroesAdvisor::Advise(const FAIHeroesAdvisorSnapshot& S)
     if (LivingUnits(S.PlayerArmy) <= 0)
     {
         return TEXT("No living units: recruit at HQ before exploring guarded nodes.");
+    }
+
+    // TACTICAL PLANNER unlock: two consecutive destinations are evaluated
+    // with the true movement budget and post-battle surviving army. This is
+    // advisory only; each step still requires explicit player confirmation.
+    if (S.ProtocolTier >= 3)
+    {
+        const FAIHeroesRoutePlan Route = FAIHeroesRoutePlanner::Plan(S);
+        if (Route.IsValid())
+        {
+            return FString::Printf(
+                TEXT("STRATEGY: consider %s. Select it yourself. ROUTE: %s. ")
+                TEXT("Forecast only; player must confirm each move."),
+                *Route.Stops[0].ToString(), *Route.Describe());
+        }
     }
 
     const FAIHeroesAdvisorNode* Best = nullptr;

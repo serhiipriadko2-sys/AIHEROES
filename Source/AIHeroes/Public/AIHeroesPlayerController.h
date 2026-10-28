@@ -28,6 +28,11 @@ private:
     void UpgradeModelSlot();
     void SaveCampaign();
     void LoadCampaign();
+    void CycleSaveSlot();
+    void AdvanceBattleReplay();
+    void PlayBattleIn3D();
+    void SkipBattleReplay();
     void AskAdvisor();
+    void PlanRoute();
     void EndTurn();
 };

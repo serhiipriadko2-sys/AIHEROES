@@ -2,8 +2,10 @@
 
 #include "AIHeroesAdvisor.h"
 #include "AIHeroesBattleEngine.h"
+#include "AIHeroesBattleRecord.h"
 #include "AIHeroesCampaignRules.h"
 #include "AIHeroesCampaignSave.h"
+#include "AIHeroesSaveSystem.h"
 #include "AIHeroesCameraPawn.h"
 #include "AIHeroesHUD.h"
 #include "AIHeroesPlayerController.h"
@@ -20,8 +22,25 @@
 #include "Kismet/GameplayStatics.h"
 #include "UObject/UObjectGlobals.h"
 
+namespace
+{
+// Human campaign slots, each with two internal rotating recovery snapshots.
+// Slot 1 retains the old resilient prefix for backward compatibility.
+FString SaveNamespaceForPlayer(int32 Slot)
+{
+    const FString& Root = FAIHeroesSaveSystem::CampaignPrefix();
+    return Slot == 1 ? Root : FString::Printf(TEXT("%s_Player%d"), *Root, Slot);
+}
+
+FString LegacySlotForPlayer(int32 Slot)
+{
+    return Slot == 1 ? UAIHeroesCampaignSave::SlotName() : FString();
+}
+}
+
 AAIHeroesGameMode::AAIHeroesGameMode()
 {
+    PrimaryActorTick.bCanEverTick = true;
     DefaultPawnClass = AAIHeroesCameraPawn::StaticClass();
     PlayerControllerClass = AAIHeroesPlayerController::StaticClass();
     HUDClass = AAIHeroesHUD::StaticClass();
@@ -123,6 +142,7 @@ void AAIHeroesGameMode::SpawnHeroMarker()
 
 void AAIHeroesGameMode::MoveHeroTo(const FVector& Location)
 {
+    InvalidateRoutePreview();
     HeroStrategicLocation = Location;
     if (HeroMarker)
     {
@@ -153,6 +173,7 @@ void AAIHeroesGameMode::SetEvent(const FString& Event)
 
 void AAIHeroesGameMode::AddStack(const FAIHeroesArmyStack& NewStack)
 {
+    InvalidateRoutePreview();
     for (FAIHeroesArmyStack& Existing : PlayerArmy)
     {
         if (Existing.UnitId == NewStack.UnitId)
@@ -219,6 +240,7 @@ void AAIHeroesGameMode::UpgradeProtocol()
             WoodCosts[Index], OreCosts[Index], GoldCosts[Index]));
         return;
     }
+    InvalidateRoutePreview();
     ++ProtocolTier;
     SetEvent(FString::Printf(TEXT("Unlocked %s. Strategy policy improved (offline)."), Protocols[Index]));
 }
@@ -241,6 +263,7 @@ void AAIHeroesGameMode::UpgradeModelSlot()
             GoldCosts[Index], DataCosts[Index]));
         return;
     }
+    InvalidateRoutePreview();
     ++ModelSlotTier;
     SetEvent(FString::Printf(
         TEXT("MODEL SLOT %s unlocked. NO actual LLM checkpoint loaded; combat is still rule-based."),
@@ -249,6 +272,7 @@ void AAIHeroesGameMode::UpgradeModelSlot()
 
 void AAIHeroesGameMode::EndTurn()
 {
+    InvalidateRoutePreview();
     ++Day;
     MovesLeft = 4;
     Gold += 40;
@@ -383,9 +407,22 @@ void AAIHeroesGameMode::InteractWithNode(AAIHeroesWorldNode* Node)
     }
 
     // The player authorizes battle. The hero AI chooses attacks inside rounds.
-    MovesLeft -= Cost;
     const FAIHeroesBattleOutcome Outcome =
         FAIHeroesBattleEngine::Resolve(PlayerArmy, Node->Defenders, ProtocolTier);
+    const FAIHeroesBattleRecord NewRecord = FAIHeroesBattleRecordRules::Capture(
+        FName(*Node->GetDisplayName()), Day, ProtocolTier,
+        PlayerArmy, Node->Defenders, Outcome);
+    FString ReplayError;
+    if (!FAIHeroesBattleRecordRules::Verify(NewRecord, ReplayError))
+    {
+        SetEvent(FString::Printf(TEXT("Battle blocked: invalid tactical record (%s)."),
+            *ReplayError));
+        return;
+    }
+    InvalidateRoutePreview();
+    MovesLeft -= Cost;
+    LastBattleRecord = NewRecord;
+    ReplayCursor = INDEX_NONE;
     PlayerArmy = Outcome.PlayerAfter;
     Node->Defenders = Outcome.EnemyAfter;
     BattleJournal.Add(FString::Printf(TEXT("Day %d | %s | %s"),
@@ -444,6 +481,7 @@ void AAIHeroesGameMode::SaveCampaign()
     Snapshot->PlayerArmy = PlayerArmy;
     Snapshot->BattleJournal = BattleJournal;
     Snapshot->LastCombatStep = LastCombatStep;
+    Snapshot->LastBattleRecord = LastBattleRecord;
 
     for (const AAIHeroesWorldNode* Node : Nodes)
     {
@@ -476,30 +514,27 @@ void AAIHeroesGameMode::SaveCampaign()
         SetEvent(FString::Printf(TEXT("SAVE BLOCKED: %s"), *ValidationError));
         return;
     }
-    if (!UGameplayStatics::SaveGameToSlot(Snapshot, UAIHeroesCampaignSave::SlotName(), 0))
+    FString SaveMessage;
+    if (!FAIHeroesSaveSystem::Save(*Snapshot,
+        SaveNamespaceForPlayer(ActiveSaveSlot),
+        LegacySlotForPlayer(ActiveSaveSlot), SaveMessage))
     {
-        SetEvent(TEXT("SAVE FAILED: could not write the local save slot."));
+        SetEvent(SaveMessage);
         return;
     }
 
-    SetEvent(FString::Printf(TEXT("GAME SAVED: day %d, %d nodes, protocol tier %d."),
-        Day, Snapshot->NodeStates.Num(), ProtocolTier));
+    SetEvent(FString::Printf(TEXT("SLOT %d: %s"), ActiveSaveSlot, *SaveMessage));
 }
 
 void AAIHeroesGameMode::LoadCampaign()
 {
-    const FString& Slot = UAIHeroesCampaignSave::SlotName();
-    if (!UGameplayStatics::DoesSaveGameExist(Slot, 0))
-    {
-        SetEvent(TEXT("LOAD BLOCKED: no saved campaign. Save with F5 first."));
-        return;
-    }
-
-    UAIHeroesCampaignSave* Snapshot =
-        Cast<UAIHeroesCampaignSave>(UGameplayStatics::LoadGameFromSlot(Slot, 0));
+    const FAIHeroesLoadedCampaign Loaded = FAIHeroesSaveSystem::Load(
+        SaveNamespaceForPlayer(ActiveSaveSlot),
+        LegacySlotForPlayer(ActiveSaveSlot));
+    UAIHeroesCampaignSave* Snapshot = Loaded.Snapshot;
     if (!Snapshot)
     {
-        SetEvent(TEXT("LOAD FAILED: unreadable or incompatible save class."));
+        SetEvent(TEXT("LOAD BLOCKED: ") + Loaded.Message);
         return;
     }
 
@@ -558,6 +593,7 @@ void AAIHeroesGameMode::LoadCampaign()
     }
 
     // Commit validated state atomically, after successful read and preflight.
+    InvalidateRoutePreview();
     Day = Snapshot->Day;
     Gold = Snapshot->Gold;
     Wood = Snapshot->Wood;
@@ -569,6 +605,8 @@ void AAIHeroesGameMode::LoadCampaign()
     PlayerArmy = Snapshot->PlayerArmy;
     BattleJournal = Snapshot->BattleJournal;
     LastCombatStep = Snapshot->LastCombatStep;
+    LastBattleRecord = Snapshot->LastBattleRecord;
+    ReplayCursor = INDEX_NONE;
 
     for (AAIHeroesWorldNode* Node : Nodes)
     {
@@ -581,13 +619,53 @@ void AAIHeroesGameMode::LoadCampaign()
     SelectedNode = NewSelection;
     MoveHeroTo(HeroDestination->GetActorLocation());
     LastHint = TEXT("Loaded local campaign; ask H for a fresh tactical assessment.");
-    SetEvent(FString::Printf(TEXT("GAME LOADED: day %d, %d nodes, protocol tier %d."),
-        Day, Snapshot->NodeStates.Num(), ProtocolTier));
+    SetEvent(FString::Printf(TEXT("GAME LOADED SLOT %d: day %d, %d nodes, protocol tier %d. %s"),
+        ActiveSaveSlot, Day, Snapshot->NodeStates.Num(), ProtocolTier, *Loaded.Message));
 }
 
-void AAIHeroesGameMode::AskAdvisor()
+void AAIHeroesGameMode::CycleSaveSlot()
 {
-    // The advisor sees only a typed snapshot, never actor mutation functions.
+    ActiveSaveSlot = (ActiveSaveSlot % 3) + 1;
+    SetEvent(FString::Printf(TEXT("SAVE SLOT %d/3 selected. K writes, L loads; other slots are untouched."),
+        ActiveSaveSlot));
+}
+
+void AAIHeroesGameMode::AdvanceBattleReplay()
+{
+    FString Error;
+    if (LastBattleRecord.NodeId.IsNone())
+    {
+        SetEvent(TEXT("REPLAY: no recorded battle yet."));
+        return;
+    }
+    if (!FAIHeroesBattleRecordRules::Verify(LastBattleRecord, Error))
+    {
+        SetEvent(TEXT("REPLAY BLOCKED: tactical record failed verification."));
+        return;
+    }
+    if (LastBattleRecord.Trace.IsEmpty())
+    {
+        SetEvent(TEXT("REPLAY: this battle has no recorded actions."));
+        return;
+    }
+
+    ReplayCursor = (ReplayCursor + 1) % LastBattleRecord.Trace.Num();
+    SetEvent(FAIHeroesBattleRecordRules::DescribeStep(LastBattleRecord, ReplayCursor));
+}
+
+FString AAIHeroesGameMode::GetReplayDisplayText() const
+{
+    if (LastBattleRecord.Trace.IsValidIndex(ReplayCursor))
+    {
+        return FAIHeroesBattleRecordRules::DescribeStep(LastBattleRecord, ReplayCursor);
+    }
+    return TEXT("LAST TACTIC: ") + LastCombatStep;
+}
+
+FAIHeroesAdvisorSnapshot AAIHeroesGameMode::BuildAdvisorSnapshot() const
+{
+    // This is the ONLY data passed into the offline strategic adviser.
+    // No actor pointer, SaveGame, file path or mutable world authority leaks.
     FAIHeroesAdvisorSnapshot Request;
     Request.ProtocolTier = ProtocolTier;
     Request.MovesLeft = MovesLeft;
@@ -617,7 +695,48 @@ void AAIHeroesGameMode::AskAdvisor()
         Snapshot.Guards = Node->Defenders;
         Request.Nodes.Add(MoveTemp(Snapshot));
     }
-    LastHint = FAIHeroesAdvisor::Advise(Request);
+    return Request;
+}
+
+void AAIHeroesGameMode::AskAdvisor()
+{
+    LastHint = FAIHeroesAdvisor::Advise(BuildAdvisorSnapshot());
+}
+
+void AAIHeroesGameMode::InvalidateRoutePreview()
+{
+    RoutePreview = FAIHeroesRoutePlan();
+}
+
+void AAIHeroesGameMode::PlanRoute()
+{
+    if (IsBattleReplayActive())
+    {
+        SetEvent(TEXT("ROUTE: finish 3D combat replay before planning."));
+        return;
+    }
+
+    // A new request also clears stale previews after a failed forecast.
+    InvalidateRoutePreview();
+    if (ProtocolTier < 3)
+    {
+        LastHint = TEXT("ROUTE LOCKED: unlock TACTICAL PLANNER (P, protocol tier 3).");
+        SetEvent(LastHint);
+        return;
+    }
+
+    RoutePreview = FAIHeroesRoutePlanner::Plan(BuildAdvisorSnapshot());
+    if (!RoutePreview.IsValid())
+    {
+        LastHint = TEXT("ROUTE: no safe reachable capture this turn. Recruit, reposition or end day.");
+        SetEvent(LastHint);
+        return;
+    }
+
+    LastHint = FString::Printf(TEXT("PLAN: %s. Each step needs player confirmation."),
+        *RoutePreview.Describe());
+    UE_LOG(LogTemp, Display, TEXT("[AI HEROES ROUTE] %s"), *RoutePreview.Describe());
+    SetEvent(TEXT("ROUTE PREVIEW: map markers are advice only. Click a node, then Enter to confirm."));
 }
 
 FString AAIHeroesGameMode::GetArmySummary() const

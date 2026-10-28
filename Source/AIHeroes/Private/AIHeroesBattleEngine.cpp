@@ -1,5 +1,12 @@
 #include "AIHeroesBattleEngine.h"
 
+FString FAIHeroesBattleAction::ToLogLine() const
+{
+    return FString::Printf(TEXT("R%d %s %s -> %s (-%d HP)"),
+        Round, bPlayerAttacker ? TEXT("HERO") : TEXT("NPC"),
+        *AttackerId.ToString(), *TargetId.ToString(), Damage);
+}
+
 namespace
 {
 struct FAIHeroesTurn
@@ -144,14 +151,21 @@ FAIHeroesBattleOutcome FAIHeroesBattleEngine::Resolve(
 
             FAIHeroesArmyStack& Defender = Opponents[TargetIndex];
             const int32 Damage = Attacker.Count() * FMath::Max(1, Attacker.Attack - Defender.Defense / 2);
-            Defender.TotalHealth = FMath::Max(0, Defender.TotalHealth - Damage);
+            const int32 Before = Defender.TotalHealth;
+            Defender.TotalHealth = FMath::Max(0, Before - Damage);
 
-            Result.Trace.Add(FString::Printf(TEXT("R%d %s %s -> %s (-%d HP)"),
-                Round,
-                Action.bPlayer ? TEXT("HERO") : TEXT("NPC"),
-                *Attacker.UnitId.ToString(),
-                *Defender.UnitId.ToString(),
-                Damage));
+            FAIHeroesBattleAction Receipt;
+            Receipt.Round = Round;
+            Receipt.bPlayerAttacker = Action.bPlayer;
+            Receipt.AttackerStackIndex = Action.Index;
+            Receipt.TargetStackIndex = TargetIndex;
+            Receipt.AttackerId = Attacker.UnitId;
+            Receipt.TargetId = Defender.UnitId;
+            Receipt.Damage = Damage;
+            Receipt.TargetHealthBefore = Before;
+            Receipt.TargetHealthAfter = Defender.TotalHealth;
+            Result.Trace.Add(Receipt.ToLogLine());
+            Result.Actions.Add(MoveTemp(Receipt));
         }
     }
 
@@ -165,4 +179,112 @@ FAIHeroesBattleOutcome FAIHeroesBattleEngine::Resolve(
         CountLivingUnits(Result.EnemyAfter));
 
     return Result;
+}
+
+bool FAIHeroesBattleEngine::VerifyReplay(
+    const TArray<FAIHeroesArmyStack>& PlayerInitial,
+    const TArray<FAIHeroesArmyStack>& EnemyInitial,
+    const FAIHeroesBattleOutcome& Outcome)
+{
+    if (Outcome.Rounds < 0 || Outcome.Rounds > 30 ||
+        Outcome.Actions.Num() != Outcome.Trace.Num() ||
+        Outcome.Actions.Num() > 400 ||
+        Outcome.PlayerAfter.Num() != PlayerInitial.Num() ||
+        Outcome.EnemyAfter.Num() != EnemyInitial.Num())
+    {
+        return false;
+    }
+
+    TArray<FAIHeroesArmyStack> Player = PlayerInitial;
+    TArray<FAIHeroesArmyStack> Enemy = EnemyInitial;
+    int32 PreviousRound = 0;
+    for (int32 Step = 0; Step < Outcome.Actions.Num(); ++Step)
+    {
+        const FAIHeroesBattleAction& Action = Outcome.Actions[Step];
+        if (Action.Round <= 0 || Action.Round > Outcome.Rounds ||
+            Action.Round < PreviousRound || Action.Damage <= 0 ||
+            Action.ToLogLine() != Outcome.Trace[Step])
+        {
+            return false;
+        }
+        PreviousRound = Action.Round;
+
+        const TArray<FAIHeroesArmyStack>& Attackers =
+            Action.bPlayerAttacker ? Player : Enemy;
+        TArray<FAIHeroesArmyStack>& Targets =
+            Action.bPlayerAttacker ? Enemy : Player;
+
+        if (!Attackers.IsValidIndex(Action.AttackerStackIndex) ||
+            !Targets.IsValidIndex(Action.TargetStackIndex))
+        {
+            return false;
+        }
+
+        const FAIHeroesArmyStack& Attacker = Attackers[Action.AttackerStackIndex];
+        FAIHeroesArmyStack& Target = Targets[Action.TargetStackIndex];
+        if (!Attacker.IsAlive() || !Target.IsAlive() ||
+            Attacker.UnitId != Action.AttackerId ||
+            Target.UnitId != Action.TargetId ||
+            Target.TotalHealth != Action.TargetHealthBefore)
+        {
+            return false;
+        }
+
+        const int32 ExpectedDamage = Attacker.Count() *
+            FMath::Max(1, Attacker.Attack - Target.Defense / 2);
+        const int32 ExpectedAfter = FMath::Max(0, Target.TotalHealth - ExpectedDamage);
+        if (Action.Damage != ExpectedDamage ||
+            Action.TargetHealthAfter != ExpectedAfter)
+        {
+            return false;
+        }
+        Target.TotalHealth = ExpectedAfter;
+    }
+
+    // A forged terminal verdict or misleading round count must never
+    // pass merely because individual attack HP changes appear valid.
+    const bool ExpectedVictory = AnyAlive(Player) && !AnyAlive(Enemy);
+    const bool ExpectedDefeat = !AnyAlive(Player);
+    if (Outcome.Rounds != PreviousRound ||
+        Outcome.bVictory != ExpectedVictory ||
+        Outcome.bDefeat != ExpectedDefeat)
+    {
+        return false;
+    }
+    const FString ExpectedSummary = FString::Printf(
+        TEXT("%s | %d rounds | your units: %d | enemy units: %d"),
+        ExpectedVictory ? TEXT("VICTORY") :
+            (ExpectedDefeat ? TEXT("DEFEAT") : TEXT("STALEMATE")),
+        PreviousRound, CountLivingUnits(Player), CountLivingUnits(Enemy));
+    if (Outcome.Summary != ExpectedSummary)
+    {
+        return false;
+    }
+
+    auto IdenticalArmies = [](const TArray<FAIHeroesArmyStack>& Reconstructed,
+                            const TArray<FAIHeroesArmyStack>& Reported)
+    {
+        if (Reconstructed.Num() != Reported.Num())
+        {
+            return false;
+        }
+        for (int32 Index = 0; Index < Reconstructed.Num(); ++Index)
+        {
+            const FAIHeroesArmyStack& A = Reconstructed[Index];
+            const FAIHeroesArmyStack& B = Reported[Index];
+            if (A.UnitId != B.UnitId ||
+                A.UnitHealth != B.UnitHealth ||
+                A.TotalHealth != B.TotalHealth ||
+                A.Attack != B.Attack ||
+                A.Defense != B.Defense ||
+                A.Initiative != B.Initiative)
+            {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    return IdenticalArmies(Player, Outcome.PlayerAfter) &&
+        IdenticalArmies(Enemy, Outcome.EnemyAfter);
 }

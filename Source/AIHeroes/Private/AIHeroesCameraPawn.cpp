@@ -1,9 +1,11 @@
 #include "AIHeroesCameraPawn.h"
+#include "AIHeroesGameMode.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/SceneComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "InputCoreTypes.h"
+#include "Kismet/GameplayStatics.h"
 
 AAIHeroesCameraPawn::AAIHeroesCameraPawn()
 {
@@ -26,6 +28,12 @@ void AAIHeroesCameraPawn::BeginPlay()
 void AAIHeroesCameraPawn::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    // A tactical replay owns the perspective temporarily.
+    if (const AAIHeroesGameMode* Game = Cast<AAIHeroesGameMode>(UGameplayStatics::GetGameMode(this));
+        Game && Game->IsBattleReplayActive())
+    {
+        return;
+    }
     APlayerController* PC = Cast<APlayerController>(GetController());
     if (!PC)
     {
