@@ -1,0 +1,19 @@
+# Unreal generated local output
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+.vscode/mcp.json
+# Local credentials, never commit
+.env
+.env.*
+*.key
+*.p12
+# Python helper output
+__pycache__/
+*.pyc

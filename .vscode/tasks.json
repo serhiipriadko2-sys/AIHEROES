@@ -1,0 +1,58 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "AIHEROES: Build Unreal Editor",
+      "type": "process",
+      "command": "C:\\Program Files\\dotnet\\dotnet.exe",
+      "args": [
+        "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool.dll",
+        "AIHeroesEditor",
+        "Win64",
+        "Development",
+        "-Project=${workspaceFolder}\\AIHeroes.uproject",
+        "-WaitMutex",
+        "-NoHotReload"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    },
+    {
+      "label": "AIHEROES: Test autonomous battles (4 tests)",
+      "type": "process",
+      "command": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor-Cmd.exe",
+      "args": [
+        "${workspaceFolder}\\AIHeroes.uproject",
+        "-unattended",
+        "-nop4",
+        "-nullrhi",
+        "-nosplash",
+        "-ExecCmds=Automation RunTests AIHeroes",
+        "-TestExit=Automation Test Queue Empty",
+        "-stdout"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
