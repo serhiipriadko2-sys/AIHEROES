@@ -19,8 +19,23 @@ FAIHeroesAdventurePathResult AAIHeroesGameMode::GetSelectedTravelPath() const
         Invalid.Reason = TEXT("Select a discovered current map site first.");
         return Invalid;
     }
+    return GetTravelPathTo(FName(*SelectedNode->GetDisplayName()));
+}
+
+FAIHeroesAdventurePathResult AAIHeroesGameMode::GetTravelPathTo(FName Destination) const
+{
+    bool bCurrentSite = false;
+    for (const AAIHeroesWorldNode* Node : Nodes)
+        if (IsValid(Node) && FName(*Node->GetDisplayName()) == Destination)
+            bCurrentSite = true;
+    if (!bCurrentSite || Destination.IsNone() || !IsNodeDiscovered(Destination))
+    {
+        FAIHeroesAdventurePathResult Invalid;
+        Invalid.Reason = TEXT("Choose a discovered current map site first.");
+        return Invalid;
+    }
     return FAIHeroesTravelRules::Find(BuildAdvisorSnapshot(), HeroStrategicLocation,
-        FName(*SelectedNode->GetDisplayName()), MovesLeft);
+        Destination, MovesLeft);
 }
 
 void AAIHeroesGameMode::RefreshAdventureRoads()

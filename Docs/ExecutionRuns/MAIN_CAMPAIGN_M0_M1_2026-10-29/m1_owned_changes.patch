@@ -1,0 +1,475 @@
+--- a/Source/AIHeroes/Public/AIHeroesCampaignGuide.h
++++ b/Source/AIHeroes/Public/AIHeroesCampaignGuide.h
+@@ -10,6 +10,9 @@
+     FName SelectedId = NAME_None;
+     bool bTargetDiscovered = false;
+     bool bHasArmy = true;
++    // Unknown targets fail closed; the HUD supplies this only from a known
++    // objective. An empty army still permits an unguarded visit.
++    bool bTargetGuarded = true;
+     bool bTravelMoving = false;
+     bool bRouteReady = false;
+     bool bNeedsMoreMoves = false;
+@@ -21,6 +24,9 @@
+     // Populated only from an already-discovered, owned intermediate node
+     // in the authoritative path. Never reveals an unexplored waypoint.
+     FName IntermediateOwnedSite = NAME_None;
++    // A known owned stage exists within a full day's budget, but not today's
++    // remaining moves. Rest helps only that leg, never the whole long route.
++    bool bOwnedStopAfterRest = false;
+ };
+ 
+ struct FAIHeroesCampaignGuideCard
+@@ -35,7 +41,9 @@
+ class AIHEROES_API FAIHeroesCampaignGuide
+ {
+ public:
++    // Display eligibility only. GameMode independently validates every order.
++    static bool CanOfferOrder(bool bRouteReady, bool bHasArmy, bool bRequiresBattle);
+     static FAIHeroesCampaignGuideCard Build(
+         const FAIHeroesCampaignProgress& Progress,
+         const FAIHeroesCampaignGuideContext& Context);
+-};+};
+--- a/Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp
++++ b/Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp
+@@ -17,6 +17,12 @@
+     return Id==FName(TEXT("FOREST")) || Id==FName(TEXT("ORE")) ||
+         Id==FName(TEXT("OUTPOST")) || Id==FName(TEXT("RUINS"));
+ }
++}
++
++bool FAIHeroesCampaignGuide::CanOfferOrder(
++    bool bRouteReady, bool bHasArmy, bool bRequiresBattle)
++{
++    return bRouteReady && (bHasArmy || !bRequiresBattle);
+ }
+ 
+ FAIHeroesCampaignGuideCard FAIHeroesCampaignGuide::Build(
+@@ -65,7 +71,7 @@
+         return Result;
+     }
+     const FString Target=LocalizedTarget(Id);
+-    if(!Context.bHasArmy)
++    if(!Context.bHasArmy && Context.bTargetGuarded)
+     {
+         Result.NextStep=TEXT("Армия пуста: наймите бойцов [G]");
+         Result.Detail=TEXT("Сначала подготовьте армию на базе.");
+@@ -85,7 +91,7 @@
+         Result.NextStep=Target+TEXT(": выберите на карте");
+         Result.Detail=TEXT("Затем «Спросить» и подтвердите поход.");
+     }
+-    else if(Context.bRouteReady)
++    else if(CanOfferOrder(Context.bRouteReady, Context.bHasArmy, Context.bTargetGuarded))
+     {
+         Result.NextStep=Target+TEXT(": подтвердите поход");
+         Result.Detail=TEXT("Вы решаете, куда идти. ИИ проводит бой.");
+@@ -107,6 +113,11 @@
+                 TEXT("Путь %d > %d/день. Выберите эту точку."),
+                 Context.RouteTotalCost,Context.FullDayMoveBudget);
+         }
++        else if(Context.bOwnedStopAfterRest)
++        {
++            Result.NextStep=TEXT("Восстановите ходы для остановки");
++            Result.Detail=TEXT("Конец хода, затем своя промежуточная точка. Не весь путь сразу.");
++        }
+         else
+         {
+             Result.NextStep=TEXT("Нужна остановка по пути");
+@@ -127,4 +138,4 @@
+         Result.Detail=TEXT("Проверьте путь, охрану и подготовку армии.");
+     }
+     return Result;
+-}+}
+--- a/Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp
++++ b/Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp
+@@ -179,7 +179,12 @@
+                    G.IsNodeDiscovered(StopId)&&
+                    FName(*Stop->GetDisplayName())==StopId)
+                 {
+-                    GuideContext.IntermediateOwnedSite=StopId;
++                    const auto StopPath=G.GetTravelPathTo(StopId);
++                    if(StopPath.IsReachableThisTurn())
++                        GuideContext.IntermediateOwnedSite=StopId;
++                    else if(StopPath.Status==EAIHeroesAdventurePathStatus::NeedsMoreMoves &&
++                            StopPath.TotalCost<=GuideContext.FullDayMoveBudget)
++                        GuideContext.bOwnedStopAfterRest=true;
+                     break;
+                 }
+             }
+@@ -192,8 +197,15 @@
+         if(IsValid(Site)&&!Site->IsHidden()&&
+            FName(*Site->GetDisplayName())==Progress.NextFocusId&&
+            G.IsNodeDiscovered(Progress.NextFocusId))
++        {
+             GuideContext.bTargetDiscovered=true;
++            GuideContext.bTargetGuarded=false;
++            if(!Site->bOwned)for(const auto& Defender:Site->Defenders)
++                GuideContext.bTargetGuarded|=Defender.IsAlive();
++        }
+     const auto Guide=FAIHeroesCampaignGuide::Build(Progress,GuideContext);
++    const bool OfferReady=FAIHeroesCampaignGuide::CanOfferOrder(
++        Ready,GuideContext.bHasArmy,Path.bBattleAtDestination);
+     const bool MissionHover=F.Mission.Contains({MX,MY});
+     Panel(F.Mission,MissionHover?Blue:Card);
+     Glyph(EAIHeroesGlyph::Compass,F.Mission.X+10,F.Mission.Y+12,23,Gold);
+@@ -269,7 +281,8 @@
+             Text(Guide.FocusId==GuideContext.SelectedId?Guide.Detail:TEXT("Вы выбираете путь. ИИ ведёт бой."),X,Y+178,Span,Teal,.92f);
+         }
+         else Text(FString::Printf(TEXT("%s  /  охрана %d  /  ходы %d из 4"),N->bOwned?TEXT("Ваш объект"):TEXT("Не захвачен"),Guards,G.MovesLeft),X,Y+28,Span,Muted,1.f);
+-        if(Ready)CTA=FString::Printf(TEXT("%s  /  %d хода"),Hostile?TEXT("Атаковать"):TEXT("Перейти"),Path.TotalCost);
++        if(Ready&&!OfferReady)CTA=TEXT("Нужна армия: наймите бойцов [G]");
++        else if(OfferReady)CTA=FString::Printf(TEXT("%s  /  %d хода"),Hostile?TEXT("Атаковать"):TEXT("Перейти"),Path.TotalCost);
+         else if(G.IsStrategicTravelMoving())CTA=TEXT("Герой в пути...");
+         else if(Path.Status==EAIHeroesAdventurePathStatus::NeedsMoreMoves)
+         {
+@@ -286,7 +299,7 @@
+         Text(TEXT("Нажмите на лесопилку или рудник"),X,Y+32,Span,Muted,1.f);
+         if(F.bWide){Text(Guide.Detail,X,Y+85,Span,Paper);Text(TEXT("Нажмите «Цели», чтобы увидеть все задачи"),X,Y+120,Span,Muted,.88f);Text(TEXT("Игровой приказ всегда подтверждаете вы"),X,Y+155,Span,Teal,.88f);}
+     }
+-    if(!bExplorerMenuOpen)Button(0,CTA,true,Ready);
++    if(!bExplorerMenuOpen)Button(0,CTA,true,OfferReady);
+ 
+     if(F.Hero.W>0)
+     {
+--- a/Source/AIHeroes/Public/AIHeroesGameMode.h
++++ b/Source/AIHeroes/Public/AIHeroesGameMode.h
+@@ -186,6 +186,8 @@
+     void ReturnFromLiveBattle();
+     int32 GetSelectedMoveCost() const;
+     FAIHeroesAdventurePathResult GetSelectedTravelPath() const;
++    // Read-only query for known current sites; does not select, move or reveal.
++    FAIHeroesAdventurePathResult GetTravelPathTo(FName Destination) const;
+     FString GetSelectionSummary() const;
+ 
+     FString GetArmySummary() const;
+--- a/Source/AIHeroes/Private/AIHeroesTravelGameMode.cpp
++++ b/Source/AIHeroes/Private/AIHeroesTravelGameMode.cpp
+@@ -19,8 +19,23 @@
+         Invalid.Reason = TEXT("Select a discovered current map site first.");
+         return Invalid;
+     }
++    return GetTravelPathTo(FName(*SelectedNode->GetDisplayName()));
++}
++
++FAIHeroesAdventurePathResult AAIHeroesGameMode::GetTravelPathTo(FName Destination) const
++{
++    bool bCurrentSite = false;
++    for (const AAIHeroesWorldNode* Node : Nodes)
++        if (IsValid(Node) && FName(*Node->GetDisplayName()) == Destination)
++            bCurrentSite = true;
++    if (!bCurrentSite || Destination.IsNone() || !IsNodeDiscovered(Destination))
++    {
++        FAIHeroesAdventurePathResult Invalid;
++        Invalid.Reason = TEXT("Choose a discovered current map site first.");
++        return Invalid;
++    }
+     return FAIHeroesTravelRules::Find(BuildAdvisorSnapshot(), HeroStrategicLocation,
+-        FName(*SelectedNode->GetDisplayName()), MovesLeft);
++        Destination, MovesLeft);
+ }
+ 
+ void AAIHeroesGameMode::RefreshAdventureRoads()
+--- a/Source/AIHeroes/Private/AIHeroesTravelPresentationSmoke.cpp
++++ b/Source/AIHeroes/Private/AIHeroesTravelPresentationSmoke.cpp
+@@ -1,6 +1,7 @@
+ #include "AIHeroesGameMode.h"
+ 
+ #if !UE_BUILD_SHIPPING
++#include "AIHeroesCampaignGuide.h"
+ #include "AIHeroesTravelPresentation.h"
+ #include "AIHeroesWorldNode.h"
+ #include "Containers/Ticker.h"
+@@ -19,7 +20,8 @@
+     {
+         int32 Phase = 0;
+         float Elapsed = 0.f, Due = 2.f;
+-        TWeakObjectPtr<AAIHeroesWorldNode> Forest, HQ;
++        TWeakObjectPtr<AAIHeroesWorldNode> Forest, HQ, Ore;
++        TArray<FAIHeroesArmyStack> SavedArmy;
+         FVector Origin;
+         FString CommittedFingerprint;
+         int32 ExpectedMoves = 0;
+@@ -59,8 +61,10 @@
+                     if (!IsValid(Node)) continue;
+                     if (Node->GetDisplayName() == TEXT("FOREST")) S->Forest = Node;
+                     if (Node->GetDisplayName() == TEXT("HQ")) S->HQ = Node;
++                    if (Node->GetDisplayName() == TEXT("ORE")) S->Ore = Node;
+                 }
+-                if (!S->Forest.IsValid() || !S->HQ.IsValid()) return Fail(TEXT("fixture sites missing"));
++                if (!S->Forest.IsValid() || !S->HQ.IsValid() || !S->Ore.IsValid())
++                    return Fail(TEXT("fixture sites missing"));
+                 G->SelectNode(S->Forest.Get());
+                 if (!G->GetSelectedTravelPath().IsReachableThisTurn()) return Fail(TEXT("initial forest not reachable"));
+                 S->Due = S->Elapsed + 0.4f; S->Phase = 1; break;
+@@ -104,11 +108,85 @@
+             case 6:
+                 Capture(TEXT("VIEW_OVER_BUDGET.png")); S->Phase = 7; break;
+             case 7:
++                G->SelectNode(S->HQ.Get());
++                S->CommittedFingerprint = G->CampaignFingerprint();
++                G->ToggleBasePanel();
++                if (!G->IsBasePanelVisible() || G->CampaignFingerprint() != S->CommittedFingerprint)
++                    return Fail(TEXT("opening base changed campaign or base not visible"));
++                S->Due = S->Elapsed + 0.4f; S->Phase = 8; break;
++            case 8:
++                Capture(TEXT("VIEW_BASE.png")); S->Phase = 9; break;
++            case 9:
++            {
++                G->CloseBasePanel();
++                // Deliberate disposable presentation fixtures, not evidence
++                // of campaign balance, recruitment or a human playthrough.
++                S->SavedArmy = G->PlayerArmy;
++                G->PlayerArmy.Reset(); G->MovesLeft = 4;
++                G->SelectNode(S->Ore.Get());
++                const auto Path = G->GetSelectedTravelPath();
++                if (!Path.IsReachableThisTurn() || !Path.bBattleAtDestination ||
++                    FAIHeroesCampaignGuide::CanOfferOrder(true, false, true))
++                    return Fail(TEXT("empty-army guarded display verdict is not blocked"));
++                S->CommittedFingerprint = G->CampaignFingerprint();
++                G->ConfirmSelectedNode(); // Keyboard/click bypass still hits authority.
++                if (G->IsLiveBattleActive() || G->CampaignFingerprint() != S->CommittedFingerprint)
++                    return Fail(TEXT("empty-army guarded confirmation mutated campaign"));
++                S->Due = S->Elapsed + 0.4f; S->Phase = 10; break;
++            }
++            case 10:
++                Capture(TEXT("VIEW_EMPTY_ARMY_GUARDED.png")); S->Phase = 11; break;
++            case 11:
++            {
++                S->Ore->Defenders.Reset(); // Safe-visit fixture only, never a user save.
++                const auto Path = G->GetSelectedTravelPath();
++                if (!Path.IsReachableThisTurn() || Path.bBattleAtDestination ||
++                    !FAIHeroesCampaignGuide::CanOfferOrder(true, false, false))
++                    return Fail(TEXT("empty army cannot display a legal safe visit"));
++                S->CommittedFingerprint = G->CampaignFingerprint();
++                S->Due = S->Elapsed + 0.4f; S->Phase = 12; break;
++            }
++            case 12:
++                if (G->CampaignFingerprint() != S->CommittedFingerprint)
++                    return Fail(TEXT("safe-visit preview changed campaign before confirmation"));
++                Capture(TEXT("VIEW_EMPTY_ARMY_SAFE.png")); S->Phase = 13; break;
++            case 13:
++                S->ExpectedMoves = G->MovesLeft - G->GetSelectedMoveCost();
++                G->ConfirmSelectedNode();
++                if (!S->Ore->bOwned || G->MovesLeft != S->ExpectedMoves || G->IsLiveBattleActive())
++                    return Fail(TEXT("authority rejected safe visit or spent the wrong cost"));
++                S->Phase = 14; break;
++            case 14:
++            {
++                if (G->IsStrategicTravelMoving()) break;
++                G->PlayerArmy = S->SavedArmy; // Restore fixture army for route guidance.
++                G->EndTurn();
++                AAIHeroesWorldNode* Outpost = nullptr;
++                for (AAIHeroesWorldNode* Node : G->Nodes)
++                    if (IsValid(Node) && Node->GetDisplayName() == TEXT("OUTPOST")) Outpost = Node;
++                if (!Outpost) return Fail(TEXT("staged route fixture missing outpost"));
++                G->SelectNode(Outpost);
++                const auto Path = G->GetSelectedTravelPath();
++                if (G->MovesLeft != 4 || Path.TotalCost != 5 ||
++                    Path.Status != EAIHeroesAdventurePathStatus::NeedsMoreMoves)
++                    return Fail(TEXT("expected five-move route from ore through headquarters"));
++                S->CommittedFingerprint = G->CampaignFingerprint();
++                const auto Stop = G->GetTravelPathTo(FName(TEXT("HQ")));
++                if (!Stop.IsReachableThisTurn() || Stop.TotalCost != 2 ||
++                    G->CampaignFingerprint() != S->CommittedFingerprint)
++                    return Fail(TEXT("owned waypoint query changed campaign or is not reachable"));
++                S->Due = S->Elapsed + 0.4f; S->Phase = 15; break;
++            }
++            case 15:
++                Capture(TEXT("VIEW_STAGED_ROUTE.png")); S->Phase = 16; break;
++            case 16:
++                if (G->CampaignFingerprint() != S->CommittedFingerprint)
++                    return Fail(TEXT("route guidance changed campaign without a player order"));
+                 for (int32 I = 0; I < S->Screens.Num(); ++I)
+                     if (IFileManager::Get().FileSize(*S->Screens[I]) <= 0 ||
+                         IFileManager::Get().GetTimeStamp(*S->Screens[I]) <= S->PreviousTimes[I])
+                         return Fail(TEXT("fresh screenshot missing"));
+-                UE_LOG(LogTemp, Display, TEXT("[TRAVEL VIEW SMOKE] PASS ready_preview=1 moving_marker=1 over_budget=1 one_debit=1 no_campaign_write_by_animation=1 save_calls=0"));
++                UE_LOG(LogTemp, Display, TEXT("[TRAVEL VIEW SMOKE] PASS ready_preview=1 moving_marker=1 over_budget=1 one_debit=1 no_campaign_write_by_animation=1 base_read_only=1 empty_army_guarded_blocked=1 empty_army_safe_visit=1 staged_route=1 fixture_not_balance_or_manual_qa=1 save_calls=0"));
+                 FPlatformMisc::RequestExitWithStatus(false, 0);
+                 return false;
+             default: return Fail(TEXT("unknown state"));
+--- /dev/null
++++ b/Source/AIHeroes/Private/Tests/AIHeroesCampaignGuidanceTests.cpp
+@@ -0,0 +1,135 @@
++#include "AIHeroesCampaignGuide.h"
++
++#if WITH_DEV_AUTOMATION_TESTS
++#include "AIHeroesGameMode.h"
++#include "AIHeroesWorldNode.h"
++#include "Engine/Engine.h"
++#include "Engine/World.h"
++#include "Misc/AutomationTest.h"
++
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMainGuidanceEmptyArmy,
++    "AIHeroes.PlayableJourney.EmptyArmyGuidanceRespectsBattleRequirement",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FMainGuidanceEmptyArmy::RunTest(const FString&)
++{
++    FAIHeroesCampaignProgress Progress;
++    Progress.Total = FAIHeroesCampaignObjectives::GoalCount;
++    Progress.NextFocusId = FName(TEXT("FOREST"));
++    FAIHeroesCampaignGuideContext Context;
++    Context.SelectedId = Progress.NextFocusId;
++    Context.bTargetDiscovered = true;
++    Context.bRouteReady = true;
++    Context.bHasArmy = false;
++    Context.bTargetGuarded = true;
++    const auto Guarded = FAIHeroesCampaignGuide::Build(Progress, Context);
++    TestTrue(TEXT("A guarded objective requires recruitment before an attack"),
++        Guarded.NextStep.Contains(TEXT("наймите")));
++
++    Context.bTargetGuarded = false;
++    const auto Unguarded = FAIHeroesCampaignGuide::Build(Progress, Context);
++    TestTrue(TEXT("A safe visit remains available with an empty army"),
++        Unguarded.NextStep.Contains(TEXT("подтвердите")));
++    TestFalse(TEXT("Do not make recruitment a fictitious movement requirement"),
++        Unguarded.NextStep.Contains(TEXT("наймите")));
++    TestFalse(TEXT("A read-only guide did not create an army"), Context.bHasArmy);
++    TestEqual(TEXT("A read-only guide did not change the selected destination"),
++        Context.SelectedId, Progress.NextFocusId);
++    return true;
++}
++
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMainGuidanceOrderEligibility,
++    "AIHeroes.PlayableJourney.OrderEligibilityTruthTable",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FMainGuidanceOrderEligibility::RunTest(const FString&)
++{
++    for (bool Ready : {false, true})
++        for (bool Army : {false, true})
++            for (bool Battle : {false, true})
++                TestEqual(TEXT("Display order needs a route, and an army only for battle"),
++                    FAIHeroesCampaignGuide::CanOfferOrder(Ready, Army, Battle),
++                    Ready && (!Battle || Army));
++    return true;
++}
++
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMainGuidanceStagingAfterRest,
++    "AIHeroes.PlayableJourney.ExhaustedMovesRestOnlyForStagingLeg",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FMainGuidanceStagingAfterRest::RunTest(const FString&)
++{
++    FAIHeroesCampaignProgress Progress;
++    Progress.Total = FAIHeroesCampaignObjectives::GoalCount;
++    Progress.NextFocusId = FName(TEXT("OUTPOST"));
++    FAIHeroesCampaignGuideContext Context;
++    Context.SelectedId = Progress.NextFocusId;
++    Context.bTargetDiscovered = true;
++    Context.bNeedsMoreMoves = true;
++    Context.RouteTotalCost = 5;
++    Context.MissingMoves = 5;
++    Context.bOwnedStopAfterRest = true;
++    const auto Rest = FAIHeroesCampaignGuide::Build(Progress, Context);
++    TestTrue(TEXT("No moves: recover before choosing a real staging leg"),
++        Rest.NextStep.Contains(TEXT("Восстановите")));
++    TestTrue(TEXT("Rest does not promise the complete five-move journey"),
++        Rest.Detail.Contains(TEXT("Не весь путь сразу")));
++    Context.IntermediateOwnedSite = FName(TEXT("HQ"));
++    const auto Today = FAIHeroesCampaignGuide::Build(Progress, Context);
++    TestTrue(TEXT("A verified reachable stop takes precedence over resting"),
++        Today.NextStep.Contains(TEXT("Через Цитадель")));
++    return true;
++}
++
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMainGuidanceReadOnlyPath,
++    "AIHeroes.PlayableJourney.WaypointQueryDoesNotSelectOrReveal",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FMainGuidanceReadOnlyPath::RunTest(const FString&)
++{
++    const auto Values = UWorld::InitializationValues().AllowAudioPlayback(false)
++        .CreatePhysicsScene(false).CreateNavigation(false).CreateAISystem(false)
++        .ShouldSimulatePhysics(false);
++    UWorld* World = UWorld::CreateWorld(EWorldType::Game, false, NAME_None,
++        nullptr, true, ERHIFeatureLevel::Num, &Values);
++    if (!TestNotNull(TEXT("Disposable query world"), World)) return false;
++    if (GEngine) GEngine->CreateNewWorldContext(EWorldType::Game).SetCurrentWorld(World);
++    auto* Game = World->SpawnActor<AAIHeroesGameMode>();
++    if (TestNotNull(TEXT("Disposable game"), Game))
++    {
++        // Initialize the real new-campaign fog through its public lifecycle,
++        // rather than exposing or modifying private scouting fields for QA.
++        Game->DispatchBeginPlay();
++        if (TestEqual(TEXT("Actual new campaign has five sites"), Game->Nodes.Num(), 5))
++        {
++            Game->SelectedNode = Game->Nodes[1];
++            Game->MovesLeft = 1;
++            const auto HeroBefore = Game->GetHeroStrategicLocation();
++            const int32 GoldBefore = Game->Gold;
++            const auto ScoutingBefore = Game->GetScoutingStatus();
++            const auto EventBefore = Game->LastEvent;
++            const auto HintBefore = Game->LastHint;
++            const auto Ore = Game->GetTravelPathTo(FName(TEXT("ORE")));
++            TestEqual(TEXT("Known stage has its real two-move cost"), Ore.TotalCost, 2);
++            TestEqual(TEXT("A stage is not promised reachable on one remaining move"),
++                Ore.Status, EAIHeroesAdventurePathStatus::NeedsMoreMoves);
++            // Dedicated Fog/TravelV2 tests cover hidden destination denial.
++            // This disposable GameMode leaves its private fog state alone.
++            TestEqual(TEXT("Unknown identifier is rejected"),
++                Game->GetTravelPathTo(FName(TEXT("SECRET"))).Status,
++                EAIHeroesAdventurePathStatus::InvalidInput);
++            TestTrue(TEXT("Current owned stop is reachable without spending"),
++                Game->GetTravelPathTo(FName(TEXT("HQ"))).IsReachableThisTurn());
++            TestEqual(TEXT("Queries do not change selection"), Game->SelectedNode.Get(), Game->Nodes[1].Get());
++            TestEqual(TEXT("Queries do not spend moves"), Game->MovesLeft, 1);
++            TestEqual(TEXT("Queries do not move the hero"), Game->GetHeroStrategicLocation(), HeroBefore);
++            TestEqual(TEXT("Queries do not reveal fog"), Game->GetScoutingStatus(), ScoutingBefore);
++            TestFalse(TEXT("The rejected hidden outpost remains unknown"),
++                Game->IsNodeDiscovered(FName(TEXT("OUTPOST"))));
++            TestEqual(TEXT("Queries do not spend gold"), Game->Gold, GoldBefore);
++            TestEqual(TEXT("Queries do not publish events"), Game->LastEvent, EventBefore);
++            TestEqual(TEXT("Queries do not rewrite advice"), Game->LastHint, HintBefore);
++            TestFalse(TEXT("Queries do not begin combat"), Game->IsLiveBattleActive());
++        }
++    }
++    World->DestroyWorld(false);
++    if (GEngine) GEngine->DestroyWorldContext(World);
++    return true;
++}
++#endif
+--- a/Tools/verify_map_readability.ps1
++++ b/Tools/verify_map_readability.ps1
+@@ -88,7 +88,8 @@
+         Write-Output "READABILITY_VISUAL_EXIT width=$Width pid=$($Child.Id) exit=$VisualExit"
+         if($null -eq $VisualExit -or $VisualExit -ne 0 -or
+             -not (Select-String -LiteralPath "$Dir\visual.log" -Pattern '[TRAVEL VIEW SMOKE] PASS' -SimpleMatch -Quiet)){throw "Visual run failed: $Dir"}
+-        foreach($Name in @('VIEW_READY.png','VIEW_MOVING.png','VIEW_OVER_BUDGET.png')){
++        foreach($Name in @('VIEW_READY.png','VIEW_MOVING.png','VIEW_OVER_BUDGET.png',
++            'VIEW_BASE.png','VIEW_EMPTY_ARMY_GUARDED.png','VIEW_EMPTY_ARMY_SAFE.png','VIEW_STAGED_ROUTE.png')){
+             $InputFile=Get-Item "$BuildRoot\Saved\QA\TravelPresentation\$Name"
+             if($InputFile.Length -le 0 -or $InputFile.LastWriteTimeUtc -lt $Started){throw "Stale/missing screenshot: $Name"}
+             # Verify actual PNG dimensions, not just requested launch arguments.
+--- a/Tools/verify_one_playable_campaign.py
++++ b/Tools/verify_one_playable_campaign.py
+@@ -41,6 +41,7 @@
+     objectives = read("Source/AIHeroes/Private/AIHeroesCampaignObjectives.cpp")
+     mode = read("Config/DefaultEngine.ini")
+     tests = read("Source/AIHeroes/Private/Tests/AIHeroesPlayableJourneyTests.cpp")
++    guidance_tests = read("Source/AIHeroes/Private/Tests/AIHeroesCampaignGuidanceTests.cpp")
+ 
+     protocol = re.search(
+         r'if\s*\(\s*Id\s*==\s*FName\(TEXT\("PROTOCOL"\)\)\s*\)\s*\{(.*?)return Result;',
+@@ -94,6 +95,24 @@
+             layout, r'if\(\s*!Open\s*&&\s*F\.Mission\.Contains\(P\)\s*\)\s*return 202;'
+         ),
+         "guide_filters_hidden_goal": "G.IsNodeDiscovered(Progress.NextFocusId)" in explorer,
++        "guarded_order_uses_shared_display_eligibility": has(
++            explorer, r'OfferReady\s*=\s*FAIHeroesCampaignGuide::CanOfferOrder\('
++            r'\s*Ready,\s*GuideContext.bHasArmy,\s*Path.bBattleAtDestination\s*\)',
++        ) and has(explorer, r'Button\(0,CTA,true,OfferReady\)'),
++        "guide_only_requires_army_for_guarded_objective": has(
++            guide, r'if\(\s*!Context.bHasArmy\s*&&\s*Context.bTargetGuarded\s*\)',
++        ),
++        "named_stop_is_independently_reachable": has(
++            explorer, r'StopPath\s*=\s*G.GetTravelPathTo\(StopId\);\s*'
++            r'if\(StopPath.IsReachableThisTurn\(\)\)\s*'
++            r'GuideContext.IntermediateOwnedSite=StopId;',
++        ),
++        "order_and_waypoint_regressions_registered": all(
++            name in guidance_tests for name in (
++                "EmptyArmyGuidanceRespectsBattleRequirement", "OrderEligibilityTruthTable",
++                "ExhaustedMovesRestOnlyForStagingLeg", "WaypointQueryDoesNotSelectOrReveal",
++            )
++        ),
+         "regression_checks_registered": all(
+             name in tests for name in (
+                 "CanonicalGoalSequence", "ContextualInstruction",

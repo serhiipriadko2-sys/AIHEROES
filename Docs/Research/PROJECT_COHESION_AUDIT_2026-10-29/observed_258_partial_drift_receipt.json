@@ -1,0 +1,172 @@
+﻿{
+    "status":  "PARTIAL_DRIFT",
+    "snapshot_mode":  false,
+    "build_root":  "C:\\github\\AIHEROES",
+    "frozen_source_drift":  [
+                                {
+                                    "path":  "Source\\AIHeroes\\Private\\AIHeroesBasePanelCopy.cpp",
+                                    "bytes":  6409,
+                                    "sha256":  "FA32E2036B4CAFDBCDB94123D9440104FEE98821D7253EC16A7FE37897CB9E7B"
+                                },
+                                {
+                                    "path":  "Source\\AIHeroes\\Private\\AIHeroesBasePanelHUD.cpp",
+                                    "bytes":  6382,
+                                    "sha256":  "A995BB33C7B9450FEC88F65038BF2479B57BC00F472CB2009ADC95556458943C"
+                                }
+                            ],
+    "observed_utc":  "2026-10-29T17:24:28.5827493Z",
+    "evidence":  "C:\\github\\AIHEROES\\Saved\\QA\\MapReadability_20261029T172103944Z",
+    "build_exit":  0,
+    "test_exit":  0,
+    "all_tests":  258,
+    "readability_tests":  6,
+    "hud_text_tests":  4,
+    "header_lane_cases":  54,
+    "viewport_test_cases":  60,
+    "failed":  0,
+    "not_run":  0,
+    "warnings":  0,
+    "visual_runs":  [
+                        {
+                            "width":  1280,
+                            "height":  720,
+                            "pid":  28552,
+                            "exit":  0,
+                            "status":  "SCRIPTED_PASS_REQUIRES_IMAGE_INSPECTION"
+                        },
+                        {
+                            "width":  960,
+                            "height":  720,
+                            "pid":  3980,
+                            "exit":  0,
+                            "status":  "SCRIPTED_PASS_REQUIRES_IMAGE_INSPECTION"
+                        },
+                        {
+                            "width":  640,
+                            "height":  720,
+                            "pid":  396,
+                            "exit":  0,
+                            "status":  "SCRIPTED_PASS_REQUIRES_IMAGE_INSPECTION"
+                        }
+                    ],
+    "screenshots":  [
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_1280\\VIEW_READY.png",
+                            "bytes":  842418,
+                            "sha256":  "188F8D96C1123FBFFB4B3FE5585E051CB629389632A0540145B25AE7190BC7AC",
+                            "width_requested":  1280,
+                            "height_requested":  720,
+                            "width_actual":  1280,
+                            "height_actual":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_1280\\VIEW_MOVING.png",
+                            "bytes":  801336,
+                            "sha256":  "58BEF4C7028FFBA6C2E6D8370C518097563A97714E7A2E1907FD085FF82C72A1",
+                            "width_requested":  1280,
+                            "height_requested":  720,
+                            "width_actual":  1280,
+                            "height_actual":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_1280\\VIEW_OVER_BUDGET.png",
+                            "bytes":  801412,
+                            "sha256":  "C12AC5740A2143AB0062DF26CB2EF507D32CB5110FDB350293067907747BB56A",
+                            "width_requested":  1280,
+                            "height_requested":  720,
+                            "width_actual":  1280,
+                            "height_actual":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_960\\VIEW_READY.png",
+                            "bytes":  610641,
+                            "sha256":  "746463E07EEEC2EC1FABD0BD1E8B2AC6A9545EDBF698B872988B16AA70E423AF",
+                            "width_requested":  960,
+                            "height_requested":  720,
+                            "width_actual":  960,
+                            "height_actual":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_960\\VIEW_MOVING.png",
+                            "bytes":  592521,
+                            "sha256":  "ED4505E6AAFD8527364C2031618F0EB37E3105546F12FB4ACA0C7D936B2FFB65",
+                            "width_requested":  960,
+                            "height_requested":  720,
+                            "width_actual":  960,
+                            "height_actual":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_960\\VIEW_OVER_BUDGET.png",
+                            "bytes":  592074,
+                            "sha256":  "B397E7D352D901FB280E987CB0E9BD4B8BA7D56C9543020FB3D9056636710893",
+                            "width_requested":  960,
+                            "height_requested":  720,
+                            "width_actual":  960,
+                            "height_actual":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_640\\VIEW_READY.png",
+                            "bytes":  418274,
+                            "sha256":  "C1EBF47F8F13B5E54256FB64795D8777639D635CCFF0A8A7B2961B3DC0474562",
+                            "width_requested":  640,
+                            "height_requested":  720,
+                            "width_actual":  640,
+                            "height_actual":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_640\\VIEW_MOVING.png",
+                            "bytes":  410239,
+                            "sha256":  "CDEE866A9399F1E68418EA867E15A804FAF753023976512120E3B3B6603C1F27",
+                            "width_requested":  640,
+                            "height_requested":  720,
+                            "width_actual":  640,
+                            "height_actual":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_640\\VIEW_OVER_BUDGET.png",
+                            "bytes":  409350,
+                            "sha256":  "DE21A0E77C090A6B28692F005EEA49AB0F6E6A4C685287C74F875CB45F34FCBD",
+                            "width_requested":  640,
+                            "height_requested":  720,
+                            "width_actual":  640,
+                            "height_actual":  720
+                        }
+                    ],
+    "source_files":  243,
+    "source_drift":  [
+                         {
+                             "path":  "Source\\AIHeroes\\Private\\AIHeroesBasePanelCopy.cpp",
+                             "bytes":  6415,
+                             "sha256":  "EA0EABD445767FB952A7B747CA4C3E98DEB2D8B5A2043F8E72ABC61CE213252D",
+                             "SideIndicator":  "=\u003e"
+                         },
+                         {
+                             "path":  "Source\\AIHeroes\\Private\\AIHeroesBasePanelHUD.cpp",
+                             "bytes":  6473,
+                             "sha256":  "B99F5F0FF82AD4A96D62AE14FD0EA6104EA9689D31839AB9EC115AE84D0441FD",
+                             "SideIndicator":  "=\u003e"
+                         },
+                         {
+                             "path":  "Source\\AIHeroes\\Private\\AIHeroesBasePanelCopy.cpp",
+                             "bytes":  6409,
+                             "sha256":  "FA32E2036B4CAFDBCDB94123D9440104FEE98821D7253EC16A7FE37897CB9E7B",
+                             "SideIndicator":  "\u003c="
+                         },
+                         {
+                             "path":  "Source\\AIHeroes\\Private\\AIHeroesBasePanelHUD.cpp",
+                             "bytes":  6382,
+                             "sha256":  "A995BB33C7B9450FEC88F65038BF2479B57BC00F472CB2009ADC95556458943C",
+                             "SideIndicator":  "\u003c="
+                         }
+                     ],
+    "player_saves":  4,
+    "save_drift":  [
+
+                   ],
+    "dll_stable":  true,
+    "dll_sha256":  "2607DCFEA59DEB4B35F3907316CF284DF881BD623992FA66C7D9032493102992",
+    "android_verified":  false,
+    "full_ui_accessibility_verified":  false,
+    "real_model_connected":  false,
+    "published":  false
+}

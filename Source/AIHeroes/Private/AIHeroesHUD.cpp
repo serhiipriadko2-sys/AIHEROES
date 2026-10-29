@@ -4,6 +4,7 @@
 #include "AIHeroesHUDTextLayout.h"
 #include "AIHeroesMapLabelLayout.h"
 #include "AIHeroesBasePanel.h"
+#include "AIHeroesVictoryPresentation.h"
 
 #include "AIHeroesAdvisorDossier.h"
 #include "AIHeroesGameMode.h"
@@ -60,6 +61,13 @@ int32 AAIHeroesHUD::GetActionAt(const FVector2D& ScreenPoint) const
     }
     if (Rules && !Rules->IsBattleReplayActive() && FAIHeroesExplorerLayout::Frame(CachedCanvasSize).bSupported)
     {
+        // The existing Goals action (202) is read-only; reusing it makes
+        // the accolade clickable while still blocking map click-through.
+        const int32 VictoryAction = FAIHeroesVictoryPresentation::HitTest(
+            Rules->GetCampaignProgress(), CachedCanvasSize,
+            bExplorerMenuOpen, ScreenPoint);
+        if (VictoryAction != INDEX_NONE)
+            return VictoryAction;
         const int32 A = FAIHeroesExplorerLayout::Hit(ScreenPoint, CachedCanvasSize, bExplorerMenuOpen);
         if (A == FAIHeroesExplorerLayout::MenuAction)
         { bExplorerMenuOpen = !bExplorerMenuOpen; return FAIHeroesExplorerLayout::ConsumeAction; }
@@ -126,6 +134,7 @@ void AAIHeroesHUD::DrawHUD()
         FAIHeroesExplorerLayout::Frame(CachedCanvasSize).bSupported)
     {
         DrawExplorerHUD(*Rules);
+        if (!Rules->IsAdvisorDossierVisible()) DrawCampaignVictoryBanner(*Rules);
         return;
     }
     if (Rules->IsLiveBattleActive())

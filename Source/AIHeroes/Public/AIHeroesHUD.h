@@ -26,6 +26,7 @@ private:
     FString ExplorerLastEvent;
     double ExplorerToastUntil = 0.0;
     void DrawExplorerHUD(const AAIHeroesGameMode& Rules);
+    void DrawCampaignVictoryBanner(const AAIHeroesGameMode& Rules);
     FVector2D CachedCanvasSize = FVector2D::ZeroVector;
     int32 CachedDossierPageCount = 1;
     float DossierFontScale = -1.f;

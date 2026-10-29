@@ -1,0 +1,126 @@
+{
+    "schema":  1,
+    "status":  "PASS_CURRENT_NATIVE_278_HISTORIC_GPU_9_NOT_FULL_PLAYTHROUGH",
+    "observed_utc":  "2026-10-29T19:10:41.9269287Z",
+    "scope":  "Primary AIHeroesGameMode: Road V2 over-budget guide, same-source build, native automation and scripted GPU capture",
+    "compiled_source_count":  253,
+    "dll_sha256":  "6df9bef93d9679c65b62cd71a413fa39e01efe01ad21b97186af978411ac3a60",
+    "native_unreal_automation_passed":  278,
+    "native_unreal_automation_failed":  0,
+    "targeted_new_tests_passed":  [
+                                      "AIHeroes.PlayableJourney.OverDayRouteNeedsWaypoint",
+                                      "AIHeroes.TravelV2.OverDayPathHasReachableOwnedStop"
+                                  ],
+    "gpu_viewports":  [
+                          640,
+                          960,
+                          1280
+                      ],
+    "gpu_build_source_count":  252,
+    "gpu_build_dll_sha256":  "28c8b2454b8b9b5e18f148c8dbd20298311ab3c42a79977164dd8af9cbdedcb2",
+    "gpu_is_historical_snapshot":  true,
+    "gpu_captures":  9,
+    "user_saves_count":  4,
+    "user_saves_changed":  0,
+    "source_drift":  0,
+    "artifacts":  [
+                      {
+                          "path":  "Docs/AIHEROES_BUILD_LATEST.json",
+                          "bytes":  69846,
+                          "sha256":  "dfd978154e5a8ab184ed73d9b3ef1ea2b879b583437553b01ffeac075fe3c732"
+                      },
+                      {
+                          "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+                          "bytes":  2994688,
+                          "sha256":  "6df9bef93d9679c65b62cd71a413fa39e01efe01ad21b97186af978411ac3a60"
+                      },
+                      {
+                          "path":  "Docs/AutomationRuns/20261029T190817834Z/index.json",
+                          "bytes":  110925,
+                          "sha256":  "51f2de63089866f2b54594b0b5ed42da39b8950641aaee8b88bd8d7812611947"
+                      },
+                      {
+                          "path":  "Docs/AutomationRuns/20261029T190817834Z/provenance.json",
+                          "bytes":  69966,
+                          "sha256":  "b8fce10cc525ba49a0729f96a0d9da13856e73a00451b537795875f48106b4f7"
+                      },
+                      {
+                          "path":  "Saved/QA/MapReadability_20261029T185458870Z/receipt.json",
+                          "bytes":  6893,
+                          "sha256":  "cd77fa983069f3e80080cf3ef884d08cf11d3721db36e4f2543a908d13f36f19"
+                      },
+                      {
+                          "path":  "Docs/PLAYABLE_OVER_DAY_ROUTE_RECEIPT_2026-10-29.json",
+                          "bytes":  5509,
+                          "sha256":  "a2a0fc8e255a6ec23a2542892be9da32bfd1ca190a4c0b8c7a359b12579766ae"
+                      },
+                      {
+                          "path":  "Saved/QA/OnePlayableCampaignBuild_20261029/SAVES_BEFORE.json",
+                          "bytes":  755,
+                          "sha256":  "cd8560e2eb4b4d585ce92e24df67f1326c2594547d3fcd146d1ae79d23d004fc"
+                      },
+                      {
+                          "path":  "Saved/QA/RouteAdviceReadability_20261029T2139/native_source_freshness.json",
+                          "bytes":  1378,
+                          "sha256":  "112d1af71c4194331069f53944380973aad7786f61221e514a4b2d1561469800"
+                      },
+                      {
+                          "path":  "Docs/BuildRuns/20261029T185342729Z/compiled.json",
+                          "bytes":  69558,
+                          "sha256":  "13fe371f3c93177d07feac0c8f88c341b33641cc13d6ee615ba9268fb2c60888"
+                      }
+                  ],
+    "screenshots":  [
+                        {
+                            "path":  "Saved/QA/MapReadability_20261029T185458870Z/viewport_1280/VIEW_READY.png",
+                            "bytes":  833401,
+                            "sha256":  "de3c577cdc577c9fa06b27e5bbffee82ad2600b5cba7d191eb2a322cfdfcc62e"
+                        },
+                        {
+                            "path":  "Saved/QA/MapReadability_20261029T185458870Z/viewport_1280/VIEW_MOVING.png",
+                            "bytes":  799915,
+                            "sha256":  "236489ebac35c7438c7c7b1cb55cdb84a909f56b1ba1204dbc844ab48596c38c"
+                        },
+                        {
+                            "path":  "Saved/QA/MapReadability_20261029T185458870Z/viewport_1280/VIEW_OVER_BUDGET.png",
+                            "bytes":  798530,
+                            "sha256":  "db61b2037421ff218d4a0171bb0bebca78be4f6a26f67fc289faa8f0caecd211"
+                        },
+                        {
+                            "path":  "Saved/QA/MapReadability_20261029T185458870Z/viewport_960/VIEW_READY.png",
+                            "bytes":  608080,
+                            "sha256":  "9b76fcfb7176ad3f6518b40cbe12b201eec9636b15a4721645dd1be1c28947d2"
+                        },
+                        {
+                            "path":  "Saved/QA/MapReadability_20261029T185458870Z/viewport_960/VIEW_MOVING.png",
+                            "bytes":  590451,
+                            "sha256":  "0270907363146460db61d3ea7deb7a89085557cfab099de55c89e13eb7948dd8"
+                        },
+                        {
+                            "path":  "Saved/QA/MapReadability_20261029T185458870Z/viewport_960/VIEW_OVER_BUDGET.png",
+                            "bytes":  592403,
+                            "sha256":  "38becd7dced32a3792314b051bb9173b30abea5edba235076dff94be8bf8c0f1"
+                        },
+                        {
+                            "path":  "Saved/QA/MapReadability_20261029T185458870Z/viewport_640/VIEW_READY.png",
+                            "bytes":  412140,
+                            "sha256":  "8945694b1080ea9a2803178e870bdce936938fe58c78fa395c2b625e1eb09797"
+                        },
+                        {
+                            "path":  "Saved/QA/MapReadability_20261029T185458870Z/viewport_640/VIEW_MOVING.png",
+                            "bytes":  407280,
+                            "sha256":  "04064c6d10d1ea47062632e1a99b7dacc765519a66c9863baf71e6d8dead4125"
+                        },
+                        {
+                            "path":  "Saved/QA/MapReadability_20261029T185458870Z/viewport_640/VIEW_OVER_BUDGET.png",
+                            "bytes":  405467,
+                            "sha256":  "7aa35ba86d58b90d5833920ebc04be03560637fe5cb26e6998e7b4999f3dd1c9"
+                        }
+                    ],
+    "full_human_playthrough_to_victory":  "NOT_VERIFIED",
+    "save_reload_victory":  "NOT_VERIFIED",
+    "android":  "NOT_VERIFIED",
+    "publication":  "NOT_DONE",
+    "git_commit_push":  "NOT_DONE",
+    "note":  "GPU capture shows strategy map and budget states at three resolutions; the exact five-move route advice is proved by native tests, not captured as a dedicated screen."
+}

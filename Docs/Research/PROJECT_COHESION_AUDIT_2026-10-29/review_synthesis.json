@@ -1,0 +1,45 @@
+{
+  "campaign_deep_audit": {
+    "status": "PARTIAL_READ_ONLY_SOURCE_REVIEW",
+    "confirmed": [
+      "D1 source exists; do not duplicate",
+      "Route5 vs daily4 counterexample; not engine softlock",
+      "Stage-loss HUD fallback gap",
+      "Fast finish passes all actions; no stale-roster finding",
+      "DATA10 vs slot8 arithmetic not whole-campaign proof"
+    ],
+    "native_runs": 0,
+    "production_writes": 0
+  },
+  "ux_deep_audit": {
+    "status": "PARTIAL_READ_ONLY_SOURCE_REVIEW",
+    "confirmed": [
+      "Guide/BaseCopy/Aftermath exist",
+      "Compact strategic HUD lacks Hero army summary",
+      "ASCII-width measurement conflicts with Russian dossier input",
+      "Dossier locale/palette mismatch",
+      "V6 main import/integration not proven"
+    ],
+    "hypotheses": [
+      "Cyrillic pixel overflow",
+      "Empty-army CTA affordance mismatch"
+    ],
+    "native_runs": 0,
+    "production_writes": 0
+  },
+  "qa_arch_deep_audit": {
+    "status": "PARTIAL_READ_ONLY_SOURCE_REVIEW",
+    "confirmed": [
+      "Main/Zone/AIH are distinct surfaces",
+      "258 report PARTIAL_DRIFT",
+      "Old playthrough uses legacy fixed coordinates/instant result",
+      "Packaging tool exists",
+      "Model request readiness false despite optional LocalExchange"
+    ],
+    "hypotheses": [
+      "Cooked asset inclusion for string LoadObject paths needs proof"
+    ],
+    "native_runs": 0,
+    "production_writes": 0
+  }
+}

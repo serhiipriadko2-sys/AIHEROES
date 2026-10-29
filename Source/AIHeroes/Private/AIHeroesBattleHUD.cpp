@@ -1,6 +1,8 @@
 #include "AIHeroesHUD.h"
 
 #include "AIHeroesBattleArt.h"
+#include "AIHeroesBattleAftermath.h"
+#include "AIHeroesBattleFallbackView.h"
 #include "AIHeroesGameMode.h"
 #include "AIHeroesLiveBattleStage.h"
 #include "AIHeroesHUDTextLayout.h"
@@ -26,14 +28,22 @@ void AAIHeroesHUD::DrawAmberBattle(const AAIHeroesGameMode& G)
     const bool Result=Phase==EAIHeroesLiveBattlePhase::Result;
     const bool Paused=Phase==EAIHeroesLiveBattlePhase::Paused;
     const AAIHeroesLiveBattleStage* Stage=G.GetLiveBattlePresentation();
+    const auto Fallback=FAIHeroesBattleFallbackView::Build(
+        Stage!=nullptr,Result,Paused,G.GetLiveBattleActionCount(),
+        Stage?FString():G.GetLiveArmyStatus(true),
+        Stage?FString():G.GetLiveArmyStatus(false));
     const FString Title=Result
         ? G.LastBattleRecord.bVictory ? TEXT("ПОБЕДА") : G.LastBattleRecord.bDefeat ? TEXT("ПОРАЖЕНИЕ") : TEXT("БОЙ ЗАВЕРШЁН")
         : Paused ? TEXT("СРАЖЕНИЕ / ПАУЗА") : TEXT("СРАЖЕНИЕ");
     DrawRect(Ink,0,0,V.X,62);DrawRect(Amber,0,60,V.X,2);
     Text(Title,18,12,V.X-230,Paper,1.55f);
-    Text(TEXT("Вы наблюдаете. Герой командует отрядами."),18,38,V.X-36,Muted,.95f);
-    Text(FString::Printf(TEXT("Раунд %d  /  %dx"),Stage?Stage->GetPresentedRound():0,
-        FMath::RoundToInt(G.GetLiveBattleSpeed())),V.X-195,17,180,Amber,1.1f);
+    Text(Stage?TEXT("Вы наблюдаете. Герой командует отрядами.")
+        :TEXT("3D-сцена недоступна. Текстовое отображение."),18,38,V.X-36,Muted,.95f);
+    const FString Progress=Stage
+        ? FString::Printf(TEXT("Раунд %d  /  %dx"),Stage->GetPresentedRound(),
+            FMath::RoundToInt(G.GetLiveBattleSpeed()))
+        : Fallback.ActionLabel;
+    Text(Progress,V.X-195,17,180,Amber,1.1f);
     const float Half=(V.X-36.f)*.5f;
     Text(TEXT("ВАШИ ОТРЯДЫ  /  A"),12,70,Half,Teal,.95f);
     Text(TEXT("ПРОТИВНИК  /  B"),24+Half,70,Half,Rust,.95f);
@@ -69,12 +79,39 @@ void AAIHeroesHUD::DrawAmberBattle(const AAIHeroesGameMode& G)
                 X,R.Y+55,Span,Muted,.70f);
         }
     }
+    if(Fallback.bVisible)
+    for(bool Player:{true,false})
+    {
+        const auto& Lines=Player?Fallback.PlayerRoster:Fallback.EnemyRoster;
+        for(int32 I=0;I<Lines.Num()&&I<2;++I)
+        {
+            const auto R=FAIHeroesBattleArt::RosterRect(V,Player,I);
+            if(R.W<=0||R.H<=0)continue;
+            const FLinearColor Side=Player?Teal:Rust;
+            DrawRect(Card,R.X,R.Y,R.W,R.H);
+            DrawRect(Side,R.X,R.Y,3,R.H);
+            FString Label,Stats;
+            if(Lines[I].Split(TEXT(":"),&Label,&Stats))
+            {
+                Text(Label,R.X+9,R.Y+11,R.W-18,Paper,.95f);
+                Text(Stats.TrimStart(),R.X+9,R.Y+34,R.W-18,Side,.82f);
+            }
+            else Text(Lines[I],R.X+9,R.Y+16,R.W-18,Muted,.92f);
+        }
+    }
     const float Bottom=V.Y-126.f;
     DrawRect(Ink,0,Bottom,V.X,126);DrawRect(Amber,0,Bottom,V.X,2);
-    const FString Caption=Stage?Stage->GetPresentedCaption():TEXT("Подготавливаем поле боя…");
+    const FString Caption=Stage?Stage->GetPresentedCaption():Fallback.Status;
     Text(Caption,16,Bottom+12,V.X-32,Paper,1.15f);
-    Text(V.X>=900?TEXT("Q / E — поворот   R / F — масштаб   Пробел — пауза. A и B — стороны, цифра — отряд.")
-        :TEXT("A — ваши, B — враг. Поворот: Q / E. Масштаб: R / F."),16,Bottom+37,V.X-32,Muted,.9f);
+    // Live combat never invents a result or rewards just because its visual
+    // stage is missing. Only a committed result can show player casualties.
+    const FString Guidance = Result
+        ? FAIHeroesBattleAftermath::Build(G.LastBattleRecord).PlayerLine
+        : Fallback.bVisible
+        ? TEXT("Пауза, скорость и досмотреть быстро — кнопки внизу.")
+        : V.X>=900?TEXT("Q / E — поворот   R / F — масштаб   Пробел — пауза. A и B — стороны, цифра — отряд.")
+        : TEXT("A — ваши, B — враг. Поворот: Q / E. Масштаб: R / F.");
+    Text(Guidance,16,Bottom+37,V.X-32,Muted,.9f);
     const FString Labels[]={Paused?TEXT("Продолжить"):TEXT("Пауза"),
         FString::Printf(TEXT("Скорость %dx"),FMath::RoundToInt(G.GetLiveBattleSpeed())),
         V.X<800?TEXT("Завершить"):TEXT("Досмотреть быстро"),Result?TEXT("На карту"):TEXT("Бой идёт")};

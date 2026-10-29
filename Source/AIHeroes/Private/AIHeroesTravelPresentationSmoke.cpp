@@ -1,6 +1,7 @@
 #include "AIHeroesGameMode.h"
 
 #if !UE_BUILD_SHIPPING
+#include "AIHeroesCampaignGuide.h"
 #include "AIHeroesTravelPresentation.h"
 #include "AIHeroesWorldNode.h"
 #include "Containers/Ticker.h"
@@ -19,7 +20,8 @@ void AAIHeroesGameMode::BeginTravelViewSmoke()
     {
         int32 Phase = 0;
         float Elapsed = 0.f, Due = 2.f;
-        TWeakObjectPtr<AAIHeroesWorldNode> Forest, HQ;
+        TWeakObjectPtr<AAIHeroesWorldNode> Forest, HQ, Ore;
+        TArray<FAIHeroesArmyStack> SavedArmy;
         FVector Origin;
         FString CommittedFingerprint;
         int32 ExpectedMoves = 0;
@@ -59,8 +61,10 @@ void AAIHeroesGameMode::BeginTravelViewSmoke()
                     if (!IsValid(Node)) continue;
                     if (Node->GetDisplayName() == TEXT("FOREST")) S->Forest = Node;
                     if (Node->GetDisplayName() == TEXT("HQ")) S->HQ = Node;
+                    if (Node->GetDisplayName() == TEXT("ORE")) S->Ore = Node;
                 }
-                if (!S->Forest.IsValid() || !S->HQ.IsValid()) return Fail(TEXT("fixture sites missing"));
+                if (!S->Forest.IsValid() || !S->HQ.IsValid() || !S->Ore.IsValid())
+                    return Fail(TEXT("fixture sites missing"));
                 G->SelectNode(S->Forest.Get());
                 if (!G->GetSelectedTravelPath().IsReachableThisTurn()) return Fail(TEXT("initial forest not reachable"));
                 S->Due = S->Elapsed + 0.4f; S->Phase = 1; break;
@@ -104,11 +108,85 @@ void AAIHeroesGameMode::BeginTravelViewSmoke()
             case 6:
                 Capture(TEXT("VIEW_OVER_BUDGET.png")); S->Phase = 7; break;
             case 7:
+                G->SelectNode(S->HQ.Get());
+                S->CommittedFingerprint = G->CampaignFingerprint();
+                G->ToggleBasePanel();
+                if (!G->IsBasePanelVisible() || G->CampaignFingerprint() != S->CommittedFingerprint)
+                    return Fail(TEXT("opening base changed campaign or base not visible"));
+                S->Due = S->Elapsed + 0.4f; S->Phase = 8; break;
+            case 8:
+                Capture(TEXT("VIEW_BASE.png")); S->Phase = 9; break;
+            case 9:
+            {
+                G->CloseBasePanel();
+                // Deliberate disposable presentation fixtures, not evidence
+                // of campaign balance, recruitment or a human playthrough.
+                S->SavedArmy = G->PlayerArmy;
+                G->PlayerArmy.Reset(); G->MovesLeft = 4;
+                G->SelectNode(S->Ore.Get());
+                const auto Path = G->GetSelectedTravelPath();
+                if (!Path.IsReachableThisTurn() || !Path.bBattleAtDestination ||
+                    FAIHeroesCampaignGuide::CanOfferOrder(true, false, true))
+                    return Fail(TEXT("empty-army guarded display verdict is not blocked"));
+                S->CommittedFingerprint = G->CampaignFingerprint();
+                G->ConfirmSelectedNode(); // Keyboard/click bypass still hits authority.
+                if (G->IsLiveBattleActive() || G->CampaignFingerprint() != S->CommittedFingerprint)
+                    return Fail(TEXT("empty-army guarded confirmation mutated campaign"));
+                S->Due = S->Elapsed + 0.4f; S->Phase = 10; break;
+            }
+            case 10:
+                Capture(TEXT("VIEW_EMPTY_ARMY_GUARDED.png")); S->Phase = 11; break;
+            case 11:
+            {
+                S->Ore->Defenders.Reset(); // Safe-visit fixture only, never a user save.
+                const auto Path = G->GetSelectedTravelPath();
+                if (!Path.IsReachableThisTurn() || Path.bBattleAtDestination ||
+                    !FAIHeroesCampaignGuide::CanOfferOrder(true, false, false))
+                    return Fail(TEXT("empty army cannot display a legal safe visit"));
+                S->CommittedFingerprint = G->CampaignFingerprint();
+                S->Due = S->Elapsed + 0.4f; S->Phase = 12; break;
+            }
+            case 12:
+                if (G->CampaignFingerprint() != S->CommittedFingerprint)
+                    return Fail(TEXT("safe-visit preview changed campaign before confirmation"));
+                Capture(TEXT("VIEW_EMPTY_ARMY_SAFE.png")); S->Phase = 13; break;
+            case 13:
+                S->ExpectedMoves = G->MovesLeft - G->GetSelectedMoveCost();
+                G->ConfirmSelectedNode();
+                if (!S->Ore->bOwned || G->MovesLeft != S->ExpectedMoves || G->IsLiveBattleActive())
+                    return Fail(TEXT("authority rejected safe visit or spent the wrong cost"));
+                S->Phase = 14; break;
+            case 14:
+            {
+                if (G->IsStrategicTravelMoving()) break;
+                G->PlayerArmy = S->SavedArmy; // Restore fixture army for route guidance.
+                G->EndTurn();
+                AAIHeroesWorldNode* Outpost = nullptr;
+                for (AAIHeroesWorldNode* Node : G->Nodes)
+                    if (IsValid(Node) && Node->GetDisplayName() == TEXT("OUTPOST")) Outpost = Node;
+                if (!Outpost) return Fail(TEXT("staged route fixture missing outpost"));
+                G->SelectNode(Outpost);
+                const auto Path = G->GetSelectedTravelPath();
+                if (G->MovesLeft != 4 || Path.TotalCost != 5 ||
+                    Path.Status != EAIHeroesAdventurePathStatus::NeedsMoreMoves)
+                    return Fail(TEXT("expected five-move route from ore through headquarters"));
+                S->CommittedFingerprint = G->CampaignFingerprint();
+                const auto Stop = G->GetTravelPathTo(FName(TEXT("HQ")));
+                if (!Stop.IsReachableThisTurn() || Stop.TotalCost != 2 ||
+                    G->CampaignFingerprint() != S->CommittedFingerprint)
+                    return Fail(TEXT("owned waypoint query changed campaign or is not reachable"));
+                S->Due = S->Elapsed + 0.4f; S->Phase = 15; break;
+            }
+            case 15:
+                Capture(TEXT("VIEW_STAGED_ROUTE.png")); S->Phase = 16; break;
+            case 16:
+                if (G->CampaignFingerprint() != S->CommittedFingerprint)
+                    return Fail(TEXT("route guidance changed campaign without a player order"));
                 for (int32 I = 0; I < S->Screens.Num(); ++I)
                     if (IFileManager::Get().FileSize(*S->Screens[I]) <= 0 ||
                         IFileManager::Get().GetTimeStamp(*S->Screens[I]) <= S->PreviousTimes[I])
                         return Fail(TEXT("fresh screenshot missing"));
-                UE_LOG(LogTemp, Display, TEXT("[TRAVEL VIEW SMOKE] PASS ready_preview=1 moving_marker=1 over_budget=1 one_debit=1 no_campaign_write_by_animation=1 save_calls=0"));
+                UE_LOG(LogTemp, Display, TEXT("[TRAVEL VIEW SMOKE] PASS ready_preview=1 moving_marker=1 over_budget=1 one_debit=1 no_campaign_write_by_animation=1 base_read_only=1 empty_army_guarded_blocked=1 empty_army_safe_visit=1 staged_route=1 fixture_not_balance_or_manual_qa=1 save_calls=0"));
                 FPlatformMisc::RequestExitWithStatus(false, 0);
                 return false;
             default: return Fail(TEXT("unknown state"));

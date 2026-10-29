@@ -120,6 +120,51 @@ bool FRoadTopologyTest::RunTest(const FString& Parameters)
     return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRoadOverDayWaypointTest,
+    "AIHeroes.TravelV2.OverDayPathHasReachableOwnedStop",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FRoadOverDayWaypointTest::RunTest(const FString&)
+{
+    auto S=RoadScenario();
+    // From owned ORE to guarded OUTPOST: the neutral RUINS are hostile, so
+    // ROAD V2 must use ORE > HQ > FOREST > OUTPOST, costing 2+2+1=5.
+    S.Nodes[1].Guards.Reset();S.Nodes[1].bOwned=true;
+    S.Nodes[2].Guards.Reset();S.Nodes[2].bOwned=true;
+    const FVector From=S.Nodes[2].Location;
+    const auto Full=FAIHeroesTravelRules::Find(
+        S,From,FName(TEXT("OUTPOST")),4);
+    if(!TestEqual(TEXT("Over-day path requires a staged movement"),
+        Full.Status,EAIHeroesAdventurePathStatus::NeedsMoreMoves))
+        return false;
+    TestEqual(TEXT("Route exceeds every full four-move day"),
+        Full.TotalCost,5);
+    TestEqual(TEXT("One missing move is not solvable by waiting"),
+        Full.MissingMoves,1);
+    TestEqual(TEXT("Full canonical route has four sites"),
+        Full.Nodes.Num(),4);
+    if(Full.Nodes.Num()==4)
+    {
+        TestEqual(TEXT("Owned headquarters is an intermediate node"),
+            Full.Nodes[1],FName(TEXT("HQ")));
+        TestEqual(TEXT("Owned forest is a subsequent stage"),
+            Full.Nodes[2],FName(TEXT("FOREST")));
+    }
+    const auto First=FAIHeroesTravelRules::Find(
+        S,From,FName(TEXT("HQ")),4);
+    TestTrue(TEXT("Player can choose headquarters as a real legal stop"),
+        First.IsReachableThisTurn());
+    TestEqual(TEXT("First safe leg costs two"),
+        First.TotalCost,2);
+    TestTrue(TEXT("Player can choose forest as a real legal stop"),
+        FAIHeroesTravelRules::Find(
+            S,From,FName(TEXT("FOREST")),4).IsReachableThisTurn());
+    TestEqual(TEXT("Read-only queries never spend strategic moves"),
+        S.MovesLeft,4);
+    TestFalse(TEXT("Guarded objective remains under enemy control"),
+        S.Nodes[3].bOwned);
+    return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRoadAdviceTest,"AIHeroes.TravelV2.AdvisorRecruitGateParity",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 bool FRoadAdviceTest::RunTest(const FString& Parameters)

@@ -1,0 +1,26 @@
+{
+  "schema": "aiheroes.playable-loop-static-gate.v1",
+  "status": "STATIC_PASS_BUILD_STALE",
+  "source_checks": {
+    "configured_main_campaign": true,
+    "canonical_next_objective": true,
+    "guide_reads_canonical_id_not_english_text": true,
+    "keyboard_g_opens_base": true,
+    "keyboard_y_opens_read_only_lab": true,
+    "click_controls_match_keyboard": true,
+    "buttons_label_real_actions": true,
+    "protocol_goal_points_to_purchase_not_lab": true,
+    "model_slot_goal_points_to_base": true,
+    "goal_ribbon_is_read_only_shortcut": true,
+    "guide_filters_hidden_goal": true,
+    "regression_checks_registered": true
+  },
+  "source_error": "",
+  "build": {
+    "fresh": false,
+    "reason": "NO_BUILD_MANIFEST"
+  },
+  "native_automation_executed": false,
+  "gameplay_playthrough_executed": false,
+  "filesystem_mutations_by_verifier": 0
+}

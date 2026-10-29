@@ -41,6 +41,7 @@ struct FAIHeroesCampaignProgress
 
     FString Headline() const;
     TArray<FString> Report() const;
+    TArray<FString> ReportRu() const; // Localized read-only player dossier.
 };
 
 // Derived from existing saved fields. No SaveGame schema migration needed.

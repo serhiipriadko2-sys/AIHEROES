@@ -1,0 +1,24 @@
+warning: unable to access 'C:\Users\gabra/.config/git/ignore': Permission denied
+SOT30_INTEGRITY_PASS version=v5.5.7 knowledge=30/30 sha256sums=32/32 corpus_bytes=4054425 members=33/33
+PINNED_MANIFEST_SHA256=0decd118a6300324b757d2587ec315a569aaf5800299d2b33bf046feaf56aeff
+PASS SoT30 integrity
+PASS pinned model instructions
+PASS AGENTS.md present and scoped
+PASS AGENTS Guard PROCEED
+PASS AGENTS Guard FORCE_ISKRIV_1
+PASS AGENTS Guard FORCE_SHADOW
+PASS AGENTS Guard FORCE_CRISIS
+PASS AGENTS Guard CLOSE_HONESTLY
+PASS Codex local skill
+PASS Skill companion reference
+PASS supported project model override
+PASS project workspace sandbox
+PASS project approval prompt
+PASS project network disabled
+PASS Codex model instructions resolve to verified canon
+PASS AIHEROES-specific trust (required for project config)
+PASS Windows sandbox root has inherited RX for Codex
+PASS Windows sandbox can read pinned manifest
+PASS Windows ACL rollback snapshot preserved
+PASS private canon ignored by Git
+CODEX_SOT30_STATIC_PASS checks=20/20

@@ -9,7 +9,7 @@ namespace AIHeroesLocalExchangeTests
 {
 const FString Id(TEXT("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
 const FString Session(TEXT("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"));
-FAIHeroesProposalSnapshot Fixture()
+FAIHeroesProposalSnapshot LocalExchangeFixture()
 {
     FAIHeroesProposalSnapshot S; S.Day = 1; S.StateRevision = 7;
     auto& A = S.Strategic; A.TravelRuleVersion = 2; A.bFogEnabled = true;
@@ -31,7 +31,7 @@ FAIHeroesProposalSnapshot Fixture()
 }
 FString Request()
 {
-    FString J,E; FAIHeroesModelRequest::Build(Fixture(),Id,Session,EAIHeroesModelGoal::AssessSelected,J,E); return J;
+    FString J,E; FAIHeroesModelRequest::Build(LocalExchangeFixture(),Id,Session,EAIHeroesModelGoal::AssessSelected,J,E); return J;
 }
 TArray<uint8> Bytes(const FString& S)
 {
@@ -77,7 +77,7 @@ bool FLocalRequestTest::RunTest(const FString& Parameters)
     TestFalse(TEXT("Undiscovered outpost not disclosed"),Body.Contains(TEXT("OUTPOST")));
     TestFalse(TEXT("Undiscovered ruins not disclosed"),Body.Contains(TEXT("RUINS")));
     TestFalse(TEXT("No tools schema"),Body.Contains(TEXT("tool_calls")));
-    auto Seed = Fixture(); Seed.Strategic.ProtocolTier = 0;
+    auto Seed = LocalExchangeFixture(); Seed.Strategic.ProtocolTier = 0;
     FString Locked; FAIHeroesModelRequest::Build(Seed,Id,Session,EAIHeroesModelGoal::AssessSelected,Locked,E);
     TestFalse(TEXT("SEED cannot start inference"),FAIHeroesLocalExchangeProtocol::BuildRequest(Locked,TEXT("qa-valid"),Body,R,Count,E));
     TestTrue(TEXT("Rejected request clears every output"),Body.IsEmpty() && R.IsEmpty() && Count == 0);

@@ -1,0 +1,88 @@
+{
+    "schema":  2,
+    "status":  "PORTABLE_CXX_PASS_UNREAL_BUILD_BLOCKED_MEMORY",
+    "timestamp_utc":  "2026-10-29T17:38:06.1493049Z",
+    "scope":  "Primary five-site campaign clickable victory plaque, existing read-only goals action 202",
+    "source_file_count":  8,
+    "evidence_file_count":  5,
+    "files":  [
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesHUD.cpp",
+                      "bytes":  22351,
+                      "sha256":  "7cb48d9df3dae8d60840b3d18b5243b444aed75308bca23c82ff41b4a5eebb23"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesHUD.h",
+                      "bytes":  1154,
+                      "sha256":  "cf38fae6067f237c3ea4546daf3f0258f65d07d1f6656f9395b4b105fc4bd495"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesVictoryPresentation.h",
+                      "bytes":  1338,
+                      "sha256":  "9ebbfcde6f43b6e7a41043d806da84440335d0ab73891f3e85c2b81bb5057cb8"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesVictoryPresentation.cpp",
+                      "bytes":  2280,
+                      "sha256":  "2b0edaf8740b6030dd7315b55fa1b46f6676dea7f39c018f112c680324d531fa"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesVictoryHUD.cpp",
+                      "bytes":  2993,
+                      "sha256":  "5411f948154d5245e7ee67923670f985d2f29587f76bb204f9e66c4f62a6ce48"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/Tests/AIHeroesVictoryPresentationTests.cpp",
+                      "bytes":  7196,
+                      "sha256":  "a6bff49d0575c680684021c3dde710604ff2c685c28a5e145e8bcf398e600e40"
+                  },
+                  {
+                      "path":  "Tools/verify_victory_overlay_portable.py",
+                      "bytes":  11696,
+                      "sha256":  "6717fcf14bffcf0ed9cd8535dfca22b1e1a2bb06b85d0f6bbc003a0c2bb8b21a"
+                  },
+                  {
+                      "path":  "Docs/MAIN_CAMPAIGN_VICTORY_UI_2026-10-29.md",
+                      "bytes":  11321,
+                      "sha256":  "7c8e765965332157788d644fee4fc5e9dfb98fa5911b9317a2a7bfb81f32be82"
+                  },
+                  {
+                      "path":  "Saved/QA/VictoryPortable_20261029T173358436284Z/receipt.json",
+                      "bytes":  1997,
+                      "sha256":  "b127c42869f37a3f5d28152ea0c5feb59e961fe6f5265416c2e8a3d84611a569"
+                  },
+                  {
+                      "path":  "Docs/BuildRuns/20261029T172754393Z/build.log",
+                      "bytes":  5936,
+                      "sha256":  "7697880f0370d829ee29f46f0d6814fda2546cd85d16080945d25f6df3f4eb0e"
+                  },
+                  {
+                      "path":  "Docs/BuildRuns/20261029T172858033Z/build.log",
+                      "bytes":  8410,
+                      "sha256":  "349866ad711257ce3c48481c7f5bab244224f0f889534447b475da51caac8228"
+                  },
+                  {
+                      "path":  "Saved/QA/OnePlayableCampaignBuild_20261029/PREVIOUS_BUILD_LATEST.json",
+                      "bytes":  63193,
+                      "sha256":  "b681d8494db8124aa3852e24642dc7cddac99873451d620d2ad5d053778e683b"
+                  },
+                  {
+                      "path":  "Saved/QA/OnePlayableCampaignBuild_20261029/SAVES_BEFORE.json",
+                      "bytes":  755,
+                      "sha256":  "cd8560e2eb4b4d585ce92e24df67f1326c2594547d3fcd146d1ae79d23d004fc"
+                  }
+              ],
+    "portable_checks_passed":  36,
+    "portable_compiler":  "MSVC /std:c++17 /W4 /WX without Unreal PCH",
+    "unreal_build":  "FAILED_RESOURCE_PRESSURE_C3859_C1076_C1060",
+    "unreal_automation":  "NOT_RUN",
+    "gpu_visual":  "NOT_RUN",
+    "end_to_end_playthrough":  "NOT_RUN",
+    "user_save_count":  4,
+    "user_save_drift":  0,
+    "git_commit_push":  "NOT_DONE",
+    "vscode_diff_opened":  true,
+    "supersedes":  "Docs/MAIN_CAMPAIGN_VICTORY_UI_RECEIPT_2026-10-29.json",
+    "previous_valid_manifest_backup":  "Saved/QA/OnePlayableCampaignBuild_20261029/PREVIOUS_BUILD_LATEST.json",
+    "limitation":  "Portable test compiles exact production method bodies against tiny shims, not the full Unreal project."
+}

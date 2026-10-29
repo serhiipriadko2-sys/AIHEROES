@@ -1,0 +1,1046 @@
+{
+  "kind": "selected_fields_not_original_report",
+  "source_report": {
+    "path": "Saved/QA/MapReadability_20261029T172103944Z/report/index.json",
+    "bytes": 102802,
+    "sha256": "ed6fe3b1cac0bc45302b3822f9efebb0f57695822fa47a3d913471a51165eb80"
+  },
+  "succeeded": 258,
+  "succeeded_with_warnings": 0,
+  "failed": 0,
+  "not_run": 0,
+  "tests": [
+    {
+      "name": "AIHeroes.AdventurePath.BoundedLongRoute",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.AdventurePath.BudgetAndNoOp",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.AdventurePath.GuardsAreStops",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.AdventurePath.InvalidGraphFailsClosed",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.AdventurePath.RevalidationAfterWorldChange",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.AdventurePath.StableTiesAndNoMutation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.AdventurePath.VisibilityPassabilityAndDirection",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.AdventurePath.WeightedDetour",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Advisor.GlobalStrategicChoice",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Advisor.ProgressionAndForecast",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Advisor.RankedAlternativesBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Advisor.RankedAlternativesDeterministic",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Advisor.RankedAlternativesRejectLosingBattle",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Advisor.RouteBudgetAndAuthority",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Advisor.RoutePostCombatSurvivors",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Advisor.TwoStopRoute",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Base.DayAndResourceBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Base.LegacyPropertyAbsent",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Base.LocationIncomeAndAdvice",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Base.ModalLocksAndBattleConflict",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Base.PricingAndAtomicPurchase",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Base.SaveValidationAndRecovery",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Base.VisualAndInputIsolation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.BattleRewards.DefeatAndStalemateGrantNothing",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.BattleRewards.NormalAndExactBoundaries",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.BattleRewards.RejectWithoutPartialOutput",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.LoadPreflight.DuplicateActiveIdRegression",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.LoadPreflight.InvalidLayouts",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.LoadPreflight.MapIdentity",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.LoadPreflight.ReferencesReadOnly",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.DiskRoundTrip",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.GridGarrisonCompatibility",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.LegacySaveMigration",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.MultiSlotIsolation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.RejectedSaveKeepsBackup",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.RotatingSaveRecovery",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.UnrecoverableSlotsPreserved",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Campaign.Validation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Core.AtomicResourceSpend",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Core.DeterministicBattle",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Core.ModelSlotPurchase",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Core.NoArmyCannotWin",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Core.ProtocolChangesTactics",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Core.ReplayTamperRejected",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Core.TravelBudget",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Core.TypedBattleTimeline",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Dossier.LayoutAndModalHitTest",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Dossier.QueryFreshnessAndModalLocks",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Dossier.WrapAndExplicitLimits",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Field.CalendarNeutralResetVsOwnedAccrual",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Field.ClaimAuthorityAndTerritoryLoss",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Field.GameModeHumanClaimPurchaseAndWeek",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Field.RecruitAtomicNoFreeArmy",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Field.ResponsiveControlsAndCombatLock",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Field.SaveV1OptionalDataRecovery",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Fog.AdjacentDiscoveryAndLegacy",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Fog.ProposalGateRejectsUndiscoveredSite",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Fog.SaveValidationAndDiskRoundTrip",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Fog.TamperAndAuthorityBoundaries",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Fog.TravelGraphAndAdviceDoNotLeak",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.DeadTurnsAndStableIndices",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.DeterministicPathAndOccupancy",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.IncrementalStart",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.ProtocolTargetDivergence",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.RangeAndRuntimeAttack",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.RejectForgedCompletion",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.RoundLimitAndInitiative",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.SplitGarrisonAdviceCompatibility",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.StepMatchesForecast",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Grid.ValidationAndTerminalStates",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.HUDText.BoundedWidthSweep",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.HUDText.FitAndDisclosure",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.HUDText.InvalidInputs",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.HUDText.UtilitySeparation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.InputBindings.CameraKeysDoNotIssueFieldOrders",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.InputBindings.FieldKeyDispatchesClaimThenSinglePurchase",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.InputBindings.FieldKeyRespectsModalAndBattleLocks",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Lab.GridV2FourTierCounterfactuals",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Lab.KeyboardAndTouchLayout",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Lab.LegacyV1Compatible",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Lab.RejectUnverifiedHistory",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Lab.RepeatableNonMutatingReport",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.Readability.DeathHidesLabelAndFigure",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.Readability.FullBillboardDuringPause",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.Readability.ReasonOnceAndCleanup",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.Readability.StableGroupIdentity",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.Readability.TacticalCameraHasNoMotionBlur",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.AtomicCommitAndLocks",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.DefeatAndRepeat",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.ExactRewardCapAndDefeatAtCap",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.FrameRateSpeedAndFastParity",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.MissingStageAndNode",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.PrecommitConflict",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.RewardOverflowAbortsAtomically",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.StageCleanupBeforeBeginPlay",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.StageMissingVisualDoesNotHang",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.StagePauseAndFinish",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.StageReceiptAndSpeed",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LiveBattle.StageRejectsInvalidSnapshot",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LocalExchange.CancelAndClockPreflight",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LocalExchange.DuplicatesAndJSONBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LocalExchange.EndpointAndOptIn",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LocalExchange.EnvelopeIdentityAndFinish",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LocalExchange.FragmentedHTTPFrame",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LocalExchange.RejectsAmbiguousHTTP",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.LocalExchange.RequestMenuAndFogParity",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelReply.DeadlineAndClockBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelReply.ForeignAndUnknownChoiceSweep",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelReply.FullStateAndHostDrift",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelReply.MenuFailureClearsOutputs",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelReply.MenuParityAndReadOnly",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelReply.ReadinessCannotBeForged",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelReply.RealGameModeRemainsOffline",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelReply.SingleUseCancelAndSessionReset",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelReply.StrictSelectionGrammar",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelRequest.LegacyGoalsAndSlots",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelRequest.MalformedInputsClearOutput",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelRequest.RoadGuardAndBudgetParity",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelRequest.SeedBattleAndArmyLocks",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelRequest.StableOrderAndReadOnly",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ModelRequest.VisibleAllowlist",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Objectives.CampaignProgression",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Objectives.DerivedFromSaveGame",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Objectives.DuplicateAndSpoofedNodesRejected",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Objectives.TouchMissionButton",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Playability.VictoryOverlay.MapBoundsAndInputs",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Playability.VictoryOverlay.OnlyFromCompleteObjectives",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.PlayableJourney.CanonicalGoalSequence",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.PlayableJourney.ContextualInstruction",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.PlayableJourney.FogAndArmySafety",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.PlayableJourney.GoalsRibbonTapAllScreens",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.PlayableJourney.UpgradeMilestones",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ProceduralV2.InitialStateAndFog",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ProceduralV2.LegacyRequiresNewCampaign",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ProceduralV2.RejectTampering",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ProceduralV2.ScratchDiskRoundTrip",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Proposal.AuthorityAndStaleness",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Proposal.DeterministicStaleFuzz",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Proposal.InputAndSnapshotBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Proposal.ModelAndConsentBoundaries",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Proposal.OfflinePreview",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Readability.HiddenAndInvalidInputs",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Readability.LabelsDoNotOverlapPanelsOrEachOther",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Readability.RepeatedChevronGeometry",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Readability.ResolutionAndCrowdingSweep",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Readability.SafeMapBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Readability.StableSelectedPriority",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.BudgetAndNoWinningOption",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.ForecastSelectsUsefulUnit",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.ProtocolGateAndCatalog",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.ReadOnlyAndDeterministic",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.RejectsMalformedSnapshot",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.SelectionOwnershipAndMovement",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.StockGameModeWeeklyEndToEnd",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.StockNoFreeRecruitment",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.StockOwnershipUpgradeAndCaps",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.StockQuotesAndAdvisorNoPhantomOffers",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.StockSaveMigrationAndRotation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Recruitment.StockWeeklyCalendar",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Replay.DeterministicVerification",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Replay.DiskRoundTrip",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Replay.GridV2ReadOnly3DStage",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Replay.GridV2RejectTamperAndLegacy",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Replay.GridV2VerifiedTypedParity",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Replay.VersionedRules",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Rival.DeterministicRaidsAndAuthority",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Rival.ExistingSaveGameRoundTrip",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Rival.InvalidInputsAndFailClosed",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Rival.WeeklyRecruitmentAndCaptureStop",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Simulation.CombatPolicy",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Supply.CancellationAndRevokedAuthorityFailClosed",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Supply.GameModeQuoteRequoteAndCommitHumanOnly",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Supply.MalformedArmyAndUnaffordableFailClosed",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Supply.MobileDesktopTouchHitboxNoOverlaps",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Supply.OreAerieDistinctAndDailyMoveLimit",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Supply.PurchaseAtomicAndNoDuplicate",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Supply.ScoutFirstAndOutpostBlockade",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelV2.AbsentPropertyKeepsLegacyRules",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelV2.AdvisorRecruitGateParity",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelV2.GameModeCostAndAtomicBattle",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelV2.InvalidMapFailsClosed",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelV2.RuleDriftAbortsCommit",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelV2.SaveVersionAndRecovery",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelV2.TopologyGuardAndBudget",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelV2.TwoStopHypotheticalCapture",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelView.BlockedMoveHasNoPresentation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelView.CommitOnceAndNextCommand",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelView.DurableDestinationNotVisualPosition",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelView.InvalidInputsAndBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelView.ModalAndTeardown",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelView.ReadOnlyPreviewCacheAndCollision",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelView.SegmentsAndFrameParity",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.TravelView.VisualLossAndDrift",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.UI.BasePanelCopy.OfferStates",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.UI.BasePanelCopy.SafetyAndMessages",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.UI.RouteButtonLayoutRegression",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.ArchitectureV6.OptionalKitIsCoherent",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Battle.DecorationIdempotenceAndCleanup",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Battle.HealthAtImpactAndPalettePersistence",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Battle.RangedProjectileIsPresentationOnly",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Battle.RosterLayoutAndGroupIdentity",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Battle.SixModelsAndPortraits",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.ExpeditionArt.OriginalKitAvailable",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.ExpeditionArt.SeedOnlyLandscape",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.ExpeditionChrome.CompactMapRemainsOpen",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.ExpeditionChrome.WidePanelsDoNotStealOrders",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Explorer.ButtonsMatchHitAreas",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Explorer.LayoutAndMapSpace",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Explorer.NodeArtReadOnlyAndIdempotent",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Explorer.OriginalAssetsLoaded",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Reference.CoastDeterministicAndNonBlocking",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Reference.FogAndAuthoritativeRoads",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Reference.GlyphGeometryBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Reference.LegacyAndInvalidSnapshots",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.Reference.PanelsAndInputIsolation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.ReliefV5.DecorativeIslandNonColliding",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.ReliefV5.DesktopMobileAssets",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.ReliefV5.RiverDepthAndSitePads",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.RiverV4.AlignedWithVerifiedRoad",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.RiverV4.ImportedMaterialsAndGeometry",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.RiverV4.VisualOnlyIdempotent",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.SceneryV3.DeterministicSafeLocations",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.SceneryV3.NonInteractiveAndIdempotent",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.Visual.SceneryV3.OriginalAssetsLoaded",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.WorldWeek.AtomicFailureAndCap",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.WorldWeek.CalendarBoundaries",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.WorldWeek.GuardGrowthAndNoResurrection",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.WorldWeek.SaveSchemaCompatibility",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpedition.DaysRecruitmentAndProtocolCosts",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpedition.IsolatedAandBSaveReadbackAndRecovery",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpedition.PlayerConfirmedCombatAndReconnaissance",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpedition.SeededCampaignAndHiddenTopology",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpedition.SeedSweepKnownMapAndBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpedition.TamperedSaveAndGuardBypassFailClosed",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpeditionAdvisor.InspectKnownGuardAndHideUnknown",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpeditionAdvisor.NoArmyNoMovesAndCognitiveTiers",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpeditionAdvisor.OnlyKnownRoutesAndNoOrders",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpeditionAdvisor.SeedSweepAndVisibleAfterCombat",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpeditionDossier.GuardTroopsAndMovement",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpeditionDossier.InvalidSnapshotAndNewDiscovery",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpeditionDossier.SeedSweep640AndStableRanking",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneExpeditionDossier.ThreeKnownOptionsNoMutation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneJourney.CanonicalEqualCostChoices",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneJourney.ExplicitNextDayAndDayCap",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneJourney.GuardWallFogAndTamperingFailClosed",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneJourney.ImmediateMoveAndNoSideEffects",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneJourney.SeedSweep640KnownOnlyNoMutation",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneJourney.TrueStagingVersusNineMoveShortcut",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZonePreview.GeneratedDraftCannotChangeCampaignTopology",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZonePreview.SeparateGameModeAndNoCampaignController",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneTemplate.GuardedProgressiveReachability",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneTemplate.RepeatableSeedAndRoles",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneTemplate.SeedSweepAndBounds",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneTemplate.TamperedGraphFailsClosed",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneTemplate.V1SaveNotSilentlyExpanded",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneTouch.LayoutFourViewportsNoOverlaps",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneTouch.ModalAllowsOnlyClose",
+      "state": "Success"
+    },
+    {
+      "name": "AIHeroes.ZoneTouch.TinyScreenAndBoundaryFailClosed",
+      "state": "Success"
+    }
+  ]
+}

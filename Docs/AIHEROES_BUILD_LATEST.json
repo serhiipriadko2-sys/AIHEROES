@@ -2,7 +2,7 @@
     "schema":  1,
     "status":  "compiled",
     "build_verified":  true,
-    "created_utc":  "2026-10-29T16:17:03.7781402Z",
+    "created_utc":  "2026-10-29T19:07:00.4442208Z",
     "target":  "AIHeroesEditor Win64 Development",
     "scope":  "AIHeroes.uproject + all Source/ and Config/ files; engine and Content excluded",
     "inputs":  [
@@ -118,8 +118,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesAdvisorDossier.cpp",
-                       "bytes":  4043,
-                       "sha256":  "62e9d90b3365c97ac53702575b824239d73dad48361c55fca974320cb1d17b09"
+                       "bytes":  4951,
+                       "sha256":  "633e06e04f0ab6ae605885a0b0bcad609302c4fdbd5cb737ef90783207583952"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesAdvisorDossierGameMode.cpp",
@@ -128,8 +128,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesAdvisorDossierHUD.cpp",
-                       "bytes":  3840,
-                       "sha256":  "a8c2d6f9e5a87d92401bab2d5f42dbabe989796c5103276ea08c33d67c9383d9"
+                       "bytes":  5150,
+                       "sha256":  "f181cac4f994ceeddac01c8c989a3d6d24c5f17a7a9b701ef33e323671d1a06a"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesAIProposalGameMode.cpp",
@@ -143,8 +143,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesArtDirection.cpp",
-                       "bytes":  6910,
-                       "sha256":  "8e0b1e3ae0abbeb9ab795b31d63e02b626bc072181e716af141bc2ae1227c1e2"
+                       "bytes":  7199,
+                       "sha256":  "1094e03ed65abf945baac65ce25bc084aaab9b1d2cb0a7e2973a8e934bf9f16e"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesBaseGameMode.cpp",
@@ -157,19 +157,29 @@
                        "sha256":  "44ae07a904a22d628763e7cb3727c1e5d088da2fa07d25953843f7170292f3b0"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/AIHeroesBasePanelCopy.cpp",
+                       "bytes":  6682,
+                       "sha256":  "cef5bde197bf64b0b914aa703a0e8f4a34b8e6ca7ed3d27c1a4879ed56e720fd"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/AIHeroesBasePanelGameMode.cpp",
                        "bytes":  4944,
                        "sha256":  "c52e1fa1349c6bcce2c23d2f1e07e307c2d81a39d49b3a253a7f98d05a928d61"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesBasePanelHUD.cpp",
-                       "bytes":  5235,
-                       "sha256":  "e49e1513ef9baaa634dc6b744cb1b3cbd27df7351e207a71fc602ec6e64146c3"
+                       "bytes":  6418,
+                       "sha256":  "d411595a3583f719350d7f4f65ab9572d5dca65172a7697ca46d174e304f19df"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesBaseRules.cpp",
                        "bytes":  1714,
                        "sha256":  "8958fc47f64eb11a61ff130bf8edfd64fe600a6db102168b7fea89f0bec11649"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/AIHeroesBattleAftermath.cpp",
+                       "bytes":  2072,
+                       "sha256":  "c3d6e785d9e9e6223d6e7a25cc7b6330f79cce1ac4f2ed9fabf0b05ce1f4f031"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesBattleArt.cpp",
@@ -182,9 +192,14 @@
                        "sha256":  "8136bb815695f2d510cd121c30465831f3bb3700601aadc36b6030951fc0178f"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/AIHeroesBattleFallbackView.cpp",
+                       "bytes":  1835,
+                       "sha256":  "f1b53c4c2c7e81fa2c37f56efa38431ebdba8418bc65d7aaac003c46a0c2afe7"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp",
-                       "bytes":  5132,
-                       "sha256":  "553bd5186bfa31e9ec9aac0513743ca1ed07e6b000b65bc21a4899be62eae8e0"
+                       "bytes":  6783,
+                       "sha256":  "e9d44713abf6c5f09e1a112c5222ba33743d4b6e891cd6999148f31c4963a38e"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesBattleRecord.cpp",
@@ -212,14 +227,19 @@
                        "sha256":  "72bd9b3cf71370fb202f67b78eef2e4e26555ba9d2de28db7dc22d5e20c2be5e"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp",
+                       "bytes":  6257,
+                       "sha256":  "544c16caaebccfab6b879983eda605d6e90f428f45e43e10ca66e169d2cf5cc7"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/AIHeroesCampaignObjectives.cpp",
-                       "bytes":  4121,
-                       "sha256":  "ce483f16e3ba2ee4f8b0d1c3e10b9f72eb1d4f293e5917e18f9eda835083bb37"
+                       "bytes":  6808,
+                       "sha256":  "f918add081608758bc5ba18e3208c886a3fa19b94bfd439a93d638e501a0f346"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesCampaignObjectivesGameMode.cpp",
-                       "bytes":  1941,
-                       "sha256":  "d21402daf36568d3e4c59ba2c89205d2dce2e5c817a31268b495f71928a53200"
+                       "bytes":  2021,
+                       "sha256":  "7cfe8a36bdbc60392315609406e4f9915e08d2561544453f6d79e728e1656cb2"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesCampaignRules.cpp",
@@ -237,14 +257,19 @@
                        "sha256":  "5410fb55b0d4a83bd4f214e622ae4c052eb2623e2b44b58813a0e230ccaca6c0"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/AIHeroesExplorerCopy.cpp",
+                       "bytes":  2562,
+                       "sha256":  "0dc48b5be91d0ff35e4e3d220d84d92678d764881c8597487559d72fe2c2d4da"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
-                       "bytes":  16459,
-                       "sha256":  "a4a3150ba04263da5d4e7129e2b2e24aab4f53b9825a587ee45e69a9f39946e9"
+                       "bytes":  19423,
+                       "sha256":  "155fb292c22d42c07aecc8dddfdcc4b04045fd2bb2a0c22ae153adf7801b815c"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesExplorerLayout.cpp",
-                       "bytes":  2849,
-                       "sha256":  "ffbf231dcbb205d2264aa8da5dd417093e2f4a7cf4cabee0f3b928ed9549af76"
+                       "bytes":  2970,
+                       "sha256":  "23fa47f04402ff078dad15dcdf75d399b480fedbb858bd55a1a72de7f947bc92"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesFieldDwelling.cpp",
@@ -283,8 +308,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesHUD.cpp",
-                       "bytes":  21825,
-                       "sha256":  "0f73a6f81020cd086a4dd86d7376f95996e1a68a711608dc4f7f1e834f71a3e7"
+                       "bytes":  22351,
+                       "sha256":  "7cb48d9df3dae8d60840b3d18b5243b444aed75308bca23c82ff41b4a5eebb23"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesHUDLayout.cpp",
@@ -348,8 +373,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesModelRequest.cpp",
-                       "bytes":  8270,
-                       "sha256":  "961ee2bc6e909a451f14da4cdf3e5ceff7cfd19a17e37276ed65b6a9cddfca54"
+                       "bytes":  8326,
+                       "sha256":  "5f1859df96e1c06c2c22694eefa9e4151f0a8c8a2befbe4e2c4eb2ce6ac7f408"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesModelRequestGameMode.cpp",
@@ -402,6 +427,11 @@
                        "sha256":  "1566913dbaae8673f1bb4e7e4c58502bda932c690843057b13432a4285e72e02"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/AIHeroesReliefV5.cpp",
+                       "bytes":  3136,
+                       "sha256":  "668eaa9518632b1008a2356897e449acff9a2e2c9f968ac40b55adc630a250ce"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/AIHeroesRivalGameMode.cpp",
                        "bytes":  5671,
                        "sha256":  "95c9d3e4565a3daf93e9f97e0eecc150714d3824933396a9b179fc2d2ecab0f1"
@@ -443,8 +473,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesSupplyLines.cpp",
-                       "bytes":  4612,
-                       "sha256":  "04af0c1f8a473d31436683180cdd9d5a7d62caf9e729e94bd1664a81f35c0dbd"
+                       "bytes":  4660,
+                       "sha256":  "a4be6f98f9bd61fc2a64e9d01b37ce7336905fadd654d1637978e42aa82561f4"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesSupplySmoke.cpp",
@@ -453,8 +483,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesTravelGameMode.cpp",
-                       "bytes":  3630,
-                       "sha256":  "dfe2cc8a097738bc8e3930ba61c5c04b89d6a803def313a280179bd50598b941"
+                       "bytes":  4195,
+                       "sha256":  "06e2a0781ec42345bb6d5f54e18dfd259f13cd0170f14ef4c033fdd7fabc1a31"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesTravelPresentation.cpp",
@@ -468,8 +498,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesTravelPresentationSmoke.cpp",
-                       "bytes":  5851,
-                       "sha256":  "f11c4a9db1cd6e307615fd1058a3f96c236f4db7df7b9d4ee6efc4df424dbd61"
+                       "bytes":  10735,
+                       "sha256":  "b929cbdaaf1bcefb5c4dae65086c4156e3a066979520b6c10ea4ff84a157becd"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesTravelRules.cpp",
@@ -480,6 +510,16 @@
                        "path":  "Source/AIHeroes/Private/AIHeroesTravelSmoke.cpp",
                        "bytes":  5254,
                        "sha256":  "ada400fc96fc763c04ee863f1a3e106c09ed142ea7284530c211ffea61db570e"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/AIHeroesVictoryHUD.cpp",
+                       "bytes":  2993,
+                       "sha256":  "5411f948154d5245e7ee67923670f985d2f29587f76bb204f9e66c4f62a6ce48"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/AIHeroesVictoryPresentation.cpp",
+                       "bytes":  2280,
+                       "sha256":  "2b0edaf8740b6030dd7315b55fa1b46f6676dea7f39c018f112c680324d531fa"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesWorldNode.cpp",
@@ -498,8 +538,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesZoneExpeditionArt.cpp",
-                       "bytes":  9504,
-                       "sha256":  "dd8ed161b4ca6886b67d90a6827e47ad21f48f257ddfe5a0c84745732329b863"
+                       "bytes":  10615,
+                       "sha256":  "32f377da07fb3cdd7dadd350b822459324f4c4b96a915cb6bf6f649ddc0a5830"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesZoneExpeditionGameMode.cpp",
@@ -548,8 +588,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesAdvisorDossierTests.cpp",
-                       "bytes":  8811,
-                       "sha256":  "5d0546e633ec153dad2333f363e5ed1e7ef99821634774f1174ffa00a5997bf8"
+                       "bytes":  11276,
+                       "sha256":  "f2beef04cbf56cf684052990490850a33b42cc444ab93a259fe9ca9a91d1feea"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesAdvisorTests.cpp",
@@ -562,14 +602,34 @@
                        "sha256":  "fbe34eecd9d3cab0a4b2eb411666bf330b9d69def178389ed77f278f2275e233"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesArchitectureV6Tests.cpp",
+                       "bytes":  1997,
+                       "sha256":  "3ac83b2511fb5935b2417c404c04cefd2529194f69f69226b526083bd7c8cf2c"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesBasePanelCopyTests.cpp",
+                       "bytes":  5113,
+                       "sha256":  "ee6270cbfeec033c9c647cad26c9adc69fa5fcfd7dc40223da7742eeb80037de"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesBaseTests.cpp",
                        "bytes":  16548,
                        "sha256":  "4b4000c0ec5e0b0a03629a6e0ed0b8e6789f86f7240ce2c6fd65d8f8726deeff"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp",
+                       "bytes":  4686,
+                       "sha256":  "6344a13bf7ec1b034da37c7033a0054251ad3cb66b9cb9180fcd1951f9f45257"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesBattleArtTests.cpp",
                        "bytes":  11215,
                        "sha256":  "47f37d97a33cd0350199476aef9ffab33aace43af665d2668bd44944f37e5e0a"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesBattleFallbackViewTests.cpp",
+                       "bytes":  4740,
+                       "sha256":  "dd218fb9012cd16835c51b2459a2a9ff2ddb7a5efbdf12f505e66c24fe73adb5"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesBattleReadabilityTests.cpp",
@@ -597,6 +657,11 @@
                        "sha256":  "a73a8ff4c6840d344d0f7a63eb383972ed775433c0d75294690222ad8b41f106"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesCampaignGuidanceTests.cpp",
+                       "bytes":  7067,
+                       "sha256":  "67aa90abb88e2504e74949f8a67749f36507055a50c12a9a950a4a09fa319a99"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesCampaignObjectivesTests.cpp",
                        "bytes":  8531,
                        "sha256":  "8ad508a5c3a71131839112f273e93be78cc61a475e7c18bb9f94b71c9c2e80a4"
@@ -610,6 +675,11 @@
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesExpeditionChromeTests.cpp",
                        "bytes":  3472,
                        "sha256":  "6d09141be26d74ebbbbf8588a5babe9281941c8592eb9661e3008519a61fe0b6"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesExplorerCopyTests.cpp",
+                       "bytes":  4070,
+                       "sha256":  "04dce5ec2ebd2f52c33f0b6f1d8bcf1838033e1ac10bcbebd30b69f1bf7ea0e1"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesExplorerVisualTests.cpp",
@@ -673,8 +743,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesLocalExchangeTests.cpp",
-                       "bytes":  10864,
-                       "sha256":  "70b52ae44b6c7ab5307dd185b92bf777ad03109049fc963195bf53605ff6e73a"
+                       "bytes":  10903,
+                       "sha256":  "46128e33340121c01f86ac912681c379c5927e04f4501aea0a02cfcaca373110"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesMapReadabilityTests.cpp",
@@ -683,18 +753,23 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesModelReplyTests.cpp",
-                       "bytes":  15856,
-                       "sha256":  "dc990526f8e287a21512ec8781241c038fc173aa1e5f68d9aa9ab1fcbf95eeed"
+                       "bytes":  15956,
+                       "sha256":  "3fe99b8e344fbc6ef950ef00641ed6201dd82ce55c333cd50250d7fc4bbf37db"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesModelRequestTests.cpp",
-                       "bytes":  9393,
-                       "sha256":  "404628522a41a8d13fe9765772afb3589845d050be9e57e376bc91be85afa9a5"
+                       "bytes":  9489,
+                       "sha256":  "08a21ff7f3f163c83c62e06cb1b3adc4ac53c345dfcda49cace5d9289a901670"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesMultiSlotTests.cpp",
                        "bytes":  4686,
                        "sha256":  "935232a9b3898d872a04bf581cd220d130cf7c95827bf23b0021965ad818c682"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesPlayableJourneyTests.cpp",
+                       "bytes":  10007,
+                       "sha256":  "6c1f11c9633fbf454f7a7b9057a4680050a1a558c65a0e628408b83deced1896"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesProceduralCampaignTests.cpp",
@@ -720,6 +795,11 @@
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesReferenceUITests.cpp",
                        "bytes":  8127,
                        "sha256":  "a49a2ed3c4d64721aad3db4b7940c19b36664886c464c40a581ce2c6e0509ba4"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesReliefV5Tests.cpp",
+                       "bytes":  4235,
+                       "sha256":  "07f4e2b592050f21efd32a754bddb4ac89d861fdda53520204913eb888e2457c"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesRivalStrategyTests.cpp",
@@ -763,13 +843,18 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesTravelIntegrationTests.cpp",
-                       "bytes":  15567,
-                       "sha256":  "c235dddc27b3977d63e85768575875d26c37db3acfea9573d8c0be4ec3045173"
+                       "bytes":  17589,
+                       "sha256":  "e24cd3388f0cae1e1387dd7ba5ed5f01387487077fe5dbe63b7f83a8c9fc23ad"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesTravelPresentationTests.cpp",
                        "bytes":  14640,
                        "sha256":  "36fcbd3518ce4a6de222fd19570251d9be65ea974b0db041e1c7ff0476bc2f36"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesVictoryPresentationTests.cpp",
+                       "bytes":  7196,
+                       "sha256":  "a6bff49d0575c680684021c3dde710604ff2c685c28a5e145e8bcf398e600e40"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesWorldWeekTests.cpp",
@@ -833,8 +918,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesAdvisorDossier.h",
-                       "bytes":  1875,
-                       "sha256":  "c9e87299d3b452e8db5666621506f864a35d27dae65cada9dba82cfbe8b40767"
+                       "bytes":  2129,
+                       "sha256":  "6040f22997ba2e865e191182f22250a0704bae7bc068286f03cc292d69e4d3d8"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesAIProposalGate.h",
@@ -852,9 +937,19 @@
                        "sha256":  "b3e963b38b260ffffd097ebc5ad3af57e5b5d5719c314778cf92c8e3ddf1190b"
                    },
                    {
+                       "path":  "Source/AIHeroes/Public/AIHeroesBasePanelCopy.h",
+                       "bytes":  771,
+                       "sha256":  "f53e0b85bcd71d903f7f450d8f4544dda49a8550a1548c7e6a0b8e1fb0128a2e"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Public/AIHeroesBaseRules.h",
                        "bytes":  783,
                        "sha256":  "a9d057c324050b5396acf8cada264963d3349410973cf7e9ebefb7056c1ace0d"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Public/AIHeroesBattleAftermath.h",
+                       "bytes":  469,
+                       "sha256":  "c2df0e0a7ea4489aaeb06fcca172196d321e3b7384c75532feb7cd5c69658a89"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesBattleArt.h",
@@ -865,6 +960,11 @@
                        "path":  "Source/AIHeroes/Public/AIHeroesBattleEngine.h",
                        "bytes":  1732,
                        "sha256":  "c54c56b4e818af5cca535cfa2368be42bd812ab6118ffc02558a6756a7d59d65"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Public/AIHeroesBattleFallbackView.h",
+                       "bytes":  582,
+                       "sha256":  "f0937e86381a6bdf6435c3114715a1c33e1274a18655e7e947e305633ad514a3"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesBattleRecord.h",
@@ -887,9 +987,14 @@
                        "sha256":  "e605c0112eb8f9b23eb6aee87185c22e3b24cce09d9542d96c8a7c42a25ebe71"
                    },
                    {
+                       "path":  "Source/AIHeroes/Public/AIHeroesCampaignGuide.h",
+                       "bytes":  1804,
+                       "sha256":  "2ba6ac578f1ce5572a257b4a9a1f4d6791a35bd486945c1e2819e00085ba92bd"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Public/AIHeroesCampaignObjectives.h",
-                       "bytes":  1298,
-                       "sha256":  "4500061ea7faa509e5616aa8422269147d14eb6a38836d4c3ed60b0d1e9433be"
+                       "bytes":  1469,
+                       "sha256":  "dbda0486b5e4c15dcde031ed00009d5afc7dd0bf952ef9bb5db8d49ba5546654"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesCampaignRules.h",
@@ -905,6 +1010,11 @@
                        "path":  "Source/AIHeroes/Public/AIHeroesDevelopmentRules.h",
                        "bytes":  723,
                        "sha256":  "901be16adfaadea46f9d07df5a02d0369f2cb2d691504984c34832fcf6a79d62"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Public/AIHeroesExplorerCopy.h",
+                       "bytes":  414,
+                       "sha256":  "3b5e623cbeb25a685f7a1dfeefc464a5a0b60491937ecd2fd378435f85488177"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesExplorerLayout.h",
@@ -923,8 +1033,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesGameMode.h",
-                       "bytes":  13569,
-                       "sha256":  "9da69b4f303359bb8478df8c7f3b28ef2c0f36b8c1149ab3170b11e287a877bb"
+                       "bytes":  13727,
+                       "sha256":  "0a013ac3aef54186ff15c2dfc18fb6eebd8d3df92d4e7fd1bc5f8704feda4d31"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesGridBattle.h",
@@ -938,8 +1048,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesHUD.h",
-                       "bytes":  1086,
-                       "sha256":  "33378d38bda10494f1215be597e42cb7f3db95e1ad33736d0c936aeda51bc2eb"
+                       "bytes":  1154,
+                       "sha256":  "cf38fae6067f237c3ea4546daf3f0258f65d07d1f6656f9395b4b105fc4bd495"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesHUDLayout.h",
@@ -1017,6 +1127,11 @@
                        "sha256":  "68b5350682fe9f369364242e40da3c682616492d004e3d19c164ed6583d1e1e8"
                    },
                    {
+                       "path":  "Source/AIHeroes/Public/AIHeroesReliefV5.h",
+                       "bytes":  383,
+                       "sha256":  "14cc7885783aeca9f523b5138b1a65fe5a319b28d017a0f0922c3e1f9b9aa9ec"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Public/AIHeroesRivalStrategy.h",
                        "bytes":  1614,
                        "sha256":  "9ac5b38cb2ef94a12bf0cbddb1c6fe94694336505da674c9acc67f275fe2d5cc"
@@ -1075,6 +1190,11 @@
                        "path":  "Source/AIHeroes/Public/AIHeroesTypes.h",
                        "bytes":  1391,
                        "sha256":  "4d98c0d94ce44da294a50586671d27b93f9af32680374d782c562653f0bc4551"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Public/AIHeroesVictoryPresentation.h",
+                       "bytes":  1338,
+                       "sha256":  "9ebbfcde6f43b6e7a41043d806da84440335d0ab73891f3e85c2b81bb5057cb8"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesWorldNode.h",
@@ -1154,7 +1274,7 @@
                ],
     "binary":  {
                    "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
-                   "bytes":  2830848,
-                   "sha256":  "f2fdd99eb5038f00883ad65b0cf3e7653e0e3ca9bb09dc4936790d91341c0bbd"
+                   "bytes":  2994688,
+                   "sha256":  "6df9bef93d9679c65b62cd71a413fa39e01efe01ad21b97186af978411ac3a60"
                }
 }

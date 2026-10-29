@@ -1,0 +1,44 @@
+[
+  {
+    "source": "Saved/QA/MapReadability_20261029T172103944Z/viewport_1280/VIEW_READY.png",
+    "copy": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/main_1280_observed.png",
+    "bytes": 842418,
+    "sha256": "188f8d96c1123fbffb4b3fe5585e051cb629389632a0540145b25ae7190bc7ac"
+  },
+  {
+    "source": "Saved/QA/MapReadability_20261029T172103944Z/viewport_640/VIEW_READY.png",
+    "copy": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/main_640_observed.png",
+    "bytes": 418274,
+    "sha256": "c1ebf47f8f13b5e54256fb64795d8777639d635ccff0a8a7b2961b3dc0474562"
+  },
+  {
+    "source": "ArtSource/AmberMarch/ArchitectureV6/citadel_preview.png",
+    "copy": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/citadel_v6_authoring_only.png",
+    "bytes": 407331,
+    "sha256": "117a25bc40ba7f87ce3f62b9c0a248b702e9d81174904df84548b8ea7e838fc5"
+  },
+  {
+    "source": "Saved/QA/MapReadability_20261029T172103944Z/receipt.json",
+    "copy": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/observed_258_partial_drift_receipt.json",
+    "bytes": 9008,
+    "sha256": "da8ed32216ac32fa5fc0d956a7eb7b432954e83b1f64e7227f455fd219bbee63"
+  },
+  {
+    "source": "Saved/QA/AdventureNative_20261029T172754410Z/receipt.json",
+    "copy": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/native_path_receipt.json",
+    "bytes": 951,
+    "sha256": "a41914f2efedd43866220894c38db6cbcc097f9449112e60211a8bcfcbe82f7f"
+  },
+  {
+    "source": "Saved/QA/AdventureNative_20261029T172754410Z/tests.log",
+    "copy": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/native_path_tests.log",
+    "bytes": 188,
+    "sha256": "1f4d3f65707188cf1f8ad06b1ec2dbe4daad089231ed9ed612c90989f4806f00"
+  },
+  {
+    "source": "Saved/QA/AdventureNative_20261029T172754410Z/compile.log",
+    "copy": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/native_path_compile.log",
+    "bytes": 56,
+    "sha256": "978c439c8107444ab289754881b741257ca535f887691bfe1e2701258154d904"
+  }
+]

@@ -1,0 +1,273 @@
+{
+  "schema": 2,
+  "status": "AUDIT_PLAN_COMPLETE_RUNTIME_PARTIAL",
+  "date_client": "2026-10-29",
+  "created_utc": "2026-10-29T17:46:00.695698+00:00",
+  "scope": "Deep source/artifact/visual-evidence research plus expanded main-campaign plan; no game implementation changes",
+  "user_selected_main_campaign": true,
+  "expanded_plan_execution_approved": false,
+  "production_source_writes_by_this_audit": 0,
+  "production_config_writes": 0,
+  "test_source_writes": 0,
+  "canon_writes": 0,
+  "git_history_or_index_writes": 0,
+  "installs_or_external_writes": 0,
+  "documents": [
+    {
+      "path": "Docs/PROJECT_COHESION_AUDIT_2026-10-29.md",
+      "bytes": 24637,
+      "sha256": "46fa19b148fc2b1ae34b50d0985086b3da63903f66c9161d32b691e46af2c94c"
+    },
+    {
+      "path": "Docs/MAIN_CAMPAIGN_VERTICAL_SLICE_2026-10-29.md",
+      "bytes": 35720,
+      "sha256": "14c984b1879bc48e358ac89791c51a7d6aa1a8ea3543e530a9e18e84fd42e029"
+    }
+  ],
+  "historical_v1": {
+    "archive": {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/plan_v1_before.md",
+      "bytes": 11758,
+      "sha256": "f59e1793d4d186e041cc1b116dc5d7c28786fc019056ad1eac6704602a25272a"
+    },
+    "receipt_path": "Docs/MAIN_CAMPAIGN_VERTICAL_SLICE_RECEIPT_2026-10-29.json",
+    "note": "V1 receipt is historical; V1 bytes preserved at archive path, not the updated V2 plan URL."
+  },
+  "audit_evidence": [
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/architecture_authoring.log",
+      "bytes": 127,
+      "sha256": "039e15ff744f3cb4d277f50c748963e45d904db7bcf99700637d375720485df7"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/build_evidence_fixtures.log",
+      "bytes": 463,
+      "sha256": "884e9eb33c4850352e12a8432cf5cf40f3da6da156484bb3acd15b7f9660e3f7"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/citadel_v6_authoring_only.png",
+      "bytes": 407331,
+      "sha256": "117a25bc40ba7f87ce3f62b9c0a248b702e9d81174904df84548b8ea7e838fc5"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/codex_static.log",
+      "bytes": 1048,
+      "sha256": "5ff2ba1c0b358da91ef7da8ca5e0df262b22e088e1a5cdce2e14127f7b8d5bac"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/main_1280_observed.png",
+      "bytes": 842418,
+      "sha256": "188f8d96c1123fbffb4b3fe5585e051cb629389632a0540145b25ae7190bc7ac"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/main_640_observed.png",
+      "bytes": 418274,
+      "sha256": "c1ebf47f8f13b5e54256fb64795d8777639d635ccff0a8a7b2961b3dc0474562"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/native_path_compile.log",
+      "bytes": 56,
+      "sha256": "978c439c8107444ab289754881b741257ca535f887691bfe1e2701258154d904"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/native_path_receipt.json",
+      "bytes": 951,
+      "sha256": "a41914f2efedd43866220894c38db6cbcc097f9449112e60211a8bcfcbe82f7f"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/native_path_tests.log",
+      "bytes": 188,
+      "sha256": "1f4d3f65707188cf1f8ad06b1ec2dbe4daad089231ed9ed612c90989f4806f00"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/observed_258_partial_drift_receipt.json",
+      "bytes": 9008,
+      "sha256": "da8ed32216ac32fa5fc0d956a7eb7b432954e83b1f64e7227f455fd219bbee63"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/observed_258_report_summary.json",
+      "bytes": 27376,
+      "sha256": "aa9014333cc41f89aaafda4e8031bbff29d23fd2ac8f412851bd6ec8d7af486b"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/observed_artifact_copies.json",
+      "bytes": 1986,
+      "sha256": "56655b899d4c6392beddc67219934019d76d93a04374f5fa5129e016d65f3830"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/plan_and_report_qc.json",
+      "bytes": 2502,
+      "sha256": "a01df4c9b1b9b962f9b4fdba2216129a4398774e1817fd6b83826b521e52900c"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/plan_v1_before.md",
+      "bytes": 11758,
+      "sha256": "f59e1793d4d186e041cc1b116dc5d7c28786fc019056ad1eac6704602a25272a"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/playable_static_gate.log",
+      "bytes": 881,
+      "sha256": "fc87d0ebde0fb768b6c9fb011df0c60d101bb59f00669bf0afc0c52298f54977"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/review_synthesis.json",
+      "bytes": 1479,
+      "sha256": "39717428378a9939cbe01eac5a76c316879ca2259bcb0d568204824468c238c0"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/route_counterexample.json",
+      "bytes": 1378,
+      "sha256": "aaeba8545b7fd912155a0f08ec16bb89bb9d1531aa00510b5a3cd520bf5df3c8"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/source_line_evidence.json",
+      "bytes": 7125,
+      "sha256": "6c0430cfd21747fb3c0265273276a8e6007ae9210ef929a2a26b29b77ee7c4f2"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/source_observation_end.json",
+      "bytes": 94497,
+      "sha256": "d6b0371efe4e09416c016e660a5df206f21c600fdbf3505b071454b0abff4c03"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/source_observation_start.json",
+      "bytes": 109078,
+      "sha256": "868dac30ea755bf383f8c11210f07f2763f51713e990c36d0aebf20991b97284"
+    },
+    {
+      "path": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/static_checks.json",
+      "bytes": 737,
+      "sha256": "2a695797a3a43fa4d32c177e22cb37d92ddaaa92dd3b8108e234ea665654f678"
+    }
+  ],
+  "verification": {
+    "sot30_static": {
+      "passed": 20,
+      "total": 20
+    },
+    "build_evidence_fixtures": {
+      "passed": 23,
+      "total": 23
+    },
+    "native_path_kernel": {
+      "checks": 5872,
+      "generated_graphs": 200,
+      "generated_queries": 1600,
+      "scope": "Actual portable production C++ header only, not Unreal adapter/HUD/campaign.",
+      "original_receipt": "Saved/QA/AdventureNative_20261029T172754410Z/receipt.json"
+    },
+    "architecture_v6_authoring": {
+      "assets": 3,
+      "triangles": 3309,
+      "previews": 3,
+      "imported": 0,
+      "runtime_verified": false
+    },
+    "playable_static_gate": {
+      "exit_code": 2,
+      "status": "STATIC_PASS_BUILD_STALE",
+      "native_execution": false
+    },
+    "existing_frozen_suite": {
+      "tests": 245,
+      "report": "Docs/AutomationRuns/20261029T161717792Z/index.json",
+      "manifest": "Docs/BuildRuns/20261029T161702109Z/compiled.json",
+      "scope": "Stored matching source/DLL provenance, not current worktree."
+    },
+    "newer_observed_suite": {
+      "tests": 258,
+      "status": "PARTIAL_DRIFT",
+      "native_visual_runs": 3,
+      "scope": "Existing workstream artifacts inspected; BaseCopy/HUD drift, not run by audit."
+    },
+    "fresh_full_unreal_run_by_audit": false,
+    "manual_complete_campaign_by_audit": false,
+    "packaged_game_by_audit": false,
+    "android_by_audit": false,
+    "real_llm_by_audit": false,
+    "document_qc": {
+      "milestones": 9,
+      "checkboxes": 50,
+      "broken_local_links": 0,
+      "utf8": "PASS",
+      "v1_archive_hash": "MATCH"
+    }
+  },
+  "findings": {
+    "source_confirmed": [
+      "F1 route budget/EndDay instruction",
+      "F2 Stage-loss textual fallback",
+      "F3 Aftermath partial info, no reward receipt",
+      "F4 source/proof drift",
+      "F5 compact army summary missing",
+      "F6 ASCII-width assumption and English dossier controls",
+      "F8 V6 authoring vs main import gap",
+      "F9 old playthrough mismatch"
+    ],
+    "hypotheses": [
+      "Actual Cyrillic pixel overflow",
+      "Empty-army CTA affordance",
+      "Cooked LoadObject asset inclusion"
+    ],
+    "not_claimed": [
+      "Engine softlock",
+      "Fast-finish stale roster",
+      "Insufficient DATA arithmetic",
+      "Complete source/security audit",
+      "Current gameplay PASS"
+    ]
+  },
+  "independent_reviews": {
+    "campaign_deep_audit": {
+      "status": "PARTIAL_READ_ONLY_SOURCE_REVIEW",
+      "confirmed": [
+        "D1 source exists; do not duplicate",
+        "Route5 vs daily4 counterexample; not engine softlock",
+        "Stage-loss HUD fallback gap",
+        "Fast finish passes all actions; no stale-roster finding",
+        "DATA10 vs slot8 arithmetic not whole-campaign proof"
+      ],
+      "native_runs": 0,
+      "production_writes": 0
+    },
+    "ux_deep_audit": {
+      "status": "PARTIAL_READ_ONLY_SOURCE_REVIEW",
+      "confirmed": [
+        "Guide/BaseCopy/Aftermath exist",
+        "Compact strategic HUD lacks Hero army summary",
+        "ASCII-width measurement conflicts with Russian dossier input",
+        "Dossier locale/palette mismatch",
+        "V6 main import/integration not proven"
+      ],
+      "hypotheses": [
+        "Cyrillic pixel overflow",
+        "Empty-army CTA affordance mismatch"
+      ],
+      "native_runs": 0,
+      "production_writes": 0
+    },
+    "qa_arch_deep_audit": {
+      "status": "PARTIAL_READ_ONLY_SOURCE_REVIEW",
+      "confirmed": [
+        "Main/Zone/AIH are distinct surfaces",
+        "258 report PARTIAL_DRIFT",
+        "Old playthrough uses legacy fixed coordinates/instant result",
+        "Packaging tool exists",
+        "Model request readiness false despite optional LocalExchange"
+      ],
+      "hypotheses": [
+        "Cooked asset inclusion for string LoadObject paths needs proof"
+      ],
+      "native_runs": 0,
+      "production_writes": 0
+    }
+  },
+  "rollback": "Own documentation/audit artifacts only. V1 archived byte-for-byte. No reset/clean, user-save deletion, art rollback or foreign-source overwrite.",
+  "next_step": "User review of V2, then separately approved M0 baseline; no automatic implementation.",
+  "DeltaDOmegaLambda": {
+    "delta": "Evidence-based expanded main-campaign cohesion plan",
+    "D": "Source observations + three partial read-only reviews + static checks + native C++ kernel + existing GPU frames",
+    "omega_percent": 90,
+    "Lambda": "Source drift, user review, runtime counterexample or new frozen PC candidate."
+  }
+}

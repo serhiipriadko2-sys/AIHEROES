@@ -21,7 +21,7 @@ FString FAIHeroesSupplyQuote::Summary() const
 
 FAIHeroesSupplyQuote FAIHeroesSupplyLines::Quote(
     const FAIHeroesSupplyAccess& Access,
-    const FAIHeroesFieldDwellings& Sites,
+    const FAIHeroesFieldDwellings& SupplySites,
     int32 Gold, int32 Wood, int32 Ore,
     const TArray<FAIHeroesArmyStack>& Army)
 {
@@ -39,12 +39,12 @@ FAIHeroesSupplyQuote FAIHeroesSupplyLines::Quote(
         Out.Reason = TEXT("CONVOY BLOCKED: own HQ and the destination territory first.");
         return Out;
     }
-    if (!FAIHeroesFieldDwellingRules::IsValid(Sites))
+    if (!FAIHeroesFieldDwellingRules::IsValid(SupplySites))
     {
         Out.Reason = TEXT("CONVOY BLOCKED: invalid field stock; nothing changed.");
         return Out;
     }
-    if (!FAIHeroesFieldDwellingRules::At(Sites, Access.Site).bClaimed)
+    if (!FAIHeroesFieldDwellingRules::At(SupplySites, Access.Site).bClaimed)
     {
         Out.Reason = TEXT("CONVOY BLOCKED: visit and claim the field site with 3 first.");
         return Out;
@@ -72,7 +72,7 @@ FAIHeroesSupplyQuote FAIHeroesSupplyLines::Quote(
 
     // Same canonical pack and army validation as local E. Evaluate a staged
     // copy so displaying a price can never consume resources or recruits.
-    FAIHeroesFieldDwellings TestSites = Sites;
+    FAIHeroesFieldDwellings TestSites = SupplySites;
     TArray<FAIHeroesArmyStack> TestArmy = Army;
     int32 TestGold = Gold, TestWood = Wood, TestOre = Ore;
     FString Error;
@@ -101,7 +101,7 @@ FAIHeroesSupplyQuote FAIHeroesSupplyLines::Quote(
 
 bool FAIHeroesSupplyLines::Dispatch(
     const FAIHeroesSupplyAccess& Access,
-    FAIHeroesFieldDwellings& Sites, int32& MovesLeft,
+    FAIHeroesFieldDwellings& SupplySites, int32& MovesLeft,
     int32& Gold, int32& Wood, int32& Ore,
     TArray<FAIHeroesArmyStack>& Army, FString& Error)
 {
@@ -113,14 +113,14 @@ bool FAIHeroesSupplyLines::Dispatch(
         return false;
     }
     const FAIHeroesSupplyQuote QuoteNow = Quote(
-        Access, Sites, Gold, Wood, Ore, Army);
+        Access, SupplySites, Gold, Wood, Ore, Army);
     if (!QuoteNow.bReady)
     {
         Error = QuoteNow.Reason;
         return false;
     }
 
-    FAIHeroesFieldDwellings NextSites = Sites;
+    FAIHeroesFieldDwellings NextSites = SupplySites;
     TArray<FAIHeroesArmyStack> NextArmy = Army;
     int32 NextGold = Gold, NextWood = Wood, NextOre = Ore;
     if (!FAIHeroesFieldDwellingRules::BuyAuthorized(
@@ -131,7 +131,7 @@ bool FAIHeroesSupplyLines::Dispatch(
     }
 
     // One commit boundary, no fallible operations after this point.
-    Sites = MoveTemp(NextSites);
+    SupplySites = MoveTemp(NextSites);
     Gold = NextGold;
     Wood = NextWood;
     Ore = NextOre;

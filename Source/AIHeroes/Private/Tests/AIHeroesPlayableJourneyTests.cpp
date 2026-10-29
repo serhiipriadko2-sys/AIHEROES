@@ -30,7 +30,14 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJourneyCampaignSource,
 bool FJourneyCampaignSource::RunTest(const FString&)
 {
     auto Input=TutorialCampaign();
-    const FName Expected[]={TEXT("FOREST"),TEXT("ORE"),TEXT("OUTPOST"),TEXT("RUINS")};
+    const FName Expected[]={FName(TEXT("FOREST")),FName(TEXT("ORE")),FName(TEXT("OUTPOST")),FName(TEXT("RUINS"))};
+    const auto Russian=FAIHeroesCampaignObjectives::Evaluate(Input).ReportRu();
+    TestEqual(TEXT("Localized dossier keeps four real goals and safety lines"),
+        Russian.Num(),7);
+    TestTrue(TEXT("Supply economy goal is player-readable"),
+        Russian[1].Contains(TEXT("лесопилку")));
+    TestTrue(TEXT("No fake AI weights claim in local report"),
+        Russian.Last().Contains(TEXT("не загружены")));
     for(int32 I=0;I<4;++I)
     {
         const auto State=FAIHeroesCampaignObjectives::Evaluate(Input);
@@ -93,6 +100,51 @@ bool FJourneyNextAction::RunTest(const FString&)
         Card.NextStep.Contains(TEXT("пути")));
     return true;
 }
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJourneyOverDayRoute,
+    "AIHeroes.PlayableJourney.OverDayRouteNeedsWaypoint",
+    EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FJourneyOverDayRoute::RunTest(const FString&)
+{
+    const auto Progress=FAIHeroesCampaignObjectives::Evaluate(TutorialCampaign());
+    FAIHeroesCampaignGuideContext C;
+    C.SelectedId=FName(TEXT("FOREST"));
+    C.bTargetDiscovered=true;
+    C.FullDayMoveBudget=4;
+    C.bNeedsMoreMoves=true;
+    C.MissingMoves=1;
+
+    C.RouteTotalCost=3;
+    auto Card=FAIHeroesCampaignGuide::Build(Progress,C);
+    TestTrue(TEXT("Short legal route can be reached after End Day"),
+        Card.NextStep.Contains(TEXT("закончите день")));
+    TestTrue(TEXT("Missing move budget is shown honestly"),
+        Card.Detail.Contains(TEXT("1")));
+
+    C.RouteTotalCost=5;C.IntermediateOwnedSite=FName(TEXT("HQ"));
+    Card=FAIHeroesCampaignGuide::Build(Progress,C);
+    TestTrue(TEXT("Route longer than every full day asks for staging"),
+        Card.NextStep.Contains(TEXT("Через Цитадель Искры")));
+    TestTrue(TEXT("Only an already-owned stage is named by the caller"),
+        Card.NextStep.Contains(TEXT("Цитадель Искры")));
+    TestTrue(TEXT("Total cost is surfaced"),
+        Card.Detail.Contains(TEXT("5")));
+    TestFalse(TEXT("Do not trap the player in endless End Day advice"),
+        Card.Detail.Contains(TEXT("Конец хода")));
+
+    C.IntermediateOwnedSite=NAME_None;
+    Card=FAIHeroesCampaignGuide::Build(Progress,C);
+    TestTrue(TEXT("No verified owned stop: show generic safe fallback"),
+        Card.Detail.Contains(TEXT("Ищите свою точку")));
+    TestFalse(TEXT("No hidden site is fabricated"),
+        Card.Detail.Contains(TEXT("Цитадель")));
+
+    C.IntermediateOwnedSite=FName(TEXT("SECRET"));
+    Card=FAIHeroesCampaignGuide::Build(Progress,C);
+    TestFalse(TEXT("Unrecognized site identifiers are never printed"),
+        Card.Detail.Contains(TEXT("SECRET")));
+    return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FJourneySafety,
     "AIHeroes.PlayableJourney.FogAndArmySafety",
     EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
@@ -131,7 +183,7 @@ bool FJourneyUpgradeInstructions::RunTest(const FString&)
     const auto Proto=FAIHeroesCampaignGuide::Build(
         FAIHeroesCampaignObjectives::Evaluate(Input),{});
     TestTrue(TEXT("Protocol guide names player-controlled progression UI"),
-        Proto.NextStep.Contains(TEXT("[Y]")));
+        Proto.NextStep.Contains(TEXT("[G]")));
     Input.ProtocolTier=3;
     const auto Model=FAIHeroesCampaignGuide::Build(
         FAIHeroesCampaignObjectives::Evaluate(Input),{});

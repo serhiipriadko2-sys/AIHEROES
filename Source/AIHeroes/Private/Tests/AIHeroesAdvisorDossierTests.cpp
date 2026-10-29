@@ -52,6 +52,54 @@ struct FDossierTestWorld
 };
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAIHeroesDossierRussianCopyTest,
+    "AIHeroes.Dossier.RussianCopyAndUnicode",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FAIHeroesDossierRussianCopyTest::RunTest(const FString& Parameters)
+{
+    FAIHeroesAdvisorDossier D;
+    D.Title = TEXT("Unknown source title");
+    TestEqual(TEXT("Unknown report title is not fabricated"),
+        FAIHeroesAdvisorDossierRules::DisplayTitle(D), D.Title);
+
+    D.bObjectives = true;
+    TestEqual(TEXT("Objectives use a Russian display title"),
+        FAIHeroesAdvisorDossierRules::DisplayTitle(D),
+        FString(TEXT("ЦЕЛИ КАМПАНИИ")));
+    D.bObjectives = false;
+    D.bRecruitment = true;
+    TestEqual(TEXT("Recruitment uses a Russian display title"),
+        FAIHeroesAdvisorDossierRules::DisplayTitle(D),
+        FString(TEXT("СОВЕТ ПО АРМИИ")));
+    D.bRecruitment = false;
+    D.bProtocolLab = true;
+    TestEqual(TEXT("Protocol analysis is not a purchase button"),
+        FAIHeroesAdvisorDossierRules::DisplayTitle(D),
+        FString(TEXT("СРАВНЕНИЕ ТАКТИК")));
+
+    TestFalse(TEXT("Stale data never has the same status as fresh data"),
+        FAIHeroesAdvisorDossierRules::FreshnessLabel(true) ==
+        FAIHeroesAdvisorDossierRules::FreshnessLabel(false));
+    TestTrue(TEXT("Stale data explicitly asks for refresh"),
+        FAIHeroesAdvisorDossierRules::FreshnessLabel(false).Contains(TEXT("ОБНОВИТЕ")));
+    for (int32 Action = FAIHeroesAdvisorDossierRules::PreviousAction;
+        Action <= FAIHeroesAdvisorDossierRules::CloseAction; ++Action)
+        TestFalse(TEXT("All four modal controls have Russian captions"),
+            FAIHeroesAdvisorDossierRules::ActionLabel(Action).IsEmpty());
+    TestEqual(TEXT("Unknown action never receives a misleading caption"),
+        FAIHeroesAdvisorDossierRules::ActionLabel(999), FString());
+
+    const FString Russian = TEXT("Сверхдлинноеназваниеперепроверкисохранений");
+    const auto Wrapped = FAIHeroesAdvisorDossierRules::Wrap({Russian}, 16);
+    TestTrue(TEXT("Cyrillic long token spans more than one line"), Wrapped.Num() > 1);
+    TestEqual(TEXT("Cyrillic report content survives wrapping"),
+        FString::Join(Wrapped, TEXT("")), Russian);
+    for (const FString& Line : Wrapped)
+        TestTrue(TEXT("Cyrillic report line respects column bound"), Line.Len() <= 16);
+    return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAIHeroesDossierWrapTest,
     "AIHeroes.Dossier.WrapAndExplicitLimits",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)

@@ -42,6 +42,10 @@ public:
     // All generated text is reachable through pages, including long tokens.
     // Oversized input gets an explicit limit marker, never silent truncation.
     static TArray<FString> Wrap(const TArray<FString>& Paragraphs, int32 Columns);
+    // UI-only labels; the original technical report and its evidence remain intact.
+    static FString DisplayTitle(const FAIHeroesAdvisorDossier& Dossier);
+    static FString FreshnessLabel(bool bFresh);
+    static FString ActionLabel(int32 ActionId);
     static int32 PageCount(int32 LineCount, int32 RowsPerPage);
     static int32 ClampPage(int32 Page, int32 Count);
     static FAIHeroesDossierLayout Layout(const FVector2D& Viewport);

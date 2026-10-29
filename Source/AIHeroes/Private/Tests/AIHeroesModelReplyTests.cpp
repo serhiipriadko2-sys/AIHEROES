@@ -10,7 +10,7 @@
 
 namespace AIHeroesModelReplyTest
 {
-FAIHeroesProposalSnapshot Fixture(bool Ready = true)
+FAIHeroesProposalSnapshot ModelReplyFixture(bool Ready = true)
 {
     FAIHeroesProposalSnapshot S;
     S.Day = 1; S.StateRevision = 7; S.bLocalModelReady = Ready; // TEST FIXTURE ONLY.
@@ -48,7 +48,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelReplyMenuTest,"AIHeroes.ModelReply.MenuPa
 bool FModelReplyMenuTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelReplyTest;
-    auto S=Fixture(); FString J,E;
+    auto S=ModelReplyFixture(); FString J,E;
     TArray<FAIHeroesAIProposal> Menu;
     TestTrue(TEXT("One engine pass produces both JSON and menu"),FAIHeroesModelRequest::Build(S,
         FString::ChrN(32,'a'),FString::ChrN(32,'b'),EAIHeroesModelGoal::AssessSelected,J,E,&Menu));
@@ -79,7 +79,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelReplyAuthorityTest,"AIHeroes.ModelReply.R
 bool FModelReplyAuthorityTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelReplyTest;
-    auto S=Fixture(false); S.bRemoteModelReady=true; S.bRemoteInferenceApproved=true;
+    auto S=ModelReplyFixture(false); S.bRemoteModelReady=true; S.bRemoteInferenceApproved=true;
     FAIHeroesModelReplySession R; Begin(R,S);
     FString Fake=Reply(R.GetRequestId()); Fake.RemoveAt(Fake.Len()-1);
     Fake+=TEXT(",\"bLocalModelReady\":true}");
@@ -101,7 +101,7 @@ bool FModelReplyDriftTest::RunTest(const FString& Parameters)
     using namespace AIHeroesModelReplyTest;
     for(int32 Case=0;Case<10;++Case)
     {
-        auto S=Fixture(); FAIHeroesModelReplySession R; Begin(R,S);
+        auto S=ModelReplyFixture(); FAIHeroesModelReplySession R; Begin(R,S);
         const FString Response=Reply(R.GetRequestId()); FString Context=TEXT("engine-context");
         switch(Case)
         {
@@ -129,7 +129,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelReplyCorrelationTest,"AIHeroes.ModelReply
 bool FModelReplyCorrelationTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelReplyTest;
-    const auto S=Fixture(); FAIHeroesModelReplySession R;
+    const auto S=ModelReplyFixture(); FAIHeroesModelReplySession R;
     Begin(R,S); const FString Old=Reply(R.GetRequestId());
     Begin(R,S); const FString Fresh=Reply(R.GetRequestId());
     TestNotEqual(TEXT("New request has a new token"),Old,Fresh);
@@ -153,7 +153,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelReplyClockTest,"AIHeroes.ModelReply.Deadl
 bool FModelReplyClockTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelReplyTest;
-    const auto S=Fixture(); FAIHeroesModelReplySession R; FString J,E;
+    const auto S=ModelReplyFixture(); FAIHeroesModelReplySession R; FString J,E;
     for(double Time:{-1.0,9.0,15.0,1000.0,std::numeric_limits<double>::infinity(),std::numeric_limits<double>::quiet_NaN()})
     {
         Begin(R,S); const auto V=R.Complete(S,TEXT("engine-context"),Reply(R.GetRequestId()),Time);
@@ -199,7 +199,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelReplySweepTest,"AIHeroes.ModelReply.Forei
 bool FModelReplySweepTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelReplyTest;
-    const auto S=Fixture(); FAIHeroesModelReplySession R; Begin(R,S);
+    const auto S=ModelReplyFixture(); FAIHeroesModelReplySession R; Begin(R,S);
     int32 Rejected=0;
     for(int32 I=0;I<512;++I)
     {
@@ -219,12 +219,12 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelReplyMenuFailureTest,"AIHeroes.ModelReply
 bool FModelReplyMenuFailureTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelReplyTest;
-    auto S=Fixture(); S.StateRevision=0;
+    auto S=ModelReplyFixture(); S.StateRevision=0;
     FString J=TEXT("old"),E; TArray<FAIHeroesAIProposal> Menu; Menu.AddDefaulted();
     TestFalse(TEXT("Invalid snapshot rejected"),FAIHeroesModelRequest::Build(S,
         FString::ChrN(32,'a'),FString::ChrN(32,'b'),EAIHeroesModelGoal::AssessSelected,J,E,&Menu));
     TestTrue(TEXT("Both outputs clear atomically"),J.IsEmpty() && Menu.IsEmpty());
-    S=Fixture(); FAIHeroesModelReplySession R;
+    S=ModelReplyFixture(); FAIHeroesModelReplySession R;
     S.Strategic.ProtocolTier=0;TestFalse(TEXT("SEED cannot begin inference request"),Begin(R,S));
     S.Strategic.ProtocolTier=1;S.bBattleActive=true;TestFalse(TEXT("Active battle cannot begin"),Begin(R,S));
     return true;
@@ -241,7 +241,7 @@ bool FModelReplyGameModeTest::RunTest(const FString& Parameters)
     if(!TestNotNull(TEXT("Disposable world exists"),World)) return false;
     if(GEngine) GEngine->CreateNewWorldContext(EWorldType::Game).SetCurrentWorld(World);
     auto* Game=World->SpawnActor<AAIHeroesGameMode>();
-    const auto S=Fixture(false);
+    const auto S=ModelReplyFixture(false);
     if(Game)
     {
         for(const auto& N:S.Strategic.Nodes)

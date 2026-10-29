@@ -1,0 +1,480 @@
+{
+  "schema": "aiheroes.main-campaign.m0-m1.execution.v1",
+  "status": "AUTOMATED_PASS_HUMAN_ACCEPTANCE_PARTIAL",
+  "created_utc": "2026-10-29T19:21:19.542125+00:00",
+  "head": "40049ea80faabf59346d130826801dfbdb1ceeb1",
+  "scope": "Main campaign M0 baseline and bounded M1 display/query completion; existing parallel code preserved",
+  "implemented": [
+    "Guard-aware objective guide and shared order eligibility",
+    "Independently reachable owned-waypoint query, without selecting or revealing",
+    "Rest-for-staging explanation rather than impossible whole-route promise"
+  ],
+  "scope_not_changed": [
+    "balance",
+    "Grid V1/V2 rules",
+    "save schema",
+    "default GameMode",
+    "SoT30 canon",
+    "agent/runtime/connector policy"
+  ],
+  "source_inputs": 253,
+  "source_change_paths_since_m0": [
+    "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp",
+    "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+    "Source/AIHeroes/Private/AIHeroesTravelGameMode.cpp",
+    "Source/AIHeroes/Private/AIHeroesTravelPresentationSmoke.cpp",
+    "Source/AIHeroes/Private/Tests/AIHeroesCampaignGuidanceTests.cpp",
+    "Source/AIHeroes/Public/AIHeroesCampaignGuide.h",
+    "Source/AIHeroes/Public/AIHeroesGameMode.h"
+  ],
+  "binary": {
+    "path": "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+    "bytes": 2994688,
+    "sha256": "6df9bef93d9679c65b62cd71a413fa39e01efe01ad21b97186af978411ac3a60"
+  },
+  "tests": {
+    "group": "AIHeroes",
+    "succeeded": 278,
+    "failed": 0,
+    "not_run": 0,
+    "in_process": 0,
+    "warnings": 0,
+    "new_regressions": [
+      "AIHeroes.PlayableJourney.EmptyArmyGuidanceRespectsBattleRequirement",
+      "AIHeroes.PlayableJourney.ExhaustedMovesRestOnlyForStagingLeg",
+      "AIHeroes.PlayableJourney.OrderEligibilityTruthTable",
+      "AIHeroes.PlayableJourney.WaypointQueryDoesNotSelectOrReveal"
+    ]
+  },
+  "tdd_red": {
+    "report": {
+      "path": "Docs/AutomationRuns/20261029T190006409Z/index.json",
+      "bytes": 2009,
+      "sha256": "524da0c4e33c5f0c7742d8335a536ceee9cc3a22fdc3b4d013158a18bf21bbe8"
+    },
+    "failed_tests": 1,
+    "expected_assertions": [
+      "Expected 'A safe visit remains available with an empty army' to be true.",
+      "Expected 'Do not make recruitment a fictitious movement requirement' to be false."
+    ],
+    "note": "Unreal exit0 was rejected by the report-verifying wrapper; compiler/API errors are not counted as this RED"
+  },
+  "visual": {
+    "mode": "Visible scripted disposable fixtures, not human input or balance acceptance",
+    "map_base_widths": [
+      1280,
+      960,
+      640
+    ],
+    "map_base_frames": 21,
+    "battle_scenarios": [
+      {
+        "scenario": "Victory",
+        "native_exit": 0,
+        "receipt": {
+          "path": "Docs/VisualRuns/20261029T191436957Z_Victory/evidence.json",
+          "bytes": 2963,
+          "sha256": "d578acd93d3e35bbb9de3ece3a91335e69271ff8f4cc8c44baf142f260c6e48d"
+        }
+      },
+      {
+        "scenario": "Defeat",
+        "native_exit": 0,
+        "receipt": {
+          "path": "Docs/VisualRuns/20261029T191504667Z_Defeat/evidence.json",
+          "bytes": 2998,
+          "sha256": "af336148d77c91d376f4c03ad676a729b9eb4ab18c75b43c8e7e7f2a4190d438"
+        }
+      },
+      {
+        "scenario": "TwoGroups",
+        "native_exit": 0,
+        "receipt": {
+          "path": "Docs/VisualRuns/20261029T191532284Z_TwoGroups/evidence.json",
+          "bytes": 3046,
+          "sha256": "e77bfa7a445610a00fd4f0f5f4fc5266983508433024a21692e60b52a84c6efc"
+        }
+      }
+    ],
+    "battle_frames": 18,
+    "inspected_images": [
+      "Saved/QA/MapReadability_20261029T191125370Z/viewport_1280/VIEW_BASE.png",
+      "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_BASE.png",
+      "Saved/QA/MapReadability_20261029T191125370Z/viewport_960/VIEW_BASE.png",
+      "Saved/QA/MapReadability_20261029T191125370Z/viewport_1280/VIEW_STAGED_ROUTE.png",
+      "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_STAGED_ROUTE.png",
+      "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_EMPTY_ARMY_GUARDED.png",
+      "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_EMPTY_ARMY_SAFE.png",
+      "Docs/VisualRuns/20261029T191532284Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_2X.png",
+      "Docs/VisualRuns/20261029T191504667Z_Defeat/LIVE_GRID_V2_DEFEAT_RESULT.png"
+    ],
+    "all_frame_hashes": [
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_1280/VIEW_READY.png",
+        "bytes": 834129,
+        "sha256": "2399e99778e704ed7ddd6ecce43d744b12472ea1c8e2f25da1b9b034d9336a42"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_1280/VIEW_MOVING.png",
+        "bytes": 795294,
+        "sha256": "04b9561c147402599b16abb8cbe6df7247c237966f89c7db8995266433f135a0"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_1280/VIEW_OVER_BUDGET.png",
+        "bytes": 797029,
+        "sha256": "fe188b1e1efea913f298ee039f20f2efecd0933eb5a3f48add769bc8d38f78d5"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_1280/VIEW_BASE.png",
+        "bytes": 207317,
+        "sha256": "8033c70fe568971b95baa0aa2a5c2e2ca9169a9f152f5a32709b9d27eb62e29f"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_1280/VIEW_EMPTY_ARMY_GUARDED.png",
+        "bytes": 789713,
+        "sha256": "4cabdefbddfbf8051d273b407fb8f2c025d975a862909bf401ed58cea5a7cfc3"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_1280/VIEW_EMPTY_ARMY_SAFE.png",
+        "bytes": 789093,
+        "sha256": "64e8b51f92ee36a5c708bb0eff2ba7f7a755d98fde3cd957b8b1c512c27e28d0"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_1280/VIEW_STAGED_ROUTE.png",
+        "bytes": 803536,
+        "sha256": "cf34f8e28dc414f1da71844856e5ac8490be0cd0719d5bba20baf5ae0bcb8591"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_960/VIEW_READY.png",
+        "bytes": 609867,
+        "sha256": "b684a06285d4ae9177eda6d94d6a78ca96299aa46e4aef184c460c9e0cb6ce8b"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_960/VIEW_MOVING.png",
+        "bytes": 591300,
+        "sha256": "2de44a4d488b3de0eb3fd5c8fc807c6b1de32a994e25602abb20fed64cda581e"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_960/VIEW_OVER_BUDGET.png",
+        "bytes": 592916,
+        "sha256": "1df97e2c4e69de307492ececeded33e1a6a6b4f5f621299578f07295c9e89cd6"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_960/VIEW_BASE.png",
+        "bytes": 157329,
+        "sha256": "b7060745da37ff77d19d2014173440826767d4cc148c859418c6c89ac6fca061"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_960/VIEW_EMPTY_ARMY_GUARDED.png",
+        "bytes": 593750,
+        "sha256": "e7789689d7ed886a9b00677da6a35d27b3641a3a7429fd1598c50189accd9723"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_960/VIEW_EMPTY_ARMY_SAFE.png",
+        "bytes": 591711,
+        "sha256": "07de2dfba3f478f9692004d50f9a212c7eb3a7b1b7c50668e1ec90a933bd8da2"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_960/VIEW_STAGED_ROUTE.png",
+        "bytes": 601088,
+        "sha256": "cd7ea7335c121ce46fa9d852edb858385872cbbddf435cc743d2a89a60ccdc1b"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_READY.png",
+        "bytes": 412171,
+        "sha256": "18f76fcf41df775143876740cc0f7573683cdd33b27cd5794f980c28e399c97f"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_MOVING.png",
+        "bytes": 406796,
+        "sha256": "873ec6c98d69893b3c2ee93a75ae8d6394a1c911c6a7001c0a500121bbe5ad10"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_OVER_BUDGET.png",
+        "bytes": 405188,
+        "sha256": "efef675216281c8cf561b9f384a20f15358d51a7c081ac05654eaa37fe4bdd1d"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_BASE.png",
+        "bytes": 144883,
+        "sha256": "b1876a8178d37ebe45f11ad1e58082155bb4fbd7866a2d584a22b884ccc06db1"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_EMPTY_ARMY_GUARDED.png",
+        "bytes": 409451,
+        "sha256": "84396cfa84fb1b28c430b66cc5c0a609d98f564e79298c734339021aa8e45660"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_EMPTY_ARMY_SAFE.png",
+        "bytes": 405915,
+        "sha256": "fe295baa01cce78faa50ea347e2bedd17c48d66de026d57f39d2c241bdd2113a"
+      },
+      {
+        "path": "Saved/QA/MapReadability_20261029T191125370Z/viewport_640/VIEW_STAGED_ROUTE.png",
+        "bytes": 413664,
+        "sha256": "91afb242290964312d71f0f5a43433fc4b3853edd04746ca6a7e8557b5836845"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191436957Z_Victory/LIVE_GRID_V2_START.png",
+        "bytes": 665912,
+        "sha256": "bbe37cf710bd1e973522c76707bc933732950c6e1959d44f7f490f533f197699"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191436957Z_Victory/LIVE_GRID_V2_PAUSED.png",
+        "bytes": 647938,
+        "sha256": "097c811daaa339d5fc0665091b470f0138e4b043341ec096c4afd2da3e0781f7"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191436957Z_Victory/LIVE_GRID_V2_2X.png",
+        "bytes": 694281,
+        "sha256": "11aa06eec6a4401bee3cfe23f2e7e05b4e45755c10428294f11516f82d1ffd21"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191436957Z_Victory/LIVE_GRID_V2_RESULT.png",
+        "bytes": 694733,
+        "sha256": "eb3c29b9f5af40ec88cd84beb3553d0fb2cb23c25416941f359db27c7b44e1b3"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191436957Z_Victory/LIVE_GRID_V2_RETURN.png",
+        "bytes": 794589,
+        "sha256": "1c92aac377963d8c0adb75cedfb35e44161c742b37e7d22d20692c09e1da80d6"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191436957Z_Victory/LIVE_GRID_V2_DOSSIER.png",
+        "bytes": 123856,
+        "sha256": "db7f05bc0a06485802c60afd05e4362aa048f34fe15f0954c2b6a8530719fafe"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191504667Z_Defeat/LIVE_GRID_V2_DEFEAT_START.png",
+        "bytes": 659004,
+        "sha256": "122a7c099debc97cc692735e1a3c1e11b85ce03a3a70589dba4e7b44fa685ed8"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191504667Z_Defeat/LIVE_GRID_V2_DEFEAT_PAUSED.png",
+        "bytes": 627140,
+        "sha256": "506e250e87e1e672c8cfacadd016f5d004abd6f5ecd63a9a2b640bc2ac8d4704"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191504667Z_Defeat/LIVE_GRID_V2_DEFEAT_2X.png",
+        "bytes": 680601,
+        "sha256": "f231aa02dbde197337ac8f5aef76694333c2537a56542bbda596c8a23bb447bd"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191504667Z_Defeat/LIVE_GRID_V2_DEFEAT_RESULT.png",
+        "bytes": 681787,
+        "sha256": "400154959793429ed3b37d691fa70f15f22612b53b53fa58bc822f0e334cc852"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191504667Z_Defeat/LIVE_GRID_V2_DEFEAT_RETURN.png",
+        "bytes": 789863,
+        "sha256": "c310ae71337a437ca707552b9851a80c96e05ac90ffb9ff7de8c5afdc47dd6a5"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191504667Z_Defeat/LIVE_GRID_V2_DEFEAT_DOSSIER.png",
+        "bytes": 124382,
+        "sha256": "fdc4271cbfb25e4db650dc7f6114949b480f22fe5fe56020de34a3a1c347bdaf"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191532284Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_START.png",
+        "bytes": 643648,
+        "sha256": "ad27cbb94566ff8b32ee5489191d5f12c8d52c52204c8f506a9ff86373c3b00e"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191532284Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_PAUSED.png",
+        "bytes": 652757,
+        "sha256": "296c63c5ed9bd7b16108f58f418313205bdf03a68fad2c8fa87c01bd903bd8d1"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191532284Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_2X.png",
+        "bytes": 705444,
+        "sha256": "19375540b768685b6861e02dbeddc182da1b787b0807b1c17a84330d59de969c"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191532284Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RESULT.png",
+        "bytes": 679299,
+        "sha256": "8ecbcd7fed50112a5f12818f95e8d0a003475dcae1e139d047c9399e9b117167"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191532284Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RETURN.png",
+        "bytes": 793837,
+        "sha256": "ef715ef6aeaec9e1c3435691041c7a6bdd0ed8e824d23f2b2fb5db1cb6f497b7"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T191532284Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_DOSSIER.png",
+        "bytes": 123708,
+        "sha256": "b5b843786b46f73e92352f9086f671f4a53f0b569eb9d70525dc7c614c3d57da"
+      }
+    ]
+  },
+  "preservation": {
+    "content_files_verified": 53,
+    "content_hashes_unchanged": true,
+    "player_save_files_verified": 4,
+    "player_save_hashes_unchanged": true,
+    "git_head_unchanged": true,
+    "source_and_binary_current": true
+  },
+  "changed_files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesCampaignGuide.h",
+      "bytes": 1804,
+      "sha256": "2ba6ac578f1ce5572a257b4a9a1f4d6791a35bd486945c1e2819e00085ba92bd",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesCampaignGuide.h",
+      "baseline_sha256": "6584f2740f8105fa2465109a45fb27b9855dcb0f5e873e4bccd7764884a81b39"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp",
+      "bytes": 6257,
+      "sha256": "544c16caaebccfab6b879983eda605d6e90f428f45e43e10ca66e169d2cf5cc7",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesCampaignGuide.cpp",
+      "baseline_sha256": "ffd40976624b957f75974c03e424ff1daec73ee6ecb85624fad911ac47c7ab55"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+      "bytes": 19423,
+      "sha256": "155fb292c22d42c07aecc8dddfdcc4b04045fd2bb2a0c22ae153adf7801b815c",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesExplorerHUD.cpp",
+      "baseline_sha256": "337adced3e0a873c428e13fdc4fe4b4d1ecc76cccec8ffedc2473e3231922260"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+      "bytes": 13727,
+      "sha256": "0a013ac3aef54186ff15c2dfc18fb6eebd8d3df92d4e7fd1bc5f8704feda4d31",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesGameMode.h",
+      "baseline_sha256": "9da69b4f303359bb8478df8c7f3b28ef2c0f36b8c1149ab3170b11e287a877bb"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelGameMode.cpp",
+      "bytes": 4195,
+      "sha256": "06e2a0781ec42345bb6d5f54e18dfd259f13cd0170f14ef4c033fdd7fabc1a31",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesTravelGameMode.cpp",
+      "baseline_sha256": "dfe2cc8a097738bc8e3930ba61c5c04b89d6a803def313a280179bd50598b941"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelPresentationSmoke.cpp",
+      "bytes": 10735,
+      "sha256": "b929cbdaaf1bcefb5c4dae65086c4156e3a066979520b6c10ea4ff84a157becd",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesTravelPresentationSmoke.cpp",
+      "baseline_sha256": "f11c4a9db1cd6e307615fd1058a3f96c236f4db7df7b9d4ee6efc4df424dbd61"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesCampaignGuidanceTests.cpp",
+      "bytes": 7067,
+      "sha256": "67aa90abb88e2504e74949f8a67749f36507055a50c12a9a950a4a09fa319a99",
+      "baseline_path": null,
+      "baseline_sha256": null
+    },
+    {
+      "path": "Tools/verify_map_readability.ps1",
+      "bytes": 9810,
+      "sha256": "a0023e58aa879984a4053a592cd9539a07ee11c506b3226c9feb370e40a87c8e",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_verify_map_readability.ps1",
+      "baseline_sha256": "6071c6efd345b1180a3138c6094ac26ec2107a25dbe270ba1776fb1796c74bbd"
+    },
+    {
+      "path": "Tools/verify_one_playable_campaign.py",
+      "bytes": 8937,
+      "sha256": "9f5f742347ff64822f123f364ae5174df64b3ee2c9de926e487beffa749eb2c4",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_verify_one_playable_campaign.py",
+      "baseline_sha256": "c7c0564b39eba64e2f16a75b1f11f15d5eae97efad62ac0504a563cbc7da6041"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "Docs/BuildRuns/20261029T190649733Z/compiled.json",
+      "bytes": 69846,
+      "sha256": "dfd978154e5a8ab184ed73d9b3ef1ea2b879b583437553b01ffeac075fe3c732"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T190945101Z/index.json",
+      "bytes": 110928,
+      "sha256": "e421696def53967f262558a6496c988f12bdc82f35301dd92da9a02b0c99a485"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T190945101Z/provenance.json",
+      "bytes": 69966,
+      "sha256": "ca85900121ea370171cb5f206d54765e31883fc8ecb7eca9106969bacc855783"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T190006409Z/index.json",
+      "bytes": 2009,
+      "sha256": "524da0c4e33c5f0c7742d8335a536ceee9cc3a22fdc3b4d013158a18bf21bbe8"
+    },
+    {
+      "path": "Saved/QA/MapReadability_20261029T191125370Z/receipt.json",
+      "bytes": 13447,
+      "sha256": "99f1ecb8c8f341e414f94d05d3c1bc95bfff89b2acb9d9bbb468d530ec960d2b"
+    },
+    {
+      "path": "Docs/MAIN_CAMPAIGN_EXECUTION_LEDGER_2026-10-29.md",
+      "bytes": 10180,
+      "sha256": "ce0eb81dbfed97576aade13e60f08c2213c4590eed2161c4888a2aa2311dea6c"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_owned_changes.patch",
+      "bytes": 25711,
+      "sha256": "2af137b1b55341d59606e2b85901d2e548f03f49f3c404552404386a217bfb33"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_owned_diff_manifest.json",
+      "bytes": 3548,
+      "sha256": "a361e8b6f0f63ab7b45dd348a593481959d462d3adc37b4d2ce3d160e60e602f"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/reproduce_guide_day_trap.py",
+      "bytes": 9881,
+      "sha256": "3ebde1b4e70a6bfa8c8f7e1f31e910bbeddade802fbccc7718b33fe62f9829f3"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/content-manifest.json",
+      "bytes": 14732,
+      "sha256": "121c673d016eeb8e8b9a03c8f5b73d55862c5335fa0e8e42389226cc556d75c3"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/player-saves-before.json",
+      "bytes": 1249,
+      "sha256": "2e38a4c520a670889d677a2cf33cebf07f0b0a71bd6ea72483dbf8ead0de19eb"
+    }
+  ],
+  "final_checks": [
+    {
+      "check": "sot30",
+      "exit": 0,
+      "log": {
+        "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/final_sot30.log",
+        "bytes": 194,
+        "sha256": "3d5b879a9d9bf5a10c65ed5fa126b9ff87d578bb5876502279c6a49e89b42e59"
+      }
+    },
+    {
+      "check": "static",
+      "exit": 0,
+      "log": {
+        "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/final_static.log",
+        "bytes": 1375,
+        "sha256": "aafbd47e314a60e5e4fd5f828ecfc15940e06638cb232c1fd6c889bd9e366ed9"
+      }
+    },
+    {
+      "check": "diff_check",
+      "exit": 0,
+      "log": {
+        "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/final_diff_check.log",
+        "bytes": 3482,
+        "sha256": "e93df151da1fbceb0197975395a29bc438d97daad99d7d5b6b0ad31ca696eb62"
+      }
+    }
+  ],
+  "limits": [
+    "VS Code UI bridge unavailable; exact workspace task scripts ran via terminal, not UI clicks",
+    "Human keyboard/mouse acceptance and a continuous campaign remain unverified",
+    "Separate fixture launches do not prove consecutive battles or campaign balance",
+    "Compact map army summary still absent; base palette and some English event toasts need cohesion work",
+    "Safe-visit synthetic frame retains an earlier failed-order toast after direct guard reset; subsequent actual safe confirmation passes",
+    "M2 live presentation-loss and M3 actual reward receipt are next scoped gates",
+    "No Game/cook/package, Android or real LLM acceptance claimed",
+    "Build logs include the pre-existing non-preferred MSVC-version warning; test warnings are zero"
+  ],
+  "rollback": "Only own hunks in m1_owned_changes.patch after matching current hashes; never restore whole shared files over later edits. No rollback performed.",
+  "delta": "M1 implemented; native RED to GREEN, same-DLL scripted map/base/battle verification; human acceptance remains partial"
+}

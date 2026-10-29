@@ -1,0 +1,23 @@
+﻿{
+    "checks":  5872,
+    "observed_utc":  "2026-10-29T17:27:59.7851165Z",
+    "player_save_writes":  0,
+    "generated_queries":  1600,
+    "campaign_integration":  false,
+    "engine_adapter_verified":  false,
+    "files":  [
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesAdventurePathCore.h",
+                      "bytes":  5078,
+                      "sha256":  "7A4FA5E0D4823AE558E8D48A2BEFD41A5898A241F2C7721F33A89E6160B62E23"
+                  },
+                  {
+                      "path":  "Tests/adventure_path_native.cpp",
+                      "bytes":  8233,
+                      "sha256":  "FE7D1E198ED0289B31BB15AC8707AAF3FB7F6C28C28BECC84EDD840BAFF23A17"
+                  }
+              ],
+    "generated_graphs":  200,
+    "status":  "PASS_NATIVE_CPP_KERNEL_ONLY",
+    "executable_sha256":  "7CA26610DE4A3356BEC81BFDD43D5ACF089AC6554DB3265762425041CF2CD5BF"
+}

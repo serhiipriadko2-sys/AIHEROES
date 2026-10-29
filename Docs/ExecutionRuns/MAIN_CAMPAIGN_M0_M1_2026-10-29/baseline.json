@@ -1,0 +1,55 @@
+{
+  "kind": "execution_baseline_not_compiled",
+  "utc": "2026-10-29T18:43:19.409421+00:00",
+  "git_head": "40049ea80faabf59346d130826801dfbdb1ceeb1",
+  "scope": [
+    "Source/AIHeroes/Public/AIHeroesCampaignGuide.h",
+    "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp",
+    "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+    "Source/AIHeroes/Private/Tests/AIHeroesPlayableJourneyTests.cpp",
+    "Source/AIHeroes/Private/Tests/AIHeroesTravelIntegrationTests.cpp",
+    "Tools/verify_one_playable_campaign.py"
+  ],
+  "files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesCampaignGuide.h",
+      "bytes": 1270,
+      "sha256": "6584f2740f8105fa2465109a45fb27b9855dcb0f5e873e4bccd7764884a81b39",
+      "baseline_copy": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/before_AIHeroesCampaignGuide.h"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp",
+      "bytes": 5612,
+      "sha256": "b18a29511babcacf1b1d3c7daebcf5344f8886ec3069e9444b25b3c661f16615",
+      "baseline_copy": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/before_AIHeroesCampaignGuide.cpp"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+      "bytes": 18572,
+      "sha256": "7ea15655ce0eb2625cea26c5e7dbae893d50f77a810caeef951e3d32c4fe7728",
+      "baseline_copy": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/before_AIHeroesExplorerHUD.cpp"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesPlayableJourneyTests.cpp",
+      "bytes": 10011,
+      "sha256": "5becc0f8fc908d7c1b83d5cf88c6737066bb961801d1eff8372bc5044f3f8590",
+      "baseline_copy": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/before_AIHeroesPlayableJourneyTests.cpp"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesTravelIntegrationTests.cpp",
+      "bytes": 17589,
+      "sha256": "e24cd3388f0cae1e1387dd7ba5ed5f01387487077fe5dbe63b7f83a8c9fc23ad",
+      "baseline_copy": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/before_AIHeroesTravelIntegrationTests.cpp"
+    },
+    {
+      "path": "Tools/verify_one_playable_campaign.py",
+      "bytes": 7824,
+      "sha256": "c7c0564b39eba64e2f16a75b1f11f15d5eae97efad62ac0504a563cbc7da6041",
+      "baseline_copy": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/before_verify_one_playable_campaign.py"
+    }
+  ],
+  "git_status_short": " M .vscode/tasks.json\n D Docs/AIHEROES_BUILD_LATEST.json\n M Docs/MAIN_CAMPAIGN_VERTICAL_SLICE_2026-10-29.md\n M Source/AIHeroes/Private/AIHeroesBasePanelHUD.cpp\n M Source/AIHeroes/Private/AIHeroesBattleHUD.cpp\n M Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp\n M Source/AIHeroes/Private/AIHeroesCampaignObjectives.cpp\n M Source/AIHeroes/Private/AIHeroesCampaignObjectivesGameMode.cpp\n M Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp\n M Source/AIHeroes/Private/AIHeroesHUD.cpp\n M Source/AIHeroes/Private/AIHeroesModelRequest.cpp\n M Source/AIHeroes/Private/AIHeroesSupplyLines.cpp\n M Source/AIHeroes/Private/Tests/AIHeroesLocalExchangeTests.cpp\n M Source/AIHeroes/Private/Tests/AIHeroesModelReplyTests.cpp\n M Source/AIHeroes/Private/Tests/AIHeroesModelRequestTests.cpp\n M Source/AIHeroes/Private/Tests/AIHeroesPlayableJourneyTests.cpp\n M Source/AIHeroes/Private/Tests/AIHeroesTravelIntegrationTests.cpp\n M Source/AIHeroes/Public/AIHeroesCampaignGuide.h\n M Source/AIHeroes/Public/AIHeroesCampaignObjectives.h\n M Source/AIHeroes/Public/AIHeroesGameMode.h\n M Source/AIHeroes/Public/AIHeroesHUD.h\n?? Docs/BASE_PANEL_RUSSIAN_UI_V1_2026-10-29.md\n?? Docs/BuildRuns/20261029T172754393Z/\n?? Docs/BuildRuns/20261029T172858033Z/\n?? Docs/BuildRuns/20261029T184120592Z/\n?? Docs/ExecutionRuns/\n?? Docs/MAIN_CAMPAIGN_VICTORY_UI_2026-10-29.md\n?? Docs/MAIN_CAMPAIGN_VICTORY_UI_RECEIPT_2026-10-29.json\n?? Docs/MAIN_CAMPAIGN_VICTORY_UI_RECEIPT_V2_2026-10-29.json\n?? Docs/PLAYABLE_BATTLE_AFTERMATH_2026-10-29.md\n?? Docs/PLAYABLE_BATTLE_AFTERMATH_RECEIPT_2026-10-29.json\n?? Docs/PLAYABLE_MAIN_CAMPAIGN_GUIDE_RECEIPT_2026-10-29.json\n?? Docs/PLAYABLE_MAIN_CAMPAIGN_GUIDE_V1.md\n?? Docs/PLAYABLE_STATIC_GATE_RECEIPT_2026-10-29.json\n?? Docs/PROJECT_COHESION_AUDIT_2026-10-29.md\n?? Docs/PROJECT_COHESION_AUDIT_RECEIPT_2026-10-29.json\n?? Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/\n?? Source/AIHeroes/Private/AIHeroesBasePanelCopy.cpp\n?? Source/AIHeroes/Private/AIHeroesBattleAftermath.cpp\n?? Source/AIHeroes/Private/AIHeroesBattleFallbackView.cpp\n?? Source/AIHeroes/Private/AIHeroesExplorerCopy.cpp\n?? Source/AIHeroes/Private/AIHeroesVictoryHUD.cpp\n?? Source/AIHeroes/Private/AIHeroesVictoryPresentation.cpp\n?? Source/AIHeroes/Private/Tests/AIHeroesBasePanelCopyTests.cpp\n?? Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp\n?? Source/AIHeroes/Private/Tests/AIHeroesBattleFallbackViewTests.cpp\n?? Source/AIHeroes/Private/Tests/AIHeroesExplorerCopyTests.cpp\n?? Source/AIHeroes/Private/Tests/AIHeroesVictoryPresentationTests.cpp\n?? Source/AIHeroes/Public/AIHeroesBasePanelCopy.h\n?? Source/AIHeroes/Public/AIHeroesBattleAftermath.h\n?? Source/AIHeroes/Public/AIHeroesBattleFallbackView.h\n?? Source/AIHeroes/Public/AIHeroesExplorerCopy.h\n?? Source/AIHeroes/Public/AIHeroesVictoryPresentation.h\n?? Tools/verify_base_panel_ui.py\n?? Tools/verify_one_playable_campaign.py\n?? Tools/verify_victory_overlay_portable.py\n",
+  "build_attempt": "Docs/BuildRuns/20261029T184120592Z/build.log",
+  "build_status": "FAIL_ENVIRONMENT_COMMIT_LIMIT_1455",
+  "unreal_gui_bridge": "unavailable: missing sandboxPolicy"
+}

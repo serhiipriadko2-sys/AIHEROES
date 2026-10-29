@@ -186,6 +186,8 @@ public:
     void ReturnFromLiveBattle();
     int32 GetSelectedMoveCost() const;
     FAIHeroesAdventurePathResult GetSelectedTravelPath() const;
+    // Read-only query for known current sites; does not select, move or reveal.
+    FAIHeroesAdventurePathResult GetTravelPathTo(FName Destination) const;
     FString GetSelectionSummary() const;
 
     FString GetArmySummary() const;

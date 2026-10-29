@@ -1,0 +1,59 @@
+﻿{
+    "schema":  "aiheroes.explorer-compact-ux.v1",
+    "timestamp":  "2026-10-29T21:47:28.1736519+03:00",
+    "stage":  "SOURCE_IMPLEMENTED_CPP_UNITS_COMPILED_FULL_BUILD_FAILED_MEMORY",
+    "project_root":  "C:\\github\\AIHEROES",
+    "implementation":  "Narrow primary labels plus exact-known Russian event messages",
+    "file_count":  5,
+    "files":  [
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesExplorerCopy.h",
+                      "bytes":  414,
+                      "sha256":  "3b5e623cbeb25a685f7a1dfeefc464a5a0b60491937ecd2fd378435f85488177"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesExplorerCopy.cpp",
+                      "bytes":  2562,
+                      "sha256":  "0dc48b5be91d0ff35e4e3d220d84d92678d764881c8597487559d72fe2c2d4da"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+                      "bytes":  18572,
+                      "sha256":  "7ea15655ce0eb2625cea26c5e7dbae893d50f77a810caeef951e3d32c4fe7728"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/Tests/AIHeroesExplorerCopyTests.cpp",
+                      "bytes":  4070,
+                      "sha256":  "04dce5ec2ebd2f52c33f0b6f1d8bcf1838033e1ac10bcbebd30b69f1bf7ea0e1"
+                  },
+                  {
+                      "path":  "Docs/EXPLORER_COMPACT_UX_2026-10-29.md",
+                      "bytes":  5106,
+                      "sha256":  "25511f454efe404fbd83b4f4b5315636f269bd9d1ebd3c82d24bb2de0c1bb069"
+                  }
+              ],
+    "readback_pass":  true,
+    "compiled_units":  [
+                           "AIHeroesExplorerCopy.cpp",
+                           "AIHeroesExplorerCopyTests.cpp",
+                           "AIHeroesExplorerHUD.cpp"
+                       ],
+    "compiler_error_in_those_units":  "NONE_REPORTED",
+    "full_ubt_build":  "FAILED_C3859_C1076_WINDOWS_1455",
+    "automation_tests_run":  0,
+    "actual_current_game_screenshots":  0,
+    "evidence_build_log":  "C:\\github\\AIHEROES\\Saved\\QA\\MapReadability_20261029T184406803Z\\build.log",
+    "unchanged_player_saves":  4,
+    "save_drift_count":  0,
+    "four_cpp_inputs_match_compilation_snapshot":  true,
+    "new_automatic_orders":  0,
+    "gameplay_rules_changes":  0,
+    "android_qa":  "NOT_RUN",
+    "git_commit_or_push":  false,
+    "ui_verified_in_editor":  false,
+    "rollback_files":  [
+                           "Saved\\QA\\ExplorerCopy_20261029\\AIHeroesExplorerHUD.before.cpp",
+                           "Saved\\QA\\ExplorerCopy_20261029\\AIHeroesExplorerCopy.before.cpp"
+                       ],
+    "nonclaim":  "No Win64 gameplay PASS, no Android readiness, no new gameplay screenshot"
+}

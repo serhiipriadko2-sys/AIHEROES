@@ -4,6 +4,7 @@ namespace
 {
 FString LocalizedTarget(FName Id)
 {
+    if(Id==FName(TEXT("HQ")))return TEXT("Цитадель Искры");
     if(Id==FName(TEXT("FOREST")))return TEXT("Лесопилка");
     if(Id==FName(TEXT("ORE")))return TEXT("Рудник");
     if(Id==FName(TEXT("OUTPOST")))return TEXT("Сторожевая башня");
@@ -16,6 +17,12 @@ bool IsMapTarget(FName Id)
     return Id==FName(TEXT("FOREST")) || Id==FName(TEXT("ORE")) ||
         Id==FName(TEXT("OUTPOST")) || Id==FName(TEXT("RUINS"));
 }
+}
+
+bool FAIHeroesCampaignGuide::CanOfferOrder(
+    bool bRouteReady, bool bHasArmy, bool bRequiresBattle)
+{
+    return bRouteReady && (bHasArmy || !bRequiresBattle);
 }
 
 FAIHeroesCampaignGuideCard FAIHeroesCampaignGuide::Build(
@@ -46,8 +53,8 @@ FAIHeroesCampaignGuideCard FAIHeroesCampaignGuide::Build(
     const FName Id=Progress.NextFocusId;
     if(Id==FName(TEXT("PROTOCOL")))
     {
-        Result.NextStep=TEXT("Улучшите протокол героя [Y]");
-        Result.Detail=TEXT("Откройте «Развитие» и выберите следующий протокол.");
+        Result.NextStep=TEXT("Купите протокол в «Постройках» [G]");
+        Result.Detail=TEXT("Покупка в «Постройках». «Тактики [Y]» — только анализ.");
         return Result;
     }
     if(Id==FName(TEXT("MODEL_SLOT")))
@@ -64,7 +71,7 @@ FAIHeroesCampaignGuideCard FAIHeroesCampaignGuide::Build(
         return Result;
     }
     const FString Target=LocalizedTarget(Id);
-    if(!Context.bHasArmy)
+    if(!Context.bHasArmy && Context.bTargetGuarded)
     {
         Result.NextStep=TEXT("Армия пуста: наймите бойцов [G]");
         Result.Detail=TEXT("Сначала подготовьте армию на базе.");
@@ -84,10 +91,40 @@ FAIHeroesCampaignGuideCard FAIHeroesCampaignGuide::Build(
         Result.NextStep=Target+TEXT(": выберите на карте");
         Result.Detail=TEXT("Затем «Спросить» и подтвердите поход.");
     }
-    else if(Context.bRouteReady)
+    else if(CanOfferOrder(Context.bRouteReady, Context.bHasArmy, Context.bTargetGuarded))
     {
         Result.NextStep=Target+TEXT(": подтвердите поход");
         Result.Detail=TEXT("Вы решаете, куда идти. ИИ проводит бой.");
+    }
+    else if(Context.bNeedsMoreMoves &&
+            Context.FullDayMoveBudget>0 &&
+            Context.RouteTotalCost>Context.FullDayMoveBudget)
+    {
+        // End Day cannot help when the full route is longer than every
+        // future day's allowance. The player must choose a legal staging
+        // point manually. Never imply that a selected long path will auto-move.
+        const FString Stop=LocalizedTarget(Context.IntermediateOwnedSite);
+        if(!Stop.IsEmpty())
+        {
+            // The mission ribbon has a single 270px text line at 1280x720:
+            // put the actual waypoint first, not after a clipped sentence.
+            Result.NextStep=FString(TEXT("Через "))+Stop;
+            Result.Detail=FString::Printf(
+                TEXT("Путь %d > %d/день. Выберите эту точку."),
+                Context.RouteTotalCost,Context.FullDayMoveBudget);
+        }
+        else if(Context.bOwnedStopAfterRest)
+        {
+            Result.NextStep=TEXT("Восстановите ходы для остановки");
+            Result.Detail=TEXT("Конец хода, затем своя промежуточная точка. Не весь путь сразу.");
+        }
+        else
+        {
+            Result.NextStep=TEXT("Нужна остановка по пути");
+            Result.Detail=FString::Printf(
+                TEXT("Путь %d > %d/день. Ищите свою точку."),
+                Context.RouteTotalCost,Context.FullDayMoveBudget);
+        }
     }
     else if(Context.bNeedsMoreMoves)
     {

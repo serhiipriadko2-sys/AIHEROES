@@ -1,0 +1,26 @@
+{
+    "schema":  1,
+    "created_utc":  "2026-10-29T18:55:33.3482107Z",
+    "entries":  [
+                    {
+                        "path":  "Saved/SaveGames/AIHEROES_Campaign_Resilient_v1_Player2_A.sav",
+                        "bytes":  8530,
+                        "sha256":  "d12466b364e271c7e58ff96bdd208b4ad61efc608e91d90afc258ca27268b88b"
+                    },
+                    {
+                        "path":  "Saved/SaveGames/AIHEROES_Campaign_Resilient_v1_Player2_B.sav",
+                        "bytes":  5889,
+                        "sha256":  "a445bc8c044d885ded728d8721985c9091bd087bddbcf465f4eff3e15d1fc032"
+                    },
+                    {
+                        "path":  "Saved/SaveGames/AIHEROES_Campaign_Resilient_v1_Player3_A.sav",
+                        "bytes":  5814,
+                        "sha256":  "c38e74f81ab3abfa8d50c85b0786eef41fbf86856d518f36effdc8e2351938c0"
+                    },
+                    {
+                        "path":  "Saved/SaveGames/AIHEROES_Campaign_v1.sav",
+                        "bytes":  5915,
+                        "sha256":  "b8f625fb811c83cba8f45db97ddf2628feef0af7245cfc2ebb460ff00048000b"
+                    }
+                ]
+}

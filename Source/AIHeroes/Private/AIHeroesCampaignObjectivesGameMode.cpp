@@ -36,9 +36,9 @@ void AAIHeroesGameMode::ShowCampaignObjectives()
     }
     // This is a read-only report, not a command to change campaign state.
     const FAIHeroesCampaignProgress Progress = GetCampaignProgress();
-    LastHint = Progress.Headline();
-    RecordAdvisorDossier(TEXT("CAMPAIGN OBJECTIVES"),
-        Progress.Report(), false, true);
+    LastHint = FString::Printf(TEXT("Цели кампании: %d/%d"),Progress.Completed,Progress.Total);
+    RecordAdvisorDossier(TEXT("ЦЕЛИ КАМПАНИИ"),
+        Progress.ReportRu(), false, true);
     bAdvisorDossierOpen = true;
     UE_LOG(LogTemp, Display, TEXT("[AI HEROES OBJECTIVES] OPEN %d/%d victory=%d no_order=1"),
         Progress.Completed, Progress.Total, Progress.bVictory);

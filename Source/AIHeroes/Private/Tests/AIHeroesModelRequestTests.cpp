@@ -9,7 +9,7 @@ namespace AIHeroesModelRequestTest
 {
 const FString Request(TEXT("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
 const FString Session(TEXT("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"));
-FAIHeroesProposalSnapshot Fixture()
+FAIHeroesProposalSnapshot ModelRequestFixture()
 {
     FAIHeroesProposalSnapshot S;
     S.Day = 1; S.StateRevision = 7;
@@ -46,7 +46,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelRequestVisibilityTest,"AIHeroes.ModelRequ
 bool FModelRequestVisibilityTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelRequestTest;
-    const auto S=Fixture(); FString J;
+    const auto S=ModelRequestFixture(); FString J;
     TestTrue(TEXT("Engine snapshot exported"),Export(S,J));
     TestTrue(TEXT("Version pinned"),J.Contains(TEXT("\"schema\":\"aiheroes.hero-request.v1\"")));
     TestTrue(TEXT("Visible target and guard included"),J.Contains(TEXT("FOREST")) && J.Contains(TEXT("Wolf")));
@@ -63,7 +63,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelRequestLegalMenuTest,"AIHeroes.ModelReque
 bool FModelRequestLegalMenuTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelRequestTest;
-    auto S=Fixture(); S.Strategic.ExploredSitesMask=31; FString J;
+    auto S=ModelRequestFixture(); S.Strategic.ExploredSitesMask=31; FString J;
     TestTrue(TEXT("Known map exported"),Export(S,J));
     TestTrue(TEXT("Forest quoted by real solver"),J.Contains(TEXT("\"order\":\"AttackNode\",\"target_node\":\"FOREST\",\"cost\":2")));
     TestFalse(TEXT("No free transit through forest guards"),J.Contains(TEXT("\"target_node\":\"OUTPOST\"")));
@@ -86,7 +86,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelRequestPhaseTest,"AIHeroes.ModelRequest.S
 bool FModelRequestPhaseTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelRequestTest;
-    auto S=Fixture(); FString J;
+    auto S=ModelRequestFixture(); FString J;
     S.Strategic.ProtocolTier=0;
     TestTrue(TEXT("SEED status may be represented"),Export(S,J));
     TestTrue(TEXT("SEED has no formal orders"),J.Contains(TEXT("\"legal_orders\":[]")));
@@ -96,7 +96,7 @@ bool FModelRequestPhaseTest::RunTest(const FString& Parameters)
     S.bBattleActive=false; S.Strategic.PlayerArmy.Empty();
     TestTrue(TEXT("Unarmed state can be inspected"),Export(S,J));
     TestTrue(TEXT("No attacks without a living army"),J.Contains(TEXT("\"legal_orders\":[]")));
-    S=Fixture(); S.Strategic.MovesLeft=0;
+    S=ModelRequestFixture(); S.Strategic.MovesLeft=0;
     TestTrue(TEXT("No movement is still a valid state"),Export(S,J));
     TestTrue(TEXT("No affordable orders"),J.Contains(TEXT("\"legal_orders\":[]")));
     return true;
@@ -110,7 +110,7 @@ bool FModelRequestBoundsTest::RunTest(const FString& Parameters)
     FString J,Error;
     for (int32 Case=0; Case<12; ++Case)
     {
-        auto S=Fixture(); FString R=Request, T=Session;
+        auto S=ModelRequestFixture(); FString R=Request, T=Session;
         auto Goal=EAIHeroesModelGoal::AssessSelected;
         switch(Case)
         {
@@ -140,7 +140,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelRequestStabilityTest,"AIHeroes.ModelReque
 bool FModelRequestStabilityTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelRequestTest;
-    auto S=Fixture(); FString Before,After;
+    auto S=ModelRequestFixture(); FString Before,After;
     TestTrue(TEXT("Initial export"),Export(S,Before));
     S.Strategic.Nodes.Swap(0,4); S.Strategic.Nodes.Swap(1,2);
     TestTrue(TEXT("Reordered engine list valid"),Export(S,After));
@@ -161,7 +161,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FModelRequestLegacyTest,"AIHeroes.ModelRequest.
 bool FModelRequestLegacyTest::RunTest(const FString& Parameters)
 {
     using namespace AIHeroesModelRequestTest;
-    auto S=Fixture(); S.Strategic.TravelRuleVersion=1;
+    auto S=ModelRequestFixture(); S.Strategic.TravelRuleVersion=1;
     S.Strategic.bFogEnabled=false; S.Strategic.ExploredSitesMask=0;
     S.Strategic.SelectedNodeId=NAME_None;
     for(int32 Slot=0; Slot<3; ++Slot)

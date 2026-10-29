@@ -50,6 +50,32 @@ TArray<FString> FAIHeroesAdvisorDossierRules::Wrap(
     return Lines;
 }
 
+FString FAIHeroesAdvisorDossierRules::DisplayTitle(
+    const FAIHeroesAdvisorDossier& Dossier)
+{
+    if (Dossier.bObjectives) return TEXT("ЦЕЛИ КАМПАНИИ");
+    if (Dossier.bRecruitment) return TEXT("СОВЕТ ПО АРМИИ");
+    if (Dossier.bProtocolLab) return TEXT("СРАВНЕНИЕ ТАКТИК");
+    return Dossier.Title;
+}
+
+FString FAIHeroesAdvisorDossierRules::FreshnessLabel(bool bFresh)
+{
+    return bFresh ? TEXT("ДАННЫЕ АКТУАЛЬНЫ") : TEXT("ДАННЫЕ УСТАРЕЛИ — ОБНОВИТЕ");
+}
+
+FString FAIHeroesAdvisorDossierRules::ActionLabel(int32 ActionId)
+{
+    switch (ActionId)
+    {
+        case PreviousAction: return TEXT("НАЗАД");
+        case NextAction: return TEXT("ДАЛЕЕ");
+        case RefreshAction: return TEXT("ОБНОВИТЬ");
+        case CloseAction: return TEXT("ЗАКРЫТЬ");
+        default: return FString();
+    }
+}
+
 int32 FAIHeroesAdvisorDossierRules::PageCount(int32 LineCount, int32 RowsPerPage)
 {
     const int64 Rows = FMath::Max(1, RowsPerPage);

@@ -272,6 +272,46 @@
         "clear": true
       },
       "problemMatcher": []
+    },
+    {
+      "label": "AIHEROES: Check Russian base UI (read-only)",
+      "type": "process",
+      "command": "python",
+      "args": [
+        "-B",
+        "Tools/verify_base_panel_ui.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "AIHEROES: Check Russian dossier (read-only)",
+      "type": "process",
+      "command": "python",
+      "args": [
+        "-B",
+        "Tools/verify_dossier_russian_ui.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
     }
   ]
 }

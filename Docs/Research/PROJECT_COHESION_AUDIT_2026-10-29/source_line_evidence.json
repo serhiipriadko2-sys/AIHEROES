@@ -1,0 +1,291 @@
+{
+  "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp": [
+    {
+      "term": "bVictory",
+      "found": [
+        {
+          "line": 27,
+          "text": "Result.bVictory=Progress.bVictory;"
+        },
+        {
+          "line": 31,
+          "text": "if(Progress.bVictory)"
+        }
+      ]
+    },
+    {
+      "term": "PROTOCOL",
+      "found": [
+        {
+          "line": 47,
+          "text": "if(Id==FName(TEXT(\"PROTOCOL\")))"
+        }
+      ]
+    },
+    {
+      "term": "bHasArmy",
+      "found": [
+        {
+          "line": 67,
+          "text": "if(!Context.bHasArmy)"
+        }
+      ]
+    },
+    {
+      "term": "bNeedsMoreMoves",
+      "found": [
+        {
+          "line": 92,
+          "text": "else if(Context.bNeedsMoreMoves)"
+        }
+      ]
+    },
+    {
+      "term": "закончите день",
+      "found": [
+        {
+          "line": 94,
+          "text": "Result.NextStep=TEXT(\"Не хватает ходов: закончите день\");"
+        }
+      ]
+    }
+  ],
+  "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp": [
+    {
+      "term": "const auto Guide=",
+      "found": [
+        {
+          "line": 169,
+          "text": "const auto Guide=FAIHeroesCampaignGuide::Build(Progress,GuideContext);"
+        }
+      ]
+    },
+    {
+      "term": "Guide.NextStep",
+      "found": [
+        {
+          "line": 174,
+          "text": "Text(Guide.NextStep,F.Mission.X+41,F.Mission.Y+25,F.Mission.W-50,Paper,.96f);"
+        }
+      ]
+    },
+    {
+      "term": "Guide.Detail",
+      "found": [
+        {
+          "line": 242,
+          "text": "Text(Guide.FocusId==GuideContext.SelectedId?Guide.Detail:TEXT(\"Вы выбираете путь. ИИ ведёт бой.\"),X,Y+178,Span,Teal,.92f);"
+        },
+        {
+          "line": 254,
+          "text": "if(F.bWide){Text(Guide.Detail,X,Y+85,Span,Paper);Text(TEXT(\"Нажмите «Цели», чтобы увидеть все задачи\"),X,Y+120,Span,Muted,.88f);Text(TEXT(\"Игровой приказ всегда подтверждаете вы\"),X,Y+155,Span,Teal,.88f);}"
+        }
+      ]
+    },
+    {
+      "term": "Button(400",
+      "found": [
+        {
+          "line": 281,
+          "text": "Button(400,TEXT(\"Постройки [G]\"));Button(203,TEXT(\"Тактики [Y]\"));Button(1,TEXT(\"Спросить [H]\"));Button(2,TEXT(\"Конец хода\"));"
+        }
+      ]
+    },
+    {
+      "term": "Purpose(",
+      "found": [
+        {
+          "line": 40,
+          "text": "FString Purpose(EAIHeroesNodeType T)"
+        },
+        {
+          "line": 239,
+          "text": "Text(Purpose(N->NodeType),X,Y+82,Span,Paper,1.04f);"
+        }
+      ]
+    },
+    {
+      "term": "GetDailyGoldIncome",
+      "found": [
+        {
+          "line": 137,
+          "text": "if(I==0)Text(FString::Printf(TEXT(\"+%d / день\"),G.GetDailyGoldIncome()),X+36,49,W-42,Teal,.72f);"
+        }
+      ]
+    }
+  ],
+  "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp": [
+    {
+      "term": "if(Stage)",
+      "found": [
+        {
+          "line": 40,
+          "text": "if(Stage)"
+        }
+      ]
+    },
+    {
+      "term": "GetPresentedCaption",
+      "found": [
+        {
+          "line": 74,
+          "text": "const FString Caption=Stage?Stage->GetPresentedCaption():TEXT(\"Подготавливаем поле боя…\");"
+        }
+      ]
+    },
+    {
+      "term": "Подготавливаем",
+      "found": [
+        {
+          "line": 74,
+          "text": "const FString Caption=Stage?Stage->GetPresentedCaption():TEXT(\"Подготавливаем поле боя…\");"
+        }
+      ]
+    }
+  ],
+  "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp": [
+    {
+      "term": "continuing validated",
+      "found": [
+        {
+          "line": 160,
+          "text": "SetEvent(TEXT(\"Arena visual unavailable: continuing validated actions in text.\"));"
+        }
+      ]
+    },
+    {
+      "term": "GetLiveBattleStatus",
+      "found": [
+        {
+          "line": 292,
+          "text": "FString AAIHeroesGameMode::GetLiveBattleStatus() const"
+        }
+      ]
+    },
+    {
+      "term": "GetLiveArmyStatus",
+      "found": [
+        {
+          "line": 302,
+          "text": "FString AAIHeroesGameMode::GetLiveArmyStatus(bool bPlayer) const"
+        }
+      ]
+    },
+    {
+      "term": "bLiveBattleCommitted = true",
+      "found": [
+        {
+          "line": 200,
+          "text": "bLiveBattleCommitted = true;"
+        }
+      ]
+    },
+    {
+      "term": "ShowResult",
+      "found": [
+        {
+          "line": 222,
+          "text": "if (IsValid(LiveBattleStage.Get())) LiveBattleStage->ShowResult(LiveResultText);"
+        }
+      ]
+    }
+  ],
+  "Source/AIHeroes/Private/AIHeroesLiveBattleStage.cpp": [
+    {
+      "term": "GetPresentedCaption",
+      "found": [
+        {
+          "line": 589,
+          "text": "FString AAIHeroesLiveBattleStage::GetPresentedCaption() const"
+        }
+      ]
+    },
+    {
+      "term": "CurrentAction.Reason",
+      "found": []
+    },
+    {
+      "term": "Результат применён",
+      "found": [
+        {
+          "line": 591,
+          "text": "if(bResultShown) return TEXT(\"Бой завершён. Результат применён один раз; вернитесь на карту.\");"
+        }
+      ]
+    }
+  ],
+  "Source/AIHeroes/Private/AIHeroesGameMode.cpp": [
+    {
+      "term": "void AAIHeroesGameMode::BeginPlay",
+      "found": [
+        {
+          "line": 58,
+          "text": "void AAIHeroesGameMode::BeginPlay()"
+        }
+      ]
+    },
+    {
+      "term": "void AAIHeroesGameMode::RecruitMilitia",
+      "found": [
+        {
+          "line": 232,
+          "text": "void AAIHeroesGameMode::RecruitMilitia()"
+        }
+      ]
+    },
+    {
+      "term": "Recruited 5 militia",
+      "found": [
+        {
+          "line": 262,
+          "text": "TEXT(\"Recruited 5 militia at HQ. Unpurchased militia: %d.\"),"
+        }
+      ]
+    },
+    {
+      "term": "void AAIHeroesGameMode::RecruitScouts",
+      "found": [
+        {
+          "line": 266,
+          "text": "void AAIHeroesGameMode::RecruitScouts()"
+        }
+      ]
+    },
+    {
+      "term": "SaveCampaign",
+      "found": [
+        {
+          "line": 648,
+          "text": "void AAIHeroesGameMode::SaveCampaign()"
+        }
+      ]
+    },
+    {
+      "term": "LoadCampaign",
+      "found": [
+        {
+          "line": 727,
+          "text": "void AAIHeroesGameMode::LoadCampaign()"
+        }
+      ]
+    }
+  ],
+  "Source/AIHeroes/Private/AIHeroesBasePanelHUD.cpp": [
+    {
+      "term": "BASE MANAGEMENT",
+      "found": []
+    },
+    {
+      "term": "Offer.Title",
+      "found": []
+    },
+    {
+      "term": "Offer.Detail",
+      "found": []
+    },
+    {
+      "term": "Offer.BlockReason",
+      "found": []
+    }
+  ]
+}

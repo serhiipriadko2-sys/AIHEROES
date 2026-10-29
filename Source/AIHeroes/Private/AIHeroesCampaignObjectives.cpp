@@ -61,6 +61,45 @@ TArray<FString> FAIHeroesCampaignProgress::Report() const
     return Lines;
 }
 
+TArray<FString> FAIHeroesCampaignProgress::ReportRu() const
+{
+    TArray<FString> Lines;
+    Lines.Add(bVictory
+        ? TEXT("ПОБЕДА: все четыре условия кампании выполнены.")
+        : FString::Printf(TEXT("ЦЕЛИ КАМПАНИИ: %d из %d выполнено."),
+            FMath::Clamp(Completed,0,Total), Total));
+    for(const FAIHeroesCampaignGoal& Goal:Goals)
+    {
+        const TCHAR* Title=TEXT("Неизвестная цель");
+        const TCHAR* Meaning=TEXT("Нет подтверждённого описания.");
+        if(Goal.Id==FName(TEXT("ECONOMY")))
+        {
+            Title=TEXT("Сеть снабжения");
+            Meaning=TEXT("Захватите лесопилку и рудник.");
+        }
+        else if(Goal.Id==FName(TEXT("FRONTIER")))
+        {
+            Title=TEXT("Безопасные рубежи");
+            Meaning=TEXT("Освободите сторожевую башню и древний архив.");
+        }
+        else if(Goal.Id==FName(TEXT("PROTOCOL")))
+        {
+            Title=TEXT("Развитие Искры");
+            Meaning=TEXT("Купите три игровых протокола через Постройки.");
+        }
+        else if(Goal.Id==FName(TEXT("MODEL_SLOT")))
+        {
+            Title=TEXT("Слот модели");
+            Meaning=TEXT("Откройте тематический слот 8B. Это не загрузка весов.");
+        }
+        Lines.Add(FString::Printf(TEXT("%s  %s  (%d/%d). %s"),
+            Goal.IsComplete()?TEXT("[ГОТОВО]"):TEXT("[В ПРОЦЕССЕ]"),
+            Title,Goal.Current,Goal.Required,Meaning));
+    }
+    Lines.Add(TEXT("Вы выбираете путь, набор армии и покупки. ИИ ведёт бой по правилам."));
+    Lines.Add(TEXT("Слоты 1B/3B/8B обозначают игровые улучшения; настоящие веса модели не загружены."));
+    return Lines;
+}
 FAIHeroesCampaignProgress FAIHeroesCampaignObjectives::Evaluate(
     const FAIHeroesCampaignObjectiveInput& Input)
 {

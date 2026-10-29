@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "status": "PASS_DOCUMENT_QC_NOT_IMPLEMENTATION",
+  "documents": [
+    {
+      "path": "Docs/PROJECT_COHESION_AUDIT_2026-10-29.md",
+      "bytes": 24637,
+      "sha256": "46fa19b148fc2b1ae34b50d0985086b3da63903f66c9161d32b691e46af2c94c",
+      "lines": 268,
+      "words_whitespace": 1924
+    },
+    {
+      "path": "Docs/MAIN_CAMPAIGN_VERTICAL_SLICE_2026-10-29.md",
+      "bytes": 35720,
+      "sha256": "14c984b1879bc48e358ac89791c51a7d6aa1a8ea3543e530a9e18e84fd42e029",
+      "lines": 382,
+      "words_whitespace": 2735
+    }
+  ],
+  "milestones": [
+    "M0",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M8"
+  ],
+  "checkboxes": 50,
+  "local_links_checked": 11,
+  "broken_local_links": [],
+  "v1_archived_exactly": true,
+  "user_selected_main_campaign": true,
+  "expanded_execution_approval": false,
+  "source_drift_during_audit": {
+    "new": [
+      "Source/AIHeroes/Private/AIHeroesBasePanelCopy.cpp",
+      "Source/AIHeroes/Private/AIHeroesBattleAftermath.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesBasePanelCopyTests.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp",
+      "Source/AIHeroes/Public/AIHeroesBasePanelCopy.h",
+      "Source/AIHeroes/Public/AIHeroesBattleAftermath.h"
+    ],
+    "missing": [],
+    "changed": [
+      "Source/AIHeroes/Private/AIHeroesBasePanelHUD.cpp",
+      "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp",
+      "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+      "Source/AIHeroes/Private/AIHeroesHUD.cpp",
+      "Source/AIHeroes/Private/AIHeroesModelRequest.cpp",
+      "Source/AIHeroes/Private/AIHeroesSupplyLines.cpp",
+      "Source/AIHeroes/Private/AIHeroesVictoryHUD.cpp",
+      "Source/AIHeroes/Private/AIHeroesVictoryPresentation.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesLocalExchangeTests.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesModelReplyTests.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesModelRequestTests.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesVictoryPresentationTests.cpp",
+      "Source/AIHeroes/Public/AIHeroesVictoryPresentation.h"
+    ]
+  },
+  "end_input_count": 246,
+  "end_test_literal_count": 263,
+  "limits": [
+    "Static registration literals are not actual engine discovery.",
+    "No full current Unreal build or playthrough was executed by this audit.",
+    "Source changed during audit; line references describe read-back versions."
+  ]
+}

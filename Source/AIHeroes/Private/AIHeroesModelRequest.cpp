@@ -120,7 +120,7 @@ bool FAIHeroesModelRequest::Build(const FAIHeroesProposalSnapshot& S,
         A.MovesLeft, S.bBattleActive ? TEXT("true") : TEXT("false"), GoalName(Goal));
     J += Selected ? FString::Printf(TEXT("\"%s\""), *Selected->Id.ToString()) : TEXT("null");
     J += FString::Printf(TEXT(",\"resources\":{\"gold\":%d,\"wood\":%d,\"ore\":%d},\"player_army\":"), A.Gold, A.Wood, A.Ore);
-    AppendArmy(J, A.PlayerArmy);
+    AIHeroesModelRequestDetail::AppendArmy(J, A.PlayerArmy);
     J += TEXT(",\"visible_nodes\":[");
     for (int32 I = 0; I < Visible.Num(); ++I)
     {
@@ -128,7 +128,7 @@ bool FAIHeroesModelRequest::Build(const FAIHeroesProposalSnapshot& S,
         const auto& N = *Visible[I];
         J += FString::Printf(TEXT("{\"id\":\"%s\",\"type\":\"%s\",\"owned\":%s,\"guards\":"),
             *N.Id.ToString(), TypeName(N.Type), N.bOwned ? TEXT("true") : TEXT("false"));
-        AppendArmy(J, N.Guards);
+        AIHeroesModelRequestDetail::AppendArmy(J, N.Guards);
         J += TEXT("}");
     }
     J += TEXT("],\"legal_orders\":[");

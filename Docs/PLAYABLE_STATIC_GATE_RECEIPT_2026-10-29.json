@@ -1,0 +1,87 @@
+{
+  "schema": "aiheroes.playable-loop-static-gate-receipt.v1",
+  "observed_local": "2026-10-29T20:22:44.097054+03:00",
+  "status": "STATIC_PASS_BUILD_STALE",
+  "head_at_receipt": "40049ea",
+  "tool": {
+    "path": "Tools/verify_one_playable_campaign.py",
+    "bytes": 7824,
+    "sha256": "c7c0564b39eba64e2f16a75b1f11f15d5eae97efad62ac0504a563cbc7da6041"
+  },
+  "checks": {
+    "count": 12,
+    "passed": 12,
+    "results": {
+      "configured_main_campaign": true,
+      "canonical_next_objective": true,
+      "guide_reads_canonical_id_not_english_text": true,
+      "keyboard_g_opens_base": true,
+      "keyboard_y_opens_read_only_lab": true,
+      "click_controls_match_keyboard": true,
+      "buttons_label_real_actions": true,
+      "protocol_goal_points_to_purchase_not_lab": true,
+      "model_slot_goal_points_to_base": true,
+      "goal_ribbon_is_read_only_shortcut": true,
+      "guide_filters_hidden_goal": true,
+      "regression_checks_registered": true
+    },
+    "negative_probe_wrong_Y_rejected": true,
+    "source_hash_stable_during_probe": true
+  },
+  "build_snapshot": {
+    "fresh": false,
+    "manifest_inputs": 229,
+    "changed_or_missing": [
+      "CHANGED:Source/AIHeroes/Private/AIHeroesArtDirection.cpp",
+      "CHANGED:Source/AIHeroes/Private/AIHeroesBasePanelHUD.cpp",
+      "CHANGED:Source/AIHeroes/Private/AIHeroesCampaignObjectives.cpp",
+      "CHANGED:Source/AIHeroes/Private/AIHeroesCampaignObjectivesGameMode.cpp",
+      "CHANGED:Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+      "CHANGED:Source/AIHeroes/Private/AIHeroesExplorerLayout.cpp",
+      "CHANGED:Source/AIHeroes/Private/AIHeroesHUD.cpp",
+      "CHANGED:Source/AIHeroes/Private/AIHeroesModelRequest.cpp",
+      "CHANGED:Source/AIHeroes/Private/AIHeroesSupplyLines.cpp",
+      "CHANGED:Source/AIHeroes/Private/AIHeroesZoneExpeditionArt.cpp",
+      "CHANGED:Source/AIHeroes/Private/Tests/AIHeroesLocalExchangeTests.cpp",
+      "CHANGED:Source/AIHeroes/Private/Tests/AIHeroesModelReplyTests.cpp",
+      "CHANGED:Source/AIHeroes/Private/Tests/AIHeroesModelRequestTests.cpp",
+      "CHANGED:Source/AIHeroes/Public/AIHeroesCampaignObjectives.h",
+      "CHANGED:Source/AIHeroes/Public/AIHeroesHUD.h"
+    ],
+    "changed_or_missing_count": 15,
+    "unlisted_source": [
+      "Source/AIHeroes/Private/AIHeroesBasePanelCopy.cpp",
+      "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp",
+      "Source/AIHeroes/Private/AIHeroesReliefV5.cpp",
+      "Source/AIHeroes/Private/AIHeroesVictoryHUD.cpp",
+      "Source/AIHeroes/Private/AIHeroesVictoryPresentation.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesArchitectureV6Tests.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesBasePanelCopyTests.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesPlayableJourneyTests.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesReliefV5Tests.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesVictoryPresentationTests.cpp",
+      "Source/AIHeroes/Public/AIHeroesBasePanelCopy.h",
+      "Source/AIHeroes/Public/AIHeroesCampaignGuide.h",
+      "Source/AIHeroes/Public/AIHeroesReliefV5.h",
+      "Source/AIHeroes/Public/AIHeroesVictoryPresentation.h"
+    ],
+    "unlisted_source_count": 14,
+    "editor_binary_matches_manifest": false,
+    "note": "Editor compile freshness only; no cook, package, native tests or human playthrough."
+  },
+  "source_hashes_sha256": {
+    "Config/DefaultEngine.ini": "23b86ae2e17e2f651c2084cea6efe8e4c56a9bfe6d93e93c63b71a9105de6701",
+    "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp": "5daf265cee261d4802ddb4dd504f38165629f08d20de08ec56f71a6ae291657f",
+    "Source/AIHeroes/Private/AIHeroesCampaignObjectives.cpp": "f918add081608758bc5ba18e3208c886a3fa19b94bfd439a93d638e501a0f346",
+    "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp": "f49da3cdde48d94d6d511f2d8864add5a39114470feaba3c8993f343bae6ab37",
+    "Source/AIHeroes/Private/AIHeroesExplorerLayout.cpp": "23fa47f04402ff078dad15dcdf75d399b480fedbb858bd55a1a72de7f947bc92",
+    "Source/AIHeroes/Private/AIHeroesPlayerController.cpp": "0f2f486eb0e98704a48d41ca524bade3fe5169b8991a77631b1d3fce6617c3df",
+    "Source/AIHeroes/Private/Tests/AIHeroesPlayableJourneyTests.cpp": "412c1a44b4897f8e88e93b79a60aeff1ff2bfc3c057e0b3de79cdc7b064a49bb"
+  },
+  "native_unreal_tests": "NOT_RUN",
+  "visual_playthrough": "NOT_RUN",
+  "android": "NOT_RUN",
+  "source_file_mutations_by_this_gate": 0,
+  "git_writes_by_this_gate": 0,
+  "limitations": "Static wiring tests only. Build manifest freshness is not a new compile, cooking, gameplay, or device test."
+}

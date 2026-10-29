@@ -1,0 +1,74 @@
+{
+    "schema":  1,
+    "status":  "SOURCE_EDITED_STATIC_QC_PASS_ENGINE_BUILD_PENDING",
+    "observed_utc":  "2026-10-29T17:17:39.3183727Z",
+    "purpose":  "Primary five-site campaign victory feedback, not new game rules",
+    "scope":  "Read-only UI layout, HUD paint and hit consumption, two new tests",
+    "files":  [
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesHUD.cpp",
+                      "bytes":  22405,
+                      "sha256":  "e078fe5a500f2bbdda3f64d0aa0d60048b608679392bf7e5182ee2ef3aa02fff",
+                      "lines":  457
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesHUD.h",
+                      "bytes":  1154,
+                      "sha256":  "cf38fae6067f237c3ea4546daf3f0258f65d07d1f6656f9395b4b105fc4bd495",
+                      "lines":  32
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesVictoryPresentation.h",
+                      "bytes":  818,
+                      "sha256":  "eec4c85eb9de471a5c4109dc28eeed1983106ac6a552c2ec5ea588c2aecc9042",
+                      "lines":  19
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesVictoryPresentation.cpp",
+                      "bytes":  1804,
+                      "sha256":  "6825fc28b52750162bde12cb4098079c5bc196f772126ad6fe1cd3277c27a23c",
+                      "lines":  52
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesVictoryHUD.cpp",
+                      "bytes":  2918,
+                      "sha256":  "b35964826ca6b0faf50d8d9ab2944ce4fbc123f61323ecd90bbd292289a377b3",
+                      "lines":  73
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/Tests/AIHeroesVictoryPresentationTests.cpp",
+                      "bytes":  5381,
+                      "sha256":  "4008f2aee8db6917a8e8f17c76c1acc53510ec2fcdbcd684d72b6b2f689cb65b",
+                      "lines":  126
+                  },
+                  {
+                      "path":  "Docs/MAIN_CAMPAIGN_VICTORY_UI_2026-10-29.md",
+                      "bytes":  8930,
+                      "sha256":  "0b915919ee77d3cb67c55121b13dbbdb5a22d444a713164638b3650fe840684f",
+                      "lines":  49
+                  }
+              ],
+    "file_count":  7,
+    "backup_path":  "Saved/QA/VictoryPresentation_20261029/",
+    "backup_inventory":  [
+                             {
+                                 "path":  "Source\\AIHeroes\\Private\\AIHeroesHUD.cpp",
+                                 "bytes":  21825,
+                                 "sha256":  "0f73a6f81020cd086a4dd86d7376f95996e1a68a711608dc4f7f1e834f71a3e7"
+                             },
+                             {
+                                 "path":  "Source\\AIHeroes\\Public\\AIHeroesHUD.h",
+                                 "bytes":  1086,
+                                 "sha256":  "33378d38bda10494f1215be597e42cb7f3db95e1ad33736d0c936aeda51bc2eb"
+                             }
+                         ],
+    "compile":  "NOT_RUN",
+    "engine_tests":  "NOT_RUN",
+    "gpu_capture":  "NOT_RUN",
+    "end_to_end_gameplay":  "NOT_RUN",
+    "editor_open_during_check":  false,
+    "source_contract_qc":  "PASS",
+    "saved_games_written":  0,
+    "git_commit_push":  "NOT_DONE",
+    "notes":  "Source-only victory UI; editor not active at final read-back, but commit memory low (~0.69 GiB free) and other code in flight; no heavy build attempted."
+}

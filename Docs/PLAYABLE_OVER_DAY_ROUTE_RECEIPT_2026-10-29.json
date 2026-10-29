@@ -1,0 +1,106 @@
+{
+    "schema":  1,
+    "status":  "SOURCE_ROUTE_GUIDE_PORTABLE_PASS_UNREAL_PENDING",
+    "timestamp_utc":  "2026-10-29T18:52:55.6602266Z",
+    "purpose":  "Stop endlessly recommending End Day for a route longer than four moves",
+    "source_file_count":  5,
+    "read_only_dependency_count":  2,
+    "evidence_file_count":  8,
+    "files":  [
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesCampaignGuide.h",
+                      "bytes":  1270,
+                      "sha256":  "6584f2740f8105fa2465109a45fb27b9855dcb0f5e873e4bccd7764884a81b39"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp",
+                      "bytes":  5695,
+                      "sha256":  "ffd40976624b957f75974c03e424ff1daec73ee6ecb85624fad911ac47c7ab55"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+                      "bytes":  18616,
+                      "sha256":  "337adced3e0a873c428e13fdc4fe4b4d1ecc76cccec8ffedc2473e3231922260"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/Tests/AIHeroesPlayableJourneyTests.cpp",
+                      "bytes":  10007,
+                      "sha256":  "6c1f11c9633fbf454f7a7b9057a4680050a1a558c65a0e628408b83deced1896"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/Tests/AIHeroesTravelIntegrationTests.cpp",
+                      "bytes":  17589,
+                      "sha256":  "e24cd3388f0cae1e1387dd7ba5ed5f01387487077fe5dbe63b7f83a8c9fc23ad"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesAdventurePathCore.h",
+                      "bytes":  5078,
+                      "sha256":  "7a4fa5e0d4823ae558e8d48a2befd41a5898a241f2c7721f33a89e6160b62e23"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesTravelRules.cpp",
+                      "bytes":  6426,
+                      "sha256":  "a9fbdeeb91842609d30336b864d8345d9e9e7a81abc932a332dbe9ef194b4738"
+                  },
+                  {
+                      "path":  "Tools/verify_campaign_route_guide_portable.py",
+                      "bytes":  11792,
+                      "sha256":  "9e552a96b2db742141e42257a00319658b14ea4d00bc64d3e18484e3b1dfa643"
+                  },
+                  {
+                      "path":  "Tools/verify_over_day_road_portable.py",
+                      "bytes":  8306,
+                      "sha256":  "a9d76d5112b259c89cfddb783bd2e7bb7f2b70578426ea19b6a998334d844d66"
+                  },
+                  {
+                      "path":  "Docs/PLAYABLE_OVER_DAY_ROUTE_GUIDE_2026-10-29.md",
+                      "bytes":  9799,
+                      "sha256":  "bc1e61d770afa6895f5fcf58b042f6660ae906d3cd143b6c0c3e76cea4b28ffe"
+                  },
+                  {
+                      "path":  "Saved/QA/CampaignRoutePortable_20261029T185124195005Z/receipt.json",
+                      "bytes":  2154,
+                      "sha256":  "d1cf4b28221ca2706f68b8ad0755f37732b12f608d2d762a550d4b24685feaea"
+                  },
+                  {
+                      "path":  "Saved/QA/RoadV2Portable_20261029T184809881151Z/receipt.json",
+                      "bytes":  1969,
+                      "sha256":  "00247f2a52ac28396ab4e17b9f9cedbef0bb2ca9cf67f38b33f4e69707fa9c6f"
+                  },
+                  {
+                      "path":  "Saved/QA/RouteAdviceReadability_20261029T2139/static_campaign_check.json",
+                      "bytes":  1718,
+                      "sha256":  "bd463db37c067e541585e747661fe2d7daec3a2895fa4ca4fbe600689bf2ea85"
+                  },
+                  {
+                      "path":  "Saved/QA/RouteAdviceReadability_20261029T2139/before.json",
+                      "bytes":  1039,
+                      "sha256":  "d78e63c0561b71076ebbf0b83f8d1a3222d9ddf5757a63d799b382283e2b6f97"
+                  },
+                  {
+                      "path":  "Saved/QA/RouteAdviceReadability_20261029T2139/verify_receipt.ps1",
+                      "bytes":  6779,
+                      "sha256":  "708f1aed1df4c389b1c27c30e87a5225410f6e6321fcf02e3d8f57d2fd7c91ce"
+                  }
+              ],
+    "guide_portable_checks":  20,
+    "road_core_portable_checks":  14,
+    "static_source_gate_checks":  12,
+    "native_unreal_tests_written":  2,
+    "native_unreal_tests_executed":  false,
+    "native_unreal_build":  "NOT_RUN_MEMORY_PRESSURE",
+    "gpu_gameplay":  "NOT_RUN",
+    "daily_move_budget":  4,
+    "game_mutations_by_verification":  0,
+    "user_saves_count":  4,
+    "user_saves_changed":  0,
+    "user_saves_backup":  "Saved/QA/OnePlayableCampaignBuild_20261029/SAVES_BEFORE.json",
+    "source_backup":  "Saved/QA/RouteAdviceReadability_20261029T2139",
+    "git_commit_push":  "NOT_DONE",
+    "vscode_diff_opened":  true,
+    "limitations":  [
+                        "Guide test compiles production method body against narrow type shims, not Unreal DLL.",
+                        "Road test compiles production header-only core using road links parsed from TravelRules.",
+                        "New native Unreal automation and actual GPU playthrough must still be run."
+                    ]
+}

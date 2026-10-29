@@ -1,0 +1,69 @@
+{
+  "schema": "aiheroes.playable-battle-aftermath-receipt.v1",
+  "observed_at": "2026-10-29T20:34:45.300696+03:00",
+  "status": "SOURCE_IMPLEMENTED_STATIC_QA_PASS_NATIVE_BUILD_BLOCKED",
+  "head_observed": "40049ea",
+  "files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesBattleAftermath.h",
+      "bytes": 469,
+      "sha256": "c2df0e0a7ea4489aaeb06fcca172196d321e3b7384c75532feb7cd5c69658a89",
+      "lines": 20
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleAftermath.cpp",
+      "bytes": 2072,
+      "sha256": "c3d6e785d9e9e6223d6e7a25cc7b6330f79cce1ac4f2ed9fabf0b05ce1f4f031",
+      "lines": 62
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp",
+      "bytes": 4686,
+      "sha256": "6344a13bf7ec1b034da37c7033a0054251ad3cb66b9cb9180fcd1951f9f45257",
+      "lines": 117
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp",
+      "bytes": 5453,
+      "sha256": "782b56f938d1bf70d682f19c362d90f3e111806b0fc3fd18eb314327c05dfc41",
+      "lines": 94
+    },
+    {
+      "path": "Docs/PLAYABLE_BATTLE_AFTERMATH_2026-10-29.md",
+      "bytes": 8000,
+      "sha256": "faf07f7ee9083d9961bdbca5d6718fea58ae2292b0331cbeae10e556e3488b31",
+      "lines": 103
+    }
+  ],
+  "file_count": 5,
+  "static_checks": {
+    "checks_passed": 12,
+    "checks_total": 12,
+    "negative_enemy_data_probe": "PASS",
+    "tracked_hud_diff_check": "PASS",
+    "backup_matches_baseline_sha256": true
+  },
+  "build_evidence": {
+    "first_log": "Docs/BuildRuns/20261029T172754393Z/build.log",
+    "first_error": "C3859/C1076 insufficient memory",
+    "second_log": "Docs/BuildRuns/20261029T172858033Z/build.log",
+    "second_error": "C1060 compiler out of heap",
+    "native_editor_compiled": false,
+    "automation_executed": false,
+    "gpu_gameplay_frames": false,
+    "full_playthrough": false
+  },
+  "authority_boundary": {
+    "changes_only_presentation": true,
+    "reward_changes": 0,
+    "save_schema_changes": 0,
+    "user_save_writes": 0,
+    "git_commit_push": false,
+    "process_termination": false
+  },
+  "rollback": {
+    "existing_file_before": "Saved/QA/PlayableBattleAftermath_20261029/AIHeroesBattleHUD.cpp.before",
+    "sha256": "553bd5186bfa31e9ec9aac0513743ca1ed07e6b000b65bc21a4899be62eae8e0"
+  },
+  "nonclaim": "Static tests are not a successful Unreal build; no release or gameplay-pass claim."
+}

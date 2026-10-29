@@ -1,7 +1,9 @@
 #include "AIHeroesHUD.h"
 #include "AIHeroesExplorerLayout.h"
+#include "AIHeroesExplorerCopy.h"
 #include "AIHeroesHUDTextLayout.h"
 #include "AIHeroesCampaignGuide.h"
+#include "AIHeroesTravelRules.h"
 #include "AIHeroesMapLabelLayout.h"
 #include "AIHeroesReferenceUI.h"
 #include "AIHeroesBattleArt.h"
@@ -108,7 +110,7 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
         if(A==2)Icon=EAIHeroesGlyph::Hourglass;
         const bool IconFits=HasIcon&&R.W>=125;
         if(IconFits)Glyph(Icon,R.X+10,R.Y+(R.H-28)*.5f,28,Enabled?Gold:Muted);
-        Text(S,R.X+(IconFits?46:12),R.Y+(R.H-16)*.5f,R.W-(IconFits?58:24),Enabled?Paper:Muted,1.08f);
+        Text(FAIHeroesExplorerCopy::DockLabel(A,R.W,S),R.X+(IconFits?46:12),R.Y+(R.H-16)*.5f,R.W-(IconFits?58:24),Enabled?Paper:Muted,1.08f);
     };
 
     Panel(F.Header,Ink);
@@ -159,14 +161,51 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
     GuideContext.bRouteReady=Ready;
     GuideContext.bNeedsMoreMoves=Valid&&Path.Status==EAIHeroesAdventurePathStatus::NeedsMoreMoves;
     GuideContext.MissingMoves=Path.MissingMoves;
+    GuideContext.RouteTotalCost=Valid?Path.TotalCost:0;
+    GuideContext.FullDayMoveBudget=4; // Authoritative EndTurn restores 4.
+    // A long Road V2 route can require a player-selected owned waypoint.
+    // The name is supplied only when the route itself and its intermediate
+    // ownership are already visible; no hidden map state is exposed.
+    if(GuideContext.bNeedsMoreMoves &&
+       Path.TotalCost>GuideContext.FullDayMoveBudget &&
+       G.TravelRuleVersion==FAIHeroesTravelRules::RoadVersion)
+    {
+        for(int32 I=1;I+1<Path.Nodes.Num();++I)
+        {
+            const FName StopId=Path.Nodes[I];
+            for(const AAIHeroesWorldNode* Stop:G.Nodes)
+            {
+                if(IsValid(Stop)&&Stop->bOwned&&!Stop->IsHidden()&&
+                   G.IsNodeDiscovered(StopId)&&
+                   FName(*Stop->GetDisplayName())==StopId)
+                {
+                    const auto StopPath=G.GetTravelPathTo(StopId);
+                    if(StopPath.IsReachableThisTurn())
+                        GuideContext.IntermediateOwnedSite=StopId;
+                    else if(StopPath.Status==EAIHeroesAdventurePathStatus::NeedsMoreMoves &&
+                            StopPath.TotalCost<=GuideContext.FullDayMoveBudget)
+                        GuideContext.bOwnedStopAfterRest=true;
+                    break;
+                }
+            }
+            if(!GuideContext.IntermediateOwnedSite.IsNone())break;
+        }
+    }
     GuideContext.bHasArmy=false;
     for(const auto& Unit:G.PlayerArmy)if(Unit.IsAlive())GuideContext.bHasArmy=true;
     for(const AAIHeroesWorldNode* Site:G.Nodes)
         if(IsValid(Site)&&!Site->IsHidden()&&
            FName(*Site->GetDisplayName())==Progress.NextFocusId&&
            G.IsNodeDiscovered(Progress.NextFocusId))
+        {
             GuideContext.bTargetDiscovered=true;
+            GuideContext.bTargetGuarded=false;
+            if(!Site->bOwned)for(const auto& Defender:Site->Defenders)
+                GuideContext.bTargetGuarded|=Defender.IsAlive();
+        }
     const auto Guide=FAIHeroesCampaignGuide::Build(Progress,GuideContext);
+    const bool OfferReady=FAIHeroesCampaignGuide::CanOfferOrder(
+        Ready,GuideContext.bHasArmy,Path.bBattleAtDestination);
     const bool MissionHover=F.Mission.Contains({MX,MY});
     Panel(F.Mission,MissionHover?Blue:Card);
     Glyph(EAIHeroesGlyph::Compass,F.Mission.X+10,F.Mission.Y+12,23,Gold);
@@ -175,20 +214,20 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
 
     TArray<FAIHeroesHUDActionRect> Occupied={F.Mission};
     if(F.Overview.W>0)Occupied.Add(F.Overview);
-    if(PlayerOwner)for(const AAIHeroesWorldNode* N:G.Nodes)
+    if(PlayerOwner)for(const AAIHeroesWorldNode* MapSite:G.Nodes)
     {
-        if(!IsValid(N)||N->IsHidden()||!G.IsNodeDiscovered(FName(*N->GetDisplayName())))continue;
+        if(!IsValid(MapSite)||MapSite->IsHidden()||!G.IsNodeDiscovered(FName(*MapSite->GetDisplayName())))continue;
         FVector2D At;
-        if(!PlayerOwner->ProjectWorldLocationToScreen(N->GetActorLocation()+FVector(0,0,250),At)||!F.Map.Contains(At))continue;
+        if(!PlayerOwner->ProjectWorldLocationToScreen(MapSite->GetActorLocation()+FVector(0,0,250),At)||!F.Map.Contains(At))continue;
         FAIHeroesHUDActionRect R{static_cast<float>(At.X)-92,static_cast<float>(At.Y)-18,184,34};
         R.X=FMath::Clamp(R.X,F.Map.X,F.Map.X+F.Map.W-R.W);
         R.Y=FMath::Clamp(R.Y,F.Map.Y,F.Map.Y+F.Map.H-R.H);
         bool Free=true;for(const auto& O:Occupied)Free&=!FAIHeroesMapLabelLayout::Overlaps(R,O,4);
         if(!Free)continue;Occupied.Add(R);
-        const bool Selected=G.SelectedNode.Get()==N;
+        const bool Selected=G.SelectedNode.Get()==MapSite;
         Panel(R,Selected?Blue:Ink);
-        Glyph(SiteIcon(N->NodeType),R.X+7,R.Y+5,24,Selected?Gold:N->bOwned?Teal:Paper);
-        Text(Site(N->NodeType),R.X+38,R.Y+9,R.W-45,Selected?Gold:N->bOwned?Teal:Paper,.98f);
+        Glyph(SiteIcon(MapSite->NodeType),R.X+7,R.Y+5,24,Selected?Gold:MapSite->bOwned?Teal:Paper);
+        Text(Site(MapSite->NodeType),R.X+38,R.Y+9,R.W-45,Selected?Gold:MapSite->bOwned?Teal:Paper,.98f);
     }
 
     // A schematic overview of the known road graph, NOT a painted full-map reveal.
@@ -196,13 +235,13 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
     {
         FAIHeroesAdvisorSnapshot S;S.TravelRuleVersion=G.TravelRuleVersion;
         S.bFogEnabled=true;S.ExploredSitesMask=0;S.HeroPosition=G.GetHeroStrategicLocation();
-        for(const AAIHeroesWorldNode* N:G.Nodes)
+        for(const AAIHeroesWorldNode* OverviewSite:G.Nodes)
         {
-            if(!IsValid(N))continue;
-            FAIHeroesAdvisorNode A;A.Id=FName(*N->GetDisplayName());A.Type=N->NodeType;
-            A.Location=N->GetActorLocation();A.bOwned=N->bOwned;
-            if(G.IsNodeDiscovered(A.Id)&&!N->IsHidden())
-            {S.ExploredSitesMask|=FAIHeroesFogRules::SiteBit(A.Id);A.Guards=N->Defenders;}
+            if(!IsValid(OverviewSite))continue;
+            FAIHeroesAdvisorNode A;A.Id=FName(*OverviewSite->GetDisplayName());A.Type=OverviewSite->NodeType;
+            A.Location=OverviewSite->GetActorLocation();A.bOwned=OverviewSite->bOwned;
+            if(G.IsNodeDiscovered(A.Id)&&!OverviewSite->IsHidden())
+            {S.ExploredSitesMask|=FAIHeroesFogRules::SiteBit(A.Id);A.Guards=OverviewSite->Defenders;}
             S.Nodes.Add(A);
         }
         const auto O=FAIHeroesReferenceUI::Overview(S);
@@ -242,9 +281,16 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
             Text(Guide.FocusId==GuideContext.SelectedId?Guide.Detail:TEXT("Вы выбираете путь. ИИ ведёт бой."),X,Y+178,Span,Teal,.92f);
         }
         else Text(FString::Printf(TEXT("%s  /  охрана %d  /  ходы %d из 4"),N->bOwned?TEXT("Ваш объект"):TEXT("Не захвачен"),Guards,G.MovesLeft),X,Y+28,Span,Muted,1.f);
-        if(Ready)CTA=FString::Printf(TEXT("%s  /  %d хода"),Hostile?TEXT("Атаковать"):TEXT("Перейти"),Path.TotalCost);
+        if(Ready&&!OfferReady)CTA=TEXT("Нужна армия: наймите бойцов [G]");
+        else if(OfferReady)CTA=FString::Printf(TEXT("%s  /  %d хода"),Hostile?TEXT("Атаковать"):TEXT("Перейти"),Path.TotalCost);
         else if(G.IsStrategicTravelMoving())CTA=TEXT("Герой в пути...");
-        else if(Path.Status==EAIHeroesAdventurePathStatus::NeedsMoreMoves)CTA=FString::Printf(TEXT("Не хватает ходов: %d"),Path.MissingMoves);
+        else if(Path.Status==EAIHeroesAdventurePathStatus::NeedsMoreMoves)
+        {
+            if(Path.TotalCost>GuideContext.FullDayMoveBudget)
+                CTA=TEXT("Нужна остановка по пути");
+            else
+                CTA=FString::Printf(TEXT("Не хватает ходов: %d"),Path.MissingMoves);
+        }
         else CTA=TEXT("Путь закрыт охраной");
     }
     else
@@ -253,7 +299,7 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
         Text(TEXT("Нажмите на лесопилку или рудник"),X,Y+32,Span,Muted,1.f);
         if(F.bWide){Text(Guide.Detail,X,Y+85,Span,Paper);Text(TEXT("Нажмите «Цели», чтобы увидеть все задачи"),X,Y+120,Span,Muted,.88f);Text(TEXT("Игровой приказ всегда подтверждаете вы"),X,Y+155,Span,Teal,.88f);}
     }
-    if(!bExplorerMenuOpen)Button(0,CTA,true,Ready);
+    if(!bExplorerMenuOpen)Button(0,CTA,true,OfferReady);
 
     if(F.Hero.W>0)
     {
@@ -278,10 +324,10 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
         Text(G.PlayerArmy.Num()>2?FString::Printf(TEXT("Ещё отрядов: %d"),G.PlayerArmy.Num()-2):TEXT("ИИ по правилам · модель не подключена"),HX,F.Hero.Y+F.Hero.H-21,HW,Muted,.78f);
     }
     Panel(F.Dock,Ink);
-    Button(400,TEXT("Постройки [G]"));Button(203,TEXT("Развитие [Y]"));Button(1,TEXT("Спросить [H]"));Button(2,TEXT("Конец хода"));
+    Button(400,TEXT("Постройки [G]"));Button(203,TEXT("Тактики [Y]"));Button(1,TEXT("Спросить [H]"));Button(2,TEXT("Конец хода"));
     const double Now=FPlatformTime::Seconds();
     if(ExplorerLastEvent!=G.LastEvent){ExplorerLastEvent=G.LastEvent;ExplorerToastUntil=Now+4.5;}
-    const FString Footer=Now<ExplorerToastUntil?TEXT("Событие: ")+ExplorerLastEvent:
+    const FString Footer=Now<ExplorerToastUntil?TEXT("Событие: ")+FAIHeroesExplorerCopy::EventText(ExplorerLastEvent,V.X):
         FString::Printf(TEXT("Ходы %d / 4   |   WASD — камера, Q / E — поворот, R / F — масштаб   |   ИИ по правилам"),G.MovesLeft);
     Text(Footer,16,F.Dock.Y+F.Dock.H-24,V.X-32,Muted,.9f);
     if(bExplorerMenuOpen)

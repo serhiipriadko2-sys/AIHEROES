@@ -1,0 +1,63 @@
+{
+  "kind": "static_independent_counterexample_not_native_reproduction",
+  "scenario": {
+    "owned": [
+      "HQ",
+      "FOREST",
+      "ORE"
+    ],
+    "hero": "ORE",
+    "canonical_next_focus": "OUTPOST",
+    "hostile": [
+      "OUTPOST",
+      "RUINS"
+    ],
+    "available_moves": 4,
+    "next_day_moves": 4
+  },
+  "roads_from_source": [
+    [
+      "HQ",
+      "FOREST",
+      2
+    ],
+    [
+      "HQ",
+      "ORE",
+      2
+    ],
+    [
+      "FOREST",
+      "OUTPOST",
+      1
+    ],
+    [
+      "ORE",
+      "RUINS",
+      1
+    ],
+    [
+      "OUTPOST",
+      "RUINS",
+      2
+    ]
+  ],
+  "reference_legal_path": [
+    "ORE",
+    "HQ",
+    "FOREST",
+    "OUTPOST"
+  ],
+  "reference_cost": 5,
+  "missing_today": 1,
+  "missing_after_end_day_only": 1,
+  "consequence_inference": "Ending the day alone does not make this single order affordable; player needs a confirmed owned intermediate stop. Current Guide context does not distinguish this case.",
+  "rules_source": {
+    "path": "Source/AIHeroes/Private/AIHeroesTravelRules.cpp",
+    "sha256": "a9fbdeeb91842609d30336b864d8345d9e9e7a81abc932a332dbe9ef194b4738"
+  },
+  "limits": [
+    "Reference Dijkstra uses extracted road data, not the Unreal path core.",
+    "Guarded-transit and Guide branches inspected separately; no game window operated."
+  ]
+}

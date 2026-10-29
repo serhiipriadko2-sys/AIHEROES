@@ -1,0 +1,201 @@
+﻿{
+    "status":  "PARTIAL_VERIFIED_GAME_RUN_WITH_PARALLEL_SOURCE_DRIFT",
+    "date":  "2026-10-29T20:28:56.3201934+03:00",
+    "goal":  "One playable strategy: objective -\u003e army -\u003e travel -\u003e AI battle -\u003e rewards -\u003e upgrades -\u003e victory",
+    "root":  "C:\\github\\AIHEROES",
+    "evidence":  "C:\\github\\AIHEROES\\Saved\\QA\\MapReadability_20261029T172103944Z",
+    "unity_build":  "PASS",
+    "automated_tests":  258,
+    "automated_tests_failed":  0,
+    "new_playable_journey_groups":  5,
+    "screen_sessions":  3,
+    "screenshots":  9,
+    "screenshots_inspected_manually":  "VIEW_READY at 1280x720, 960x720 and 640x720",
+    "verified_dll_unchanged":  true,
+    "user_saved_files_verified":  4,
+    "save_drift":  0,
+    "source_drift_entries":  4,
+    "drift_affected_paths":  [
+                                 "Source\\AIHeroes\\Private\\AIHeroesBasePanelCopy.cpp",
+                                 "Source\\AIHeroes\\Private\\AIHeroesBasePanelHUD.cpp"
+                             ],
+    "claimed_full_source_stability":  false,
+    "tracked_files_matching_test_snapshot":  13,
+    "current_files_not_matching_snapshot":  [
+
+                                            ],
+    "main_game_full_playthrough":  "NOT_EXECUTED",
+    "gameplay_balance_verified":  false,
+    "actual_android_build":  "NOT_EXECUTED",
+    "real_neural_weights":  "NOT_INSTALLED_BY_THIS_WORK",
+    "commit_or_push":  false,
+    "files_count":  14,
+    "files":  [
+                  {
+                      "path":  "Docs/PLAYABLE_MAIN_CAMPAIGN_GUIDE_V1.md",
+                      "bytes":  8638,
+                      "sha256":  "0f553042b66c081d3db473f261fea1f8926c5223011626e48f9f331f686b4a62",
+                      "matches_test_snapshot":  false,
+                      "in_test_snapshot":  false
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesCampaignGuide.h",
+                      "bytes":  862,
+                      "sha256":  "9542021c9bf67bed2dd311d410988b69c222066b714dfb834f90e8bc9b9458f5",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp",
+                      "bytes":  4395,
+                      "sha256":  "5daf265cee261d4802ddb4dd504f38165629f08d20de08ec56f71a6ae291657f",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesCampaignObjectives.h",
+                      "bytes":  1469,
+                      "sha256":  "dbda0486b5e4c15dcde031ed00009d5afc7dd0bf952ef9bb5db8d49ba5546654",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesCampaignObjectives.cpp",
+                      "bytes":  6808,
+                      "sha256":  "f918add081608758bc5ba18e3208c886a3fa19b94bfd439a93d638e501a0f346",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesCampaignObjectivesGameMode.cpp",
+                      "bytes":  2021,
+                      "sha256":  "7cfe8a36bdbc60392315609406e4f9915e08d2561544453f6d79e728e1656cb2",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+                      "bytes":  17194,
+                      "sha256":  "f49da3cdde48d94d6d511f2d8864add5a39114470feaba3c8993f343bae6ab37",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesExplorerLayout.cpp",
+                      "bytes":  2970,
+                      "sha256":  "23fa47f04402ff078dad15dcdf75d399b480fedbb858bd55a1a72de7f947bc92",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/Tests/AIHeroesPlayableJourneyTests.cpp",
+                      "bytes":  7954,
+                      "sha256":  "412c1a44b4897f8e88e93b79a60aeff1ff2bfc3c057e0b3de79cdc7b064a49bb",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesModelRequest.cpp",
+                      "bytes":  8326,
+                      "sha256":  "5f1859df96e1c06c2c22694eefa9e4151f0a8c8a2befbe4e2c4eb2ce6ac7f408",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/AIHeroesSupplyLines.cpp",
+                      "bytes":  4660,
+                      "sha256":  "a4be6f98f9bd61fc2a64e9d01b37ce7336905fadd654d1637978e42aa82561f4",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/Tests/AIHeroesLocalExchangeTests.cpp",
+                      "bytes":  10903,
+                      "sha256":  "46128e33340121c01f86ac912681c379c5927e04f4501aea0a02cfcaca373110",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/Tests/AIHeroesModelReplyTests.cpp",
+                      "bytes":  15956,
+                      "sha256":  "3fe99b8e344fbc6ef950ef00641ed6201dd82ce55c333cd50250d7fc4bbf37db",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Private/Tests/AIHeroesModelRequestTests.cpp",
+                      "bytes":  9489,
+                      "sha256":  "08a21ff7f3f163c83c62e06cb1b3adc4ac53c345dfcda49cace5d9289a901670",
+                      "matches_test_snapshot":  true,
+                      "in_test_snapshot":  true
+                  }
+              ],
+    "screenshot_files":  [
+                             {
+                                 "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_1280\\VIEW_READY.png",
+                                 "bytes":  842418,
+                                 "sha256":  "188f8d96c1123fbffb4b3fe5585e051cb629389632a0540145b25ae7190bc7ac",
+                                 "width":  1280,
+                                 "height":  720
+                             },
+                             {
+                                 "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_1280\\VIEW_MOVING.png",
+                                 "bytes":  801336,
+                                 "sha256":  "58bef4c7028ffba6c2e6d8370c518097563a97714e7a2e1907fd085ff82c72a1",
+                                 "width":  1280,
+                                 "height":  720
+                             },
+                             {
+                                 "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_1280\\VIEW_OVER_BUDGET.png",
+                                 "bytes":  801412,
+                                 "sha256":  "c12ac5740a2143ab0062df26cb2ef507d32cb5110fdb350293067907747bb56a",
+                                 "width":  1280,
+                                 "height":  720
+                             },
+                             {
+                                 "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_960\\VIEW_READY.png",
+                                 "bytes":  610641,
+                                 "sha256":  "746463e07eeec2ec1fabd0bd1e8b2ac6a9545edbf698b872988b16aa70e423af",
+                                 "width":  960,
+                                 "height":  720
+                             },
+                             {
+                                 "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_960\\VIEW_MOVING.png",
+                                 "bytes":  592521,
+                                 "sha256":  "ed4505e6aafd8527364c2031618f0eb37e3105546f12fb4aca0c7d936b2ffb65",
+                                 "width":  960,
+                                 "height":  720
+                             },
+                             {
+                                 "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_960\\VIEW_OVER_BUDGET.png",
+                                 "bytes":  592074,
+                                 "sha256":  "b397e7d352d901fb280e987cb0e9bd4b8ba7d56c9543020fb3d9056636710893",
+                                 "width":  960,
+                                 "height":  720
+                             },
+                             {
+                                 "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_640\\VIEW_READY.png",
+                                 "bytes":  418274,
+                                 "sha256":  "c1ebf47f8f13b5e54256fb64795d8777639d635ccff0a8a7b2961b3dc0474562",
+                                 "width":  640,
+                                 "height":  720
+                             },
+                             {
+                                 "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_640\\VIEW_MOVING.png",
+                                 "bytes":  410239,
+                                 "sha256":  "cdee866a9399f1e68418ea867e15a804faf753023976512120e3b3b6603c1f27",
+                                 "width":  640,
+                                 "height":  720
+                             },
+                             {
+                                 "path":  "Saved\\QA\\MapReadability_20261029T172103944Z\\viewport_640\\VIEW_OVER_BUDGET.png",
+                                 "bytes":  409350,
+                                 "sha256":  "de21a0e77c090a6b28692f005eea49ab0f6e6a4c685287c74f875cb45f34fcbd",
+                                 "width":  640,
+                                 "height":  720
+                             }
+                         ],
+    "underlying_test_receipt_sha256":  "da8ed32216ac32fa5fc0d956a7eb7b432954e83b1f64e7227f455fd219bbee63",
+    "underlying_automation_report_sha256":  "ed6fe3b1cac0bc45302b3822f9efebb0f57695822fa47a3d913471a51165eb80",
+    "stage_boundary":  "D1 implementation and automated Windows checks; D2 battle result/UI playtest still needed"
+}

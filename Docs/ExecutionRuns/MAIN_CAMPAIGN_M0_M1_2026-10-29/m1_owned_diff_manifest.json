@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "scope": "Own M1 hunks relative to preserved parallel source baseline; not entire Git diff",
+  "files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesCampaignGuide.h",
+      "bytes": 1804,
+      "sha256": "2ba6ac578f1ce5572a257b4a9a1f4d6791a35bd486945c1e2819e00085ba92bd",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesCampaignGuide.h",
+      "baseline_sha256": "6584f2740f8105fa2465109a45fb27b9855dcb0f5e873e4bccd7764884a81b39"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesCampaignGuide.cpp",
+      "bytes": 6257,
+      "sha256": "544c16caaebccfab6b879983eda605d6e90f428f45e43e10ca66e169d2cf5cc7",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesCampaignGuide.cpp",
+      "baseline_sha256": "ffd40976624b957f75974c03e424ff1daec73ee6ecb85624fad911ac47c7ab55"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
+      "bytes": 19423,
+      "sha256": "155fb292c22d42c07aecc8dddfdcc4b04045fd2bb2a0c22ae153adf7801b815c",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesExplorerHUD.cpp",
+      "baseline_sha256": "337adced3e0a873c428e13fdc4fe4b4d1ecc76cccec8ffedc2473e3231922260"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+      "bytes": 13727,
+      "sha256": "0a013ac3aef54186ff15c2dfc18fb6eebd8d3df92d4e7fd1bc5f8704feda4d31",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesGameMode.h",
+      "baseline_sha256": "9da69b4f303359bb8478df8c7f3b28ef2c0f36b8c1149ab3170b11e287a877bb"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelGameMode.cpp",
+      "bytes": 4195,
+      "sha256": "06e2a0781ec42345bb6d5f54e18dfd259f13cd0170f14ef4c033fdd7fabc1a31",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesTravelGameMode.cpp",
+      "baseline_sha256": "dfe2cc8a097738bc8e3930ba61c5c04b89d6a803def313a280179bd50598b941"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelPresentationSmoke.cpp",
+      "bytes": 10735,
+      "sha256": "b929cbdaaf1bcefb5c4dae65086c4156e3a066979520b6c10ea4ff84a157becd",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_AIHeroesTravelPresentationSmoke.cpp",
+      "baseline_sha256": "f11c4a9db1cd6e307615fd1058a3f96c236f4db7df7b9d4ee6efc4df424dbd61"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesCampaignGuidanceTests.cpp",
+      "bytes": 7067,
+      "sha256": "67aa90abb88e2504e74949f8a67749f36507055a50c12a9a950a4a09fa319a99",
+      "baseline_path": null,
+      "baseline_sha256": null
+    },
+    {
+      "path": "Tools/verify_map_readability.ps1",
+      "bytes": 9810,
+      "sha256": "a0023e58aa879984a4053a592cd9539a07ee11c506b3226c9feb370e40a87c8e",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_verify_map_readability.ps1",
+      "baseline_sha256": "6071c6efd345b1180a3138c6094ac26ec2107a25dbe270ba1776fb1796c74bbd"
+    },
+    {
+      "path": "Tools/verify_one_playable_campaign.py",
+      "bytes": 8937,
+      "sha256": "9f5f742347ff64822f123f364ae5174df64b3ee2c9de926e487beffa749eb2c4",
+      "baseline_path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M0_M1_2026-10-29/m1_before_verify_one_playable_campaign.py",
+      "baseline_sha256": "c7c0564b39eba64e2f16a75b1f11f15d5eae97efad62ac0504a563cbc7da6041"
+    }
+  ]
+}

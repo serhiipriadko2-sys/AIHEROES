@@ -88,7 +88,8 @@ if($Visual){
         Write-Output "READABILITY_VISUAL_EXIT width=$Width pid=$($Child.Id) exit=$VisualExit"
         if($null -eq $VisualExit -or $VisualExit -ne 0 -or
             -not (Select-String -LiteralPath "$Dir\visual.log" -Pattern '[TRAVEL VIEW SMOKE] PASS' -SimpleMatch -Quiet)){throw "Visual run failed: $Dir"}
-        foreach($Name in @('VIEW_READY.png','VIEW_MOVING.png','VIEW_OVER_BUDGET.png')){
+        foreach($Name in @('VIEW_READY.png','VIEW_MOVING.png','VIEW_OVER_BUDGET.png',
+            'VIEW_BASE.png','VIEW_EMPTY_ARMY_GUARDED.png','VIEW_EMPTY_ARMY_SAFE.png','VIEW_STAGED_ROUTE.png')){
             $InputFile=Get-Item "$BuildRoot\Saved\QA\TravelPresentation\$Name"
             if($InputFile.Length -le 0 -or $InputFile.LastWriteTimeUtc -lt $Started){throw "Stale/missing screenshot: $Name"}
             # Verify actual PNG dimensions, not just requested launch arguments.

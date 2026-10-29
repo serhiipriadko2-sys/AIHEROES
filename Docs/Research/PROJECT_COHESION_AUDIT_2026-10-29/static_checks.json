@@ -1,0 +1,28 @@
+[
+  {
+    "command": [
+      "C:\\Program Files\\Python314\\python.exe",
+      "Scripts/validate_codex_setup.py"
+    ],
+    "exit_code": 0,
+    "log": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/codex_static.log"
+  },
+  {
+    "command": [
+      "powershell.exe",
+      "-NoProfile",
+      "-File",
+      "Tools/test_aiheroes_build_evidence.ps1"
+    ],
+    "exit_code": 0,
+    "log": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/build_evidence_fixtures.log"
+  },
+  {
+    "command": [
+      "C:\\Program Files\\Python314\\python.exe",
+      "Tools/verify_amber_architecture_v6.py"
+    ],
+    "exit_code": 0,
+    "log": "Docs/Research/PROJECT_COHESION_AUDIT_2026-10-29/architecture_authoring.log"
+  }
+]
