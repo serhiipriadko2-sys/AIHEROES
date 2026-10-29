@@ -318,7 +318,8 @@ void AAIHeroesPlayerController::SkipBattleReplay()
         if (Game->IsBasePanelVisible()) Game->CloseBasePanel();
         else if (Game->IsAdvisorDossierVisible()) Game->CloseAdvisorDossier();
         else if (Game->IsLiveBattleActive()) Game->ToggleLiveBattlePause();
-        else Game->SkipBattleReplay();
+        // A quoted purchase requires explicit X confirmation; Esc disarms it.
+        else if (!Game->CancelSupplyConvoyQuote()) Game->SkipBattleReplay();
     }
 }
 
