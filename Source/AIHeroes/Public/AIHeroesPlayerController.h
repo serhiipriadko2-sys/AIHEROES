@@ -5,6 +5,7 @@
 #include "AIHeroesPlayerController.generated.h"
 
 class AAIHeroesGameMode;
+struct FKey;
 
 UCLASS()
 class AIHEROES_API AAIHeroesPlayerController : public APlayerController
@@ -14,6 +15,8 @@ class AIHEROES_API AAIHeroesPlayerController : public APlayerController
 public:
     AAIHeroesPlayerController();
     virtual void SetupInputComponent() override;
+    // Q/E belong exclusively to camera polling; field orders use a distinct key.
+    static const FKey& FieldInteractionKey();
 
 private:
     AAIHeroesGameMode* Rules() const;

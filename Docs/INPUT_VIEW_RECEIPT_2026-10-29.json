@@ -1,0 +1,843 @@
+{
+  "schema": 1,
+  "date": "2026-10-29",
+  "verified_at_utc": "2026-10-29T12:11:48.828867+00:00",
+  "scope_status": "PASS",
+  "full_manual_acceptance_status": "PARTIAL",
+  "baseline_head": "87d9012",
+  "head_at_receipt": "8a12d0ec35deea76abe264e25671302b36b548af",
+  "external_history_change": "External commit/merge8a12d0e occurred during preparation; its Esc supply cancellation was preserved. Agent performed no staging/commit/merge/push.",
+  "implemented": [
+    "Field interaction keyE->3; actual controller binding uses one getter; Q/E camera code unchanged",
+    "Existing touch actionID204 retained; current help and legacy field-QA key updated",
+    "Dead worldlabels hidden; stable HERO/NPC zero-based group identities",
+    "Full camera-facing labels+damage; text size30; reason rendered once",
+    "Explicit dev-only Victory/Defeat/TwoGroups fixtures with no future outcome precomputation",
+    "Reusable strict visual verifier and VSCode tasks; no user save/load calls in smoke"
+  ],
+  "checks": {
+    "sot30": "PASS30/30 knowledge32/32 hashes; private snapshot unchanged",
+    "codex_static_setup": "PASS20/20",
+    "tooling_ps51_fixtures": "PASS23/23",
+    "powershell_parser": "PASS6/6 scripts",
+    "invalid_wrapper_scenario": "Rejected before native launch",
+    "lowercase_scenario": "defeat normalized toDefeat and nativePASS",
+    "task_json_and_unique_labels": "PASS",
+    "independent_review": "No P1/P2 found; currentsource/DLL, RED/GREEN and18PNG hashes checked independently",
+    "git_diff_check": "PASS"
+  },
+  "test_driven_evidence": {
+    "RED": {
+      "report": {
+        "path": "Docs/AutomationRuns/20261029T115747007Z/index.json",
+        "bytes": 87334,
+        "sha256": "dc8587596a4cd4041c0d4762cbf3ec9f90c8722e93b36a64539d6990fddf297f"
+      },
+      "tests": 181,
+      "success": 174,
+      "failed": 7,
+      "exact_intended_failures": [
+        "AIHeroes.InputBindings.CameraKeysDoNotIssueFieldOrders",
+        "AIHeroes.InputBindings.FieldKeyDispatchesClaimThenSinglePurchase",
+        "AIHeroes.InputBindings.FieldKeyRespectsModalAndBattleLocks",
+        "AIHeroes.LiveBattle.Readability.DeathHidesLabelAndFigure",
+        "AIHeroes.LiveBattle.Readability.FullBillboardDuringPause",
+        "AIHeroes.LiveBattle.Readability.ReasonOnceAndCleanup",
+        "AIHeroes.LiveBattle.Readability.StableGroupIdentity"
+      ],
+      "observed_camera_bug": "Actual bound E delegate changed Forest.bClaimed0->1 without explicit field key",
+      "production_fixes_applied_after_behavioral_RED": true
+    },
+    "GREEN": {
+      "report": {
+        "path": "Docs/AutomationRuns/20261029T120315037Z/index.json",
+        "bytes": 71799,
+        "sha256": "cf8e2b3affc734345153eab696343a6a55ec7d23d92958dff3b02afd50d458f9"
+      },
+      "provenance": {
+        "path": "Docs/AutomationRuns/20261029T120315037Z/provenance.json",
+        "bytes": 49785,
+        "sha256": "c3ae0cfae58439f4b7605a9f8d54bcf5ff220ee17c9086c414ea5771dd8e4357"
+      },
+      "tests": 181,
+      "success": 181,
+      "failed": 0,
+      "warnings": 0,
+      "not_run": 0,
+      "new_regressions": 7,
+      "build_verified": true
+    }
+  },
+  "build": {
+    "status": "PASS",
+    "manifest": {
+      "path": "Docs/BuildRuns/20261029T120219685Z/compiled.json",
+      "bytes": 49665,
+      "sha256": "7a08d8ec7156c83d3ef2a9be0075ee8639078d7568685cbacfdac089813892e8"
+    },
+    "inputs": 180,
+    "input_bytes": 1032626,
+    "binary": {
+      "path": "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+      "bytes": 2222592,
+      "sha256": "efc0d1ab50d0b2d367e9f850daeb18a29c896a958d4a1df83bfcfaf6c0e9b1fd"
+    },
+    "source_binary_matches_before_after_and_final": true,
+    "scope": "project+Source+Config+fixedgameDLL; installedengine/Content/Tools excluded from compiled-inputscope",
+    "compiler_caution": "InstalledMSVC14.51 newer than preferred14.50; build succeeded",
+    "history": [
+      {
+        "run": "20261029T115245223Z",
+        "result": "FAIL testfixture nonexistent Engine/URL.h; corrected testinclude only; not behavioralRED"
+      },
+      {
+        "run": "20261029T115430311Z",
+        "result": "BuildPASS; subsequent strict runner rejected externalcontroller drift BEFORE EditorCmd"
+      },
+      {
+        "run": "20261029T115654779Z",
+        "result": "BuildPASS stableREDbaseline"
+      },
+      {
+        "run": "20261029T120113951Z",
+        "result": "BuildPASS after fixes"
+      },
+      {
+        "run": "20261029T120219685Z",
+        "result": "FinalBuildPASS after remaininghelp/testdescription sync"
+      }
+    ]
+  },
+  "graphics": {
+    "status": "PASS_SCRIPTED_NATIVE_WINDOW",
+    "manual_input_claim": false,
+    "screenshots": 18,
+    "resolution": [
+      1280,
+      720
+    ],
+    "all18_images_visually_inspected": true,
+    "runs": [
+      {
+        "scenario": "Victory",
+        "evidence": {
+          "path": "Docs/VisualRuns/20261029T120427209Z_Victory/evidence.json",
+          "bytes": 2963,
+          "sha256": "d9aad2e024338642b00bea21d7f7ddf791652e756f93e84376e20fc57f8da470"
+        },
+        "native_exit": 0,
+        "save_hashes_unchanged": 4,
+        "synthetic": false,
+        "screenshots": [
+          {
+            "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_START.png",
+            "bytes": 511074,
+            "sha256": "f41731860da42a44f93b70cd7c43df9c6edb9b3ba691e1f0566c2603e86d3efc"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_PAUSED.png",
+            "bytes": 467542,
+            "sha256": "fbb4a6f120faa902bfbcb11eb25197eed322051595e76c6b3735339baaac2934"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_2X.png",
+            "bytes": 549508,
+            "sha256": "5a385336c5165f120c34142b79b5557e4df1993ef1e430124de85ae1e9605c40"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_RESULT.png",
+            "bytes": 505238,
+            "sha256": "8123ffc281b4601237e2013d1e76d026f13a92c144851ad4fa476f7dd3694573"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_RETURN.png",
+            "bytes": 407805,
+            "sha256": "5843f6fb419f042ce150590bc34f57590415a19516311216d7dd7fd44ef9078f"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_DOSSIER.png",
+            "bytes": 92896,
+            "sha256": "36f8ef031451c997a8dc1f34a0ce6105c5a67e208e9acef14e4c55059f529e70"
+          }
+        ]
+      },
+      {
+        "scenario": "Defeat",
+        "evidence": {
+          "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/evidence.json",
+          "bytes": 2997,
+          "sha256": "5c827895b618142d422c1b0d9598eaef83b52e4a6297ad870308c401eb4ea046"
+        },
+        "native_exit": 0,
+        "save_hashes_unchanged": 4,
+        "synthetic": true,
+        "screenshots": [
+          {
+            "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_START.png",
+            "bytes": 501401,
+            "sha256": "e5a7cff1d9d1935013d8d7773bfbeb4877d6d11d4b1e5ec68e0f176071906a90"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_PAUSED.png",
+            "bytes": 457858,
+            "sha256": "e752256b580b8461207c2c03b0a73c0a14fbc905f3000d52abfb6251af0c0faf"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_2X.png",
+            "bytes": 519156,
+            "sha256": "9b9f297ab36f28b9e4ad06539784e687593ae0f4a423f6abcdda3367a1947f3f"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_RESULT.png",
+            "bytes": 492227,
+            "sha256": "9248dc9b8c9738390916915b0fe145e06b3a97b5466f5e7d41487e2f75622931"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_RETURN.png",
+            "bytes": 410304,
+            "sha256": "449d766154d0e0ef8b0c2e362dedd463a49143810486780eed9c6ada57f81723"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_DOSSIER.png",
+            "bytes": 94642,
+            "sha256": "2ac6dec35a2caec97c6759b298ba93f9b7fabbea2c1f34dd8c4ab8da11f03490"
+          }
+        ]
+      },
+      {
+        "scenario": "TwoGroups",
+        "evidence": {
+          "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/evidence.json",
+          "bytes": 3045,
+          "sha256": "ddd7ca5e7a47c0b49c669d4f95c22eb3d784bc4046c6bdc7be47af76c22617be"
+        },
+        "native_exit": 0,
+        "save_hashes_unchanged": 4,
+        "synthetic": true,
+        "screenshots": [
+          {
+            "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_START.png",
+            "bytes": 517510,
+            "sha256": "2394036898b31db4d83a77e41ae53bdacdcdc78e9f032a799f8618ca9345b3e3"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_PAUSED.png",
+            "bytes": 474041,
+            "sha256": "38b88a6d9709ebe8a323462eb67c5d22c15ad2694fb35ec353afadb99d375fb5"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_2X.png",
+            "bytes": 556457,
+            "sha256": "81dcabd80dba96ec45d5a5503ee0ae02b728425de581bcb2952fd42acc4444f2"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RESULT.png",
+            "bytes": 506824,
+            "sha256": "c871ca0aa6ddd83e6b384c7913b5a52c5e0dfb2e842dd81436ca2fa421a33b75"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RETURN.png",
+            "bytes": 409851,
+            "sha256": "09d50197e41377d8cc41c6bfb30cfbcde1639d70f413f6e8763d7a40ab5ebf95"
+          },
+          {
+            "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_DOSSIER.png",
+            "bytes": 92932,
+            "sha256": "b6f51d08fd8f219af885ea3f0573ba6658852cd18a444fbed67e6253818cec9d"
+          }
+        ]
+      }
+    ],
+    "observations": [
+      "Stable NPC[0]/NPC[1] labels shown for two Raider groups",
+      "No dead group worldlabels on either victory or defeat result",
+      "FIELD3 visible on strategic return",
+      "Pause/path/2x/4xresult/return/dossier recorded",
+      "Each smoke compared4existing save hashes unchanged"
+    ],
+    "remaining_polish": [
+      "Pale-background contrast and possible overlap not solved by a new layout",
+      "Moving worldtext shows render motion blur in Defeat/TwoGroups2X; HUD remains readable"
+    ]
+  },
+  "boundaries": {
+    "foreign_processes_terminated": 0,
+    "manual_user_save_edits": 0,
+    "sdk_model_installs": 0,
+    "private_canon_changes": 0,
+    "git_staging_commits_pushes_by_agent": 0,
+    "legacy_PostMessage_field_script": "Key constants synchronized; script NOT executed",
+    "actual_models": "No checkpoint or neural inference implemented",
+    "android": "Not compiled or device-tested in this slice"
+  },
+  "remaining_acceptance": [
+    "Real manual keyboard/mouse and visual save/load round-trip",
+    "Multiple sequential battles in the same graphical campaign were not added to this smoke; backend repeated-session tests passed",
+    "Synthetic armies are acceptance fixtures, not campaign balance proof"
+  ],
+  "owned_artifact_count": 91,
+  "owned_artifact_bytes": 20617820,
+  "artifacts": [
+    {
+      "path": ".vscode/tasks.json",
+      "bytes": 5654,
+      "sha256": "78f79f6d0c76d60b87f5ee573020561470f02cb420e561e1363e87db454d4a14",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "README.md",
+      "bytes": 11316,
+      "sha256": "dc2ec4ce256f06469c834d55ffe0ccf7117dba70dc1e16cb5b1d22682dca8e32",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Docs/ADR/ADR-20261029-03_INPUT_AND_BATTLE_VIEW_CORRECTNESS.md",
+      "bytes": 4633,
+      "sha256": "4650733f254f6c2251010ca8148df22979b9009a4982eeb9a552e8f42f36f756",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Docs/INPUT_VIEW_CYCLE_2026-10-29.md",
+      "bytes": 5165,
+      "sha256": "03c77e437cb3cdcb96c3bb6df912d30f8342a5cc065fff89341d701d1fb4fcb1",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Docs/FIELD_DWELLINGS_GAMEPLAY_CONTRACT_2026-10-28.md",
+      "bytes": 6553,
+      "sha256": "b31a8b11c86a0850925c04700595ea42985f6cb4f82ff2161424c5a3583fb26e",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Docs/FIELD_DWELLINGS_QA_2026-10-28.md",
+      "bytes": 12790,
+      "sha256": "cbfa45214ebfae5d8ac3a6bfc0bc57bf94c6233ec37f0a52cfa0220449897f99",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesPlayerController.h",
+      "bytes": 1502,
+      "sha256": "7bc1f5ba5ba93d30e17d33fbcc2b792b84580f77ed1fdc84fa67eac89ad7d234",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesPlayerController.cpp",
+      "bytes": 14477,
+      "sha256": "53a5229712227eb86b696d85f2fa3977688dfe9337c53a8539384b960d2d300a",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesHUD.cpp",
+      "bytes": 22991,
+      "sha256": "1e8296e2b830eae294108cb46b887f83bff0f8112a9df3bbbe196c057a1a5468",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesFieldDwellingGameMode.cpp",
+      "bytes": 8034,
+      "sha256": "92a80d2c22c02dd237120675a26e7b3d01e81d05bdfb8c4b2c5d198b49043581",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesSupplyLines.cpp",
+      "bytes": 4612,
+      "sha256": "04af0c1f8a473d31436683180cdd9d5a7d62caf9e729e94bd1664a81f35c0dbd",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleStage.cpp",
+      "bytes": 23259,
+      "sha256": "3a049b224cda9867d87eac3127097cde6d7ad5a08424b39913246bba666bdc1e",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp",
+      "bytes": 12902,
+      "sha256": "333f484b552c28fb6bdf6dbfb3ba098d3e6d4669cac172c76cb4ad2553552147",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleReadabilityTests.cpp",
+      "bytes": 9568,
+      "sha256": "ae5206dd47d73e646afa0082b5bdd1c39e47c964af3da9a30c45dd2656aaf2d7",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesInputBindingsTests.cpp",
+      "bytes": 9754,
+      "sha256": "5ea1fad3e1fa159a1e8add53c304516b76ea9df946e3126224c5b4447fb83c33",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesFieldDwellingTests.cpp",
+      "bytes": 17907,
+      "sha256": "27a5f2575644bd2c09b9a492ad0d4e3ccb853d43007a690df9f1d532b3f6f3df",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Tools/verify_live_grid_smoke.ps1",
+      "bytes": 6271,
+      "sha256": "8824d59fb4442606ffae49bf16b50025b4576897a613f28d86a7f363837442c3",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Tools/qa_field_dwellings.ps1",
+      "bytes": 5951,
+      "sha256": "f22adfe0cc369a202e7db3d0e9dbbff0e8bd92a42105c8387fb94f2d0fdc23ac",
+      "kind": "implementation_or_docs"
+    },
+    {
+      "path": "Docs/AIHEROES_BUILD_LATEST.json",
+      "bytes": 49665,
+      "sha256": "7a08d8ec7156c83d3ef2a9be0075ee8639078d7568685cbacfdac089813892e8",
+      "kind": "compiled_latest"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T115245223Z/build.log",
+      "bytes": 5436,
+      "sha256": "bcaef39ab3217a005c8d25720d4d0ef068563b3d4c5535bcac8f24b620b41446",
+      "kind": "build_history"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T115430311Z/build.log",
+      "bytes": 5294,
+      "sha256": "33c44f9a2ecf6ced9700c7a659c1a435fb6bfe337424df69c8f3a208f829bbb0",
+      "kind": "build_history"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T115430311Z/compiled.json",
+      "bytes": 49665,
+      "sha256": "69a790300bbb4b8c1e5c6a0769879f0b68a2694e9990633200caf25afdd3a01b",
+      "kind": "build_history"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T115654779Z/build.log",
+      "bytes": 5420,
+      "sha256": "15dcfbffbbb26431b562279baaefa3fa4f0dae556340962c0d62e7193a85368a",
+      "kind": "build_history"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T115654779Z/compiled.json",
+      "bytes": 49665,
+      "sha256": "b2d3262aa86537ff11b442d59a354430d2d8d7cb681164fbf552e1d2455e4109",
+      "kind": "build_history"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T120113951Z/build.log",
+      "bytes": 6292,
+      "sha256": "b4df7709967dce08afc9f5dcc4316c0cbaec199fb3bf692d7989d91b6dbd4ab3",
+      "kind": "build_history"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T120113951Z/compiled.json",
+      "bytes": 49665,
+      "sha256": "60f26966b2b7152fee40fda3b1f85baeb9832df82ecd1f3dbbef4b073acde683",
+      "kind": "build_history"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T120219685Z/build.log",
+      "bytes": 5868,
+      "sha256": "013d4a7e66274ef2535eb5e391be9d7b07d65d57fc9fc69d9d919b5229b9b8c3",
+      "kind": "build_history"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T120219685Z/compiled.json",
+      "bytes": 49665,
+      "sha256": "7a08d8ec7156c83d3ef2a9be0075ee8639078d7568685cbacfdac089813892e8",
+      "kind": "build_history"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T115747007Z/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "kind": "automation_RED"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T115747007Z/index.json",
+      "bytes": 87334,
+      "sha256": "dc8587596a4cd4041c0d4762cbf3ec9f90c8722e93b36a64539d6990fddf297f",
+      "kind": "automation_RED"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T115747007Z/run.log",
+      "bytes": 506729,
+      "sha256": "cf71a9b924f7effca23fdd38b4608d0f4d124567df9c23c2603cfa33d339fe50",
+      "kind": "automation_RED"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T115747007Z/stdout.log",
+      "bytes": 340770,
+      "sha256": "1d8edd116a2821f6fde213c7c45eae5a5473824f5b31a03074d8fe046bb0e27b",
+      "kind": "automation_RED"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T120315037Z/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "kind": "automation_GREEN"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T120315037Z/index.json",
+      "bytes": 71799,
+      "sha256": "cf8e2b3affc734345153eab696343a6a55ec7d23d92958dff3b02afd50d458f9",
+      "kind": "automation_GREEN"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T120315037Z/provenance.json",
+      "bytes": 49785,
+      "sha256": "c3ae0cfae58439f4b7605a9f8d54bcf5ff220ee17c9086c414ea5771dd8e4357",
+      "kind": "automation_GREEN"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T120315037Z/run.log",
+      "bytes": 499693,
+      "sha256": "33d9053e2b779c8bc2fd987e3eb9d5e8d4a8758ba9fff1138768c1a539207f36",
+      "kind": "automation_GREEN"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T120315037Z/stdout.log",
+      "bytes": 329750,
+      "sha256": "ddd50a179dda62dc998e4379dcb32f4f223fe597b057bea88afe39a723e4344e",
+      "kind": "automation_GREEN"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/evidence.json",
+      "bytes": 2963,
+      "sha256": "d9aad2e024338642b00bea21d7f7ddf791652e756f93e84376e20fc57f8da470",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_2X.png",
+      "bytes": 549508,
+      "sha256": "5a385336c5165f120c34142b79b5557e4df1993ef1e430124de85ae1e9605c40",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_DOSSIER.png",
+      "bytes": 92896,
+      "sha256": "36f8ef031451c997a8dc1f34a0ce6105c5a67e208e9acef14e4c55059f529e70",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_PAUSED.png",
+      "bytes": 467542,
+      "sha256": "fbb4a6f120faa902bfbcb11eb25197eed322051595e76c6b3735339baaac2934",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_RESULT.png",
+      "bytes": 505238,
+      "sha256": "8123ffc281b4601237e2013d1e76d026f13a92c144851ad4fa476f7dd3694573",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_RETURN.png",
+      "bytes": 407805,
+      "sha256": "5843f6fb419f042ce150590bc34f57590415a19516311216d7dd7fd44ef9078f",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/LIVE_GRID_V2_START.png",
+      "bytes": 511074,
+      "sha256": "f41731860da42a44f93b70cd7c43df9c6edb9b3ba691e1f0566c2603e86d3efc",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/previous/LIVE_GRID_V2_2X.png",
+      "bytes": 533461,
+      "sha256": "0e3fb096ed123b0358e99ad43675a59060c4a25d201d3da301455b554048e8da",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/previous/LIVE_GRID_V2_DOSSIER.png",
+      "bytes": 92890,
+      "sha256": "7423dd092a45b5523ebbdeb7165a94cf6e0de76f2fc415c6833dc46c1a24c1e7",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/previous/LIVE_GRID_V2_PAUSED.png",
+      "bytes": 453354,
+      "sha256": "014d95de9a8de2999aa4cd15a5d92f6c6d079081bd5ac4fb15a4198f44ad42e9",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/previous/LIVE_GRID_V2_RESULT.png",
+      "bytes": 499695,
+      "sha256": "54c76fcdb84c7015a0721fecc0222be2ad5b9df78cc8082b88e3916c15738e0c",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/previous/LIVE_GRID_V2_RETURN.png",
+      "bytes": 408505,
+      "sha256": "4df4ca89b764c08dc2edaba9c1aa986e1161e642d7970881840fdab7ceb31fa8",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/previous/LIVE_GRID_V2_START.png",
+      "bytes": 495871,
+      "sha256": "8ae5f2e424a18814ec9b237145f2ea7beccfb9e3ac22b40f3a46c9326b798e28",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/smoke.log",
+      "bytes": 198383,
+      "sha256": "287641dd2ca15278fbfb9c2a155cd3d1623747770feb798aea3d09bea0a6a5a3",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120427209Z_Victory/stdout.log",
+      "bytes": 708,
+      "sha256": "4c01c6500ff00dd9dfe27934966298c21defcd19554d094dca5514eeeeae1bb4",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/evidence.json",
+      "bytes": 2997,
+      "sha256": "5c827895b618142d422c1b0d9598eaef83b52e4a6297ad870308c401eb4ea046",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_2X.png",
+      "bytes": 519156,
+      "sha256": "9b9f297ab36f28b9e4ad06539784e687593ae0f4a423f6abcdda3367a1947f3f",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_DOSSIER.png",
+      "bytes": 94642,
+      "sha256": "2ac6dec35a2caec97c6759b298ba93f9b7fabbea2c1f34dd8c4ab8da11f03490",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_PAUSED.png",
+      "bytes": 457858,
+      "sha256": "e752256b580b8461207c2c03b0a73c0a14fbc905f3000d52abfb6251af0c0faf",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_RESULT.png",
+      "bytes": 492227,
+      "sha256": "9248dc9b8c9738390916915b0fe145e06b3a97b5466f5e7d41487e2f75622931",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_RETURN.png",
+      "bytes": 410304,
+      "sha256": "449d766154d0e0ef8b0c2e362dedd463a49143810486780eed9c6ada57f81723",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_START.png",
+      "bytes": 501401,
+      "sha256": "e5a7cff1d9d1935013d8d7773bfbeb4877d6d11d4b1e5ec68e0f176071906a90",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/smoke.log",
+      "bytes": 198154,
+      "sha256": "2037cccf9942fa83d96102fd4fcf9dbe6603f56d4e3a2cdd8539f79c490feb0f",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120454606Z_Defeat/stdout.log",
+      "bytes": 708,
+      "sha256": "dabb3cb00d733ea27017755fcb478bec29ce198356228a28e1cf9f6f6853fa9e",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/evidence.json",
+      "bytes": 3045,
+      "sha256": "ddd7ca5e7a47c0b49c669d4f95c22eb3d784bc4046c6bdc7be47af76c22617be",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_2X.png",
+      "bytes": 556457,
+      "sha256": "81dcabd80dba96ec45d5a5503ee0ae02b728425de581bcb2952fd42acc4444f2",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_DOSSIER.png",
+      "bytes": 92932,
+      "sha256": "b6f51d08fd8f219af885ea3f0573ba6658852cd18a444fbed67e6253818cec9d",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_PAUSED.png",
+      "bytes": 474041,
+      "sha256": "38b88a6d9709ebe8a323462eb67c5d22c15ad2694fb35ec353afadb99d375fb5",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RESULT.png",
+      "bytes": 506824,
+      "sha256": "c871ca0aa6ddd83e6b384c7913b5a52c5e0dfb2e842dd81436ca2fa421a33b75",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RETURN.png",
+      "bytes": 409851,
+      "sha256": "09d50197e41377d8cc41c6bfb30cfbcde1639d70f413f6e8763d7a40ab5ebf95",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_START.png",
+      "bytes": 517510,
+      "sha256": "2394036898b31db4d83a77e41ae53bdacdcdc78e9f032a799f8618ca9345b3e3",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/smoke.log",
+      "bytes": 199300,
+      "sha256": "ffdf9e197c00aa706a0ecc562c6aec9c8b278450181f60a6d0d8552fceedc043",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T120522060Z_TwoGroups/stdout.log",
+      "bytes": 708,
+      "sha256": "58f2b118f10c9dfc28f8f1c923ecb0d6f112576cbb4dbe7878009dde69409cf5",
+      "kind": "native_window_evidence"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_START.png",
+      "bytes": 511074,
+      "sha256": "f41731860da42a44f93b70cd7c43df9c6edb9b3ba691e1f0566c2603e86d3efc",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_PAUSED.png",
+      "bytes": 467542,
+      "sha256": "fbb4a6f120faa902bfbcb11eb25197eed322051595e76c6b3735339baaac2934",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_2X.png",
+      "bytes": 549508,
+      "sha256": "5a385336c5165f120c34142b79b5557e4df1993ef1e430124de85ae1e9605c40",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_RESULT.png",
+      "bytes": 505238,
+      "sha256": "8123ffc281b4601237e2013d1e76d026f13a92c144851ad4fa476f7dd3694573",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_RETURN.png",
+      "bytes": 407805,
+      "sha256": "5843f6fb419f042ce150590bc34f57590415a19516311216d7dd7fd44ef9078f",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_DOSSIER.png",
+      "bytes": 92896,
+      "sha256": "36f8ef031451c997a8dc1f34a0ce6105c5a67e208e9acef14e4c55059f529e70",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_DEFEAT_START.png",
+      "bytes": 501401,
+      "sha256": "e5a7cff1d9d1935013d8d7773bfbeb4877d6d11d4b1e5ec68e0f176071906a90",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_DEFEAT_PAUSED.png",
+      "bytes": 457858,
+      "sha256": "e752256b580b8461207c2c03b0a73c0a14fbc905f3000d52abfb6251af0c0faf",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_DEFEAT_2X.png",
+      "bytes": 519156,
+      "sha256": "9b9f297ab36f28b9e4ad06539784e687593ae0f4a423f6abcdda3367a1947f3f",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_DEFEAT_RESULT.png",
+      "bytes": 492227,
+      "sha256": "9248dc9b8c9738390916915b0fe145e06b3a97b5466f5e7d41487e2f75622931",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_DEFEAT_RETURN.png",
+      "bytes": 410304,
+      "sha256": "449d766154d0e0ef8b0c2e362dedd463a49143810486780eed9c6ada57f81723",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_DEFEAT_DOSSIER.png",
+      "bytes": 94642,
+      "sha256": "2ac6dec35a2caec97c6759b298ba93f9b7fabbea2c1f34dd8c4ab8da11f03490",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_TWO_GROUPS_START.png",
+      "bytes": 517510,
+      "sha256": "2394036898b31db4d83a77e41ae53bdacdcdc78e9f032a799f8618ca9345b3e3",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_TWO_GROUPS_PAUSED.png",
+      "bytes": 474041,
+      "sha256": "38b88a6d9709ebe8a323462eb67c5d22c15ad2694fb35ec353afadb99d375fb5",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_TWO_GROUPS_2X.png",
+      "bytes": 556457,
+      "sha256": "81dcabd80dba96ec45d5a5503ee0ae02b728425de581bcb2952fd42acc4444f2",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_TWO_GROUPS_RESULT.png",
+      "bytes": 506824,
+      "sha256": "c871ca0aa6ddd83e6b384c7913b5a52c5e0dfb2e842dd81436ca2fa421a33b75",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_TWO_GROUPS_RETURN.png",
+      "bytes": 409851,
+      "sha256": "09d50197e41377d8cc41c6bfb30cfbcde1639d70f413f6e8763d7a40ab5ebf95",
+      "kind": "latest_screenshot"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_TWO_GROUPS_DOSSIER.png",
+      "bytes": 92932,
+      "sha256": "b6f51d08fd8f219af885ea3f0573ba6658852cd18a444fbed67e6253818cec9d",
+      "kind": "latest_screenshot"
+    }
+  ],
+  "external_preserved_not_attributed": [
+    {
+      "path": "Tools/qa_supply_convoy.ps1",
+      "bytes": 7142,
+      "sha256": "b3e8180e84e48311c822fc7ea776e597503c4777f1087097e72989e2c3a9f9bd",
+      "kind": "external_preserved_not_attributed"
+    },
+    {
+      "path": "Tools/verify_map_readability.ps1",
+      "bytes": 9700,
+      "sha256": "6071c6efd345b1180a3138c6094ac26ec2107a25dbe270ba1776fb1796c74bbd",
+      "kind": "external_preserved_not_attributed"
+    }
+  ],
+  "rollback": "Only owned source/tool/doc hunks/newfiles; preserve external Esc change/merges/user saves and historical evidence. No reset/clean."
+}

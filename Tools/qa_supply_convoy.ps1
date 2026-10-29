@@ -67,8 +67,20 @@ function Click([int]$x,[int]$y){
     }
     Start-Sleep -Milliseconds 460
 }
+function Key([int]$virtualKey){
+    if(-not [AIHSupplyWindow]::PostMessage($hwnd,0x0100,[IntPtr]$virtualKey,[IntPtr]0)){
+        throw ('SUPPLY_QA_FAIL: targeted key down refused '+$virtualKey)
+    }
+    Start-Sleep -Milliseconds 155
+    if(-not [AIHSupplyWindow]::PostMessage($hwnd,0x0101,[IntPtr]$virtualKey,[IntPtr]0)){
+        throw ('SUPPLY_QA_FAIL: targeted key up refused '+$virtualKey)
+    }
+    Start-Sleep -Milliseconds 440
+}
 function Capture([string]$name){
-    $path=Join-Path $root ('Saved\QA\SupplyConvoy\' + $name)
+    # Each dedicated log owns its own screenshot directory; preserve old QA images.
+    $path=Join-Path $root ('Saved\QA\SupplyConvoy\' +
+        [IO.Path]::GetFileNameWithoutExtension($LogTag) + '\' + $name)
     & (Join-Path $root 'Tools\qa_capture_targeted_game.ps1') -LogTag $LogTag -OutputPath $path
     if(-not(Test-Path -LiteralPath $path) -or
        (Get-Item -LiteralPath $path).Length -lt 10000){
@@ -83,26 +95,52 @@ $saveBefore=@(SaveInventory)
 Until '\[AI HEROES SUPPLY SMOKE\] READY source=FOREST stock=10 gold=240 moves=4'
 Capture 'CONVOY_BEFORE.png'
 # 205: the new shared touch/mouse control at desktop (x=716..844, y=461..490).
-Click 778 475
-Until '\[AI HEROES UI\] Button action=205'
+Key 0x58
+# Keyboard-bound X does not create a HUD mouse-action log; verify the quote itself.
 Until '\[AI HEROES SUPPLY\] QUOTE source=FOREST CAMP units=5 cost=65G/5W/0O moves=1 player_order=0 commit=0'
 if(@(Select-String -LiteralPath $log -Pattern '\[AI HEROES SUPPLY\] DISPATCH').Count -ne 0){
     throw 'SUPPLY_QA_FAIL: first action spent resources'
 }
 Capture 'CONVOY_QUOTE.png'
-Click 778 475
+# Esc cancels even a valid quote. This MUST NOT charge currency or send troops.
+Key 0x1B
+Until '\[AI HEROES SUPPLY\] CANCEL player_order=1 commit=0'
+if(@(Select-String -LiteralPath $log -Pattern '\[AI HEROES SUPPLY\] DISPATCH').Count -ne 0){
+    throw 'SUPPLY_QA_FAIL: Esc committed the quoted convoy'
+}
+Capture 'CONVOY_CANCELED.png'
+# First X after Esc must quote again, not unexpectedly buy the prior offer.
+Key 0x58
+$firstRequote=@(Select-String -LiteralPath $log -Pattern '\[AI HEROES SUPPLY\] QUOTE source=FOREST CAMP').Count
+if($firstRequote -ne 2){
+    throw ('SUPPLY_QA_FAIL: canceled quote did not require fresh preview: '+$firstRequote)
+}
+if(@(Select-String -LiteralPath $log -Pattern '\[AI HEROES SUPPLY\] DISPATCH').Count -ne 0){
+    throw 'SUPPLY_QA_FAIL: first X after Esc incorrectly committed'
+}
+Capture 'CONVOY_REQUOTED.png'
+Key 0x58
 Until '\[AI HEROES SUPPLY\] DISPATCH source=FOREST CAMP units=5 cost=65G/5W/0O moves=1 remaining=5 player_order=1 commit=1'
 Capture 'CONVOY_DELIVERED.png'
-Click 778 475
+# One more click should only create a NEW quote. Cancel the second quote too.
+Key 0x58
 $quotes=@(Select-String -LiteralPath $log -Pattern '\[AI HEROES SUPPLY\] QUOTE source=FOREST CAMP').Count
 $commits=@(Select-String -LiteralPath $log -Pattern '\[AI HEROES SUPPLY\] DISPATCH source=FOREST CAMP').Count
-if($quotes -ne 2 -or $commits -ne 1){
+if($quotes -ne 3 -or $commits -ne 1){
     throw ('SUPPLY_QA_FAIL: replay/confirmation errors quotes='+$quotes+' commits='+$commits)
+}
+Key 0x1B
+$cancels=@(Select-String -LiteralPath $log -Pattern '\[AI HEROES SUPPLY\] CANCEL player_order=1 commit=0').Count
+if($cancels -ne 2){
+    throw ('SUPPLY_QA_FAIL: Esc cancellation count must be 2, actual='+$cancels)
+}
+if(@(Select-String -LiteralPath $log -Pattern '\[AI HEROES SUPPLY\] DISPATCH source=FOREST CAMP').Count -ne 1){
+    throw 'SUPPLY_QA_FAIL: a second Esc duplicated the delivery'
 }
 $saveAfter=@(SaveInventory)
 if(($saveBefore -join "`n") -ne ($saveAfter -join "`n")){
     throw 'SUPPLY_QA_FAIL: real SaveGame files mutated'
 }
-Write-Output 'SUPPLY_GUI_PASS: source selected at HQ -> quote read only -> second click delivery -> third click new quote'
+Write-Output 'SUPPLY_GUI_PASS: HQ -> quote read-only -> Esc cancels -> X requotes -> X delivers one pack -> X requotes -> Esc cancels'
 Write-Output 'SUPPLY_SAVEGAMES_UNCHANGED_PASS'
 Write-Output ('SUPPLY_QA_LOG='+$log)

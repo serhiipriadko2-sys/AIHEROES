@@ -312,7 +312,7 @@ bool FAIHeroesFieldGuiTest::RunTest(const FString& Parameters)
         const auto Lab = FAIHeroesHUDLayout::Rect(203, Viewport);
         const auto Goals = FAIHeroesHUDLayout::Rect(202, Viewport);
         const FVector2D Center(Field.X + Field.W / 2.f, Field.Y + Field.H / 2.f);
-        TestTrue(TEXT("FIELD E is on-screen and touchable"),
+        TestTrue(TEXT("FIELD 3 is on-screen and touchable"),
             Field.W >= 90.f && Field.X >= 0.f &&
             Field.X + Field.W <= Viewport.X && Field.Y > 0 &&
             Field.Y + Field.H <= Viewport.Y);

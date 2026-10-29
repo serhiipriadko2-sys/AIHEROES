@@ -296,7 +296,7 @@ void AAIHeroesHUD::DrawHUD()
     DrawHeader(Rules->GetSelectionSummary(), FLinearColor(0.4f, 1.f, 0.92f), 119.f, Scale);
     DrawHeader(bCompactHeader
         ? TEXT("CLICK select | ENTER confirm | H advise | I dossier | SPACE day | K save | L load")
-        : TEXT("WASD camera  CLICK select  ENTER move/fight  E field  X convoy  H advise  Z route  SPACE day  K save  L load  V 3D"),
+        : TEXT("WASD camera  CLICK select  ENTER move/fight  3 field  X convoy  H advise  Z route  SPACE day  K save  L load  V 3D"),
         FLinearColor(0.72f, 0.78f, 0.87f), 147.f, Scale * 0.92f);
 
     if (!Rules->IsBattleReplayActive() && !Rules->IsLiveBattleActive())
@@ -375,7 +375,7 @@ void AAIHeroesHUD::DrawHUD()
         {
             DrawRect(FLinearColor(0.20f, 0.25f, 0.11f, 0.99f),
                 FieldX, FieldY, FieldW, FieldH);
-            DrawText(TEXT("FIELD E"), FLinearColor(0.92f, 1.f, 0.65f),
+            DrawText(TEXT("FIELD 3"), FLinearColor(0.92f, 1.f, 0.65f),
                 FieldX + 8.f, FieldY + 7.f, Font, Scale * 0.9f);
         }
         // The protocol comparison is a peer of GOALS, not another

@@ -1,0 +1,81 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "DESKTOP-ITUAMNF",
+			"instance": "6C804FF844F7E4F02AB5DAAB02D3AEA2",
+			"instanceName": "DESKTOP-ITUAMNF-26596",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 10 (22H2) [10.0.19045.6093] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3070",
+			"cPUModel": "Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.29-12.25.00",
+	"succeeded": 0,
+	"succeededWithWarnings": 0,
+	"failed": 1,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.070083700120449066,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "TacticalCameraHasNoMotionBlur",
+			"fullTestPath": "AIHeroes.LiveBattle.Readability.TacticalCameraHasNoMotionBlur",
+			"tags": [],
+			"state": "Fail",
+			"deviceInstance": [
+				"6C804FF844F7E4F02AB5DAAB02D3AEA2"
+			],
+			"duration": 0.070083700120449066,
+			"dateTime": "2026.10.29-12.25.00",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'Tactical camera explicitly overrides motion blur' to be true.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "C:\\github\\AIHEROES\\Source\\AIHeroes\\Private\\Tests\\AIHeroesBattleReadabilityTests.cpp",
+					"lineNumber": 220,
+					"timestamp": "2026.10.29-12.25.00"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'Tactical motion blur amount is zero' to be 0.000000, but it was 0.500000 and outside tolerance 0.000100.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "C:\\github\\AIHEROES\\Source\\AIHeroes\\Private\\Tests\\AIHeroesBattleReadabilityTests.cpp",
+					"lineNumber": 222,
+					"timestamp": "2026.10.29-12.25.00"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'Paused orbit keeps the readability setting' to be 0.000000, but it was 0.500000 and outside tolerance 0.000100.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "C:\\github\\AIHEROES\\Source\\AIHeroes\\Private\\Tests\\AIHeroesBattleReadabilityTests.cpp",
+					"lineNumber": 228,
+					"timestamp": "2026.10.29-12.25.00"
+				}
+			],
+			"warnings": 0,
+			"errors": 3,
+			"artifacts": []
+		}
+	]
+}

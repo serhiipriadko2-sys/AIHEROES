@@ -53,7 +53,7 @@ FString AAIHeroesGameMode::GetFieldDwellingLabel(EAIHeroesNodeType Type) const
 FString AAIHeroesGameMode::GetFieldDwellingSummary() const
 {
     if (!IsValid(SelectedNode.Get()) || !Nodes.Contains(SelectedNode))
-        return TEXT("FIELD: select FOREST camp or ORE aerie. E claims/recruits.");
+        return TEXT("FIELD: select FOREST camp or ORE aerie. 3 claims/recruits.");
     EAIHeroesFieldSite Site = EAIHeroesFieldSite::ForestCamp;
     if (!SiteForType(SelectedNode->NodeType, Site))
         return TEXT("FIELD: select FOREST or ORE; headquarters stocks are independent.");
@@ -62,7 +62,7 @@ FString AAIHeroesGameMode::GetFieldDwellingSummary() const
         FVector::DistSquared(
             HeroStrategicLocation, SelectedNode->GetActorLocation()) < 1.0;
     return FString::Printf(
-        TEXT("%s: %d %s | %s | %s. E to %s."),
+        TEXT("%s: %d %s | %s | %s. 3 to %s."),
         FieldName(Site), Stock.Available, FieldUnit(Site),
         Stock.bClaimed ? TEXT("CLAIMED") : TEXT("UNCLAIMED"),
         !SelectedNode->bOwned ? TEXT("CLEAR FIRST")
@@ -103,7 +103,7 @@ void AAIHeroesGameMode::InteractFieldDwelling()
             FieldName(Site),
             FAIHeroesFieldDwellingRules::At(FieldDwellings, Site).Available);
         SetEvent(FString::Printf(
-            TEXT("FIELD CLAIMED: %s. Available %d %s. Press E again to buy a pack."),
+            TEXT("FIELD CLAIMED: %s. Available %d %s. Press 3 again to buy a pack."),
             FieldName(Site),
             FAIHeroesFieldDwellingRules::At(FieldDwellings, Site).Available,
             FieldUnit(Site)));

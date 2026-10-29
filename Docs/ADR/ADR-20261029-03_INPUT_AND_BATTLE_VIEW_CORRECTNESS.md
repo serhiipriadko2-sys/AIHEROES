@@ -1,6 +1,7 @@
 # ADR-20261029-03 — Input and battle-view correctness
 
-Date: 2026-10-29. Status: bounded corrective implementation; QA pending.
+Date: 2026-10-29. Status: implemented; RED/GREEN and three scripted native
+graphics scenarios verified. Full manual PC acceptance remains separate.
 
 ## Context
 
@@ -59,6 +60,18 @@ keys must not dispatch mutating orders. Explicit field interaction must retain
 normal guard behavior. Run separate real-window Victory/Defeat/TwoGroups smoke;
 inspect fresh frames and retain any failed evidence. This is not manual input
 acceptance or graphical save/load acceptance.
+
+Evidence: RED `Docs/AutomationRuns/20261029T115747007Z/index.json` has exactly
+seven intended failures; GREEN `20261029T120315037Z/index.json` has181 Success,
+zero warnings/errors/skips. Final build snapshot is
+`Docs/BuildRuns/20261029T120219685Z/compiled.json` (180 inputs).
+Victory/Defeat/TwoGroups evidence under `Docs/VisualRuns/20261029T1204*` and
+`20261029T120522060Z_TwoGroups` contains18 fresh1280x720 frames and native exit0.
+All frames were inspected; each run compared four existing save hashes unchanged.
+
+Known presentation price: contrast on pale tiles, possible overlap and moving
+text motion-blur remain polish work. The successful checks do not claim perfect
+nameplate legibility at every camera pose, manual input, or campaign balance.
 
 ## Rollback
 

@@ -188,6 +188,11 @@ public:
     FString GetArmySummary() const;
     FString GetCognitionSummary() const;
 
+    // Read-only, game-thread export for the optional local-model adapter.
+    // Caller owns session/request correlation; this does not enable inference.
+    bool BuildLocalModelRequest(const FString& RequestId, const FString& SessionId,
+        FString& OutJson, FString& Error) const;
+
 private:
     // Transient UI quote, never a campaign save or an AI authorization.
     bool bBasePanelOpen = false;
@@ -244,6 +249,7 @@ private:
     void BeginTravelSmoke();
     void BeginTravelViewSmoke();
     void BeginSupplySmoke();
+    void BeginModelRequestSmoke();
 
     UPROPERTY()
     TObjectPtr<AAIHeroesBattleStage> ActiveBattleStage;

@@ -1,6 +1,8 @@
 #include "AIHeroesLiveBattleStage.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/StaticMeshActor.h"
@@ -198,6 +200,35 @@ bool FAIHeroesBattleReasonAndCleanupTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Destroying stage during an action succeeds"), Stage->Destroy());
     for (const auto& Actor : OwnedActors)
         TestFalse(TEXT("Owned labels/figures/camera do not leak"), Actor.IsValid());
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAIHeroesTacticalCameraBlurTest,
+    "AIHeroes.LiveBattle.Readability.TacticalCameraHasNoMotionBlur",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FAIHeroesTacticalCameraBlurTest::RunTest(const FString& Parameters)
+{
+    using namespace BattleReadabilityTestDetail;
+    FWorld Fixture;
+    AAIHeroesLiveBattleStage* Stage = Fixture.SpawnStage();
+    if (!TestNotNull(TEXT("Disposable tactical stage exists"), Stage)) return false;
+    if (!TestTrue(TEXT("Stage initializes its own camera"), InitializePair(Stage))) return false;
+    ACameraActor* Camera = Cast<ACameraActor>(Stage->GetViewTarget());
+    if (!TestNotNull(TEXT("Tactical view is a camera actor"), Camera)) return false;
+    const UCameraComponent* Component = Camera->GetCameraComponent();
+    TestTrue(TEXT("Tactical camera explicitly overrides motion blur"),
+        static_cast<bool>(Component->PostProcessSettings.bOverride_MotionBlurAmount));
+    TestEqual(TEXT("Tactical motion blur amount is zero"),
+        Component->PostProcessSettings.MotionBlurAmount, 0.f);
+    TestTrue(TEXT("Camera-local post processing has positive blend weight"),
+        Component->PostProcessBlendWeight > 0.f);
+    Stage->SetPresentationPaused(true);
+    Stage->OrbitCamera(70.f, -300.f);
+    TestEqual(TEXT("Paused orbit keeps the readability setting"),
+        Component->PostProcessSettings.MotionBlurAmount, 0.f);
+    ACameraActor* UnrelatedCamera = Fixture.World->SpawnActor<ACameraActor>();
+    if (!TestNotNull(TEXT("Independent camera exists"), UnrelatedCamera)) return false;
+    TestFalse(TEXT("No global/default camera blur override was changed"),
+        static_cast<bool>(UnrelatedCamera->GetCameraComponent()->PostProcessSettings.bOverride_MotionBlurAmount));
     return true;
 }
 #endif

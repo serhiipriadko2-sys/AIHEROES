@@ -84,7 +84,7 @@ function Capture([string]$name){
     }
 }
 Write-Output "FIELD_QA_PINNED pid=$ExpectedPid size=1280x720"
-# Main HUD FIELD E button should be clickable but cannot claim at HQ.
+# Main HUD FIELD 3 button should be clickable but cannot claim at HQ.
 Click 913 475
 Until '\[AI HEROES UI\] Button action=204'
 Until 'FIELD: select an existing FOREST or ORE site first. Nothing spent.'
@@ -103,9 +103,9 @@ Click 913 475
 Until '\[AI HEROES UI\] Button action=204'
 Until '\[AI HEROES FIELD\] CLAIM site=FOREST CAMP stock=5 player_order=1'
 Capture 'FIELD_FOREST_CLAIMED.png'
-Key 0x45 # separate player authorization buys one pack from local stock
+Key 0x33 # separate player authorization buys one pack from local stock
 Until '\[AI HEROES FIELD\] RECRUIT site=FOREST CAMP remaining=0'
-Key 0x45
+Key 0x33
 Until 'FIELD RECRUIT BLOCKED: only 0/5 units at this site'
 $commits=@(Select-String -LiteralPath $log -Pattern '\[AI HEROES LIVE\] COMMIT node=FOREST').Count
 if($commits -ne 1){throw ('FIELD_QA_FAIL: unexpected combat commit count '+$commits)}
@@ -115,7 +115,7 @@ for($day=2;$day -le 8;$day++){
 }
 Until '\[AI HEROES FIELD\] WEEK day=8 forest_plus=5 forest_stock=5 forest_claimed=1 ore_plus=0 ore_stock=2 ore_claimed=0'
 Capture 'FIELD_FOREST_WEEK2.png'
-Key 0x45
+Key 0x33
 Until '\[AI HEROES FIELD\] RECRUIT site=FOREST CAMP remaining=0'
 if(@(Select-String -LiteralPath $log -Pattern '\[AI HEROES LIVE\] COMMIT node=FOREST').Count -ne 1){
     throw 'FIELD_QA_FAIL: local recruiting replayed real battle'

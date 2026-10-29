@@ -46,7 +46,7 @@ FAIHeroesSupplyQuote FAIHeroesSupplyLines::Quote(
     }
     if (!FAIHeroesFieldDwellingRules::At(Sites, Access.Site).bClaimed)
     {
-        Out.Reason = TEXT("CONVOY BLOCKED: visit and claim the field site with E first.");
+        Out.Reason = TEXT("CONVOY BLOCKED: visit and claim the field site with 3 first.");
         return Out;
     }
     if (!Access.bRoadOpen)

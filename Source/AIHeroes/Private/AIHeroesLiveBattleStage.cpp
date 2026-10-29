@@ -141,6 +141,11 @@ bool AAIHeroesLiveBattleStage::Initialize(
     BattleCamera->GetCameraComponent()->SetProjectionMode(ECameraProjectionMode::Perspective);
     BattleCamera->GetCameraComponent()->SetFieldOfView(58.f);
     BattleCamera->GetCameraComponent()->bConstrainAspectRatio = false;
+    // Tactical readability is local to this disposable view, not a global
+    // renderer setting or a change to simulation timing/rules.
+    BattleCamera->GetCameraComponent()->PostProcessSettings.bOverride_MotionBlurAmount = true;
+    BattleCamera->GetCameraComponent()->PostProcessSettings.MotionBlurAmount = 0.f;
+    BattleCamera->GetCameraComponent()->PostProcessBlendWeight = 1.f;
     UpdateCamera();
 
     UMaterialInterface* BaseMaterial = LoadObject<UMaterialInterface>(nullptr,
@@ -239,7 +244,7 @@ void AAIHeroesLiveBattleStage::SpawnFigure(bool bPlayer, int32 Index)
     {
         SpawnedActors.Add(Label);
         UTextRenderComponent* Text = Label->GetTextRender();
-        Text->SetWorldSize(24.f);
+        Text->SetWorldSize(30.f);
         Text->SetHorizontalAlignment(EHTA_Center);
         Text->SetTextRenderColor(bPlayer ? FColor(90, 220, 255) : FColor(255, 160, 100));
         Text->SetCastShadow(false);
@@ -265,9 +270,11 @@ void AAIHeroesLiveBattleStage::RefreshFigure(bool bPlayer, int32 Index)
     if (Labels.IsValidIndex(Index) && IsValid(Labels[Index].Get()))
     {
         Labels[Index]->SetActorLocation(CellLocation(Cells[Index], 165.f));
+        Labels[Index]->SetActorHiddenInGame(!Stack.IsAlive());
         Labels[Index]->GetTextRender()->SetText(FText::FromString(FString::Printf(
-            TEXT("%s %d\nHP %d | INIT %d"), *Stack.UnitId.ToString(), Stack.Count(),
-            Stack.TotalHealth, Stack.Initiative)));
+            TEXT("%s[%d] %s %d\nHP %d | INIT %d"),
+            bPlayer ? TEXT("HERO") : TEXT("NPC"), Index,
+            *Stack.UnitId.ToString(), Stack.Count(), Stack.TotalHealth, Stack.Initiative)));
     }
 }
 
@@ -326,7 +333,6 @@ bool AAIHeroesLiveBattleStage::PresentAction(const FAIHeroesGridAction& Action)
     bEventCommitted = false;
     bPresenting = true;
     Status = Action.ToLogLine();
-    if (!Action.Reason.IsEmpty()) Status += TEXT(" | ") + Action.Reason.Left(120);
     PathMarkers->ClearInstances();
     for (const FIntPoint& Cell : Action.Path)
     {
@@ -475,7 +481,7 @@ void AAIHeroesLiveBattleStage::FaceLabelsToCamera()
     {
         if (!IsValid(Label)) return;
         const FVector Direction = BattleCamera->GetActorLocation() - Label->GetActorLocation();
-        Label->SetActorRotation(FRotator(0.f, Direction.Rotation().Yaw, 0.f));
+        Label->SetActorRotation(Direction.Rotation());
     };
     for (ATextRenderActor* Label : PlayerLabels) FaceLabel(Label);
     for (ATextRenderActor* Label : EnemyLabels) FaceLabel(Label);

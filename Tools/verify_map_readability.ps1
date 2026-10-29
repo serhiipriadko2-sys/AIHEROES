@@ -87,7 +87,7 @@ if($Visual){
         $VisualExit=$Child.ExitCode
         Write-Output "READABILITY_VISUAL_EXIT width=$Width pid=$($Child.Id) exit=$VisualExit"
         if($null -eq $VisualExit -or $VisualExit -ne 0 -or
-            -not (Select-String "$Dir\visual.log" -SimpleMatch '[TRAVEL VIEW SMOKE] PASS' -Quiet)){throw "Visual run failed: $Dir"}
+            -not (Select-String -LiteralPath "$Dir\visual.log" -Pattern '[TRAVEL VIEW SMOKE] PASS' -SimpleMatch -Quiet)){throw "Visual run failed: $Dir"}
         foreach($Name in @('VIEW_READY.png','VIEW_MOVING.png','VIEW_OVER_BUDGET.png')){
             $InputFile=Get-Item "$BuildRoot\Saved\QA\TravelPresentation\$Name"
             if($InputFile.Length -le 0 -or $InputFile.LastWriteTimeUtc -lt $Started){throw "Stale/missing screenshot: $Name"}

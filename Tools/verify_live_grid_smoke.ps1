@@ -5,6 +5,13 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+# PowerShell ValidateSet accepts casing aliases; use the C++ selector's exact
+# spelling so `-Scenario defeat` and the canonical VS Code task behave alike.
+$Scenario = switch ($Scenario.ToLowerInvariant()) {
+    'defeat' { 'Defeat' }
+    'twogroups' { 'TwoGroups' }
+    default { 'Victory' }
+}
 $Root = Split-Path -Parent $PSScriptRoot
 if ([string]::IsNullOrWhiteSpace($CompiledSnapshot)) {
     $CompiledSnapshot = Join-Path $Root 'Docs\AIHEROES_BUILD_LATEST.json'

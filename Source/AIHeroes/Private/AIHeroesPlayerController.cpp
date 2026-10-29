@@ -8,6 +8,11 @@
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
 
+const FKey& AAIHeroesPlayerController::FieldInteractionKey()
+{
+    return EKeys::Three;
+}
+
 AAIHeroesPlayerController::AAIHeroesPlayerController()
 {
     bShowMouseCursor = true;
@@ -29,7 +34,7 @@ void AAIHeroesPlayerController::SetupInputComponent()
         this, &AAIHeroesPlayerController::RecruitMilitia);
     InputComponent->BindKey(EKeys::Two, IE_Pressed,
         this, &AAIHeroesPlayerController::RecruitScouts);
-    InputComponent->BindKey(EKeys::E, IE_Pressed,
+    InputComponent->BindKey(FieldInteractionKey(), IE_Pressed,
         this, &AAIHeroesPlayerController::InteractFieldDwelling);
     InputComponent->BindKey(EKeys::X, IE_Pressed,
         this, &AAIHeroesPlayerController::RequestSupplyConvoy);

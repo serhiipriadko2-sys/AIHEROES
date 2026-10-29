@@ -12,6 +12,8 @@ Open C:\github\AIHEROES in VS Code, then use Terminal > Run Task:
 - AIHEROES: Test all gameplay automation (checks the fresh JSON report, not exit code alone)
 - AIHEROES: Launch playable Windows game
 - AIHEROES: Visual live grid V2 smoke (scripted real-window QA; no save writes)
+- AIHEROES: Visual defeat smoke
+- AIHEROES: Visual two-group battle smoke (synthetic acceptance fixture)
 Close the game window before rebuilding so the Unreal DLL can be replaced.
 
 Or open AIHeroes.uproject in Unreal Engine 5.8 and press Play.
@@ -30,6 +32,7 @@ Esc closes it. Close the report before giving strategic orders.
 - H = ask the hero for advice about the selected node, or get a safe-target suggestion without a selection.
 - Enter = CONFIRM movement and any battle at that node.
 - 1 = recruit 5 Militia, 2 = recruit 2 Scouts.
+- 3 = claim the selected secured FOREST/ORE dwelling, then buy one local pack on a subsequent press. Q/E only rotate the camera; they never issue field orders.
 - U / HQ + = upgrade the selected owned headquarters while the hero is there; the displayed price is charged once.
 - P = unlock next cognitive protocol (resource costs).
 - M = unlock the next 3B/8B model SLOT after earning DATA in battles.
@@ -173,3 +176,19 @@ verified current-source build. Installed Engine and Content assets are outside
 this hash scope. Coordinated wrappers serialize native work; other tools must
 still avoid concurrent Editor-Cmd runs. No process is automatically closed.
 Automation PASS is not manual gameplay or Android acceptance.
+
+## Camera/order safety and battle-view checks
+
+Q/E rotate the camera only; **3** issues the explicit field-dwelling action.
+The FIELD touch button retains the same command. Live battle labels identify
+`HERO[0]` / `NPC[1]` using stable zero-based group indices, face the elevated
+camera, and hide when their group dies. This is prototype presentation, not
+final artwork or a guarantee of contrast against every background.
+
+The visual tasks use `Tools/verify_live_grid_smoke.ps1 -Scenario Victory`,
+`Defeat`, or `TwoGroups`. They require the compiled snapshot, wait for native
+exit 0 and a scenario-specific harness PASS, preserve six fresh frames under
+`Docs/VisualRuns/`, and compare existing save hashes before/after. Defeat and
+TwoGroups deliberately replace the development fixture armies; they do not
+change normal new-campaign armies or prove campaign balance. They never run
+save/load and are not a substitute for manual keyboard/mouse acceptance.

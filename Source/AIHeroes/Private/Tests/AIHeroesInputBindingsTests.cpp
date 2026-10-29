@@ -126,6 +126,8 @@ bool FAIHeroesFieldInputBindingTest::RunTest(const FString& Parameters)
 {
     FFieldInputWorld F;
     if (!TestTrue(TEXT("Authoritative disposable controller world exists"), F.Valid())) return false;
+    TestTrue(TEXT("Production field key contract is 3, separate from Q/E"),
+        AAIHeroesPlayerController::FieldInteractionKey() == EKeys::Three);
     int32 FieldBindings = 0, CameraActionBindings = 0;
     for (const FInputKeyBinding& Binding : F.Controller->InputComponent->KeyBindings)
     {

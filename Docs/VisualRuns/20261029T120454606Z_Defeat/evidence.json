@@ -1,0 +1,52 @@
+{
+    "schema":  1,
+    "status":  "PASS",
+    "scenario":  "Defeat",
+    "mode":  "real-window scripted fixture; not manual input or balance acceptance",
+    "started_utc":  "2026-10-29T12:04:54.6310403Z",
+    "finished_utc":  "2026-10-29T12:05:21.2078938Z",
+    "pid":  49312,
+    "native_exit":  0,
+    "compiled_snapshot_sha256":  "7a08d8ec7156c83d3ef2a9be0075ee8639078d7568685cbacfdac089813892e8",
+    "binary":  {
+                   "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+                   "bytes":  2222592,
+                   "sha256":  "efc0d1ab50d0b2d367e9f850daeb18a29c896a958d4a1df83bfcfaf6c0e9b1fd"
+               },
+    "inputs_verified_before_and_after":  true,
+    "save_files_checked":  4,
+    "save_hashes_unchanged":  true,
+    "screenshots":  [
+                        {
+                            "path":  "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_START.png",
+                            "bytes":  501401,
+                            "sha256":  "e5a7cff1d9d1935013d8d7773bfbeb4877d6d11d4b1e5ec68e0f176071906a90"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_PAUSED.png",
+                            "bytes":  457858,
+                            "sha256":  "e752256b580b8461207c2c03b0a73c0a14fbc905f3000d52abfb6251af0c0faf"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_2X.png",
+                            "bytes":  519156,
+                            "sha256":  "9b9f297ab36f28b9e4ad06539784e687593ae0f4a423f6abcdda3367a1947f3f"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_RESULT.png",
+                            "bytes":  492227,
+                            "sha256":  "9248dc9b8c9738390916915b0fe145e06b3a97b5466f5e7d41487e2f75622931"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_RETURN.png",
+                            "bytes":  410304,
+                            "sha256":  "449d766154d0e0ef8b0c2e362dedd463a49143810486780eed9c6ada57f81723"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261029T120454606Z_Defeat/LIVE_GRID_V2_DEFEAT_DOSSIER.png",
+                            "bytes":  94642,
+                            "sha256":  "2ac6dec35a2caec97c6759b298ba93f9b7fabbea2c1f34dd8c4ab8da11f03490"
+                        }
+                    ],
+    "harness_pass_line":  "[2026.10.29-12.05.16:152][566]LogTemp: Display: [LIVE GRID SMOKE] PASS scenario=Defeat real actor ticks, pause, normal2x, fastfinish at4x, one commit, exact camera return, read-only dossier; no save writes"
+}

@@ -91,7 +91,8 @@ void AAIHeroesGameMode::BeginPlay()
     LastCombatStep = TEXT("No combat yet. The hero will choose targets during battles.");
     SetEvent(TEXT("Select a node, ASK HERO (H), then CONFIRM (Enter). Battles are AI-controlled."));
 #if !UE_BUILD_SHIPPING
-    if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesSupplySmoke"))) BeginSupplySmoke();
+    if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesModelRequestSmoke"))) BeginModelRequestSmoke();
+    else if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesSupplySmoke"))) BeginSupplySmoke();
     else if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesTravelViewSmoke"))) BeginTravelViewSmoke();
     else if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesTravelSmoke"))) BeginTravelSmoke();
     else if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesLiveSmoke"))) BeginLiveBattleSmoke();
