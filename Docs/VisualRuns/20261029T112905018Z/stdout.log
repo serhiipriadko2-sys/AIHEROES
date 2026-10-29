@@ -1,0 +1,6 @@
+LogStreaming: Display: AsyncLoading2 - Created: Async Loading Thread: false, Async Post Load: false, Multithreaded: false
+LogWindowsTouchpad: Display: CacheForceMaxTouchpadSensitivityMode SetTouchpadParameters
+LogLiveCodingServer: Display: Registered process C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe (PID: 42772)
+LogLiveCodingServer: Display: Loading module C:\github\AIHEROES\Binaries\Win64\UnrealEditor-AIHeroes.dll (2.061 MB)
+LogLiveCodingServer: Display: Loaded 1 module(s), 685 lazy load module(s), and 333 reserved page ranges (0.000s, 18 translation units)
+LogLiveCodingServer: Display: Live coding ready - Save changes and press Ctrl+Alt+F11 to re-compile code

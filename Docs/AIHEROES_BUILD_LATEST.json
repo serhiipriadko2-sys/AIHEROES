@@ -2,7 +2,7 @@
     "schema":  1,
     "status":  "compiled",
     "build_verified":  true,
-    "created_utc":  "2026-10-29T06:51:01.3808481Z",
+    "created_utc":  "2026-10-29T11:54:45.3482142Z",
     "target":  "AIHeroesEditor Win64 Development",
     "scope":  "AIHeroes.uproject + all Source/ and Config/ files; engine and Content excluded",
     "inputs":  [
@@ -278,8 +278,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp",
-                       "bytes":  8469,
-                       "sha256":  "98dc8f35b7d1bd88268af77e4f22c234dc4772927bdf53ffbb63990b01e317d9"
+                       "bytes":  12902,
+                       "sha256":  "333f484b552c28fb6bdf6dbfb3ba098d3e6d4669cac172c76cb4ad2553552147"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesLiveBattleStage.cpp",
@@ -462,6 +462,11 @@
                        "sha256":  "4b4000c0ec5e0b0a03629a6e0ed0b8e6789f86f7240ce2c6fd65d8f8726deeff"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesBattleReadabilityTests.cpp",
+                       "bytes":  9568,
+                       "sha256":  "ae5206dd47d73e646afa0082b5bdd1c39e47c964af3da9a30c45dd2656aaf2d7"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesBattleRecordTests.cpp",
                        "bytes":  11198,
                        "sha256":  "c2a605f2c676b45abb4d398f01dd8c7d65acac649860ae3c92641be1ae618639"
@@ -525,6 +530,11 @@
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesHUDTextTests.cpp",
                        "bytes":  5910,
                        "sha256":  "4b8669e20cfe8f69bfe9a317be389a8f4e31b2eef135d94832041042b5b9285e"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesInputBindingsTests.cpp",
+                       "bytes":  9603,
+                       "sha256":  "4b9dbd26ea6d9e9870431f006ee2dabb54092d14db511624ea53c1163217a16e"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp",
@@ -899,7 +909,7 @@
                ],
     "binary":  {
                    "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
-                   "bytes":  2161152,
-                   "sha256":  "17e1907f99f561adda01848e8bc72dc474b31132e607c18cbcccc3bdb951062e"
+                   "bytes":  2215936,
+                   "sha256":  "ecd3d0fe456f56960a067c854fdfbb51190725740676fd4ee6efbb14fd71bd56"
                }
 }

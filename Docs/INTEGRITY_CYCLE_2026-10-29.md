@@ -52,7 +52,7 @@ claim of manual input QA. Two build attempts stopped at the live-process
 preflight; neither ran UBT. Elevated process inspection confirmed the same
 foreign QA game was still active. A limited coordination request was sent.
 
-Current scoped status: PARTIAL / implemented, runtime-unverified. Nine new
+Previous checkpoint: PARTIAL / implemented, runtime-unverified. Nine new
 Unreal automation tests are present but were not run against a fresh binary.
 The full AIHeroes group, source-to-DLL build verification and fresh visual smoke
 remain pending a free native-work window. No historical test count is used as
@@ -61,3 +61,44 @@ current proof. All process closures and user-save changes remain zero.
 After the QA game is closed: run the Build task, then the full automation task;
 inspect the fresh report/provenance. Only then run the visual live-grid task
 and perform manual input/save-load acceptance separately.
+
+## Resumed verification after user confirmation
+
+The user reported the QA game closed and parallel writes paused. Elevated
+process inspection found no Unreal/Live Coding process. Git had advanced
+externally from `429ad91` to `87d9012`; this agent made no Git/index writes.
+The complete current working source, including preserved parallel work, was
+checked rather than assuming the earlier source baseline.
+
+- Build: PASS, UBT target up to date (0 actions). Stable 178-input manifest:
+  `BuildRuns/20261029T112650766Z/compiled.json`. UBT cautioned about installed
+  compiler 14.51 being newer than its preferred 14.50; no compile failure.
+- Full strict automation: **173/173 Success, warnings/errors/skips 0** in
+  `AutomationRuns/20261029T112705252Z/index.json`. All nine new integrity
+  regressions passed. `provenance.json` matches source, DLL and report hashes.
+- Independent read-only reviewer rechecked all 178 actual inputs, DLL, report
+  counters, unique test paths and the nine named regressions: PASS.
+- Graphic attempt 1: the game logged PASS and requested status 0, but the
+  observer exposed a null native ExitCode. The wrapper refused PASS. Logs,
+  frames and `observer_failure.json` remain in `VisualRuns/20261029T112905018Z`.
+  No gameplay/source fix or logical retry was introduced.
+- Graphic attempt 2: explicit `Start-Process -Wait -PassThru` observed exit 0.
+  `VisualRuns/20261029T113106551Z/evidence.json` records six fresh frames and
+  source/DLL checks before/after. All six PNGs were visually inspected. Pause,
+  highlighted path, moving units/attack, 2x, 4x fast finish, single result,
+  exact strategic camera return and read-only dossier passed the script.
+- Four existing save files were compared by count/hash before and after the
+  successful smoke and were unchanged. The smoke did not execute save/load.
+- Final rechecks: tooling fixtures 23/23, PowerShell parser 4/4, Codex static
+  setup 20/20, source/DLL manifest read-back and `git diff --check`: PASS.
+
+Scope status: **PASS for implemented integrity fixes, build, full automation
+and scripted PC smoke**. **PARTIAL for complete human PC acceptance**: manual
+keyboard/mouse and visual save/load remain unverified. The Windows control
+connection still returns `missing field sandboxPolicy`; no alternate foreground
+input injection was used. Real neural weights and Android are not claimed.
+
+Current evidence: `INTEGRITY_VERIFICATION_2026-10-29.json`. The earlier
+`INTEGRITY_RECEIPT_2026-10-29.json` remains a historical blocked checkpoint,
+not current runtime status. No commits/pushes, SDK installs, private-canon
+changes, user-save edits or foreign process closures by this agent.

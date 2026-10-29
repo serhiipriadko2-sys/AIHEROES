@@ -1,7 +1,8 @@
 # ADR-20261029-02 — Transaction and QA integrity
 
 Date: 2026-10-29. Scope: active `AIHeroesGameMode`, PC development tooling.
-Status: accepted for this bounded implementation; verification pending.
+Status: accepted and implemented. PC build, full automation and scripted
+real-window smoke verified on 2026-10-29; manual input acceptance remains open.
 
 ## Context
 
@@ -66,6 +67,13 @@ through a disposable live GameMode. Test evidence schema/hash/drift failures.
 Build serially, then run the full current `AIHeroes` group and inspect fresh
 JSON. A scripted real-window smoke is separate from manual input acceptance.
 Record actual results in the final receipt; this ADR is not a PASS claim.
+
+Verification read-back: `Docs/BuildRuns/20261029T112650766Z/compiled.json`,
+`Docs/AutomationRuns/20261029T112705252Z/index.json` (173 Success, zero warnings),
+and `Docs/VisualRuns/20261029T113106551Z/evidence.json` (six fresh frames,
+native exit 0). Final source/DLL hashes match all 178 manifest inputs.
+Installed compiler 14.51 is newer than UE's preferred 14.50; UBT emitted a
+caution, not a build failure. These checks are not deployment or Android proof.
 
 ## Rollback
 

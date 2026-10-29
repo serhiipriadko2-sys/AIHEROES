@@ -1,0 +1,10 @@
+﻿{
+    "status":  "INCOMPLETE_OBSERVER",
+    "game_log_pass":  true,
+    "log_requested_exit_status":  0,
+    "native_exit_observed":  null,
+    "issue":  "Start-Process PassThru then WaitForExit did not expose ExitCode in this run; wrapper refused PASS",
+    "gameplay_code_changed":  false,
+    "rerun":  "Use Start-Process -Wait -PassThru and require non-null zero exit",
+    "preserved_log":  "smoke.log"
+}

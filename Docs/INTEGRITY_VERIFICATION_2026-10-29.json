@@ -1,0 +1,515 @@
+{
+  "schema": 1,
+  "date": "2026-10-29",
+  "verified_at_utc": "2026-10-29T11:35:28.415201+00:00",
+  "overall_status": "PARTIAL_MANUAL_ACCEPTANCE_OPEN",
+  "scoped_implementation_and_technical_qa": "PASS",
+  "previous_checkpoint": {
+    "path": "Docs/INTEGRITY_RECEIPT_2026-10-29.json",
+    "bytes": 6743,
+    "sha256": "8046d42acffb4057b0aeb504065d55caa4af0d4e6b0a0ddfceecbe6dbfb9942e"
+  },
+  "head_at_verification": "87d9012c44886c518e9a35fcff7090f45188e69f",
+  "history_boundary": "HEAD advanced externally from429ad91 to87d9012 before this proof; no Git/index writes by this agent",
+  "scope": [
+    "unique exact map/save load preflight",
+    "atomic bounded live battle rewards",
+    "source/DLL-bound build and automation evidence"
+  ],
+  "checks": {
+    "sot30": "PASS30/30 knowledge,32/32 hashes; pinned manifest unchanged",
+    "codex_static_setup": "PASS20/20",
+    "powershell51_tooling_fixtures": "PASS23/23",
+    "powershell_parser": "PASS4/4",
+    "independent_read_only_review": "PASS current manifest, actual source/DLL, report counters and new9 regressions",
+    "git_diff_check": "PASS"
+  },
+  "build": {
+    "status": "PASS",
+    "manifest": {
+      "path": "Docs/BuildRuns/20261029T112650766Z/compiled.json",
+      "bytes": 49092,
+      "sha256": "87ac264836b07573a1c235ec4f68b776956f24abf423b4f7639feef69e53accd"
+    },
+    "latest_byte_identical": true,
+    "native_result": "Succeeded; Target is up to date",
+    "actions_executed": 0,
+    "input_count": 178,
+    "input_bytes": 1002864,
+    "binary": {
+      "path": "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+      "bytes": 2161152,
+      "sha256": "17e1907f99f561adda01848e8bc72dc474b31132e607c18cbcccc3bdb951062e"
+    },
+    "scope": "AIHeroes.uproject + Source/ + Config/ + fixed game DLL; installed Engine and Content excluded",
+    "warning": "MSVC14.51 is newer than UE preferred14.50; caution emitted, not a build failure"
+  },
+  "automation": {
+    "status": "PASS",
+    "filter": "AIHeroes",
+    "success": 173,
+    "failed": 0,
+    "warnings": 0,
+    "not_run": 0,
+    "new_integrity_tests": [
+      "AIHeroes.BattleRewards.DefeatAndStalemateGrantNothing",
+      "AIHeroes.BattleRewards.NormalAndExactBoundaries",
+      "AIHeroes.BattleRewards.RejectWithoutPartialOutput",
+      "AIHeroes.Campaign.LoadPreflight.DuplicateActiveIdRegression",
+      "AIHeroes.Campaign.LoadPreflight.InvalidLayouts",
+      "AIHeroes.Campaign.LoadPreflight.MapIdentity",
+      "AIHeroes.Campaign.LoadPreflight.ReferencesReadOnly",
+      "AIHeroes.LiveBattle.ExactRewardCapAndDefeatAtCap",
+      "AIHeroes.LiveBattle.RewardOverflowAbortsAtomically"
+    ],
+    "report": {
+      "path": "Docs/AutomationRuns/20261029T112705252Z/index.json",
+      "bytes": 68503,
+      "sha256": "f7329083700b9243b0529d13ec6a367b8d5da3989a880c7be099472c41a84492"
+    },
+    "provenance": {
+      "path": "Docs/AutomationRuns/20261029T112705252Z/provenance.json",
+      "bytes": 49212,
+      "sha256": "53bf944577ff4f021b482297dfe5fa3a12928d507ba3f973143e3fd31bd4e733"
+    },
+    "build_verified": true,
+    "exact_inputs_and_binary_match_before_after_and_final_readback": true
+  },
+  "graphics": {
+    "status": "PASS_SCRIPTED_REAL_WINDOW",
+    "evidence": {
+      "path": "Docs/VisualRuns/20261029T113106551Z/evidence.json",
+      "bytes": 2856,
+      "sha256": "5cca54d749635ec60e283d59a83844e3332b16fe630b784a4c924bc5394be5fb"
+    },
+    "native_exit": 0,
+    "resolution": [
+      1280,
+      720
+    ],
+    "screenshots": [
+      {
+        "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_START.png",
+        "bytes": 495871,
+        "sha256": "8ae5f2e424a18814ec9b237145f2ea7beccfb9e3ac22b40f3a46c9326b798e28"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_PAUSED.png",
+        "bytes": 453354,
+        "sha256": "014d95de9a8de2999aa4cd15a5d92f6c6d079081bd5ac4fb15a4198f44ad42e9"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_2X.png",
+        "bytes": 533461,
+        "sha256": "0e3fb096ed123b0358e99ad43675a59060c4a25d201d3da301455b554048e8da"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_RESULT.png",
+        "bytes": 499695,
+        "sha256": "54c76fcdb84c7015a0721fecc0222be2ad5b9df78cc8082b88e3916c15738e0c"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_RETURN.png",
+        "bytes": 408505,
+        "sha256": "4df4ca89b764c08dc2edaba9c1aa986e1161e642d7970881840fdab7ceb31fa8"
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_DOSSIER.png",
+        "bytes": 92890,
+        "sha256": "7423dd092a45b5523ebbdeb7165a94cf6e0de76f2fc415c6833dc46c1a24c1e7"
+      }
+    ],
+    "all_six_images_visually_inspected": true,
+    "checked": "pause, highlighted path, action/attack,2x,4x fast finish,single commit,exact camera return,read-only dossier",
+    "save_file_hash_comparison": {
+      "count": 4,
+      "unchanged": true,
+      "save_load_was_not_executed_by_smoke": true
+    },
+    "attempts": [
+      {
+        "path": "Docs/VisualRuns/20261029T112905018Z",
+        "status": "INCOMPLETE_OBSERVER",
+        "game_logged_pass": true,
+        "game_requested_exit_status": 0,
+        "native_exit_observed": null,
+        "note": "Wrapper refused PASS when ExitCode was null. First logs/frames preserved. No gameplay code was changed."
+      },
+      {
+        "path": "Docs/VisualRuns/20261029T113106551Z",
+        "status": "PASS",
+        "native_exit_observed": 0,
+        "observation": "Start-Process -Wait -PassThru"
+      }
+    ]
+  },
+  "remaining_acceptance": [
+    "Manual keyboard/mouse interaction and visible save/load round-trip",
+    "Graphical defeat and multiple sequential battles are not proven by this single-victory smoke; backend regressions passed"
+  ],
+  "excluded_not_claimed": [
+    "Android package/device acceptance",
+    "real1B/3B/8B neural weights/inference",
+    "deployment or release readiness"
+  ],
+  "limitations": {
+    "window_control": "unavailable: missing field sandboxPolicy; no alternate foreground input injection",
+    "vscode": "Task files updated; commands executed natively, not verified as invoked through VSCode UI",
+    "baseline_red": "No baseline Unreal RED run; counterexample regression includes former insufficient load checks"
+  },
+  "boundaries": {
+    "foreign_processes_closed": 0,
+    "git_commits_pushes_or_index_writes_by_agent": 0,
+    "sdk_or_model_installs": 0,
+    "private_canon_changes": 0,
+    "manual_user_save_edits": 0,
+    "test_save_writes": "Only existing automated test mechanisms; final graphics compared4 save hashes unchanged"
+  },
+  "artifact_count": 57,
+  "artifact_bytes": 11508831,
+  "artifacts": [
+    {
+      "path": ".vscode/tasks.json",
+      "bytes": 4996,
+      "sha256": "5dfc5422fbf60947297184ef4d0cadf6ade50a031a4fb23579fd1d7f9a8212cd",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "README.md",
+      "bytes": 10095,
+      "sha256": "8ef8706f7ddc6cc453bc645d0118d5af2d7ed153d83f69c19227bb4b3218b764",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Docs/ADR/ADR-20261029-02_TRANSACTION_AND_QA_INTEGRITY.md",
+      "bytes": 4512,
+      "sha256": "c4ca933431cd2df5335cc15b11beafb358123c970ba5fb37d7918ca14a047ea4",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Docs/INTEGRITY_CYCLE_2026-10-29.md",
+      "bytes": 5974,
+      "sha256": "e8c11b0eb8b20b2764cef1169fe17af26e6b86f656dd7ce211193332de4f9f1c",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesLoadPreflight.h",
+      "bytes": 709,
+      "sha256": "be89fd2ff345d9d872c86bc858631d927b9008677f6e81f95e2e1e01034c61ce",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLoadPreflight.cpp",
+      "bytes": 2292,
+      "sha256": "b4c7a2dc8bcf90308833beec94646c138d6e4012a69e3adfba6bd95967dd7fb3",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesLoadPreflightTests.cpp",
+      "bytes": 6842,
+      "sha256": "742d34ddd3383e7213de7db5a71e8d120af35b89d30a9ea73ca1eb4e04fafdbe",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesBattleRewardRules.h",
+      "bytes": 640,
+      "sha256": "1180cacb449dfbcb33784bfd71ad6003ce5a9e2d71ca379fdf8d26a40b09377a",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleRewardRules.cpp",
+      "bytes": 1646,
+      "sha256": "fa55bb8c6f4b7c804487ee4cd42b6f2cca52d7f9b46d655f97471a9be46ccd1d",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleRewardTests.cpp",
+      "bytes": 4631,
+      "sha256": "d70ce11259f7aa73af0402eaf3596568512359a1248285e9f97693edf9efbf53",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+      "bytes": 12813,
+      "sha256": "ed5452af7e16d36b378e2f8362fdcae22dc2667f2898af608be64ed9fe2dcb4e",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp",
+      "bytes": 16646,
+      "sha256": "515e3b4820a7c04d570c1934e85a931834cebf333de6d9d0e1ef3d5c796f8ea3",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+      "bytes": 36903,
+      "sha256": "d02c2445c69dddd6ddfc9283bbc1ed7b16111df64e8c07e0ca6d7a1a53f4f464",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Tools/aiheroes_build_evidence.ps1",
+      "bytes": 5627,
+      "sha256": "2da863667b174914696bb653449a27349d4e62c0b5e3e02cc1b165a0f4df2a9a",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Tools/build_aiheroes_editor.ps1",
+      "bytes": 2801,
+      "sha256": "fc6994099c297722b0df577eb799ba50e6a3664c8a67fb4a5f9512bd9983bb3b",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Tools/run_aiheroes_automation.ps1",
+      "bytes": 3699,
+      "sha256": "ea1bd1bec7f080c78e124ab0e85b83513cfebb8f233d62290bd6a1647249c6f8",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Tools/test_aiheroes_build_evidence.ps1",
+      "bytes": 6597,
+      "sha256": "5da0ba7c14885cf589364664fa50b65d66348809f6841bc3563e062b32a2e72b",
+      "kind": "implementation_or_documentation"
+    },
+    {
+      "path": "Docs/AIHEROES_BUILD_LATEST.json",
+      "bytes": 49092,
+      "sha256": "87ac264836b07573a1c235ec4f68b776956f24abf423b4f7639feef69e53accd",
+      "kind": "build_latest"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T112650766Z/build.log",
+      "bytes": 2658,
+      "sha256": "c21696e0681bca07255cd58a4bdf9be162efcadfcec6d4b493303850cbf8d4ee",
+      "kind": "build_evidence"
+    },
+    {
+      "path": "Docs/BuildRuns/20261029T112650766Z/compiled.json",
+      "bytes": 49092,
+      "sha256": "87ac264836b07573a1c235ec4f68b776956f24abf423b4f7639feef69e53accd",
+      "kind": "build_evidence"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T112705252Z/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "kind": "automation_evidence"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T112705252Z/index.json",
+      "bytes": 68503,
+      "sha256": "f7329083700b9243b0529d13ec6a367b8d5da3989a880c7be099472c41a84492",
+      "kind": "automation_evidence"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T112705252Z/provenance.json",
+      "bytes": 49212,
+      "sha256": "53bf944577ff4f021b482297dfe5fa3a12928d507ba3f973143e3fd31bd4e733",
+      "kind": "automation_evidence"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T112705252Z/run.log",
+      "bytes": 483954,
+      "sha256": "06fa62080d4dce1d2da6cef48ff3dc1806af009d2e171a105807f1be47a29eb1",
+      "kind": "automation_evidence"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261029T112705252Z/stdout.log",
+      "bytes": 313276,
+      "sha256": "462696b273e4ce53aec96d7e93051be656b96c7fbea65e4d4ff755d43df85a3b",
+      "kind": "automation_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/LIVE_GRID_V2_2X.png",
+      "bytes": 530057,
+      "sha256": "24354d55ca7dd3c244018945f5e47d6e28c8b7ea6e027df92bbc2bf111915617",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/LIVE_GRID_V2_DOSSIER.png",
+      "bytes": 92911,
+      "sha256": "8a6f4547e8a80ee1aff512d74c1ab80a8b00cc93ddef434696cf59c9e8a9d3af",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/LIVE_GRID_V2_PAUSED.png",
+      "bytes": 451167,
+      "sha256": "22828067630c470133a24034aecca63ccd96169e7df40d174162e2342eb7e61d",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/LIVE_GRID_V2_RESULT.png",
+      "bytes": 498296,
+      "sha256": "c9503c4704bf4dc1bfd3cfc527be4bb6850a2a1496869c8e8d21770ef6f10766",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/LIVE_GRID_V2_RETURN.png",
+      "bytes": 410087,
+      "sha256": "1823ff06fae77ac104ec44c1cda883597defc872f3d2779ae8b71ec5020bed57",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/LIVE_GRID_V2_START.png",
+      "bytes": 497331,
+      "sha256": "13f880213adbc0de46009dc57e28f71b9ae478d6ade0d9840ef3ee7097fbf8b3",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/observer_failure.json",
+      "bytes": 423,
+      "sha256": "2e45193dcbbe329a9c7443b1c436b7d4f20ef79225286a106ef968a8a41e7aa8",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/previous/LIVE_GRID_V2_2X.png",
+      "bytes": 531687,
+      "sha256": "dba42483459505d80a3350f0e7290dd60ff04e3510b2f1d30f572b4a8eb39145",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/previous/LIVE_GRID_V2_DOSSIER.png",
+      "bytes": 80210,
+      "sha256": "434d980fe3c21b2717e4b85b3ca4277edac3cf6784aba8dfe43951e44b58c10d",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/previous/LIVE_GRID_V2_PAUSED.png",
+      "bytes": 452885,
+      "sha256": "fed747ef1288af0b42396a55b3566f35330111d42cf5ddd4ba7085cf882cbb2a",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/previous/LIVE_GRID_V2_RESULT.png",
+      "bytes": 499951,
+      "sha256": "e70d385f6e836a8bf2c1c2f9a2d0e0ca64f216b789b907fc2552da06c7c7d340",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/previous/LIVE_GRID_V2_RETURN.png",
+      "bytes": 430287,
+      "sha256": "5416f42978802a5a8a304aa3dd9b40498cb369b0affacc89602e286749becd08",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/previous/LIVE_GRID_V2_START.png",
+      "bytes": 499038,
+      "sha256": "d6effc28f3090f9a7db23ba403f319dc6b1986bbf532ed795ddfeb5717b5b8e1",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/smoke.log",
+      "bytes": 198123,
+      "sha256": "51cf35013b2413528ba14726d19fd6e5f07df7f43a65ce5ae04c7ba060c70270",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T112905018Z/stdout.log",
+      "bytes": 708,
+      "sha256": "028130eeeb0b7a0291bd602bab9c08aa43b554c39b58a0338dbcd009b00f5046",
+      "kind": "incomplete_observer_attempt_preserved"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/evidence.json",
+      "bytes": 2856,
+      "sha256": "5cca54d749635ec60e283d59a83844e3332b16fe630b784a4c924bc5394be5fb",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_2X.png",
+      "bytes": 533461,
+      "sha256": "0e3fb096ed123b0358e99ad43675a59060c4a25d201d3da301455b554048e8da",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_DOSSIER.png",
+      "bytes": 92890,
+      "sha256": "7423dd092a45b5523ebbdeb7165a94cf6e0de76f2fc415c6833dc46c1a24c1e7",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_PAUSED.png",
+      "bytes": 453354,
+      "sha256": "014d95de9a8de2999aa4cd15a5d92f6c6d079081bd5ac4fb15a4198f44ad42e9",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_RESULT.png",
+      "bytes": 499695,
+      "sha256": "54c76fcdb84c7015a0721fecc0222be2ad5b9df78cc8082b88e3916c15738e0c",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_RETURN.png",
+      "bytes": 408505,
+      "sha256": "4df4ca89b764c08dc2edaba9c1aa986e1161e642d7970881840fdab7ceb31fa8",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/LIVE_GRID_V2_START.png",
+      "bytes": 495871,
+      "sha256": "8ae5f2e424a18814ec9b237145f2ea7beccfb9e3ac22b40f3a46c9326b798e28",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/smoke.log",
+      "bytes": 197988,
+      "sha256": "28c1ba2b052f98de418fa70810baaea734c52c969733360eb5008d5b0645dfee",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/VisualRuns/20261029T113106551Z/stdout.log",
+      "bytes": 708,
+      "sha256": "4970517da7ae2d6080fa2a52de3eb27081f409f24d48498c19312d308524c0c5",
+      "kind": "successful_visual_evidence"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_START.png",
+      "bytes": 495871,
+      "sha256": "8ae5f2e424a18814ec9b237145f2ea7beccfb9e3ac22b40f3a46c9326b798e28",
+      "kind": "latest_visual_output"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_PAUSED.png",
+      "bytes": 453354,
+      "sha256": "014d95de9a8de2999aa4cd15a5d92f6c6d079081bd5ac4fb15a4198f44ad42e9",
+      "kind": "latest_visual_output"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_2X.png",
+      "bytes": 533461,
+      "sha256": "0e3fb096ed123b0358e99ad43675a59060c4a25d201d3da301455b554048e8da",
+      "kind": "latest_visual_output"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_RESULT.png",
+      "bytes": 499695,
+      "sha256": "54c76fcdb84c7015a0721fecc0222be2ad5b9df78cc8082b88e3916c15738e0c",
+      "kind": "latest_visual_output"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_RETURN.png",
+      "bytes": 408505,
+      "sha256": "4df4ca89b764c08dc2edaba9c1aa986e1161e642d7970881840fdab7ceb31fa8",
+      "kind": "latest_visual_output"
+    },
+    {
+      "path": "Docs/LIVE_GRID_V2_DOSSIER.png",
+      "bytes": 92890,
+      "sha256": "7423dd092a45b5523ebbdeb7165a94cf6e0de76f2fc415c6833dc46c1a24c1e7",
+      "kind": "latest_visual_output"
+    }
+  ],
+  "rollback": "Only owned named source/tool/doc hunks and new artifacts; no reset/clean, foreign edits or user-save removal."
+}

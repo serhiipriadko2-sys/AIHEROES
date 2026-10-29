@@ -110,18 +110,13 @@
     {
       "label": "AIHEROES: Visual live grid V2 smoke",
       "type": "process",
-      "command": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "command": "powershell.exe",
       "args": [
-        "${workspaceFolder}\\AIHeroes.uproject",
-        "-game",
-        "-windowed",
-        "-ResX=1280",
-        "-ResY=720",
-        "-NoSplash",
-        "-NoP4",
-        "-NoSound",
-        "-AIHeroesLiveSmoke",
-        "-abslog=${workspaceFolder}\\Docs\\GRID_V2_VISUAL_SMOKE.log"
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}\\Tools\\verify_live_grid_smoke.ps1",
+        "-Scenario",
+        "Victory"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -130,6 +125,32 @@
         "reveal": "always",
         "panel": "dedicated"
       },
+      "problemMatcher": []
+    },
+    {
+      "label": "AIHEROES: Visual defeat smoke",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile", "-File",
+        "${workspaceFolder}\\Tools\\verify_live_grid_smoke.ps1",
+        "-Scenario", "Defeat"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "AIHEROES: Visual two-group battle smoke",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile", "-File",
+        "${workspaceFolder}\\Tools\\verify_live_grid_smoke.ps1",
+        "-Scenario", "TwoGroups"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
       "problemMatcher": []
     },
     {
