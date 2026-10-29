@@ -89,6 +89,9 @@ public:
     FString GetFieldDwellingLabel(EAIHeroesNodeType Type) const;
     // X / CONVOY: first action quotes, second confirms the identical state.
     void RequestSupplyConvoy();
+    // Esc cancels a transient quotation without touching campaign resources.
+    // Returns false when no quote was pending; never triggers a purchase.
+    bool CancelSupplyConvoyQuote();
     FString GetSupplyConvoyStatus() const;
     bool IsSupplyConvoyPending() const;
 

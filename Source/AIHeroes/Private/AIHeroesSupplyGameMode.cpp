@@ -96,6 +96,19 @@ bool AAIHeroesGameMode::IsSupplyConvoyPending() const
         PendingSupplyFingerprint == CampaignFingerprint();
 }
 
+bool AAIHeroesGameMode::CancelSupplyConvoyQuote()
+{
+    // Cancellation is permitted even if a quote became stale after a world
+    // change. Only a fresh second X may dispatch; Esc always disarms it.
+    if (PendingSupplyFingerprint.IsEmpty()) return false;
+    PendingSupplyFingerprint.Empty();
+    LastHint = TEXT("CONVOY CANCELED: no gold, materials, moves or troops changed.");
+    SetEvent(LastHint);
+    UE_LOG(LogTemp, Display,
+        TEXT("[AI HEROES SUPPLY] CANCEL player_order=1 commit=0"));
+    return true;
+}
+
 void AAIHeroesGameMode::RequestSupplyConvoy()
 {
     if (BlockStrategicAction()) return;
@@ -105,7 +118,9 @@ void AAIHeroesGameMode::RequestSupplyConvoy()
     if (!Quote.bReady)
     {
         PendingSupplyFingerprint.Empty();
-        SetEvent(Quote.Summary());
+        // A revoked OUTPOST or depleted site must also clear stale HUD advice.
+        LastHint = Quote.Summary();
+        SetEvent(LastHint);
         return;
     }
 
