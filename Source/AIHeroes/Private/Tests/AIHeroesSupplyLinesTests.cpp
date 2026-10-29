@@ -331,6 +331,17 @@ bool FAIHConvoyGameIntegrationTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("Quote does not spend gold"), G.Gold, GoldStart);
     TestEqual(TEXT("Quote does not decrement moves"), G.MovesLeft, 4);
     TestEqual(TEXT("Quote does not change army"), G.PlayerArmy[0].Count(), 8);
+    TestTrue(TEXT("Escape-style cancellation disarms the quote"),
+        G.CancelSupplyConvoyQuote());
+    TestFalse(TEXT("Canceled convoy has no pending authorization"),
+        G.IsSupplyConvoyPending());
+    TestEqual(TEXT("Canceled quote leaves resources unchanged"),
+        G.Gold, GoldStart);
+    G.RequestSupplyConvoy();
+    TestTrue(TEXT("First X after cancellation must quote again"),
+        G.IsSupplyConvoyPending());
+    TestEqual(TEXT("Requoted purchase still gives no soldiers"),
+        G.PlayerArmy[0].Count(), 8);
 
     // Simulate legitimate intervening resource state change. Even a previously
     // signed quote can only trigger a fresh proposal, never a stale purchase.
@@ -341,7 +352,7 @@ bool FAIHConvoyGameIntegrationTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("Requote still spends zero gold"), G.Gold, GoldStart);
     TestEqual(TEXT("Requote still has no soldiers"), G.PlayerArmy[0].Count(), 8);
     G.RequestSupplyConvoy();
-    TestEqual(TEXT("Third human action confirms delivery exactly once"),
+    TestEqual(TEXT("Fresh explicit confirmation delivers exactly once"),
         G.PlayerArmy[0].Count(), 13);
     TestEqual(TEXT("Escort and packet deducted"), G.Gold, GoldStart-65);
     TestEqual(TEXT("One wood-neutral state change then pack"),
@@ -357,6 +368,68 @@ bool FAIHConvoyGameIntegrationTest::RunTest(const FString& Parameters)
         G.PlayerArmy[0].Count(), 13);
     TestEqual(TEXT("No duplicate charge on first subsequent press"),
         G.Gold, GoldStart-65);
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAIHConvoyCancelAndRevocationTest,
+    "AIHeroes.Supply.CancellationAndRevokedAuthorityFailClosed",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FAIHConvoyCancelAndRevocationTest::RunTest(const FString& Parameters)
+{
+    FSupplyWorld F;
+    if (!TestTrue(TEXT("Supply fixture exists"), F.Valid())) return false;
+    auto& G = *F.Game;
+    F.Forest->SetOwned(true);
+    F.Outpost->SetOwned(true);
+    const int32 OriginalGold = G.Gold;
+    const int32 OriginalMoves = G.MovesLeft;
+    const int32 OriginalUnits = G.PlayerArmy[0].Count();
+    const auto HQStock = G.RecruitmentStock;
+
+    G.RequestSupplyConvoy();
+    TestTrue(TEXT("First X creates a pending quote"), G.IsSupplyConvoyPending());
+    TestTrue(TEXT("Esc cancels the pending order"), G.CancelSupplyConvoyQuote());
+    TestFalse(TEXT("Esc clears authorization"), G.IsSupplyConvoyPending());
+    TestTrue(TEXT("Cancellation is explicitly reported"),
+        G.LastEvent.Contains(TEXT("CONVOY CANCELED")));
+    TestFalse(TEXT("Second Esc without a quote is a no-op"),
+        G.CancelSupplyConvoyQuote());
+    TestEqual(TEXT("Cancellation cannot charge gold"), G.Gold, OriginalGold);
+    TestEqual(TEXT("Cancellation cannot spend a move"), G.MovesLeft, OriginalMoves);
+    TestEqual(TEXT("Cancellation cannot add troops"),
+        G.PlayerArmy[0].Count(), OriginalUnits);
+    TestEqual(TEXT("Cancellation preserves local stock"),
+        G.FieldDwellings.Forest.Available, 10);
+
+    G.RequestSupplyConvoy();
+    TestTrue(TEXT("After cancel, X must quote from scratch"),
+        G.IsSupplyConvoyPending());
+    F.Outpost->SetOwned(false);
+    G.RequestSupplyConvoy();
+    TestFalse(TEXT("Enemy retakes OUTPOST: pending quote revoked"),
+        G.IsSupplyConvoyPending());
+    TestTrue(TEXT("HUD advice no longer claims delivery is possible"),
+        G.LastHint.Contains(TEXT("OUTPOST")));
+    TestEqual(TEXT("Revoked road does not charge gold"), G.Gold, OriginalGold);
+    TestEqual(TEXT("Revoked road does not grant troops"),
+        G.PlayerArmy[0].Count(), OriginalUnits);
+
+    F.Outpost->SetOwned(true);
+    G.RequestSupplyConvoy();
+    TestTrue(TEXT("Restored protection permits a new quote"),
+        G.IsSupplyConvoyPending());
+    G.FieldDwellings.Forest.Available = 0;
+    G.RequestSupplyConvoy();
+    TestFalse(TEXT("Depleted cargo revokes quote"),
+        G.IsSupplyConvoyPending());
+    TestTrue(TEXT("New HUD hint explains cargo shortage"),
+        G.LastHint.Contains(TEXT("only 0/5")));
+    TestEqual(TEXT("No hidden gold charge on depletion"), G.Gold, OriginalGold);
+    TestEqual(TEXT("No lost movement on depletion"), G.MovesLeft, OriginalMoves);
+    TestEqual(TEXT("HQ Militia reserve never supplies a local convoy"),
+        G.RecruitmentStock.Militia, HQStock.Militia);
+    TestEqual(TEXT("HQ Scout reserve remains independent"),
+        G.RecruitmentStock.Scouts, HQStock.Scouts);
     return true;
 }
 #endif
