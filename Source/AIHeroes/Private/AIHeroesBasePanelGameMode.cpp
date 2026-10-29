@@ -6,6 +6,7 @@ FAIHeroesBasePanelOffer AAIHeroesGameMode::GetBasePanelOffer(EAIHeroesBasePurcha
     FAIHeroesBasePanelState S;
     S.Gold = Gold; S.Wood = Wood; S.Ore = Ore; S.Data = DataFragments;
     S.BaseTier = BaseTier; S.ProtocolTier = ProtocolTier; S.ModelSlotTier = ModelSlotTier;
+    S.MilitiaReserve = RecruitmentStock.Militia; S.ScoutReserve = RecruitmentStock.Scouts;
     S.bAtSelectedOwnedHQ = IsAtSelectedOwnedHeadquarters();
     S.Army = PlayerArmy;
     const auto Offers = FAIHeroesBasePanelRules::Offers(S);

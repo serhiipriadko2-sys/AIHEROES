@@ -2,6 +2,7 @@
 #include "AIHeroesBaseRules.h"
 #include "AIHeroesDevelopmentRules.h"
 #include "AIHeroesRecruitmentAdvisor.h"
+#include "AIHeroesRecruitmentStock.h"
 
 namespace
 {
@@ -65,7 +66,12 @@ TArray<FAIHeroesBasePanelOffer> FAIHeroesBasePanelRules::Offers(const FAIHeroesB
         O.Detail = I == 1 ? TEXT("12 HP each, attack 4, defense 2, initiative 3. Adds to your current army.")
             : TEXT("8 HP each, attack 6, defense 1, initiative 7. Ranged in Grid V2.");
         O.Gold = Recruit.Gold; O.Wood = Recruit.Wood; O.Ore = Recruit.Ore;
+        const int32 Available = I == 1 ? S.MilitiaReserve : S.ScoutReserve;
+        O.Detail += FString::Printf(TEXT(" | RESERVE %d / %d needed."),
+            Available, Recruit.Units.Count());
         O.bAvailable = true;
+        if (Available < Recruit.Units.Count())
+            O.BlockReason = TEXT("No recruits in stock. Next growth: days 8, 15, 22...");
         for (const auto& Stack : S.Army)
             if (Stack.UnitId == Recruit.Units.UnitId && Stack.TotalHealth > 500000 - Recruit.Units.TotalHealth)
                 O.BlockReason = TEXT("Army stack limit reached. Nothing will be spent.");
@@ -86,7 +92,10 @@ TArray<FAIHeroesBasePanelOffer> FAIHeroesBasePanelRules::Offers(const FAIHeroesB
     if (!M.bAvailable) Slot.BlockReason = TEXT("Highest prototype model slot already unlocked.");
 
     const bool bValid = ValidResource(S.Gold) && ValidResource(S.Wood) &&
-        ValidResource(S.Ore) && ValidResource(S.Data) && FAIHeroesBaseRules::IsValidTier(S.BaseTier) &&
+        ValidResource(S.Ore) && ValidResource(S.Data) &&
+        FAIHeroesRecruitmentStockRules::IsValid(
+            FAIHeroesRecruitmentStock{S.MilitiaReserve, S.ScoutReserve}) &&
+        FAIHeroesBaseRules::IsValidTier(S.BaseTier) &&
         S.ProtocolTier >= 0 && S.ProtocolTier <= 3 && S.ModelSlotTier >= 0 && S.ModelSlotTier <= 2 && ValidArmy(S.Army);
     for (auto& O : Out)
     {

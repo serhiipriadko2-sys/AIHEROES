@@ -29,6 +29,10 @@ void AAIHeroesPlayerController::SetupInputComponent()
         this, &AAIHeroesPlayerController::RecruitMilitia);
     InputComponent->BindKey(EKeys::Two, IE_Pressed,
         this, &AAIHeroesPlayerController::RecruitScouts);
+    InputComponent->BindKey(EKeys::E, IE_Pressed,
+        this, &AAIHeroesPlayerController::InteractFieldDwelling);
+    InputComponent->BindKey(EKeys::X, IE_Pressed,
+        this, &AAIHeroesPlayerController::RequestSupplyConvoy);
     InputComponent->BindKey(EKeys::G, IE_Pressed,
         this, &AAIHeroesPlayerController::ToggleBasePanel);
     InputComponent->BindKey(EKeys::U, IE_Pressed,
@@ -197,6 +201,8 @@ void AAIHeroesPlayerController::HandleHudAction(int32 ActionIndex)
         case 201: UpgradeHeadquarters(); break;
         case 202: ShowCampaignObjectives(); break;
         case 203: OpenProtocolLab(); break;
+        case 204: InteractFieldDwelling(); break;
+        case 205: RequestSupplyConvoy(); break;
         default: break;
     }
 }
@@ -228,6 +234,20 @@ void AAIHeroesPlayerController::RecruitScouts()
         if (Game->IsBasePanelVisible()) Game->PreviewBasePurchase(EAIHeroesBasePurchase::Scouts);
         else Game->RecruitScouts();
     }
+}
+
+void AAIHeroesPlayerController::RequestSupplyConvoy()
+{
+    if (AAIHeroesGameMode* Game = Rules(); Game &&
+        !Game->IsLiveBattleActive() && !Game->IsBattleReplayActive())
+        Game->RequestSupplyConvoy();
+}
+
+void AAIHeroesPlayerController::InteractFieldDwelling()
+{
+    if (AAIHeroesGameMode* Game = Rules(); Game &&
+        !Game->IsLiveBattleActive() && !Game->IsBattleReplayActive())
+        Game->InteractFieldDwelling();
 }
 
 void AAIHeroesPlayerController::ToggleBasePanel()

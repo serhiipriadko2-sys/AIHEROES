@@ -89,6 +89,25 @@ for the original reference, mapping to AI HEROES and prioritized future
 features. AI HEROES does **not** import HotA art, code, campaigns, characters,
 unit names or game assets. This is not a clone of the HotA factions.
 
+## Scouting and visibility (original five-site campaign)
+
+New campaigns begin with **3/5 known sites**: HQ, FOREST and ORE. OUTPOST
+and RUINS are initially hidden from map selection, road rendering, travel
+planning and the offline hero's recommendations. Only a player-confirmed
+arrival/capture at FOREST reveals OUTPOST; visiting ORE reveals RUINS.
+The HUD shows **SCOUTING 3/5 → 4/5 → 5/5** as the map opens. Hidden enemy
+strength is not disclosed by the rival forecast. The player must still
+confirm every battle; exploration is not a game command from the AI.
+
+Existing legacy SaveGames remain **fully explored**, not retroactively
+fogged. The two optional flags are validated and preserved through the
+existing rotating A/B save copies. No generated 7–11-zone scenario has
+replaced the existing five-site campaign. See
+[scouting rules](Docs/STRATEGIC_FOG_V1.md) and the
+[Windows Fog QA receipt](Docs/STRATEGIC_FOG_QA_2026-10-28.md) for tests
+and real rendered screenshots. This is **site visibility**, not terrain
+line-of-sight or a full landscape fog shader.
+
 ## Hero evolution — independent tracks
 
 1. Army strength and economic progression: militia, scouts, resources, nodes.

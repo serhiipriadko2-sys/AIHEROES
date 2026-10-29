@@ -1,0 +1,64 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/GameModeBase.h"
+#include "AIHeroesZoneExpeditionRules.h"
+#include "AIHeroesZoneExpeditionGameMode.generated.h"
+
+class ACameraActor;
+class AStaticMeshActor;
+class ATextRenderActor;
+
+// Explicit alternate mode, NEVER the default Campaign v1.
+// URL: /Engine/Maps/Entry?game=/Script/AIHeroes.AIHeroesZoneExpeditionGameMode
+// Only a human Enter click confirms combat; autonomous Grid V2 resolves
+// the encounter offscreen (not a real-time tactical stage in this mode).
+UCLASS()
+class AIHEROES_API AAIHeroesZoneExpeditionGameMode : public AGameModeBase
+{
+    GENERATED_BODY()
+public:
+    AAIHeroesZoneExpeditionGameMode();
+    virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
+
+    bool IsReady() const { return bReady; }
+    const FAIHeroesZoneExpeditionState& GetState() const { return Campaign; }
+    int32 TotalZones() const { return Generated.Zones.Num(); }
+    int32 KnownZones() const { return FAIHeroesZoneExpeditionRules::DiscoveredCount(Campaign); }
+    FName GetSelection() const { return SelectedSite; }
+    FString GetLastMessage() const { return LastMessage; }
+    FString GetSelectedPathInfo() const;
+
+private:
+    struct FRoadVisual
+    {
+        TWeakObjectPtr<AStaticMeshActor> Actor;
+        FName From = NAME_None;
+        FName To = NAME_None;
+    };
+
+    bool bReady = false;
+    FAIHeroesZoneExpeditionState Campaign;
+    FAIHeroesGeneratedWorld Generated;
+    FName SelectedSite = NAME_None;
+    FString LastMessage;
+    TMap<FName, TWeakObjectPtr<AStaticMeshActor>> ZoneActors;
+    TMap<FName, TWeakObjectPtr<ATextRenderActor>> ZoneLabels;
+    TArray<FRoadVisual> RoadVisuals;
+    TWeakObjectPtr<AStaticMeshActor> HeroMarker;
+    UPROPERTY()
+    TObjectPtr<ACameraActor> ExpeditionCamera;
+
+    bool CreateScene();
+    void RefreshScene();
+    void CycleSelection();
+    void ClickSelect();
+    void ConfirmSelected();
+    void AdvanceDay();
+    void Recruit();
+    void Upgrade();
+    void Save();
+    void Load();
+    void Status(const FString& Message);
+};

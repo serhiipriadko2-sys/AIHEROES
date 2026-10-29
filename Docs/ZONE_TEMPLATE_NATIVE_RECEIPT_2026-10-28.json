@@ -1,0 +1,29 @@
+﻿{
+    "player_save_writes":  0,
+    "active_campaign_writes":  0,
+    "assertions":  51223,
+    "observed_utc":  "2026-10-28T20:47:07.0623688Z",
+    "executable_sha256":  "91dddc8ab6927a3b10b9af6b5060206946cc7569026bab3e82f8f32f613639b1",
+    "files":  [
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesZoneTemplateCore.h",
+                      "bytes":  11414,
+                      "sha256":  "4d2672532112f318fb656824bf2f3d4ac93a4a96796e71fac09f59128886ecbf"
+                  },
+                  {
+                      "path":  "Source/AIHeroes/Public/AIHeroesAdventurePathCore.h",
+                      "bytes":  5078,
+                      "sha256":  "7a4fa5e0d4823ae558e8d48a2befd41a5898a241f2c7721f33a89e6160b62e23"
+                  },
+                  {
+                      "path":  "Tests/zone_template_native.cpp",
+                      "bytes":  5864,
+                      "sha256":  "bb690f1753a291db757a91888148b2a3a2fac4c3cbad2440f79086f634cde898"
+                  }
+              ],
+    "unreal_adapter_tested":  false,
+    "schema":  1,
+    "status":  "PASS_NATIVE_CXX17_GENERATOR",
+    "generated_worlds":  5120,
+    "build_standard":  "c++17"
+}

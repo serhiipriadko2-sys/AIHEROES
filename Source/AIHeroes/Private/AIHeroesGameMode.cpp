@@ -13,6 +13,7 @@
 #include "AIHeroesHUD.h"
 #include "AIHeroesPlayerController.h"
 #include "AIHeroesTurnRules.h"
+#include "AIHeroesTravelRules.h"
 #include "AIHeroesWorldNode.h"
 #include "AIHeroesWorldWeek.h"
 #include "Components/DirectionalLightComponent.h"
@@ -55,12 +56,18 @@ AAIHeroesGameMode::AAIHeroesGameMode()
 void AAIHeroesGameMode::BeginPlay()
 {
     Super::BeginPlay();
+    TravelRuleVersion = FAIHeroesTravelRules::RoadVersion;
+    bFogEnabled = true;
+    FogKnownMask = FAIHeroesFogRules::InitialMask;
 
     AddStack(FAIHeroesArmyStack(TEXT("Militia"), 8, 12, 4, 2, 3));
     AddStack(FAIHeroesArmyStack(TEXT("Scout"), 3, 8, 6, 1, 7));
     SpawnWorld();
+    SpawnFieldDwellingVisuals();
     RefreshHeadquartersVisual();
     SpawnHeroMarker();
+    RefreshFogVisibility();
+    RefreshAdventureRoads();
 
     // The generated map intentionally has no authored PlayerStart asset.
     APlayerController* PC = GetWorld()->GetFirstPlayerController();
@@ -83,7 +90,10 @@ void AAIHeroesGameMode::BeginPlay()
     LastCombatStep = TEXT("No combat yet. The hero will choose targets during battles.");
     SetEvent(TEXT("Select a node, ASK HERO (H), then CONFIRM (Enter). Battles are AI-controlled."));
 #if !UE_BUILD_SHIPPING
-    if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesLiveSmoke"))) BeginLiveBattleSmoke();
+    if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesSupplySmoke"))) BeginSupplySmoke();
+    else if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesTravelViewSmoke"))) BeginTravelViewSmoke();
+    else if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesTravelSmoke"))) BeginTravelSmoke();
+    else if (FParse::Param(FCommandLine::Get(), TEXT("AIHeroesLiveSmoke"))) BeginLiveBattleSmoke();
 #endif
 }
 
@@ -153,6 +163,7 @@ void AAIHeroesGameMode::SpawnHeroMarker()
 
 void AAIHeroesGameMode::MoveHeroTo(const FVector& Location)
 {
+    FinishStrategicTravelPresentation();
     InvalidateRoutePreview();
     HeroStrategicLocation = Location;
     if (HeroMarker)
@@ -222,13 +233,24 @@ void AAIHeroesGameMode::RecruitMilitia()
             return;
         }
     }
+    FAIHeroesRecruitmentStock NextStock = RecruitmentStock;
+    FString StockError;
+    if (!FAIHeroesRecruitmentStockRules::Consume(
+            NextStock, Offer.Choice, Offer.Units.Count(), StockError))
+    {
+        SetEvent(StockError);
+        return;
+    }
     if (!FAIHeroesTurnRules::SpendIfAffordable(Gold, Wood, Ore, Offer.Gold, Offer.Wood, Offer.Ore))
     {
         SetEvent(TEXT("Need 50 gold and 5 wood for 5 militia."));
         return;
     }
+    RecruitmentStock = NextStock;
     AddStack(Offer.Units);
-    SetEvent(TEXT("Recruited 5 militia at HQ."));
+    SetEvent(FString::Printf(
+        TEXT("Recruited 5 militia at HQ. Unpurchased militia: %d."),
+        RecruitmentStock.Militia));
 }
 
 void AAIHeroesGameMode::RecruitScouts()
@@ -245,13 +267,24 @@ void AAIHeroesGameMode::RecruitScouts()
             return;
         }
     }
+    FAIHeroesRecruitmentStock NextStock = RecruitmentStock;
+    FString StockError;
+    if (!FAIHeroesRecruitmentStockRules::Consume(
+            NextStock, Offer.Choice, Offer.Units.Count(), StockError))
+    {
+        SetEvent(StockError);
+        return;
+    }
     if (!FAIHeroesTurnRules::SpendIfAffordable(Gold, Wood, Ore, Offer.Gold, Offer.Wood, Offer.Ore))
     {
         SetEvent(TEXT("Need 70 gold and 4 ore for 2 scouts."));
         return;
     }
+    RecruitmentStock = NextStock;
     AddStack(Offer.Units);
-    SetEvent(TEXT("Recruited 2 scouts at HQ."));
+    SetEvent(FString::Printf(
+        TEXT("Recruited 2 scouts at HQ. Unpurchased scouts: %d."),
+        RecruitmentStock.Scouts));
 }
 
 void AAIHeroesGameMode::UpgradeProtocol()
@@ -367,6 +400,40 @@ void AAIHeroesGameMode::EndTurn()
         return;
     }
 
+    // An owned outpost increases Scouts' *recruitable stock*; an unowned
+    // outpost instead reinforces its neutral guards in WorldWeekRules.
+    // Preflight the production snapshot before any day/income commits.
+    FAIHeroesRecruitmentStock NextStock;
+    FString ProductionError;
+    if (!FAIHeroesRecruitmentStockRules::PlanNextDay(
+            Day, BaseTier, RivalBefore.bOutpostOwned,
+            RecruitmentStock, NextStock, ProductionError))
+    {
+        SetEvent(TEXT("DAY BLOCKED: ") + ProductionError +
+            TEXT(" No income or growth applied."));
+        return;
+    }
+    // Field dwellings are independent from both HQ stock and neutral guards.
+    // A site accrues only when the player explicitly claimed it after visiting.
+    bool bForestOwned = false, bOreOwned = false;
+    for (const auto& Site : WeekPlan.Nodes)
+    {
+        if (Site.Id == FName(TEXT("FOREST"))) bForestOwned = Site.bOwned;
+        if (Site.Id == FName(TEXT("ORE"))) bOreOwned = Site.bOwned;
+    }
+    FAIHeroesFieldDwellings NextField;
+    FString FieldError;
+    if (!FAIHeroesFieldDwellingRules::PlanNextDay(
+            Day, bForestOwned, bOreOwned, FieldDwellings, NextField, FieldError))
+    {
+        SetEvent(TEXT("DAY BLOCKED: ") + FieldError + TEXT(" No changes applied."));
+        return;
+    }
+    const int32 FieldForestGrowth = NextField.Forest.Available - FieldDwellings.Forest.Available;
+    const int32 FieldOreGrowth = NextField.Ore.Available - FieldDwellings.Ore.Available;
+    const int32 AddedMilitia = NextStock.Militia - RecruitmentStock.Militia;
+    const int32 AddedScouts = NextStock.Scouts - RecruitmentStock.Scouts;
+
     const int32 Income = static_cast<int32>(NextGold) - Gold;
     InvalidateRoutePreview();
     ++Day;
@@ -374,6 +441,9 @@ void AAIHeroesGameMode::EndTurn()
     Gold = RivalAfter.Gold;
     Wood = RivalAfter.Wood;
     Ore = RivalAfter.Ore;
+    RecruitmentStock = NextStock;
+    FieldDwellings = NextField;
+    RefreshFieldDwellingVisuals();
     if (WeekPlan.bNewWeek)
     {
         // Commit only after the full resource and world-transition checks.
@@ -404,14 +474,28 @@ void AAIHeroesGameMode::EndTurn()
     if (WeekPlan.bNewWeek)
     {
         DayReport += FString::Printf(
-            TEXT(" NEW WEEK: neutral guards +%d units. Capture sites early."),
-            WeekPlan.NewNeutralUnits);
-        UE_LOG(LogTemp, Display, TEXT("[AI HEROES WEEK] week=%d day=%d recruits=%d"),
-            WeekPlan.Week, Day, WeekPlan.NewNeutralUnits);
+            TEXT(" NEW WEEK: neutral guards +%d; own reserves +%d militia +%d scouts (now %d/%d)."),
+            WeekPlan.NewNeutralUnits, AddedMilitia, AddedScouts,
+            RecruitmentStock.Militia, RecruitmentStock.Scouts);
+        UE_LOG(LogTemp, Display,
+            TEXT("[AI HEROES WEEK] week=%d day=%d neutral=%d militia_stock_plus=%d scout_stock_plus=%d stock=%d/%d"),
+            WeekPlan.Week, Day, WeekPlan.NewNeutralUnits,
+            AddedMilitia, AddedScouts, RecruitmentStock.Militia, RecruitmentStock.Scouts);
+        DayReport += FString::Printf(
+            TEXT(" FIELD: FOREST %+d (%d), ORE %+d (%d)."),
+            FieldForestGrowth, FieldDwellings.Forest.Available,
+            FieldOreGrowth, FieldDwellings.Ore.Available);
+        UE_LOG(LogTemp, Display,
+            TEXT("[AI HEROES FIELD] WEEK day=%d forest_plus=%d forest_stock=%d forest_claimed=%d ore_plus=%d ore_stock=%d ore_claimed=%d"),
+            Day, FieldForestGrowth, FieldDwellings.Forest.Available,
+            FieldDwellings.Forest.bClaimed, FieldOreGrowth,
+            FieldDwellings.Ore.Available, FieldDwellings.Ore.bClaimed);
     }
     if (RivalTurn.IsActive())
     {
-        DayReport += TEXT(" ") + RivalTurn.Description;
+        DayReport += IsNodeDiscovered(FName(TEXT("OUTPOST")))
+            ? TEXT(" ") + RivalTurn.Description
+            : TEXT(" SCOUTING: distant hostile activity; location and strength unknown.");
         UE_LOG(LogTemp, Display,
             TEXT("[AI HEROES RIVAL] day=%d action=%d amount=%d wood=%d ore=%d player_order=0"),
             Day, static_cast<int32>(RivalTurn.Action), RivalTurn.Amount, Wood, Ore);
@@ -421,52 +505,53 @@ void AAIHeroesGameMode::EndTurn()
 
 int32 AAIHeroesGameMode::GetSelectedMoveCost() const
 {
-    if (!IsValid(SelectedNode.Get()))
-    {
-        return INDEX_NONE;
-    }
-    bool bHostile = false;
-    if (!SelectedNode->bOwned)
-    {
-        for (const FAIHeroesArmyStack& Defender : SelectedNode->Defenders)
-        {
-            bHostile |= Defender.IsAlive();
-        }
-    }
-    return FAIHeroesTurnRules::TravelCost(
-        HeroStrategicLocation, SelectedNode->GetActorLocation(), bHostile);
+    const auto Path = GetSelectedTravelPath();
+    return Path.Status == EAIHeroesAdventurePathStatus::Ready ||
+        Path.Status == EAIHeroesAdventurePathStatus::NeedsMoreMoves ? Path.TotalCost : INDEX_NONE;
 }
 
 FString AAIHeroesGameMode::GetSelectionSummary() const
 {
+    if (IsStrategicTravelMoving())
+        return FString::Printf(TEXT("TRAVEL ANIMATION | move applied once | %d moves left | next order skips animation"), MovesLeft);
     if (!IsValid(SelectedNode.Get()))
     {
         return TEXT("TARGET: none | Click or tap a node");
     }
+    const FString Travel = FAIHeroesTravelRules::Describe(GetSelectedTravelPath());
     if (SelectedNode->NodeType == EAIHeroesNodeType::Headquarters)
-        return GetHeadquartersSummary();
+        return GetHeadquartersSummary() + TEXT(" | ") + Travel;
     int32 Guards = 0;
     for (const FAIHeroesArmyStack& Stack : SelectedNode->Defenders)
     {
         Guards += Stack.Count();
     }
-    return FString::Printf(TEXT("TARGET: %s | %s | guards %d | move cost %d"),
+    return FString::Printf(TEXT("TARGET: %s | %s | guards %d | %s"),
         *SelectedNode->GetDisplayName(),
         SelectedNode->bOwned ? TEXT("OURS") : TEXT("UNCLAIMED"),
-        Guards, GetSelectedMoveCost());
+        Guards, *Travel) +
+        (SelectedNode->NodeType == EAIHeroesNodeType::ForestMine ||
+         SelectedNode->NodeType == EAIHeroesNodeType::OreMine
+            ? TEXT(" | ") + GetFieldDwellingLabel(SelectedNode->NodeType)
+            : FString());
 }
 
 void AAIHeroesGameMode::SelectNode(AAIHeroesWorldNode* Node)
 {
     if (BlockStrategicAction()) return;
-    if (!IsValid(Node))
+    if (!IsValid(Node) || !Nodes.Contains(Node))
     {
+        return;
+    }
+    if (!IsNodeDiscovered(FName(*Node->GetDisplayName())))
+    {
+        SetEvent(TEXT("SCOUTING: destination unknown. Visit a visible site to explore."));
         return;
     }
     SelectedNode = Node;
     SetEvent(FString::Printf(TEXT("%s selected. Ask H for advice; Enter to move/attack."),
         *Node->GetDisplayName()));
-    LastHint = TEXT("Selection is free. Player controls whether the hero attacks.");
+    LastHint = FAIHeroesTravelRules::Describe(GetSelectedTravelPath());
 }
 
 void AAIHeroesGameMode::ConfirmSelectedNode()
@@ -483,9 +568,14 @@ void AAIHeroesGameMode::ConfirmSelectedNode()
 void AAIHeroesGameMode::InteractWithNode(AAIHeroesWorldNode* Node)
 {
     if (BlockStrategicAction()) return;
-    if (!IsValid(Node))
+    if (!IsValid(Node) || !Nodes.Contains(Node))
     {
         SetEvent(TEXT("Invalid destination. No resources or movement spent."));
+        return;
+    }
+    if (!IsNodeDiscovered(FName(*Node->GetDisplayName())))
+    {
+        SetEvent(TEXT("SCOUTING BLOCKED: unknown site. No movement or battle issued."));
         return;
     }
 
@@ -497,19 +587,25 @@ void AAIHeroesGameMode::InteractWithNode(AAIHeroesWorldNode* Node)
             bHostile |= Defender.IsAlive();
         }
     }
-    const int32 Cost = FAIHeroesTurnRules::TravelCost(
-        HeroStrategicLocation, Node->GetActorLocation(), bHostile);
-    if (!FAIHeroesTurnRules::CanMove(MovesLeft, Cost))
+    // Recompute from current authoritative state; never execute a cached advisory path.
+    const auto Path = FAIHeroesTravelRules::Find(BuildAdvisorSnapshot(),
+        HeroStrategicLocation, FName(*Node->GetDisplayName()), MovesLeft);
+    if (!Path.IsReachableThisTurn())
     {
-        SetEvent(FString::Printf(TEXT("Need %d moves, have %d. End turn or choose a nearer node."),
-            Cost, MovesLeft));
+        SetEvent(FAIHeroesTravelRules::Describe(Path));
         return;
     }
+    const int32 Cost = Path.TotalCost;
+    const FVector TravelOrigin = HeroStrategicLocation;
+    UE_LOG(LogTemp, Display, TEXT("[AI HEROES TRAVEL] v%d %s"),
+        TravelRuleVersion, *FAIHeroesTravelRules::Describe(Path));
 
     if (Node->bOwned || Node->NodeType == EAIHeroesNodeType::Headquarters)
     {
         MovesLeft -= Cost;
         MoveHeroTo(Node->GetActorLocation());
+        PresentStrategicTravel(Path, TravelOrigin);
+        RevealAfterArrival(FName(*Node->GetDisplayName()));
         SetEvent(FString::Printf(TEXT("Hero moved to %s. Remaining moves: %d."),
             *Node->GetDisplayName(), MovesLeft));
         return;
@@ -521,6 +617,8 @@ void AAIHeroesGameMode::InteractWithNode(AAIHeroesWorldNode* Node)
         Node->Defenders.Empty();
         Node->SetOwned(true);
         MoveHeroTo(Node->GetActorLocation());
+        PresentStrategicTravel(Path, TravelOrigin);
+        RevealAfterArrival(FName(*Node->GetDisplayName()));
         SetEvent(FString::Printf(TEXT("%s secured without a fight. Income begins next turn."),
             *Node->GetDisplayName()));
         AnnounceCampaignVictoryIfEarned();
@@ -554,9 +652,20 @@ void AAIHeroesGameMode::SaveCampaign()
     Snapshot->Ore = Ore;
     Snapshot->BaseTier = BaseTier;
     Snapshot->MovesLeft = MovesLeft;
+    Snapshot->TravelRuleVersion = TravelRuleVersion;
     Snapshot->ProtocolTier = ProtocolTier;
     Snapshot->ModelSlotTier = ModelSlotTier;
     Snapshot->DataFragments = DataFragments;
+    Snapshot->bRecruitmentStockInitialized = true;
+    Snapshot->MilitiaReserve = RecruitmentStock.Militia;
+    Snapshot->ScoutReserve = RecruitmentStock.Scouts;
+    Snapshot->bFieldDwellingsInitialized = true;
+    Snapshot->bForestCampClaimed = FieldDwellings.Forest.bClaimed;
+    Snapshot->ForestCampUnits = FieldDwellings.Forest.Available;
+    Snapshot->bOreAerieClaimed = FieldDwellings.Ore.bClaimed;
+    Snapshot->OreAerieUnits = FieldDwellings.Ore.Available;
+    Snapshot->bFogInitialized = bFogEnabled;
+    Snapshot->ExploredSitesMask = bFogEnabled ? FogKnownMask : 0;
     Snapshot->PlayerArmy = PlayerArmy;
     Snapshot->BattleJournal = BattleJournal;
     Snapshot->LastCombatStep = LastCombatStep;
@@ -608,6 +717,7 @@ void AAIHeroesGameMode::SaveCampaign()
 void AAIHeroesGameMode::LoadCampaign()
 {
     if (BlockStrategicAction()) return;
+    PendingSupplyFingerprint.Empty(); // Quote authorization never survives load.
     const FAIHeroesLoadedCampaign Loaded = FAIHeroesSaveSystem::Load(
         SaveNamespaceForPlayer(ActiveSaveSlot),
         LegacySlotForPlayer(ActiveSaveSlot));
@@ -680,9 +790,23 @@ void AAIHeroesGameMode::LoadCampaign()
     Ore = Snapshot->Ore;
     BaseTier = Snapshot->BaseTier;
     MovesLeft = Snapshot->MovesLeft;
+    TravelRuleVersion = Snapshot->TravelRuleVersion;
+    bFogEnabled = Snapshot->bFogInitialized;
+    FogKnownMask = bFogEnabled ? Snapshot->ExploredSitesMask : 0;
     ProtocolTier = Snapshot->ProtocolTier;
     ModelSlotTier = Snapshot->ModelSlotTier;
     DataFragments = Snapshot->DataFragments;
+    // Old v1 saves do not contain optional stock fields. Do not invent
+    // retroactive past-week growth: give one starter reserve in memory.
+    RecruitmentStock = Snapshot->bRecruitmentStockInitialized
+        ? FAIHeroesRecruitmentStock{
+            Snapshot->MilitiaReserve, Snapshot->ScoutReserve}
+        : FAIHeroesRecruitmentStockRules::Initial();
+    FieldDwellings = Snapshot->bFieldDwellingsInitialized
+        ? FAIHeroesFieldDwellings{
+            {Snapshot->bForestCampClaimed, Snapshot->ForestCampUnits},
+            {Snapshot->bOreAerieClaimed, Snapshot->OreAerieUnits}}
+        : FAIHeroesFieldDwellingRules::Initial();
     PlayerArmy = Snapshot->PlayerArmy;
     BattleJournal = Snapshot->BattleJournal;
     LastCombatStep = Snapshot->LastCombatStep;
@@ -698,8 +822,11 @@ void AAIHeroesGameMode::LoadCampaign()
     }
 
     RefreshHeadquartersVisual();
+    RefreshFieldDwellingVisuals();
     SelectedNode = NewSelection;
     MoveHeroTo(HeroDestination->GetActorLocation());
+    RefreshFogVisibility();
+    RefreshAdventureRoads();
     LastHint = TEXT("Loaded local campaign; ask H for a fresh tactical assessment.");
     SetEvent(FString::Printf(TEXT("GAME LOADED SLOT %d: day %d, %d nodes, protocol tier %d. %s"),
         ActiveSaveSlot, Day, Snapshot->NodeStates.Num(), ProtocolTier, *Loaded.Message));
@@ -753,10 +880,15 @@ FAIHeroesAdvisorSnapshot AAIHeroesGameMode::BuildAdvisorSnapshot() const
     // No actor pointer, SaveGame, file path or mutable world authority leaks.
     FAIHeroesAdvisorSnapshot Request;
     Request.ProtocolTier = ProtocolTier;
+    Request.TravelRuleVersion = TravelRuleVersion;
+    Request.bFogEnabled = bFogEnabled;
+    Request.ExploredSitesMask = FogKnownMask;
     Request.MovesLeft = MovesLeft;
     Request.Gold = Gold;
     Request.Wood = Wood;
     Request.Ore = Ore;
+    Request.MilitiaReserve = RecruitmentStock.Militia;
+    Request.ScoutReserve = RecruitmentStock.Scouts;
     Request.HeroPosition = HeroStrategicLocation;
     Request.PlayerArmy = PlayerArmy;
     Request.SelectedNodeId = IsValid(SelectedNode.Get())
@@ -777,7 +909,13 @@ FAIHeroesAdvisorSnapshot AAIHeroesGameMode::BuildAdvisorSnapshot() const
         Snapshot.Type = Node->NodeType;
         Snapshot.Location = Node->GetActorLocation();
         Snapshot.bOwned = Node->bOwned;
-        Snapshot.Guards = Node->Defenders;
+        // The advice snapshot cannot inspect an unrevealed garrison.
+        // Topology stays typed for validation, but its hostile strength
+        // is not made available to the player's AI policy.
+        if (IsNodeDiscovered(Snapshot.Id))
+        {
+            Snapshot.Guards = Node->Defenders;
+        }
         Request.Nodes.Add(MoveTemp(Snapshot));
     }
     return Request;
@@ -789,6 +927,8 @@ void AAIHeroesGameMode::AskAdvisor()
     LastHint = IsValid(SelectedNode.Get()) &&
         SelectedNode->NodeType == EAIHeroesNodeType::Headquarters
         ? GetHeadquartersSummary() : FAIHeroesAdvisor::Advise(BuildAdvisorSnapshot());
+    if (IsValid(SelectedNode.Get()))
+        LastHint += TEXT(" | ") + FAIHeroesTravelRules::Describe(GetSelectedTravelPath());
     RecordAdvisorDossier(TEXT("HERO STRATEGY REPORT"), {LastHint}, false);
 }
 

@@ -23,6 +23,8 @@ void AppendArmy(FString& Text, const TArray<FAIHeroesArmyStack>& Army)
 
 bool AAIHeroesGameMode::BlockStrategicAction()
 {
+    // View-only travel never delays or repeats campaign authority.
+    FinishStrategicTravelPresentation();
     if (IsBasePanelVisible())
     {
         SetEvent(TEXT("BASE PANEL OPEN: review and confirm a purchase, or close before other orders."));
@@ -43,7 +45,13 @@ FString AAIHeroesGameMode::CampaignFingerprint() const
     FString Text = FString::Printf(TEXT("%d/%d/%d/%d/%d/%d/%d/%d/%d/%s/%p/"),
         Day, Gold, Wood, Ore, MovesLeft, ProtocolTier, ModelSlotTier,
         DataFragments, ActiveSaveSlot, *HeroStrategicLocation.ToString(), SelectedNode.Get());
-    Text += FString::Printf(TEXT("HQ=%d/"), BaseTier);
+    Text += FString::Printf(TEXT("HQ=%d/STOCK=%d:%d/"),
+        BaseTier, RecruitmentStock.Militia, RecruitmentStock.Scouts);
+    Text += FString::Printf(TEXT("travel=%d/fog=%d:%d/FIELD=%d:%d:%d:%d/"),
+        TravelRuleVersion, bFogEnabled ? 1 : 0, FogKnownMask,
+        FieldDwellings.Forest.bClaimed,
+        FieldDwellings.Forest.Available,
+        FieldDwellings.Ore.bClaimed, FieldDwellings.Ore.Available);
     AppendArmy(Text, PlayerArmy);
     for (const AAIHeroesWorldNode* Node : Nodes)
     {
@@ -197,6 +205,7 @@ void AAIHeroesGameMode::CommitLiveBattle()
         Node->Defenders.Empty();
         Node->SetOwned(true);
         MoveHeroTo(Node->GetActorLocation());
+        RevealAfterArrival(FName(*Node->GetDisplayName()));
     }
     InvalidateRoutePreview();
     LiveBattlePhase = EAIHeroesLiveBattlePhase::Result;

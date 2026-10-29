@@ -1,5 +1,6 @@
 #include "AIHeroesHUD.h"
 #include "AIHeroesHUDLayout.h"
+#include "AIHeroesMapLabelLayout.h"
 #include "AIHeroesBasePanel.h"
 
 #include "AIHeroesAdvisorDossier.h"
@@ -124,44 +125,62 @@ void AAIHeroesHUD::DrawHUD()
         return; // No strategic node labels or hit targets under the arena.
     }
 
-    // World-space nodes receive screen-space labels for readability in 3D.
-    if (const APlayerController* PC = GetWorld()->GetFirstPlayerController())
+    const auto MapContent = FAIHeroesMapLabelLayout::MapBounds(CachedCanvasSize);
+    TArray<FAIHeroesHUDActionRect> MapLabelRects;
+    // Labels are display-only. Unknown/hidden nodes never enter the packer.
+    if (const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+        PC && !Rules->IsBattleReplayActive() && MapContent.W > 0.f)
     {
+        TArray<FAIHeroesMapLabelRequest> Requests;
         for (const AAIHeroesWorldNode* Node : Rules->Nodes)
         {
-            if (!IsValid(Node))
-            {
-                continue;
-            }
-            FVector2D Screen;
+            if (!IsValid(Node) || Node->IsHidden() ||
+                !Rules->IsNodeDiscovered(FName(*Node->GetDisplayName()))) continue;
+            FAIHeroesMapLabelRequest R;
+            R.Id = FName(*Node->GetDisplayName());
             if (!PC->ProjectWorldLocationToScreen(
-                Node->GetActorLocation() + FVector(0.f, 0.f, 260.f), Screen))
-            {
-                continue;
-            }
-            if (Screen.X < -150.f || Screen.X > Width + 150.f)
-            {
-                continue;
-            }
-
-            const float LabelX = FMath::Clamp(
-                static_cast<float>(Screen.X) - 75.f, 6.f, FMath::Max(6.f, Width - 158.f));
-            const float LabelY = FMath::Clamp(
-                static_cast<float>(Screen.Y) - 26.f, 182.f,
-                FMath::Max(182.f, Height - BottomHeight - 32.f));
+                Node->GetActorLocation() + FVector(0.f, 0.f, 260.f), R.Anchor)) continue;
+            R.bKnown = true;
+            R.bSelected = Rules->SelectedNode.Get() == Node;
+            R.bHasDetail = !Rules->GetFieldDwellingLabel(Node->NodeType).IsEmpty();
+            Requests.Add(R);
+        }
+        for (const auto& Placed : FAIHeroesMapLabelLayout::Place(CachedCanvasSize, Requests))
+        {
+            const AAIHeroesWorldNode* Node = nullptr;
+            for (const AAIHeroesWorldNode* Candidate : Rules->Nodes)
+                if (IsValid(Candidate) && FName(*Candidate->GetDisplayName()) == Placed.Id)
+                { Node = Candidate; break; }
+            if (!Node) continue;
+            MapLabelRects.Add(Placed.Rect);
+            const float LabelX = Placed.Rect.X, LabelY = Placed.Rect.Y;
             const bool bSelected = Rules->SelectedNode.Get() == Node;
             const FLinearColor Color = bSelected
                 ? FLinearColor(0.3f, 1.f, 1.f)
                 : Node->bOwned ? FLinearColor(0.3f, 1.f, 0.55f)
                 : Node->Defenders.IsEmpty() ? FLinearColor(1.f, 0.92f, 0.33f)
                 : FLinearColor(1.f, 0.45f, 0.31f);
-
-            DrawRect(bSelected ? FLinearColor(0.02f, 0.16f, 0.21f, 0.98f) :
-                FLinearColor(0.012f, 0.027f, 0.045f, 0.88f),
-                LabelX, LabelY, 150.f, 28.f);
-            DrawText(FString::Printf(TEXT("%s%s"),
+            // A clipped leader preserves association after a label is displaced.
+            const FVector2D Anchor(
+                FMath::Clamp(static_cast<float>(Placed.Anchor.X), MapContent.X, MapContent.X + MapContent.W),
+                FMath::Clamp(static_cast<float>(Placed.Anchor.Y), MapContent.Y, MapContent.Y + MapContent.H));
+            const FVector2D Edge(
+                FMath::Clamp(static_cast<float>(Anchor.X), LabelX, LabelX + Placed.Rect.W),
+                FMath::Clamp(static_cast<float>(Anchor.Y), LabelY, LabelY + Placed.Rect.H));
+            if (FVector2D::DistSquared(Anchor, Edge) > 16.0)
+                DrawLine(Anchor.X, Anchor.Y, Edge.X, Edge.Y, Color, 1.f);
+            DrawRect(bSelected ? FLinearColor(0.02f, 0.16f, 0.21f, 1.f) :
+                FLinearColor(0.012f, 0.027f, 0.045f, 1.f), LabelX, LabelY, 150.f, 28.f);
+            DrawText(FString::Printf(TEXT("%s%s%s"), bSelected ? TEXT("> ") : TEXT(""),
                 *Node->GetDisplayName(), Node->bOwned ? TEXT(" [OURS]") : TEXT("")),
                 Color, LabelX + 9.f, LabelY + 6.f, Font, Scale);
+            if (Placed.bShowDetail)
+            {
+                const FString Field = Rules->GetFieldDwellingLabel(Node->NodeType);
+                DrawRect(FLinearColor(0.12f, 0.12f, 0.045f, 1.f), LabelX, LabelY + 28.f, 150.f, 24.f);
+                DrawText(Field.Left(23), FLinearColor(0.94f, 0.97f, 0.63f),
+                    LabelX + 5.f, LabelY + 32.f, Font, Scale * 0.84f);
+            }
         }
     }
 
@@ -169,17 +188,13 @@ void AAIHeroesHUD::DrawHUD()
     // or moves a pawn. Lines are rendered only when both endpoints project
     // onto the unobstructed 3D map (not beneath HUD controls).
     const FAIHeroesRoutePlan& Route = Rules->GetRoutePreview();
-    if (Route.IsValid() && !Rules->IsBattleReplayActive())
+    if (Route.IsValid() && !Rules->IsBattleReplayActive() && MapContent.W > 0.f)
     {
         if (const APlayerController* PC = GetWorld()->GetFirstPlayerController())
         {
-            const float MapTop = 179.f;
-            const float MapBottom = Height - BottomHeight - 42.f;
-            auto OnMap = [Width, MapTop, MapBottom](const FVector2D& P)
-            {
-                return P.X >= 12.f && P.X <= Width - 12.f &&
-                    P.Y >= MapTop && P.Y <= MapBottom;
-            };
+            const float MapTop = MapContent.Y;
+            const float MapBottom = MapContent.Y + MapContent.H;
+            auto OnMap = [MapContent](const FVector2D& P) { return MapContent.Contains(P); };
 
             FVector2D Previous;
             bool bPreviousOnMap = PC->ProjectWorldLocationToScreen(
@@ -192,6 +207,7 @@ void AAIHeroesHUD::DrawHUD()
                 for (const AAIHeroesWorldNode* Candidate : Rules->Nodes)
                 {
                     if (IsValid(Candidate) &&
+                        Rules->IsNodeDiscovered(FName(*Candidate->GetDisplayName())) &&
                         FName(*Candidate->GetDisplayName()) == Route.Stops[StopIndex])
                     {
                         StopNode = Candidate;
@@ -211,7 +227,7 @@ void AAIHeroesHUD::DrawHUD()
                 const FLinearColor Color = StopIndex == 0
                     ? FLinearColor(0.24f, 0.94f, 0.89f, 1.f)
                     : FLinearColor(1.f, 0.78f, 0.29f, 1.f);
-                if (bPreviousOnMap && bOnMap)
+                if (bPreviousOnMap && bOnMap && Rules->TravelRuleVersion == 1)
                 {
                     DrawLine(Previous.X, Previous.Y, At.X, At.Y, Color, 3.f);
                 }
@@ -219,10 +235,18 @@ void AAIHeroesHUD::DrawHUD()
                 {
                     const float TagX = FMath::Clamp(At.X - 38.f, 6.f, FMath::Max(6.f, Width - 83.f));
                     const float TagY = FMath::Clamp(At.Y - 63.f, MapTop, FMath::Max(MapTop, MapBottom - 24.f));
-                    DrawRect(FLinearColor(0.02f, 0.13f, 0.19f, 0.98f),
-                        TagX, TagY, 77.f, 23.f);
-                    DrawText(FString::Printf(TEXT("PLAN %d"), StopIndex + 1),
-                        Color, TagX + 7.f, TagY + 4.f, Font, Scale);
+                    FAIHeroesHUDActionRect Tag;
+                    Tag.X = TagX; Tag.Y = TagY; Tag.W = 77.f; Tag.H = 23.f;
+                    bool bFree = FAIHeroesMapLabelLayout::ContainsRect(MapContent, Tag);
+                    for (const auto& Label : MapLabelRects)
+                        bFree &= !FAIHeroesMapLabelLayout::Overlaps(Label, Tag);
+                    if (bFree)
+                    {
+                        MapLabelRects.Add(Tag);
+                        DrawRect(FLinearColor(0.02f, 0.13f, 0.19f, 1.f), TagX, TagY, 77.f, 23.f);
+                        DrawText(FString::Printf(TEXT("PLAN %d"), StopIndex + 1),
+                            Color, TagX + 7.f, TagY + 4.f, Font, Scale);
+                    }
                 }
                 Previous = At;
                 bPreviousOnMap = bOnMap;
@@ -232,7 +256,7 @@ void AAIHeroesHUD::DrawHUD()
 
     DrawRect(FLinearColor(0.015f, 0.022f, 0.04f, 0.92f),
         0.f, 0.f, Width, 175.f);
-    DrawText(TEXT("AI HEROES  |  PLAYER DECIDES / AI FIGHTS"),
+    DrawText(FString::Printf(TEXT("AI HEROES | TRAVEL V%d | PLAYER DECIDES / AI FIGHTS"), Rules->TravelRuleVersion),
         FLinearColor(0.42f, 0.88f, 1.f), 18.f, 12.f, Font, Scale * 1.3f);
     DrawText(FString::Printf(TEXT("DAY %d  |  MOVES %d/4  |  GOLD %d  |  WOOD %d  |  ORE %d  |  DATA %d"),
         Rules->Day, Rules->MovesLeft, Rules->Gold, Rules->Wood, Rules->Ore, Rules->DataFragments),
@@ -240,11 +264,12 @@ void AAIHeroesHUD::DrawHUD()
     DrawText(TEXT("ARMY: ") + Rules->GetArmySummary() + FString::Printf(
         TEXT("  |  HQ L%d  |  +%d GOLD/DAY"), Rules->BaseTier, Rules->GetDailyGoldIncome()),
         FLinearColor(0.88f, 0.95f, 0.81f), 18.f, 68.f, Font, Scale);
-    DrawText(TEXT("AI: ") + Rules->GetCognitionSummary(),
+    DrawText(TEXT("AI: ") + Rules->GetCognitionSummary() +
+        TEXT(" | ") + Rules->GetScoutingStatus(),
         FLinearColor(1.f, 0.85f, 0.35f), 18.f, 94.f, Font, Scale);
     DrawText(Rules->GetSelectionSummary().Left(TextLimit),
         FLinearColor(0.4f, 1.f, 0.92f), 18.f, 119.f, Font, Scale);
-    DrawText(TEXT("WASD camera  CLICK select  ENTER confirm  H advise  O goals  U HQ+  I dossier  N recruit  Z plan  SPACE day  K save  L load  V 3D"),
+    DrawText(TEXT("WASD camera  CLICK select  ENTER move/fight  E field  X convoy  H advise  Z route  SPACE day  K save  L load  V 3D"),
         FLinearColor(0.72f, 0.78f, 0.87f), 18.f, 147.f, Font, Scale * 0.92f);
 
     if (!Rules->IsBattleReplayActive() && !Rules->IsLiveBattleActive())
@@ -293,8 +318,14 @@ void AAIHeroesHUD::DrawHUD()
             const FAIHeroesCampaignProgress Progress = Rules->GetCampaignProgress();
             DrawRect(FLinearColor(0.015f, 0.065f, 0.11f, 0.97f),
                 0.f, GoalY - 2.f, Width, GoalH + 4.f);
-            const int32 GoalTextLimit = FMath::Max(18,
-                FMath::FloorToInt((Width - GoalW - 32.f) / 8.f));
+            float GoalTextRight = GoalX;
+            for (const int32 Peer : {203, 204, 205})
+            {
+                const auto PeerRect = FAIHeroesHUDLayout::Rect(Peer, CachedCanvasSize);
+                if (PeerRect.W > 0.f) GoalTextRight = FMath::Min(GoalTextRight, PeerRect.X);
+            }
+            const int32 GoalTextLimit = FMath::Max(0,
+                FMath::FloorToInt((GoalTextRight - 28.f) / 8.f));
             DrawText(Progress.Headline().Left(GoalTextLimit),
                 Progress.bVictory ? FLinearColor(0.8f, 1.f, 0.55f) :
                     FLinearColor(0.44f, 0.93f, 0.9f),
@@ -303,6 +334,27 @@ void AAIHeroesHUD::DrawHUD()
                 GoalX, GoalY, GoalW, GoalH);
             DrawText(TEXT("GOALS O"), FLinearColor::White,
                 GoalX + 8.f, GoalY + 7.f, Font, Scale * 0.9f);
+        }
+        float ConvoyX, ConvoyY, ConvoyW, ConvoyH;
+        GetActionRect(205, ConvoyX, ConvoyY, ConvoyW, ConvoyH);
+        if (ConvoyW > 0.f)
+        {
+            const bool bConfirm = Rules->IsSupplyConvoyPending();
+            DrawRect(bConfirm ? FLinearColor(0.12f, 0.38f, 0.22f, 0.99f)
+                    : FLinearColor(0.15f, 0.20f, 0.31f, 0.99f),
+                ConvoyX, ConvoyY, ConvoyW, ConvoyH);
+            DrawText(bConfirm ? TEXT("CONFIRM X") : TEXT("CONVOY X"),
+                FLinearColor(0.85f, 0.96f, 1.f),
+                ConvoyX + 7.f, ConvoyY + 7.f, Font, Scale * 0.9f);
+        }
+        float FieldX, FieldY, FieldW, FieldH;
+        GetActionRect(204, FieldX, FieldY, FieldW, FieldH);
+        if (FieldW > 0.f)
+        {
+            DrawRect(FLinearColor(0.20f, 0.25f, 0.11f, 0.99f),
+                FieldX, FieldY, FieldW, FieldH);
+            DrawText(TEXT("FIELD E"), FLinearColor(0.92f, 1.f, 0.65f),
+                FieldX + 8.f, FieldY + 7.f, Font, Scale * 0.9f);
         }
         // The protocol comparison is a peer of GOALS, not another
         // strategic command; mobile touch and mouse use this same rect.

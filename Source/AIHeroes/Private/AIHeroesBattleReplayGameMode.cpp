@@ -13,6 +13,7 @@
 void AAIHeroesGameMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    TickStrategicTravelPresentation(DeltaSeconds);
     if (IsLiveBattleActive())
     {
         TickLiveBattle(DeltaSeconds);

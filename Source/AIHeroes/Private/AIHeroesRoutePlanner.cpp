@@ -2,7 +2,7 @@
 
 #include "AIHeroesBattleEngine.h"
 #include "AIHeroesGridBattle.h"
-#include "AIHeroesTurnRules.h"
+#include "AIHeroesTravelRules.h"
 
 namespace
 {
@@ -48,7 +48,7 @@ bool ConsiderVisit(const FAIHeroesAdvisorNode& Node,
     int32 AvailableMoves,
     TArray<FAIHeroesArmyStack>& Survivors,
     int32& MoveCost,
-    int32& LostHP)
+    int32& LostHP, const TSet<FName>& Cleared = TSet<FName>())
 {
     if (Node.Id.IsNone() || Node.bOwned || Node.Type == EAIHeroesNodeType::Headquarters)
     {
@@ -61,8 +61,9 @@ bool ConsiderVisit(const FAIHeroesAdvisorNode& Node,
         bGuarded |= Stack.IsAlive();
     }
 
-    MoveCost = FAIHeroesTurnRules::TravelCost(Position, Node.Location, bGuarded);
-    if (!FAIHeroesTurnRules::CanMove(AvailableMoves, MoveCost))
+    const auto Path = FAIHeroesTravelRules::Find(Snapshot, Position, Node.Id, AvailableMoves, Cleared);
+    MoveCost = Path.TotalCost;
+    if (!Path.IsReachableThisTurn())
     {
         return false;
     }
@@ -193,6 +194,8 @@ TArray<FAIHeroesRoutePlan> FAIHeroesRoutePlanner::Rank(
             continue;
         }
 
+        TSet<FName> FirstCleared;
+        FirstCleared.Add(First.Id);
         for (int32 SecondIndex = 0; SecondIndex < Snapshot.Nodes.Num(); ++SecondIndex)
         {
             if (SecondIndex == FirstIndex ||
@@ -206,7 +209,7 @@ TArray<FAIHeroesRoutePlan> FAIHeroesRoutePlanner::Rank(
             int32 SecondCost = 0;
             int32 SecondHP = 0;
             if (!ConsiderVisit(Second, Snapshot, First.Location,
-                Survivors, MovesRemaining, SurvivorsAfterSecond, SecondCost, SecondHP))
+                Survivors, MovesRemaining, SurvivorsAfterSecond, SecondCost, SecondHP, FirstCleared))
             {
                 continue;
             }

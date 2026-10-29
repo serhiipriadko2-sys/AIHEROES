@@ -3,7 +3,8 @@
 #include "AIHeroesBattleEngine.h"
 #include "AIHeroesGridBattle.h"
 #include "AIHeroesRoutePlanner.h"
-#include "AIHeroesTurnRules.h"
+#include "AIHeroesTravelRules.h"
+#include "AIHeroesFogRules.h"
 
 namespace
 {
@@ -53,8 +54,10 @@ int32 EconomicValue(const FAIHeroesAdvisorNode& Node, const FAIHeroesAdvisorSnap
 
 FString DescribeTarget(const FAIHeroesAdvisorSnapshot& S, const FAIHeroesAdvisorNode& Target)
 {
-    const int32 Cost = FAIHeroesTurnRules::TravelCost(
-        S.HeroPosition, Target.Location, Guarded(Target) && !Target.bOwned);
+    const auto Path = FAIHeroesTravelRules::Find(S, S.HeroPosition, Target.Id, S.MovesLeft);
+    if (Path.Status == EAIHeroesAdventurePathStatus::InvalidInput ||
+        Path.Status == EAIHeroesAdventurePathStatus::Unreachable) return Path.Reason;
+    const int32 Cost = Path.TotalCost;
 
     if (Cost > S.MovesLeft)
     {
@@ -151,15 +154,16 @@ FString FAIHeroesAdvisor::Advise(const FAIHeroesAdvisorSnapshot& S)
 
     for (const FAIHeroesAdvisorNode& Node : S.Nodes)
     {
-        if (Node.bOwned)
+        if (Node.bOwned || !FAIHeroesFogRules::IsKnown(
+                S.bFogEnabled, S.ExploredSitesMask, Node.Id))
         {
             continue;
         }
 
         const bool bGuarded = Guarded(Node);
-        const int32 Cost = FAIHeroesTurnRules::TravelCost(
-            S.HeroPosition, Node.Location, bGuarded);
-        if (Cost > S.MovesLeft)
+        const auto Path = FAIHeroesTravelRules::Find(S, S.HeroPosition, Node.Id, S.MovesLeft);
+        const int32 Cost = Path.TotalCost;
+        if (!Path.IsReachableThisTurn())
         {
             continue;
         }

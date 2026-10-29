@@ -44,11 +44,17 @@ FString AAIHeroesGameMode::GetHeadquartersSummary() const
     if (!FAIHeroesBaseRules::IsValidTier(BaseTier)) return TEXT("HQ: invalid level; upgrade blocked.");
     const FAIHeroesBaseUpgradeCost Cost = FAIHeroesBaseRules::UpgradeCost(BaseTier);
     if (!Cost.bAvailable)
-        return FString::Printf(TEXT("HQ L%d MAX | base income %d gold/day | no further construction"),
-            BaseTier, FAIHeroesBaseRules::DailyGold(BaseTier));
+        return FString::Printf(
+            TEXT("HQ L%d MAX | %d G/day | RESERVE M%d S%d | weekly +%d M +%d S"),
+            BaseTier, FAIHeroesBaseRules::DailyGold(BaseTier),
+            RecruitmentStock.Militia, RecruitmentStock.Scouts,
+            FAIHeroesRecruitmentStockRules::MilitiaGrowth(BaseTier),
+            FAIHeroesRecruitmentStockRules::ScoutGrowth(BaseTier, false));
     return FString::Printf(
-        TEXT("HQ L%d | %d gold/day | upgrade %dG %dW %dO: +20 gold/day | %s"),
-        BaseTier, FAIHeroesBaseRules::DailyGold(BaseTier), Cost.Gold, Cost.Wood, Cost.Ore,
+        TEXT("HQ L%d | %d G/day | RESERVE M%d S%d | upgrade %dG %dW %dO | %s"),
+        BaseTier, FAIHeroesBaseRules::DailyGold(BaseTier),
+        RecruitmentStock.Militia, RecruitmentStock.Scouts,
+        Cost.Gold, Cost.Wood, Cost.Ore,
         IsAtSelectedOwnedHeadquarters() ? TEXT("U / HQ + to buy") : TEXT("select HQ and return hero"));
 }
 

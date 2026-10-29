@@ -1,0 +1,225 @@
+{
+  "schema": "aiheroes.travel-presentation.receipt.v1",
+  "status": "PASS_SCOPED_WINDOWS",
+  "observed_utc": "2026-10-28T21:21:04.639595+00:00",
+  "root": "C:\\github\\AIHEROES",
+  "head_at_receipt": "cc062ba2399adfb0de13c061e9d3912bea91b534",
+  "feature": "Selected-route preview and view-only non-combat hero travel",
+  "lifecycle": [
+    "written",
+    "compiled",
+    "automation_verified",
+    "scripted_render_verified",
+    "images_inspected"
+  ],
+  "scope_count": 14,
+  "source_count": 10,
+  "scope_bytes": 122933,
+  "files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesTravelMotion.h",
+      "bytes": 2533,
+      "sha256": "4cff297ad056611b8e946d72ce568faf1e99214cf39aa15afe96a2fa6f290aa4"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesTravelPresentation.h",
+      "bytes": 1795,
+      "sha256": "631465312cff7f83ea7fccec9cd8bb4a8a10b38faffd90ebe5e07e4e93e3fc5a"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelPresentation.cpp",
+      "bytes": 6060,
+      "sha256": "3db9eccc1e600303c37e9496bcf2f63ab965daac5a43c3131b04cf4e867d7a60"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelPresentationGameMode.cpp",
+      "bytes": 4430,
+      "sha256": "d36ddb149b3cd0fd5c4c86b378c66ecf4641fb6e51a037a61c4ccbd9e33aab54"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelPresentationSmoke.cpp",
+      "bytes": 5851,
+      "sha256": "f11c4a9db1cd6e307615fd1058a3f96c236f4db7df7b9d4ee6efc4df424dbd61"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesTravelPresentationTests.cpp",
+      "bytes": 14640,
+      "sha256": "36fcbd3518ce4a6de222fd19570251d9be65ea974b0db041e1c7ff0476bc2f36"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+      "bytes": 10920,
+      "sha256": "065be14920c5b4362ffac8eecfe8a84e6f834ed76def587041b0018473a90ca8"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+      "bytes": 36170,
+      "sha256": "628d9b6112236cbb110e9ed10be60194ad99a19605d9512c559d3396afb3818e"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+      "bytes": 12592,
+      "sha256": "65b8b7bb4e10ad68159656cf81e906fbaf9077e4b476665173f93aa8196a0c0a"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleReplayGameMode.cpp",
+      "bytes": 11946,
+      "sha256": "3d6bd3f57655546d9744e1e4326aab7eb6b2644ee64ca3309ffdc8ece89d7294"
+    },
+    {
+      "path": "Tools/verify_travel_presentation.ps1",
+      "bytes": 5057,
+      "sha256": "078f0570c5d68b8b28b15aa687431e97183c2add61c060d808a7592ffbc07619"
+    },
+    {
+      "path": ".vscode/tasks.json",
+      "bytes": 4447,
+      "sha256": "4bf7fbd855c5fcdc0af48f8723c327c518dad4ee26194f8de33409ae24d46a6d"
+    },
+    {
+      "path": "Docs/TRAVEL_PRESENTATION.md",
+      "bytes": 5104,
+      "sha256": "c21fa42e7d7105d3222bebc1888a832e8bd693ddc5df4ed7f5a2995b28e6091a"
+    },
+    {
+      "path": "Docs/TRAVEL_CHEVRON_POLISH_PROPOSED.patch",
+      "bytes": 1388,
+      "sha256": "18877e1be38503879cc18c1bcd273c10a0c6a1af9801eb9561b2fae9024ac280"
+    }
+  ],
+  "verification": {
+    "status": "PASS_WINDOWS_TESTED_SNAPSHOT",
+    "observed_utc": "2026-10-28T21:15:06.5771878Z",
+    "evidence": "C:\\github\\AIHEROES\\Saved\\QA\\TravelViewValidation_20261028T211414863Z",
+    "build_exit": 0,
+    "test_exit": 0,
+    "tests": 137,
+    "view_tests": 8,
+    "failed": 0,
+    "not_run": 0,
+    "visual": "SCRIPTED_PASS_IMAGE_INSPECTION_PENDING",
+    "source_files": 143,
+    "source_drift": [],
+    "player_saves": 4,
+    "save_drift": [],
+    "dll_stable": true,
+    "dll_sha256": "AD4930449EF91F8BDA9FBC8F7F1774C74EB9DC5EEDF918F6939D873290FA46B7",
+    "android_verified": false,
+    "real_model_connected": false,
+    "published": false
+  },
+  "test_groups": [
+    "AIHeroes.TravelView.BlockedMoveHasNoPresentation",
+    "AIHeroes.TravelView.CommitOnceAndNextCommand",
+    "AIHeroes.TravelView.DurableDestinationNotVisualPosition",
+    "AIHeroes.TravelView.InvalidInputsAndBounds",
+    "AIHeroes.TravelView.ModalAndTeardown",
+    "AIHeroes.TravelView.ReadOnlyPreviewCacheAndCollision",
+    "AIHeroes.TravelView.SegmentsAndFrameParity",
+    "AIHeroes.TravelView.VisualLossAndDrift"
+  ],
+  "evidence": [
+    {
+      "path": "Saved/QA/TravelViewValidation_20261028T211414863Z/build.log",
+      "bytes": 2704,
+      "sha256": "9eea6bbea45d606db9f68235435e40ef2baeaff9b5abfcecc08c5d4896bb4ddc"
+    },
+    {
+      "path": "Saved/QA/TravelViewValidation_20261028T211414863Z/report/index.json",
+      "bytes": 54159,
+      "sha256": "c04cb190976320c0aae92ef4aeb6d2e34c2a5f197d3438abd769bcf0d246e707"
+    },
+    {
+      "path": "Saved/QA/TravelViewValidation_20261028T211414863Z/visual.log",
+      "bytes": 197409,
+      "sha256": "447643f195e6dd2ea02b7f927c2400004040434c49671d6d8d677ac64858ea4e"
+    },
+    {
+      "path": "Saved/QA/TravelViewValidation_20261028T211414863Z/receipt.json",
+      "bytes": 750,
+      "sha256": "88985746e412bb7d00883e91b499c2895d7d09bbaea0b5f25ac2ce5de4625f2f"
+    },
+    {
+      "path": "Saved/QA/TravelViewValidation_20261028T211414863Z/source-manifest.json",
+      "bytes": 28685,
+      "sha256": "57d191c673d12b31d32849e580a4956823647aed7e60da4bd7cbd328049bd1df"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "Saved/QA/TravelPresentation/VIEW_READY.png",
+      "bytes": 420106,
+      "sha256": "95229a5ee69db32efa77d2982f3115fdb039aa45927eb5eaee4d754cba7effd6",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "Saved/QA/TravelPresentation/VIEW_MOVING.png",
+      "bytes": 419313,
+      "sha256": "1a57ef4ca3235b90ea62b14eddc545b24ce6add8af66f6b381fa577e502cfff8",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "Saved/QA/TravelPresentation/VIEW_OVER_BUDGET.png",
+      "bytes": 419093,
+      "sha256": "6ccd0125654349bb4feea1c20e17b91f19e3a01c940fa2c471fadccaf98e0c5e",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "image_inspection": "Ready cyan line and single chevron; amber over-budget chevron; intermediate marker and committed-move disclosure inspected. Small cue can be partly hidden by the existing HUD.",
+  "saves": {
+    "before": 4,
+    "after": 4,
+    "unchanged": true,
+    "comparison": "names+bytes+SHA256"
+  },
+  "qc": {
+    "nonempty": true,
+    "unique_casefold_paths": true,
+    "no_symlinks": true,
+    "credential_pattern_scan": "PASS_SCOPE_ONLY",
+    "scoped_source_drift": []
+  },
+  "concurrency": {
+    "later_unverified_source_changes": [
+      "Source\\AIHeroes\\Private\\AIHeroesAIProposalGate.cpp",
+      "Source\\AIHeroes\\Private\\AIHeroesZonePreviewGameMode.cpp",
+      "Source\\AIHeroes\\Private\\Tests\\AIHeroesFogTests.cpp",
+      "Source\\AIHeroes\\Public\\AIHeroesZonePreviewGameMode.h"
+    ],
+    "later_unverified_source_additions": [],
+    "boundary": "137 tests attest the compiled snapshot; scoped presentation sources still match. Later unrelated source changes are not certified by this receipt."
+  },
+  "optional_polish": {
+    "path": "Docs/TRAVEL_CHEVRON_POLISH_PROPOSED.patch",
+    "status": "PROPOSED_NOT_APPLIED_NOT_VERIFIED",
+    "active_presentation_restored_to_tested_sha256": "3db9eccc1e600303c37e9496bcf2f63ab965daac5a43c3131b04cf4e867d7a60"
+  },
+  "boundaries": [
+    "Non-combat travel only; combat entry and victory placement remain immediate.",
+    "Animation follows committed state and never changes economy, ownership, fog, save schema or battle results.",
+    "HUD overlap remains elsewhere; this is not finished art or a full UI acceptance pass.",
+    "No Android APK/device/performance verification. No real language model connected.",
+    "No commit, push, deployment, global settings change or player-save overwrite by this work.",
+    "Concurrent fog, field dwellings and zone-generator work preserved; no authorship claim for those changes."
+  ],
+  "incidents": [
+    {
+      "kind": "compile_error",
+      "detail": "Smoke loop needed explicit AAIHeroesWorldNode pointer for TObjectPtr array; a concurrent fix was read back before successful build."
+    },
+    {
+      "kind": "visual_iteration",
+      "detail": "Larger repeated chevrons prepared after image inspection. Further build blocked by other QA windows. Cosmetic patch saved as proposal; active source restored byte-for-byte to tested version."
+    }
+  ],
+  "sources": [
+    "https://dev.epicgames.com/documentation/unreal-engine/actor-ticking-in-unreal-engine",
+    "https://dev.epicgames.com/documentation/unreal-engine/instanced-static-mesh-component-in-unreal-engine",
+    "https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/UMaterialInterface",
+    "https://dev.epicgames.com/documentation/unreal-engine/run-automation-tests-in-unreal-engine"
+  ],
+  "rollback": "Review scoped baseline under Saved/QA/TravelPresentation/baseline_20261028T210743209355Z; reverse only this slice without resetting concurrent work."
+}

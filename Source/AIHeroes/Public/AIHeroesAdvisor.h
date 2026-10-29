@@ -15,11 +15,16 @@ struct FAIHeroesAdvisorNode
 
 struct FAIHeroesAdvisorSnapshot
 {
+    int32 TravelRuleVersion = 1; // Old snapshots keep distance-based travel.
+    bool bFogEnabled = false; // Legacy fully discovered unless explicitly enabled.
+    int32 ExploredSitesMask = 0;
     int32 ProtocolTier = 0;
     int32 MovesLeft = 0;
     int32 Gold = 0;
     int32 Wood = 0;
     int32 Ore = 0;
+    int32 MilitiaReserve = 10;
+    int32 ScoutReserve = 4;
     FVector HeroPosition = FVector::ZeroVector;
     FName SelectedNodeId = NAME_None;
     TArray<FAIHeroesArmyStack> PlayerArmy;

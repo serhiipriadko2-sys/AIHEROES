@@ -1,0 +1,26 @@
+--- a/Source/AIHeroes/Private/AIHeroesTravelPresentation.cpp
++++ b/Source/AIHeroes/Private/AIHeroesTravelPresentation.cpp
+@@ -95,12 +95,18 @@
+         if (bAffordable)
+             PathMesh->AddInstance(FTransform(Direction, (A + B) * 0.5,
+                 FVector(FMath::Max(12.0, Length - 220.0) / 100.0, 0.18, 0.035)), true);
+-        const FVector Tip = FMath::Lerp(A, B, 0.58);
+-        for (double Side : {-1.0, 1.0})
++        // Repeat larger chevrons so a HUD strip or building cannot hide the
++        // only direction/budget cue. Still bounded to five instances per edge.
++        const double ArrowLength = FMath::Min(72.0, Length * 0.2);
++        for (double Along : {0.33, 0.72})
+         {
+-            const FRotator Wing(0.0, Direction.Yaw + Side * 35.0, 0.0);
+-            const FVector Center = Tip - Wing.Vector() * 24.0;
+-            PathMesh->AddInstance(FTransform(Wing, Center, FVector(0.48, 0.15, 0.055)), true);
++            const FVector Tip = FMath::Lerp(A, B, Along);
++            for (double Side : {-1.0, 1.0})
++            {
++                const FRotator Wing(0.0, Direction.Yaw + Side * 35.0, 0.0);
++                const FVector Center = Tip - Wing.Vector() * ArrowLength * 0.5;
++                PathMesh->AddInstance(FTransform(Wing, Center, FVector(ArrowLength / 100.0, 0.26, 0.055)), true);
++            }
+         }
+     }
+     ++GeometryRevision;

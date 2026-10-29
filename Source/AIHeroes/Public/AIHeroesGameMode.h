@@ -3,19 +3,25 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "AIHeroesTypes.h"
+#include "AIHeroesAdventurePath.h"
 #include "AIHeroesBasePanel.h"
 #include "AIHeroesBattleRecord.h"
 #include "AIHeroesRoutePlanner.h"
 #include "AIHeroesGridBattle.h"
 #include "AIHeroesGridReplay.h"
+#include "AIHeroesRecruitmentStock.h"
+#include "AIHeroesFieldDwelling.h"
+#include "AIHeroesSupplyLines.h"
 #include "AIHeroesAdvisorDossier.h"
 #include "AIHeroesCampaignObjectives.h"
 #include "AIHeroesRivalStrategy.h"
+#include "AIHeroesFogRules.h"
 #include "AIHeroesGameMode.generated.h"
 
 class AAIHeroesWorldNode;
 class AAIHeroesBattleStage;
 class AAIHeroesLiveBattleStage;
+class AAIHeroesTravelPresentation;
 class AStaticMeshActor;
 class APawn;
 struct FAIHeroesBattleOutcome;
@@ -34,6 +40,9 @@ public:
     AAIHeroesGameMode();
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaSeconds) override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+    virtual void Destroyed() override;
+    bool IsStrategicTravelMoving() const;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     int32 Day = 1;
@@ -61,6 +70,27 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     int32 MovesLeft = 4;
+
+    // Raw/legacy objects default to V1; a new BeginPlay campaign explicitly selects V2.
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32 TravelRuleVersion = 1;
+
+    // The HQ maintains unpurchased recruits. This does NOT affect
+    // neutral guard growth or grant AI authority to spend resources.
+    FAIHeroesRecruitmentStock RecruitmentStock;
+    int32 GetAvailableMilitia() const { return RecruitmentStock.Militia; }
+    int32 GetAvailableScouts() const { return RecruitmentStock.Scouts; }
+
+    // Local field stock is *not* the headquarters recruiting inventory.
+    // Its ownership and quantities survive SaveGame rotations.
+    FAIHeroesFieldDwellings FieldDwellings;
+    void InteractFieldDwelling();
+    FString GetFieldDwellingSummary() const;
+    FString GetFieldDwellingLabel(EAIHeroesNodeType Type) const;
+    // X / CONVOY: first action quotes, second confirms the identical state.
+    void RequestSupplyConvoy();
+    FString GetSupplyConvoyStatus() const;
+    bool IsSupplyConvoyPending() const;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TArray<FAIHeroesArmyStack> PlayerArmy;
@@ -100,6 +130,11 @@ public:
     void UpgradeModelSlot();
     void EndTurn();
     FString GetRivalForecast() const;
+    bool IsNodeDiscovered(FName SiteId) const
+    {
+        return FAIHeroesFogRules::IsKnown(bFogEnabled, FogKnownMask, SiteId);
+    }
+    FString GetScoutingStatus() const;
     void SelectNode(AAIHeroesWorldNode* Node);
     void ConfirmSelectedNode();
     void InteractWithNode(AAIHeroesWorldNode* Node);
@@ -144,6 +179,7 @@ public:
     void FastFinishLiveBattle();
     void ReturnFromLiveBattle();
     int32 GetSelectedMoveCost() const;
+    FAIHeroesAdventurePathResult GetSelectedTravelPath() const;
     FString GetSelectionSummary() const;
 
     FString GetArmySummary() const;
@@ -152,6 +188,12 @@ public:
 private:
     // Transient UI quote, never a campaign save or an AI authorization.
     bool bBasePanelOpen = false;
+    // Explicitly false for legacy worlds and isolated GameMode tests.
+    // BeginPlay activates new scouting campaigns with 3 known sites.
+    bool bFogEnabled = false;
+    int32 FogKnownMask = 0;
+    void RefreshFogVisibility();
+    void RevealAfterArrival(FName ArrivedSite);
     FAIHeroesBasePanelOffer PendingBaseQuote;
     FString PendingBaseFingerprint;
     FString BasePanelMessage;
@@ -162,6 +204,9 @@ private:
     void RecordAdvisorDossier(
         const FString& Title, const TArray<FString>& Paragraphs,
         bool bRecruitment, bool bObjectives = false, bool bProtocolLab = false);
+    // Transient, non-SaveGame authorization. Any campaign change invalidates it.
+    FString PendingSupplyFingerprint;
+    FAIHeroesSupplyAccess BuildSupplyAccess() const;
     FString BuildAIProposalGateStatus() const;
 
     UPROPERTY()
@@ -193,6 +238,9 @@ private:
     bool BuildRivalSnapshot(int32 NewDay, int32 NewGold, int32 NewWood, int32 NewOre,
         FAIHeroesRivalSnapshot& Out, FString& Error) const;
     void BeginLiveBattleSmoke();
+    void BeginTravelSmoke();
+    void BeginTravelViewSmoke();
+    void BeginSupplySmoke();
 
     UPROPERTY()
     TObjectPtr<AAIHeroesBattleStage> ActiveBattleStage;
@@ -217,6 +265,24 @@ private:
 
     FTransform PreReplayCameraTransform;
     bool bSavedReplayCamera = false;
+
+    UPROPERTY()
+    TArray<TObjectPtr<AStaticMeshActor>> AdventureRoadActors;
+    void RefreshAdventureRoads();
+    UPROPERTY()
+    TObjectPtr<AAIHeroesTravelPresentation> TravelPresentation;
+    AAIHeroesTravelPresentation* EnsureTravelPresentation();
+    bool BuildTravelViewPoints(const FAIHeroesAdventurePathResult& Path,
+        const FVector& Origin, TArray<FVector>& Out) const;
+    void PresentStrategicTravel(const FAIHeroesAdventurePathResult& Path, const FVector& Origin);
+    void FinishStrategicTravelPresentation();
+    void TickStrategicTravelPresentation(float DeltaSeconds);
+    void DestroyTravelPresentation();
+
+    UPROPERTY()
+    TArray<TObjectPtr<AStaticMeshActor>> FieldDwellingVisuals;
+    void SpawnFieldDwellingVisuals();
+    void RefreshFieldDwellingVisuals();
 
     FVector HeroStrategicLocation = FVector(-650.f, 0.f, 155.f);
     FAIHeroesRoutePlan RoutePreview;

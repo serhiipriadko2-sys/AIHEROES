@@ -3,7 +3,7 @@
 
 namespace
 {
-bool ValidResource(int32 Value)
+bool ValidDevelopmentResource(int32 Value)
 {
     return Value >= 0 && Value <= FAIHeroesBaseRules::MaxResource;
 }
@@ -34,8 +34,8 @@ bool FAIHeroesDevelopmentRules::TryProtocol(int32& Tier, int32& Gold,
     int32& Wood, int32& Ore, FString& Error)
 {
     Error.Empty();
-    if (Tier < 0 || Tier > 3 || !ValidResource(Gold) ||
-        !ValidResource(Wood) || !ValidResource(Ore))
+    if (Tier < 0 || Tier > 3 || !ValidDevelopmentResource(Gold) ||
+        !ValidDevelopmentResource(Wood) || !ValidDevelopmentResource(Ore))
     {
         Error = TEXT("PROTOCOL BLOCKED: invalid progress or resources. Nothing spent.");
         return false;
@@ -63,7 +63,7 @@ bool FAIHeroesDevelopmentRules::TryModelSlot(int32& Tier, int32& Gold,
     int32& Data, FString& Error)
 {
     Error.Empty();
-    if (Tier < 0 || Tier > 2 || !ValidResource(Gold) || !ValidResource(Data))
+    if (Tier < 0 || Tier > 2 || !ValidDevelopmentResource(Gold) || !ValidDevelopmentResource(Data))
     {
         Error = TEXT("MODEL SLOT BLOCKED: invalid progress or resources. Nothing spent.");
         return false;

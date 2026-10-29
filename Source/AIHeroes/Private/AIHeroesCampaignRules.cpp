@@ -2,7 +2,11 @@
 
 #include "AIHeroesCampaignSave.h"
 #include "AIHeroesBaseRules.h"
+#include "AIHeroesTravelRules.h"
 #include "AIHeroesBattleRecord.h"
+#include "AIHeroesRecruitmentStock.h"
+#include "AIHeroesFieldDwelling.h"
+#include "AIHeroesFogRules.h"
 
 namespace
 {
@@ -75,6 +79,8 @@ bool FAIHeroesCampaignRules::Validate(const UAIHeroesCampaignSave& Save, FString
     {
         return Fail(Error, TEXT("Unsupported save version."));
     }
+    if (!FAIHeroesTravelRules::IsSupported(Save.TravelRuleVersion))
+        return Fail(Error, TEXT("Unsupported strategic travel version."));
     if (!FAIHeroesBaseRules::IsValidTier(Save.BaseTier))
         return Fail(Error, TEXT("Invalid headquarters level."));
     if (Save.Day < 1 || Save.Day > 1000000 ||
@@ -91,6 +97,32 @@ bool FAIHeroesCampaignRules::Validate(const UAIHeroesCampaignSave& Save, FString
         Save.Ore < 0 || Save.Ore > 500000000)
     {
         return Fail(Error, TEXT("Invalid resource totals."));
+    }
+    // Explicit v1 optional-field migration: uninitialized must mean both
+    // new fields really are absent/zero, not an injected arbitrary reserve.
+    if (!Save.bRecruitmentStockInitialized)
+    {
+        if (Save.MilitiaReserve != 0 || Save.ScoutReserve != 0)
+            return Fail(Error, TEXT("Uninitialized recruitment reserve has unexpected data."));
+    }
+    else if (!FAIHeroesRecruitmentStockRules::IsValid(
+            FAIHeroesRecruitmentStock{Save.MilitiaReserve, Save.ScoutReserve}))
+    {
+        return Fail(Error, TEXT("Recruitment reserve exceeds production limits."));
+    }
+    // Optional tagged v1 data: absent in older saves (false/zero only).
+    if (!Save.bFieldDwellingsInitialized)
+    {
+        if (Save.bForestCampClaimed || Save.ForestCampUnits != 0 ||
+            Save.bOreAerieClaimed || Save.OreAerieUnits != 0)
+            return Fail(Error, TEXT("Uninitialized field dwelling contains data."));
+    }
+    else if (!FAIHeroesFieldDwellingRules::IsValid(
+            FAIHeroesFieldDwellings{
+                {Save.bForestCampClaimed, Save.ForestCampUnits},
+                {Save.bOreAerieClaimed, Save.OreAerieUnits}}))
+    {
+        return Fail(Error, TEXT("Field dwelling stock exceeds allowed bounds."));
     }
     if (Save.PlayerArmy.Num() > 2)
     {
@@ -157,6 +189,13 @@ bool FAIHeroesCampaignRules::Validate(const UAIHeroesCampaignSave& Save, FString
             }
         }
 
+        if ((Node.NodeId == FName(TEXT("FOREST")) &&
+             Save.bForestCampClaimed && !Node.bOwned) ||
+            (Node.NodeId == FName(TEXT("ORE")) &&
+             Save.bOreAerieClaimed && !Node.bOwned))
+        {
+            return Fail(Error, TEXT("Field dwelling claimed without owning its territory."));
+        }
         if (Node.NodeId == Save.HeroNodeId && Node.bOwned)
         {
             bHeroAtOwnedNode = true;
@@ -170,6 +209,17 @@ bool FAIHeroesCampaignRules::Validate(const UAIHeroesCampaignSave& Save, FString
     if (!Save.SelectedNodeId.IsNone() && !SeenNodes.Contains(Save.SelectedNodeId))
     {
         return Fail(Error, TEXT("Saved selection does not exist."));
+    }
+    TSet<FName> OwnedSites;
+    for (const FAIHeroesSavedNode& Node : Save.NodeStates)
+    {
+        if (Node.bOwned) OwnedSites.Add(Node.NodeId);
+    }
+    if (!FAIHeroesFogRules::Validate(
+        Save.bFogInitialized, Save.ExploredSitesMask,
+        Save.HeroNodeId, Save.SelectedNodeId, OwnedSites, Error))
+    {
+        return false;
     }
 
     if (Save.BattleJournal.Num() > 16 || Save.LastCombatStep.Len() > 300)

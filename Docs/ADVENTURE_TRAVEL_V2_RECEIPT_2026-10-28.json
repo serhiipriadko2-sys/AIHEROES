@@ -1,0 +1,314 @@
+{
+  "schema": "aiheroes.adventure-travel-v2.receipt.v1",
+  "observed_utc": "2026-10-28T20:58:44.036730+00:00",
+  "status": "PASS_WINDOWS_SCOPED_TESTED_SNAPSHOT",
+  "surface": "authorized Remote Desktop Commander, Windows",
+  "root": "C:\\github\\AIHEROES",
+  "baseline_head": "cc062ba2399adfb0de13c061e9d3912bea91b534",
+  "head_at_receipt": "cc062ba2399adfb0de13c061e9d3912bea91b534",
+  "feature": "Versioned roads govern campaign movement and all strategic cost consumers",
+  "lifecycle": [
+    "written",
+    "compiled",
+    "all_automation_passed",
+    "scripted_real_render_passed"
+  ],
+  "versions": {
+    "new_campaign": 2,
+    "missing_save_property": 1,
+    "unknown": "rejected"
+  },
+  "undirected_roads": [
+    {
+      "from": "HQ",
+      "to": "FOREST",
+      "cost": 2
+    },
+    {
+      "from": "HQ",
+      "to": "ORE",
+      "cost": 2
+    },
+    {
+      "from": "FOREST",
+      "to": "OUTPOST",
+      "cost": 1
+    },
+    {
+      "from": "ORE",
+      "to": "RUINS",
+      "cost": 1
+    },
+    {
+      "from": "OUTPOST",
+      "to": "RUINS",
+      "cost": 2
+    }
+  ],
+  "scope_file_count": 20,
+  "source_file_count": 17,
+  "scope_total_bytes": 175387,
+  "files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesAdvisor.h",
+      "bytes": 1062,
+      "sha256": "bfdea7710c9d18994381dc7e0aff2a8086dabe751b6d4793149806847ab9172c"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+      "bytes": 9172,
+      "sha256": "2b5e04729bbd76715f2e9fddccfb09e557449de267c799d7c1c4c31870511ff3"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesCampaignSave.h",
+      "bytes": 2754,
+      "sha256": "bef80355acadf7aefaded7a1415e56cff8caefee6684fdbd650b5c04cbf58aea"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+      "bytes": 31919,
+      "sha256": "9b45053e9b713d1061f654c3cb202a5d81884561dee3186e54f2789fa5557ed4"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesCampaignRules.cpp",
+      "bytes": 8321,
+      "sha256": "3235e1d14bb62510eba9c79c31600a5ec0640f163a3e519f2ae5a6f70f35d4b6"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesSaveSystem.cpp",
+      "bytes": 8520,
+      "sha256": "9bc16a845cc5510e75d01f1f9c990e4349da275775c9b2feed3eacb2046ca72a"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+      "bytes": 12204,
+      "sha256": "91e9aa42c8f350056d7164cd93892a760e87650ee1afe559154bc715168ed2ca"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesAdvisor.cpp",
+      "bytes": 6642,
+      "sha256": "be0550e7280e04ae6f0469edabb0b3355bebd6f6120ca7f8f7917cf47e50dac8"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesRecruitmentAdvisor.cpp",
+      "bytes": 9997,
+      "sha256": "00bd101d9f94d5fcd57ca19dbc6fede5a910ee0f19052a3b608ab342720ac5ac"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesAIProposalGate.cpp",
+      "bytes": 10026,
+      "sha256": "eb8b76732436e13f1ef71feef8ee395e1363600500fdc81acb355fbbead989bb"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesRoutePlanner.cpp",
+      "bytes": 6954,
+      "sha256": "dc6a0b4a1718286c8971fbe53edc4ca60d2047a2391e559f0507ea64538c41ec"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesHUD.cpp",
+      "bytes": 18350,
+      "sha256": "95783e4573ac804b89abb92a797424b8bd28917f244503537e3385646db68dae"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesTravelRules.h",
+      "bytes": 1048,
+      "sha256": "e393c1134ce7db784f924fa48c7117297e2842443e69654ef122b4a3827ac537"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelRules.cpp",
+      "bytes": 6112,
+      "sha256": "165ed0ae294f555309a3aadd0cd6bd68f65614a8d6811f596cec4a8391b73326"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelGameMode.cpp",
+      "bytes": 2877,
+      "sha256": "e8e2c9d1b76fa413f90c8d75b31dadfe459ec9d1f88945ac8fc451689775fb3d"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelSmoke.cpp",
+      "bytes": 4728,
+      "sha256": "ad3eb3d04445897c366d4e643e6eb731d5e4993ae0860e08e0201687e4914432"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesTravelIntegrationTests.cpp",
+      "bytes": 15567,
+      "sha256": "c235dddc27b3977d63e85768575875d26c37db3acfea9573d8c0be4ec3045173"
+    },
+    {
+      "path": "Tools/verify_adventure_travel.ps1",
+      "bytes": 5494,
+      "sha256": "94f900faa978b83f2f626deb3767ba5834bebc79db03b6ed943865a85cc985e4"
+    },
+    {
+      "path": ".vscode/tasks.json",
+      "bytes": 7030,
+      "sha256": "2544da32b95788b91625804fb3c2ecd4c75a26a3c6238a0c4be928195040be59"
+    },
+    {
+      "path": "Docs/ADVENTURE_TRAVEL_V2.md",
+      "bytes": 6610,
+      "sha256": "42895f2b540d74313e392fe419a0cd4e0f3e6411c5d5f0ad97fa299adad852fd"
+    }
+  ],
+  "automation": {
+    "all_success": 117,
+    "failed": 0,
+    "warnings": 0,
+    "not_run": 0,
+    "travel_groups": [
+      "AIHeroes.TravelV2.AbsentPropertyKeepsLegacyRules",
+      "AIHeroes.TravelV2.AdvisorRecruitGateParity",
+      "AIHeroes.TravelV2.GameModeCostAndAtomicBattle",
+      "AIHeroes.TravelV2.InvalidMapFailsClosed",
+      "AIHeroes.TravelV2.RuleDriftAbortsCommit",
+      "AIHeroes.TravelV2.SaveVersionAndRecovery",
+      "AIHeroes.TravelV2.TopologyGuardAndBudget",
+      "AIHeroes.TravelV2.TwoStopHypotheticalCapture"
+    ],
+    "existing_path_groups": [
+      "AIHeroes.AdventurePath.BoundedLongRoute",
+      "AIHeroes.AdventurePath.BudgetAndNoOp",
+      "AIHeroes.AdventurePath.GuardsAreStops",
+      "AIHeroes.AdventurePath.InvalidGraphFailsClosed",
+      "AIHeroes.AdventurePath.RevalidationAfterWorldChange",
+      "AIHeroes.AdventurePath.StableTiesAndNoMutation",
+      "AIHeroes.AdventurePath.VisibilityPassabilityAndDirection",
+      "AIHeroes.AdventurePath.WeightedDetour"
+    ],
+    "report": {
+      "path": "Saved/QA/TravelValidation_20261028T205737268Z/report/index.json",
+      "bytes": 46185,
+      "sha256": "55035cf2308b33c15b09e1e19563d96db0803edc712c44d62ce2e077ce437ef4"
+    }
+  },
+  "build": {
+    "result": "Succeeded",
+    "log": {
+      "path": "Saved/QA/TravelValidation_20261028T205737268Z/build.log",
+      "bytes": 2658,
+      "sha256": "6d6f276f1a2f5c72d7d62af58ad8e9540a4e55528d38e3195a660a2291eb57ca"
+    },
+    "warning": "MSVC 14.51 is newer than the preferred 14.50 toolchain"
+  },
+  "verification": {
+    "status": "PASS_WINDOWS_TESTED_SNAPSHOT",
+    "observed_utc": "2026-10-28T20:58:16.4152024Z",
+    "root": "C:\\github\\AIHEROES",
+    "evidence": "C:\\github\\AIHEROES\\Saved\\QA\\TravelValidation_20261028T205737268Z",
+    "build_exit": 0,
+    "test_exit": 0,
+    "all_tests": 117,
+    "travel_tests": 8,
+    "path_tests": 8,
+    "failed": 0,
+    "not_run": 0,
+    "visual": "SCRIPTED_RENDER_PASS_REQUIRES_IMAGE_INSPECTION",
+    "source_files": 126,
+    "source_unchanged": true,
+    "dll_unchanged": true,
+    "dll_sha256": "4BB15ACBC4D7B36FDB0004B11F8513E1F7F83143B6C00CE6E08124A4412E449B",
+    "android_verified": false,
+    "real_model_connected": false,
+    "published": false
+  },
+  "verification_receipt": {
+    "path": "Saved/QA/TravelValidation_20261028T205737268Z/receipt.json",
+    "bytes": 733,
+    "sha256": "65d4440f9d1d4c676adb7a3377401bd337e48bdb693fab9a8c0294ba7e120524"
+  },
+  "visual": {
+    "method": "development-only GameMode/actor ticker + actual rendered viewport",
+    "marker": "[TRAVEL V2 SMOKE] PASS roads=5 blocked_transit=1 forest_cost=2 next_cost=1 commit=1 save_calls=0",
+    "log": {
+      "path": "Saved/QA/TravelValidation_20261028T205737268Z/visual.log",
+      "bytes": 197184,
+      "sha256": "dea06fed3bc5fffcda8a89ebf158d307c0f98919126eaa283a94ae3ad14c53eb"
+    },
+    "screenshots": [
+      {
+        "path": "Saved/QA/AdventureTravelV2/ROAD_V2_BLOCKED.png",
+        "bytes": 359954,
+        "sha256": "99e36143cb21363997b8949fe7914ddad19a846608aa86ea884daec58366f158"
+      },
+      {
+        "path": "Saved/QA/AdventureTravelV2/ROAD_V2_OPEN_AFTER_CAPTURE.png",
+        "bytes": 359649,
+        "sha256": "389e049d2aa734cc969192588cbee3adb3045d607f66fe3e06d90e25cce73dc1"
+      }
+    ],
+    "image_review": "PASS: both final-run PNGs visually inspected; road geometry, blocked and open target, ownership and movement values visible; overlapping upper labels recorded as a residual.",
+    "scenario": {
+      "initial_moves": 4,
+      "blocked_outpost_no_change": true,
+      "forest_move_cost": 2,
+      "commits": 1,
+      "remaining_moves": 2,
+      "data_reward": 2,
+      "outpost_move_cost_after_forest": 1
+    },
+    "manual_or_android_input_acceptance": false
+  },
+  "source_unchanged_since_verified_build": true,
+  "player_saves": {
+    "before_count": 4,
+    "after_count": 4,
+    "unchanged": true,
+    "comparison": "filename + bytes + SHA256",
+    "smoke_save_calls": 0,
+    "test_writes": "only unique GUID-owned temporary slots, removed by tests"
+  },
+  "wrapper_repair": {
+    "first_run": "read the GUI log before the spawned application completed",
+    "second_run": "PowerShell process exit-code retrieval needed a pinned process handle",
+    "fixed": "bounded wait on the exact child process handle, explicit ExitCode and fresh PASS marker",
+    "probe": "a child exiting with code 7 was observed as 7 before the final complete rerun"
+  },
+  "concurrency_boundary": "Parallel recruitment stock, rival and zone-template changes preserved. Shared-file hashes include their state, not a claim of authorship.",
+  "sources_checked_2026_10_28": [
+    {
+      "url": "https://h3hota.com/en/template-format",
+      "supports": "declared map connectivity/guards/roads; not our original cost values"
+    },
+    {
+      "url": "https://dev.epicgames.com/documentation/unreal-engine/run-automation-tests-in-unreal-engine?lang=en-US",
+      "supports": "command-line automation and ReportExportPath JSON"
+    },
+    {
+      "url": "https://dev.epicgames.com/documentation/unreal-engine/saving-and-loading-your-game-in-unreal-engine?lang=en-US",
+      "supports": "custom SaveGame and explicit state copying"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/start-process?view=powershell-5.1",
+      "supports": "process handles, waiting and output redirection"
+    }
+  ],
+  "qc": {
+    "nonempty": true,
+    "unique_paths": true,
+    "credential_pattern_scan": "PASS_SCOPE_ONLY",
+    "sha256_readback": true
+  },
+  "not_performed": [
+    "git commit",
+    "git push",
+    "branch switch",
+    "deployment",
+    "global engine/config changes",
+    "other session termination",
+    "model download",
+    "human save overwrite"
+  ],
+  "nonclaims": [
+    "Android APK/device validation",
+    "real neural model inference",
+    "procedural terrain activation",
+    "fog of war",
+    "animated strategic walking",
+    "finished visual art",
+    "balance playtesting",
+    "release readiness"
+  ],
+  "residual_ui": "Some upper world-site labels can overlap the rival warning strip.",
+  "rollback": "Review scoped baseline originals and current diffs; reverse only travel hunks, never reset concurrent work.",
+  "next_gate": "Path highlighting/strategic movement animation and generated-map provider with the same cost parity tests."
+}

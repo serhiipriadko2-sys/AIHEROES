@@ -57,6 +57,12 @@ bool AAIHeroesGameMode::BuildRivalSnapshot(
 
 FString AAIHeroesGameMode::GetRivalForecast() const
 {
+    // Hidden enemy garrisons must not be exposed by a supposedly
+    // read-only strategic forecast before the scout has reached the border.
+    if (!IsNodeDiscovered(FName(TEXT("OUTPOST"))))
+    {
+        return TEXT("SCOUTING: distant threat unknown. Visit a nearby site to reveal enemy activity.");
+    }
     if (Day < 1 || Day >= FAIHeroesBaseRules::MaxDay ||
         !FAIHeroesBaseRules::IsValidTier(BaseTier))
     {
@@ -127,8 +133,25 @@ FString AAIHeroesGameMode::GetRivalForecast() const
     {
         return TEXT("RIVAL: OUTPOST CAPTURED | enemy recruitment and raids disabled.");
     }
-    return Turn.IsActive()
-        ? FString::Printf(TEXT("NEXT RIVAL TURN: %s"), *Turn.Description)
-        : FString::Printf(TEXT("RIVAL: OUTPOST scouting | day %d has no scheduled hostile action."),
-            Input.Day);
+    // The preview is a forecast, not a historical event receipt. Do not
+    // claim a future raid already happened before player presses END TURN.
+    switch (Turn.Action)
+    {
+        case EAIHeroesRivalAction::RecruitAtOutpost:
+            return FString::Printf(
+                TEXT("RIVAL WARNING: on day %d OUTPOST may gain %d guard HP. Capture it to stop reinforcements."),
+                Input.Day, Turn.Amount);
+        case EAIHeroesRivalAction::RaidForest:
+            return FString::Printf(
+                TEXT("RIVAL WARNING: day %d threatens %d WOOD from FOREST. Capture OUTPOST to stop raids."),
+                Input.Day, Turn.Amount);
+        case EAIHeroesRivalAction::RaidOre:
+            return FString::Printf(
+                TEXT("RIVAL WARNING: day %d threatens %d ORE from the mine. Capture OUTPOST to stop raids."),
+                Input.Day, Turn.Amount);
+        default:
+            return FString::Printf(
+                TEXT("RIVAL: OUTPOST scouting | day %d has no scheduled hostile action."),
+                Input.Day);
+    }
 }

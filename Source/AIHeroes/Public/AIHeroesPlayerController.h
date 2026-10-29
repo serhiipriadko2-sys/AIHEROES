@@ -24,6 +24,8 @@ private:
     void HandleHudAction(int32 ActionIndex);
     void RecruitMilitia();
     void RecruitScouts();
+    void InteractFieldDwelling();
+    void RequestSupplyConvoy();
     void UpgradeHeadquarters();
     void ToggleBasePanel();
     void UpgradeProtocol();

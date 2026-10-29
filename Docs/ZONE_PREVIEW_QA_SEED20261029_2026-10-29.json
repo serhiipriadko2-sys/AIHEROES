@@ -1,0 +1,18 @@
+﻿{
+    "status":  "PASS_ISOLATED_3D_ZONE_PREVIEW",
+    "seed":  20261029,
+    "branches":  4,
+    "game_mode":  "/Script/AIHeroes.AIHeroesZonePreviewGameMode",
+    "pid":  44636,
+    "exact_client":  "1280x720",
+    "engine_viewport_capture":  true,
+    "sampled_unique_colors":  116,
+    "screenshot_bytes":  439568,
+    "screenshot_sha256":  "3386a9886e49922ce43fc98b053233cfc4eb0ab4a48c8b4d314978ac6ca6c1c0",
+    "source":  "AIHeroesZoneTemplate C++17 (Unreal adapter)",
+    "campaign_save_writes":  0,
+    "player_action_bindings":  "none",
+    "preview_log":  "C:\\github\\AIHEROES\\Saved\\QA\\ZonePreview_20261028T212819101Z\\visual.log",
+    "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZonePreview_20261028T212819101Z\\preview.png",
+    "observed_utc":  "2026-10-28T21:28:34.0098983Z"
+}

@@ -42,8 +42,9 @@ void AAIHeroesHUD::DrawBasePanel(const AAIHeroesGameMode& Rules)
     Text(FString::Printf(TEXT("GOLD %d   WOOD %d   ORE %d   DATA %d"),
         Rules.Gold, Rules.Wood, Rules.Ore, Rules.DataFragments), FLinearColor::White,
         P.X + 16, P.Y + 39, P.W - 32, Scale);
-    Text(FString::Printf(TEXT("HQ L%d: +%d G/day | PROTOCOL %d/3 | MODEL SLOT %d/2 | NO WEIGHTS"),
-        Rules.BaseTier, Rules.GetDailyGoldIncome(), Rules.ProtocolTier, Rules.ModelSlotTier),
+    Text(FString::Printf(TEXT("HQ L%d | +%d G/day | STOCK %d MILITIA, %d SCOUTS | PROTOCOL %d/3 | NO WEIGHTS"),
+        Rules.BaseTier, Rules.GetDailyGoldIncome(),
+        Rules.GetAvailableMilitia(), Rules.GetAvailableScouts(), Rules.ProtocolTier),
         FLinearColor(0.93f, 0.81f, 0.45f), P.X + 16, P.Y + 62, P.W - 32, Scale * 0.85f);
     Text(TEXT("Select with mouse/touch or U / 1 / 2 / P / M. Enter confirms. Esc / G closes."),
         FLinearColor(0.66f, 0.75f, 0.85f), P.X + 16, P.Y + 82, P.W - 32, Scale * 0.8f);

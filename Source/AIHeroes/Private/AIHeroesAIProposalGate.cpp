@@ -1,6 +1,7 @@
 #include "AIHeroesAIProposalGate.h"
 
-#include "AIHeroesTurnRules.h"
+#include "AIHeroesTravelRules.h"
+#include "AIHeroesFogRules.h"
 
 namespace
 {
@@ -77,14 +78,23 @@ bool ValidNodeType(EAIHeroesNodeType Type)
 bool ValidSnapshot(const FAIHeroesProposalSnapshot& S)
 {
     const FAIHeroesAdvisorSnapshot& A = S.Strategic;
-    if (S.Day < 1 || S.StateRevision == 0 ||
+    if (!FAIHeroesTravelRules::IsSupported(A.TravelRuleVersion) ||
+        S.Day < 1 || S.StateRevision == 0 ||
         A.ProtocolTier < 0 || A.ProtocolTier > 3 ||
         S.ModelSlotTier < 0 || S.ModelSlotTier > 2 ||
         A.MovesLeft < 0 || A.MovesLeft > 4 ||
         A.Gold < 0 || A.Wood < 0 || A.Ore < 0 ||
         A.Nodes.Num() > FAIHeroesAIProposalGate::MaxVisibleNodes ||
         A.PlayerArmy.Num() > FAIHeroesAIProposalGate::MaxArmyStacks ||
-        !PositionIsSafe(A.HeroPosition))
+        !PositionIsSafe(A.HeroPosition) ||
+        (!A.bFogEnabled && A.ExploredSitesMask != 0) ||
+        (A.bFogEnabled &&
+            ((A.ExploredSitesMask & FAIHeroesFogRules::InitialMask) !=
+                FAIHeroesFogRules::InitialMask ||
+             (A.ExploredSitesMask & ~FAIHeroesFogRules::AllMask) != 0 ||
+             (!A.SelectedNodeId.IsNone() &&
+              !FAIHeroesFogRules::IsKnown(true, A.ExploredSitesMask,
+                  A.SelectedNodeId)))))
     {
         return false;
     }
@@ -135,9 +145,11 @@ FAIHeroesAIProposal FAIHeroesAIProposalGate::SuggestSelected(
             break;
         }
     }
-    if (!Selected)
+    if (!Selected || !FAIHeroesFogRules::IsKnown(
+            Snapshot.Strategic.bFogEnabled,
+            Snapshot.Strategic.ExploredSitesMask, Snapshot.Strategic.SelectedNodeId))
     {
-        P.Explanation = TEXT("Selected node is not visible in the current game snapshot.");
+        P.Explanation = TEXT("Selected node is not discovered or visible in the current snapshot.");
         return P;
     }
     if (Snapshot.Strategic.ProtocolTier == 0)
@@ -254,9 +266,10 @@ FAIHeroesProposalVerdict FAIHeroesAIProposalGate::Validate(
             break;
         }
     }
-    if (!Target)
+    if (!Target || !FAIHeroesFogRules::IsKnown(
+            S.Strategic.bFogEnabled, S.Strategic.ExploredSitesMask, P.TargetNode))
     {
-        return Rejected(TEXT("Target is unknown or not visible."));
+        return Rejected(TEXT("Target is unknown or not discovered."));
     }
     const bool bHostile = !Target->bOwned && HasGuard(*Target);
     if ((P.Order == EAIHeroesProposalOrder::AttackNode) != bHostile)
@@ -270,11 +283,11 @@ FAIHeroesProposalVerdict FAIHeroesAIProposalGate::Validate(
         return Rejected(TEXT("Attacking owned/HQ targets or without an army is forbidden."));
     }
 
-    const int32 Cost = FAIHeroesTurnRules::TravelCost(
-        S.Strategic.HeroPosition, Target->Location, bHostile);
-    if (!FAIHeroesTurnRules::CanMove(S.Strategic.MovesLeft, Cost))
+    const auto Path = FAIHeroesTravelRules::Find(S.Strategic,
+        S.Strategic.HeroPosition, Target->Id, S.Strategic.MovesLeft);
+    if (!Path.IsReachableThisTurn())
     {
-        return Rejected(TEXT("Insufficient movement budget."));
+        return Rejected(*FAIHeroesTravelRules::Describe(Path));
     }
 
     // Positive verdict is NOT an authorization. No actor or campaign API

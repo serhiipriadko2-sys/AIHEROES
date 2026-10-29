@@ -27,10 +27,20 @@ bool SameSnapshot(const UAIHeroesCampaignSave& A, const UAIHeroesCampaignSave& B
     if (A.SchemaVersion != B.SchemaVersion ||
         A.SaveSequence != B.SaveSequence ||
         A.BaseTier != B.BaseTier ||
+        A.TravelRuleVersion != B.TravelRuleVersion ||
         A.Day != B.Day || A.Gold != B.Gold ||
         A.Wood != B.Wood || A.Ore != B.Ore ||
         A.MovesLeft != B.MovesLeft || A.ProtocolTier != B.ProtocolTier ||
         A.ModelSlotTier != B.ModelSlotTier || A.DataFragments != B.DataFragments ||
+        A.bRecruitmentStockInitialized != B.bRecruitmentStockInitialized ||
+        A.MilitiaReserve != B.MilitiaReserve || A.ScoutReserve != B.ScoutReserve ||
+        A.bFieldDwellingsInitialized != B.bFieldDwellingsInitialized ||
+        A.bForestCampClaimed != B.bForestCampClaimed ||
+        A.ForestCampUnits != B.ForestCampUnits ||
+        A.bOreAerieClaimed != B.bOreAerieClaimed ||
+        A.OreAerieUnits != B.OreAerieUnits ||
+        A.bFogInitialized != B.bFogInitialized ||
+        A.ExploredSitesMask != B.ExploredSitesMask ||
         A.HeroNodeId != B.HeroNodeId || A.SelectedNodeId != B.SelectedNodeId ||
         A.LastCombatStep != B.LastCombatStep ||
         A.BattleJournal != B.BattleJournal ||

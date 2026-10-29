@@ -1,0 +1,2099 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "DESKTOP-ITUAMNF",
+			"instance": "8FB1A43C4E19BD7747A3DF8FD53E5538",
+			"instanceName": "DESKTOP-ITUAMNF-47536",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 10 (22H2) [10.0.19045.6093] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3070",
+			"cPUModel": "Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.28-21.24.47",
+	"succeeded": 138,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 1.6625428199768066,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "BoundedLongRoute",
+			"fullTestPath": "AIHeroes.AdventurePath.BoundedLongRoute",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.001287803053855896,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "BudgetAndNoOp",
+			"fullTestPath": "AIHeroes.AdventurePath.BudgetAndNoOp",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083977989852428436,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GuardsAreStops",
+			"fullTestPath": "AIHeroes.AdventurePath.GuardsAreStops",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081597007811069489,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "InvalidGraphFailsClosed",
+			"fullTestPath": "AIHeroes.AdventurePath.InvalidGraphFailsClosed",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0086565986275672913,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RevalidationAfterWorldChange",
+			"fullTestPath": "AIHeroes.AdventurePath.RevalidationAfterWorldChange",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083000026643276215,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StableTiesAndNoMutation",
+			"fullTestPath": "AIHeroes.AdventurePath.StableTiesAndNoMutation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0091947987675666809,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "VisibilityPassabilityAndDirection",
+			"fullTestPath": "AIHeroes.AdventurePath.VisibilityPassabilityAndDirection",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081062987446784973,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "WeightedDetour",
+			"fullTestPath": "AIHeroes.AdventurePath.WeightedDetour",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081329010426998138,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GlobalStrategicChoice",
+			"fullTestPath": "AIHeroes.Advisor.GlobalStrategicChoice",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083122998476028442,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ProgressionAndForecast",
+			"fullTestPath": "AIHeroes.Advisor.ProgressionAndForecast",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081030987203121185,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RankedAlternativesBounds",
+			"fullTestPath": "AIHeroes.Advisor.RankedAlternativesBounds",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080513991415500641,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RankedAlternativesDeterministic",
+			"fullTestPath": "AIHeroes.Advisor.RankedAlternativesDeterministic",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.008418601006269455,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RankedAlternativesRejectLosingBattle",
+			"fullTestPath": "AIHeroes.Advisor.RankedAlternativesRejectLosingBattle",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081086009740829468,
+			"dateTime": "2026.10.28-21.24.43",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RouteBudgetAndAuthority",
+			"fullTestPath": "AIHeroes.Advisor.RouteBudgetAndAuthority",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082144029438495636,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RoutePostCombatSurvivors",
+			"fullTestPath": "AIHeroes.Advisor.RoutePostCombatSurvivors",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081967003643512726,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TwoStopRoute",
+			"fullTestPath": "AIHeroes.Advisor.TwoStopRoute",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0086570978164672852,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DayAndResourceBounds",
+			"fullTestPath": "AIHeroes.Base.DayAndResourceBounds",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.015775300562381744,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "LegacyPropertyAbsent",
+			"fullTestPath": "AIHeroes.Base.LegacyPropertyAbsent",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.013381201773881912,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "LocationIncomeAndAdvice",
+			"fullTestPath": "AIHeroes.Base.LocationIncomeAndAdvice",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.013471901416778564,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ModalLocksAndBattleConflict",
+			"fullTestPath": "AIHeroes.Base.ModalLocksAndBattleConflict",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.019085701555013657,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "PricingAndAtomicPurchase",
+			"fullTestPath": "AIHeroes.Base.PricingAndAtomicPurchase",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0025373995304107666,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SaveValidationAndRecovery",
+			"fullTestPath": "AIHeroes.Base.SaveValidationAndRecovery",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.030032999813556671,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "VisualAndInputIsolation",
+			"fullTestPath": "AIHeroes.Base.VisualAndInputIsolation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.015256401151418686,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DiskRoundTrip",
+			"fullTestPath": "AIHeroes.Campaign.DiskRoundTrip",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.010342299938201904,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GridGarrisonCompatibility",
+			"fullTestPath": "AIHeroes.Campaign.GridGarrisonCompatibility",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082339011132717133,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "LegacySaveMigration",
+			"fullTestPath": "AIHeroes.Campaign.LegacySaveMigration",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.01699100062251091,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "MultiSlotIsolation",
+			"fullTestPath": "AIHeroes.Campaign.MultiSlotIsolation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.041055303066968918,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RejectedSaveKeepsBackup",
+			"fullTestPath": "AIHeroes.Campaign.RejectedSaveKeepsBackup",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.018660500645637512,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RotatingSaveRecovery",
+			"fullTestPath": "AIHeroes.Campaign.RotatingSaveRecovery",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.028203200548887253,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "UnrecoverableSlotsPreserved",
+			"fullTestPath": "AIHeroes.Campaign.UnrecoverableSlotsPreserved",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.01942400261759758,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "Validation",
+			"fullTestPath": "AIHeroes.Campaign.Validation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0073958002030849457,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "AtomicResourceSpend",
+			"fullTestPath": "AIHeroes.Core.AtomicResourceSpend",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082380995154380798,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DeterministicBattle",
+			"fullTestPath": "AIHeroes.Core.DeterministicBattle",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083074010908603668,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ModelSlotPurchase",
+			"fullTestPath": "AIHeroes.Core.ModelSlotPurchase",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081049017608165741,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "NoArmyCannotWin",
+			"fullTestPath": "AIHeroes.Core.NoArmyCannotWin",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080904997885227203,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ProtocolChangesTactics",
+			"fullTestPath": "AIHeroes.Core.ProtocolChangesTactics",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082186982035636902,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ReplayTamperRejected",
+			"fullTestPath": "AIHeroes.Core.ReplayTamperRejected",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081855989992618561,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TravelBudget",
+			"fullTestPath": "AIHeroes.Core.TravelBudget",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081520974636077881,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TypedBattleTimeline",
+			"fullTestPath": "AIHeroes.Core.TypedBattleTimeline",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082877986133098602,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "LayoutAndModalHitTest",
+			"fullTestPath": "AIHeroes.Dossier.LayoutAndModalHitTest",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0086659006774425507,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "QueryFreshnessAndModalLocks",
+			"fullTestPath": "AIHeroes.Dossier.QueryFreshnessAndModalLocks",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.011622898280620575,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "WrapAndExplicitLimits",
+			"fullTestPath": "AIHeroes.Dossier.WrapAndExplicitLimits",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080524981021881104,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "CalendarNeutralResetVsOwnedAccrual",
+			"fullTestPath": "AIHeroes.Field.CalendarNeutralResetVsOwnedAccrual",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083395987749099731,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ClaimAuthorityAndTerritoryLoss",
+			"fullTestPath": "AIHeroes.Field.ClaimAuthorityAndTerritoryLoss",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0086537003517150879,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GameModeHumanClaimPurchaseAndWeek",
+			"fullTestPath": "AIHeroes.Field.GameModeHumanClaimPurchaseAndWeek",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.013605803251266479,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RecruitAtomicNoFreeArmy",
+			"fullTestPath": "AIHeroes.Field.RecruitAtomicNoFreeArmy",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.00457020103931427,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ResponsiveControlsAndCombatLock",
+			"fullTestPath": "AIHeroes.Field.ResponsiveControlsAndCombatLock",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081773996353149414,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SaveV1OptionalDataRecovery",
+			"fullTestPath": "AIHeroes.Field.SaveV1OptionalDataRecovery",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.022114701569080353,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "AdjacentDiscoveryAndLegacy",
+			"fullTestPath": "AIHeroes.Fog.AdjacentDiscoveryAndLegacy",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0074042975902557373,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ProposalGateRejectsUndiscoveredSite",
+			"fullTestPath": "AIHeroes.Fog.ProposalGateRejectsUndiscoveredSite",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081817023456096649,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SaveValidationAndDiskRoundTrip",
+			"fullTestPath": "AIHeroes.Fog.SaveValidationAndDiskRoundTrip",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0099178999662399292,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TamperAndAuthorityBoundaries",
+			"fullTestPath": "AIHeroes.Fog.TamperAndAuthorityBoundaries",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0079542994499206543,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TravelGraphAndAdviceDoNotLeak",
+			"fullTestPath": "AIHeroes.Fog.TravelGraphAndAdviceDoNotLeak",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080671980977058411,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DeadTurnsAndStableIndices",
+			"fullTestPath": "AIHeroes.Grid.DeadTurnsAndStableIndices",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081933997571468353,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DeterministicPathAndOccupancy",
+			"fullTestPath": "AIHeroes.Grid.DeterministicPathAndOccupancy",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081709995865821838,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "IncrementalStart",
+			"fullTestPath": "AIHeroes.Grid.IncrementalStart",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081560015678405762,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ProtocolTargetDivergence",
+			"fullTestPath": "AIHeroes.Grid.ProtocolTargetDivergence",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082074999809265137,
+			"dateTime": "2026.10.28-21.24.44",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RangeAndRuntimeAttack",
+			"fullTestPath": "AIHeroes.Grid.RangeAndRuntimeAttack",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082163996994495392,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RejectForgedCompletion",
+			"fullTestPath": "AIHeroes.Grid.RejectForgedCompletion",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.007928900420665741,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RoundLimitAndInitiative",
+			"fullTestPath": "AIHeroes.Grid.RoundLimitAndInitiative",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0032892003655433655,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SplitGarrisonAdviceCompatibility",
+			"fullTestPath": "AIHeroes.Grid.SplitGarrisonAdviceCompatibility",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0084866024553775787,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StepMatchesForecast",
+			"fullTestPath": "AIHeroes.Grid.StepMatchesForecast",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.008138701319694519,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ValidationAndTerminalStates",
+			"fullTestPath": "AIHeroes.Grid.ValidationAndTerminalStates",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0089867003262042999,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GridV2FourTierCounterfactuals",
+			"fullTestPath": "AIHeroes.Lab.GridV2FourTierCounterfactuals",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0075636990368366241,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "KeyboardAndTouchLayout",
+			"fullTestPath": "AIHeroes.Lab.KeyboardAndTouchLayout",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083910003304481506,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "LegacyV1Compatible",
+			"fullTestPath": "AIHeroes.Lab.LegacyV1Compatible",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082824006676673889,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RejectUnverifiedHistory",
+			"fullTestPath": "AIHeroes.Lab.RejectUnverifiedHistory",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082204006612300873,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RepeatableNonMutatingReport",
+			"fullTestPath": "AIHeroes.Lab.RepeatableNonMutatingReport",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082482993602752686,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "AtomicCommitAndLocks",
+			"fullTestPath": "AIHeroes.LiveBattle.AtomicCommitAndLocks",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.011360000818967819,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DefeatAndRepeat",
+			"fullTestPath": "AIHeroes.LiveBattle.DefeatAndRepeat",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.011768396943807602,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "FrameRateSpeedAndFastParity",
+			"fullTestPath": "AIHeroes.LiveBattle.FrameRateSpeedAndFastParity",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.031108099967241287,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "MissingStageAndNode",
+			"fullTestPath": "AIHeroes.LiveBattle.MissingStageAndNode",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.015775997191667557,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "PrecommitConflict",
+			"fullTestPath": "AIHeroes.LiveBattle.PrecommitConflict",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.011222399771213531,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StageCleanupBeforeBeginPlay",
+			"fullTestPath": "AIHeroes.LiveBattle.StageCleanupBeforeBeginPlay",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.010477401316165924,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StageMissingVisualDoesNotHang",
+			"fullTestPath": "AIHeroes.LiveBattle.StageMissingVisualDoesNotHang",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.011797502636909485,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StagePauseAndFinish",
+			"fullTestPath": "AIHeroes.LiveBattle.StagePauseAndFinish",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.012102700769901276,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StageReceiptAndSpeed",
+			"fullTestPath": "AIHeroes.LiveBattle.StageReceiptAndSpeed",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.01138870045542717,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StageRejectsInvalidSnapshot",
+			"fullTestPath": "AIHeroes.LiveBattle.StageRejectsInvalidSnapshot",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.01046459749341011,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "CampaignProgression",
+			"fullTestPath": "AIHeroes.Objectives.CampaignProgression",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.007971499115228653,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DerivedFromSaveGame",
+			"fullTestPath": "AIHeroes.Objectives.DerivedFromSaveGame",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0079879984259605408,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DuplicateAndSpoofedNodesRejected",
+			"fullTestPath": "AIHeroes.Objectives.DuplicateAndSpoofedNodesRejected",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0088805966079235077,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TouchMissionButton",
+			"fullTestPath": "AIHeroes.Objectives.TouchMissionButton",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081945024430751801,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "AuthorityAndStaleness",
+			"fullTestPath": "AIHeroes.Proposal.AuthorityAndStaleness",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0085939988493919373,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DeterministicStaleFuzz",
+			"fullTestPath": "AIHeroes.Proposal.DeterministicStaleFuzz",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083708986639976501,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "InputAndSnapshotBounds",
+			"fullTestPath": "AIHeroes.Proposal.InputAndSnapshotBounds",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081799030303955078,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ModelAndConsentBoundaries",
+			"fullTestPath": "AIHeroes.Proposal.ModelAndConsentBoundaries",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.008608400821685791,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "OfflinePreview",
+			"fullTestPath": "AIHeroes.Proposal.OfflinePreview",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083547979593276978,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "BudgetAndNoWinningOption",
+			"fullTestPath": "AIHeroes.Recruitment.BudgetAndNoWinningOption",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0084984973073005676,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ForecastSelectsUsefulUnit",
+			"fullTestPath": "AIHeroes.Recruitment.ForecastSelectsUsefulUnit",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0084351003170013428,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ProtocolGateAndCatalog",
+			"fullTestPath": "AIHeroes.Recruitment.ProtocolGateAndCatalog",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080801025032997131,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ReadOnlyAndDeterministic",
+			"fullTestPath": "AIHeroes.Recruitment.ReadOnlyAndDeterministic",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083942003548145294,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RejectsMalformedSnapshot",
+			"fullTestPath": "AIHeroes.Recruitment.RejectsMalformedSnapshot",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0084374025464057922,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SelectionOwnershipAndMovement",
+			"fullTestPath": "AIHeroes.Recruitment.SelectionOwnershipAndMovement",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0087191015481948853,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StockGameModeWeeklyEndToEnd",
+			"fullTestPath": "AIHeroes.Recruitment.StockGameModeWeeklyEndToEnd",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.011767599731683731,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StockNoFreeRecruitment",
+			"fullTestPath": "AIHeroes.Recruitment.StockNoFreeRecruitment",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083181001245975494,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StockOwnershipUpgradeAndCaps",
+			"fullTestPath": "AIHeroes.Recruitment.StockOwnershipUpgradeAndCaps",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080307014286518097,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StockQuotesAndAdvisorNoPhantomOffers",
+			"fullTestPath": "AIHeroes.Recruitment.StockQuotesAndAdvisorNoPhantomOffers",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0088816992938518524,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StockSaveMigrationAndRotation",
+			"fullTestPath": "AIHeroes.Recruitment.StockSaveMigrationAndRotation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.014875601977109909,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "StockWeeklyCalendar",
+			"fullTestPath": "AIHeroes.Recruitment.StockWeeklyCalendar",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.008166097104549408,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DeterministicVerification",
+			"fullTestPath": "AIHeroes.Replay.DeterministicVerification",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082700997591018677,
+			"dateTime": "2026.10.28-21.24.45",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DiskRoundTrip",
+			"fullTestPath": "AIHeroes.Replay.DiskRoundTrip",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.017069999128580093,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GridV2ReadOnly3DStage",
+			"fullTestPath": "AIHeroes.Replay.GridV2ReadOnly3DStage",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.012362297624349594,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GridV2RejectTamperAndLegacy",
+			"fullTestPath": "AIHeroes.Replay.GridV2RejectTamperAndLegacy",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082310996949672699,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GridV2VerifiedTypedParity",
+			"fullTestPath": "AIHeroes.Replay.GridV2VerifiedTypedParity",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083164013922214508,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "VersionedRules",
+			"fullTestPath": "AIHeroes.Replay.VersionedRules",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083011984825134277,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DeterministicRaidsAndAuthority",
+			"fullTestPath": "AIHeroes.Rival.DeterministicRaidsAndAuthority",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082642994821071625,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ExistingSaveGameRoundTrip",
+			"fullTestPath": "AIHeroes.Rival.ExistingSaveGameRoundTrip",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0079127028584480286,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "InvalidInputsAndFailClosed",
+			"fullTestPath": "AIHeroes.Rival.InvalidInputsAndFailClosed",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083243995904922485,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "WeeklyRecruitmentAndCaptureStop",
+			"fullTestPath": "AIHeroes.Rival.WeeklyRecruitmentAndCaptureStop",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081724002957344055,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "CombatPolicy",
+			"fullTestPath": "AIHeroes.Simulation.CombatPolicy",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082827992737293243,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "AbsentPropertyKeepsLegacyRules",
+			"fullTestPath": "AIHeroes.TravelV2.AbsentPropertyKeepsLegacyRules",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081024989485740662,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "AdvisorRecruitGateParity",
+			"fullTestPath": "AIHeroes.TravelV2.AdvisorRecruitGateParity",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082762017846107483,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GameModeCostAndAtomicBattle",
+			"fullTestPath": "AIHeroes.TravelV2.GameModeCostAndAtomicBattle",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.014416299760341644,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "InvalidMapFailsClosed",
+			"fullTestPath": "AIHeroes.TravelV2.InvalidMapFailsClosed",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082319974899291992,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RuleDriftAbortsCommit",
+			"fullTestPath": "AIHeroes.TravelV2.RuleDriftAbortsCommit",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.013138297945261002,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SaveVersionAndRecovery",
+			"fullTestPath": "AIHeroes.TravelV2.SaveVersionAndRecovery",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.01963990181684494,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TopologyGuardAndBudget",
+			"fullTestPath": "AIHeroes.TravelV2.TopologyGuardAndBudget",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080415010452270508,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TwoStopHypotheticalCapture",
+			"fullTestPath": "AIHeroes.TravelV2.TwoStopHypotheticalCapture",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081473998725414276,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "BlockedMoveHasNoPresentation",
+			"fullTestPath": "AIHeroes.TravelView.BlockedMoveHasNoPresentation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.011724300682544708,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "CommitOnceAndNextCommand",
+			"fullTestPath": "AIHeroes.TravelView.CommitOnceAndNextCommand",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.012152101844549179,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DurableDestinationNotVisualPosition",
+			"fullTestPath": "AIHeroes.TravelView.DurableDestinationNotVisualPosition",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.012137901037931442,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "InvalidInputsAndBounds",
+			"fullTestPath": "AIHeroes.TravelView.InvalidInputsAndBounds",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0083226002752780914,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ModalAndTeardown",
+			"fullTestPath": "AIHeroes.TravelView.ModalAndTeardown",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.013774700462818146,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ReadOnlyPreviewCacheAndCollision",
+			"fullTestPath": "AIHeroes.TravelView.ReadOnlyPreviewCacheAndCollision",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.012174401432275772,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SegmentsAndFrameParity",
+			"fullTestPath": "AIHeroes.TravelView.SegmentsAndFrameParity",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.008561398833990097,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "VisualLossAndDrift",
+			"fullTestPath": "AIHeroes.TravelView.VisualLossAndDrift",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.013041302561759949,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RouteButtonLayoutRegression",
+			"fullTestPath": "AIHeroes.UI.RouteButtonLayoutRegression",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0079598017036914825,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "AtomicFailureAndCap",
+			"fullTestPath": "AIHeroes.WorldWeek.AtomicFailureAndCap",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0084570981562137604,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "CalendarBoundaries",
+			"fullTestPath": "AIHeroes.WorldWeek.CalendarBoundaries",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081115998327732086,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GuardGrowthAndNoResurrection",
+			"fullTestPath": "AIHeroes.WorldWeek.GuardGrowthAndNoResurrection",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080214031040668488,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SaveSchemaCompatibility",
+			"fullTestPath": "AIHeroes.WorldWeek.SaveSchemaCompatibility",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0084215998649597168,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GeneratedDraftCannotChangeCampaignTopology",
+			"fullTestPath": "AIHeroes.ZonePreview.GeneratedDraftCannotChangeCampaignTopology",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081738978624343872,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SeparateGameModeAndNoCampaignController",
+			"fullTestPath": "AIHeroes.ZonePreview.SeparateGameModeAndNoCampaignController",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080580003559589386,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GuardedProgressiveReachability",
+			"fullTestPath": "AIHeroes.ZoneTemplate.GuardedProgressiveReachability",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0082557983696460724,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RepeatableSeedAndRoles",
+			"fullTestPath": "AIHeroes.ZoneTemplate.RepeatableSeedAndRoles",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0080261006951332092,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SeedSweepAndBounds",
+			"fullTestPath": "AIHeroes.ZoneTemplate.SeedSweepAndBounds",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.26178121566772461,
+			"dateTime": "2026.10.28-21.24.46",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TamperedGraphFailsClosed",
+			"fullTestPath": "AIHeroes.ZoneTemplate.TamperedGraphFailsClosed",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.006971701979637146,
+			"dateTime": "2026.10.28-21.24.47",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "V1SaveNotSilentlyExpanded",
+			"fullTestPath": "AIHeroes.ZoneTemplate.V1SaveNotSilentlyExpanded",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"8FB1A43C4E19BD7747A3DF8FD53E5538"
+			],
+			"duration": 0.0081631019711494446,
+			"dateTime": "2026.10.28-21.24.47",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

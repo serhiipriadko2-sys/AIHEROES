@@ -74,6 +74,40 @@ FAIHeroesHUDActionRect FAIHeroesHUDLayout::Rect(
         Rect.Y = AskCell.Y;
         return Rect;
     }
+    // Four equally sized landscape/portrait mobile utility cells: no
+    // invisible convoy/field controls at actual 320-360px phone widths.
+    if (Viewport.X < 480.f && ActionId >= 202 && ActionId <= 205)
+    {
+        Rect.W = (Viewport.X - 16.f - 18.f) / 4.f;
+        Rect.H = 29.f;
+        Rect.X = 8.f + (205 - ActionId) * (Rect.W + 6.f);
+        Rect.Y = Viewport.Y - BottomPanelHeight(Viewport.X) - 33.f;
+        if (Rect.W < 60.f || Rect.Y < 185.f)
+            return FAIHeroesHUDActionRect();
+        return Rect;
+    }
+    if (ActionId == 205)
+    {
+        const FAIHeroesHUDActionRect Field = FAIHeroesHUDLayout::Rect(204, Viewport, false);
+        if (Field.W <= 0.f) return Rect;
+        Rect.W = Viewport.X < 700.f ? 110.f : 128.f;
+        Rect.H = Field.H;
+        Rect.X = Field.X - Rect.W - 8.f;
+        Rect.Y = Field.Y;
+        if (Rect.X < 8.f) return FAIHeroesHUDActionRect();
+        return Rect;
+    }
+    if (ActionId == 204)
+    {
+        const FAIHeroesHUDActionRect Lab = FAIHeroesHUDLayout::Rect(203, Viewport, false);
+        if (Lab.W <= 0.f) return Rect;
+        Rect.W = Viewport.X < 700.f ? 118.f : 128.f;
+        Rect.H = Lab.H;
+        Rect.X = Lab.X - Rect.W - 8.f;
+        Rect.Y = Lab.Y;
+        if (Rect.X < 8.f) return FAIHeroesHUDActionRect();
+        return Rect;
+    }
     if (ActionId == 203)
     {
         const FAIHeroesHUDActionRect Goals = FAIHeroesHUDLayout::Rect(202, Viewport, false);
@@ -148,6 +182,8 @@ int32 FAIHeroesHUDLayout::HitTest(
     if (Rect(201, Viewport).Contains(Point)) return 201;
     if (Rect(202, Viewport).Contains(Point)) return 202;
     if (Rect(203, Viewport).Contains(Point)) return 203;
+    if (Rect(204, Viewport).Contains(Point)) return 204;
+    if (Rect(205, Viewport).Contains(Point)) return 205;
     for (int32 Action = 0; Action < 13; ++Action)
     {
         if (Rect(Action, Viewport).Contains(Point))

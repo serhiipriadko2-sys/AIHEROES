@@ -63,6 +63,10 @@ public:
     UPROPERTY(SaveGame)
     int32 MovesLeft = 4;
 
+    // Missing in older saves: preserve their distance rules, never silently migrate.
+    UPROPERTY(SaveGame)
+    int32 TravelRuleVersion = 1;
+
     UPROPERTY(SaveGame)
     int32 ProtocolTier = 0;
 
@@ -72,6 +76,43 @@ public:
 
     UPROPERTY(SaveGame)
     int32 DataFragments = 0;
+
+    // Additive optional fields within v1. Old saves have false + two zeros.
+    // Loading a legacy snapshot initializes a bounded starter reserve in
+    // memory; no old slot is ever rewritten just to perform this migration.
+    UPROPERTY(SaveGame)
+    bool bRecruitmentStockInitialized = false;
+
+    UPROPERTY(SaveGame)
+    int32 MilitiaReserve = 0;
+
+    UPROPERTY(SaveGame)
+    int32 ScoutReserve = 0;
+
+    // Additive, optional schema-1 field dwellings. Pre-feature saves have
+    // false + all-zero fields, and get only starting neutral supplies in RAM.
+    UPROPERTY(SaveGame)
+    bool bFieldDwellingsInitialized = false;
+
+    UPROPERTY(SaveGame)
+    bool bForestCampClaimed = false;
+
+    UPROPERTY(SaveGame)
+    int32 ForestCampUnits = 0;
+
+    UPROPERTY(SaveGame)
+    bool bOreAerieClaimed = false;
+
+    UPROPERTY(SaveGame)
+    int32 OreAerieUnits = 0;
+
+    // Optional v1-compatible scouting fields. Old saves have false + zero
+    // and therefore retain their original fully known five-site map.
+    UPROPERTY(SaveGame)
+    bool bFogInitialized = false;
+
+    UPROPERTY(SaveGame)
+    int32 ExploredSitesMask = 0;
 
     UPROPERTY(SaveGame)
     FName HeroNodeId = NAME_None;

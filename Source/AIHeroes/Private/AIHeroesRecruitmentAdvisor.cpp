@@ -2,6 +2,8 @@
 
 #include "AIHeroesGridBattle.h"
 #include "AIHeroesTurnRules.h"
+#include "AIHeroesTravelRules.h"
+#include "AIHeroesRecruitmentStock.h"
 
 namespace
 {
@@ -92,11 +94,14 @@ FAIHeroesRecruitOffer FAIHeroesRecruitmentAdvisor::GetOffer(EAIHeroesRecruitChoi
 FAIHeroesRecruitAdvice FAIHeroesRecruitmentAdvisor::Evaluate(const FAIHeroesAdvisorSnapshot& S)
 {
     FAIHeroesRecruitAdvice Result;
-    if (S.ProtocolTier < 0 || S.ProtocolTier > 3 ||
+    if (!FAIHeroesTravelRules::IsSupported(S.TravelRuleVersion) ||
+        S.ProtocolTier < 0 || S.ProtocolTier > 3 ||
         S.MovesLeft < 0 || S.MovesLeft > 4 ||
         S.Gold < 0 || S.Gold > 500000000 ||
         S.Wood < 0 || S.Wood > 500000000 ||
         S.Ore < 0 || S.Ore > 500000000 ||
+        !FAIHeroesRecruitmentStockRules::IsValid(
+            FAIHeroesRecruitmentStock{S.MilitiaReserve, S.ScoutReserve}) ||
         S.HeroPosition.ContainsNaN() || S.HeroPosition.SizeSquared() > 1.e12 ||
         !BoundedArmy(S.PlayerArmy, true))
     {
@@ -113,6 +118,14 @@ FAIHeroesRecruitAdvice FAIHeroesRecruitmentAdvisor::Evaluate(const FAIHeroesAdvi
         Option.Offer = GetOffer(Choice);
         Option.bAffordable = S.Gold >= Option.Offer.Gold &&
             S.Wood >= Option.Offer.Wood && S.Ore >= Option.Offer.Ore;
+        if (Choice != EAIHeroesRecruitChoice::KeepArmy)
+        {
+            const FAIHeroesRecruitmentStock Inventory{
+                S.MilitiaReserve, S.ScoutReserve};
+            FString ReserveError;
+            Option.bAffordable &= FAIHeroesRecruitmentStockRules::CanBuy(
+                Inventory, Choice, Option.Offer.Units.Count(), ReserveError);
+        }
         // Respect the campaign's per-stack health cap before suggesting a purchase.
         for (const FAIHeroesArmyStack& Stack : S.PlayerArmy)
         {
@@ -123,9 +136,10 @@ FAIHeroesRecruitAdvice FAIHeroesRecruitmentAdvisor::Evaluate(const FAIHeroesAdvi
         Result.Options.Add(Option);
     }
     const FString Catalog = FString::Printf(
-        TEXT("5 Militia: 50G+5W (%s); 2 Scouts: 70G+4O (%s). Player buys separately."),
+        TEXT("5 Militia: 50G+5W (%s); 2 Scouts: 70G+4O (%s). Stock: %d M/%d S. Player buys separately."),
         Result.Options[1].bAffordable ? TEXT("available") : TEXT("unavailable"),
-        Result.Options[2].bAffordable ? TEXT("available") : TEXT("unavailable"));
+        Result.Options[2].bAffordable ? TEXT("available") : TEXT("unavailable"),
+        S.MilitiaReserve, S.ScoutReserve);
     Result.Detail = Catalog;
     if (S.ProtocolTier == 0)
     {
@@ -152,8 +166,15 @@ FAIHeroesRecruitAdvice FAIHeroesRecruitmentAdvisor::Evaluate(const FAIHeroesAdvi
         Result.Summary = TEXT("KEEP ARMY: this node needs no combat. Preserve resources; player decides.");
         return Result;
     }
-    const int32 MoveCost = FAIHeroesTurnRules::TravelCost(S.HeroPosition, Target->Location, true);
-    Result.bTargetReachable = FAIHeroesTurnRules::CanMove(S.MovesLeft, MoveCost);
+    const auto Path = FAIHeroesTravelRules::Find(S, S.HeroPosition, Target->Id, S.MovesLeft);
+    if (Path.Status == EAIHeroesAdventurePathStatus::InvalidInput ||
+        Path.Status == EAIHeroesAdventurePathStatus::Unreachable)
+    {
+        Result.Summary = TEXT("RECRUIT: ") + Path.Reason;
+        return Result;
+    }
+    const int32 MoveCost = Path.TotalCost;
+    Result.bTargetReachable = Path.IsReachableThisTurn();
     if (!Result.bTargetReachable)
     {
         Result.Summary = FString::Printf(

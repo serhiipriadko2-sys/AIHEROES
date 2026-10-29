@@ -13,6 +13,7 @@ struct FAIHeroesBasePanelState
 {
     int32 Gold = 0, Wood = 0, Ore = 0, Data = 0;
     int32 BaseTier = 0, ProtocolTier = 0, ModelSlotTier = 0;
+    int32 MilitiaReserve = 10, ScoutReserve = 4;
     bool bAtSelectedOwnedHQ = false;
     TArray<FAIHeroesArmyStack> Army;
 };
