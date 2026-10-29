@@ -1,6 +1,7 @@
 #include "AIHeroesGameMode.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
+#include "AIHeroesBaseRules.h"
 #include "AIHeroesBattleRecord.h"
 #include "AIHeroesLiveBattleStage.h"
 #include "AIHeroesWorldNode.h"
@@ -220,6 +221,107 @@ bool FAIHeroesLiveLostWorldTest::RunTest(const FString& Parameters)
         TestFalse(TEXT("Missing node aborts transaction"), F.Game->IsLiveBattleActive());
         TestEqual(TEXT("Missing node does not spend movement"), F.Game->MovesLeft, Moves);
         TestEqual(TEXT("Missing node does not append evidence"), F.Game->BattleJournal.Num(), 0);
+    }
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAIHeroesLiveRewardOverflowTest,
+    "AIHeroes.LiveBattle.RewardOverflowAbortsAtomically",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FAIHeroesLiveRewardOverflowTest::RunTest(const FString& Parameters)
+{
+    const int32 Cap = FAIHeroesBaseRules::MaxResource;
+    // Ordinary DATA overflow; RUINS GOLD overflow; RUINS DATA overflow.
+    for (int32 Variant = 0; Variant < 3; ++Variant)
+    {
+        FLiveBattleWorld F;
+        if (!TestTrue(TEXT("Disposable world exists"), F.IsValid())) return false;
+        AAIHeroesGameMode& G = *F.Game;
+        if (Variant > 0)
+        {
+            F.Node->Configure(EAIHeroesNodeType::Ruins, TEXT("RUINS"), F.Node->Defenders);
+        }
+        G.Gold = Variant == 1 ? Cap : 240;
+        G.DataFragments = Variant == 1 ? 0 : Cap - 1;
+        G.BattleJournal = {TEXT("Existing campaign evidence")};
+        G.LastCombatStep = TEXT("Existing combat step");
+        const FAIHeroesBattleRecord RecordBefore = G.LastBattleRecord;
+        // Reuse exact army equality of a record, without creating a save or slot.
+        FAIHeroesBattleRecord ArmiesBefore;
+        ArmiesBefore.PlayerBefore = G.PlayerArmy;
+        ArmiesBefore.EnemyBefore = F.Node->Defenders;
+        const int32 Gold = G.Gold, Data = G.DataFragments, Moves = G.MovesLeft;
+        const FVector Position = G.GetHeroStrategicLocation();
+        G.InteractWithNode(F.Node);
+        if (!TestTrue(TEXT("Boundary campaign starts a live battle"), G.IsLiveBattleActive())) return false;
+        TestEqual(TEXT("Starting battle leaves resources intact"), G.DataFragments, Data);
+        F.Finish();
+        TestTrue(TEXT("Reward overflow returns to exploration"),
+            G.GetLiveBattlePhase() == EAIHeroesLiveBattlePhase::Exploration);
+        TestTrue(TEXT("Abort explains reward preflight"), G.LastEvent.Contains(TEXT("Reward preflight")));
+        TestEqual(TEXT("Abort preserves gold"), G.Gold, Gold);
+        TestEqual(TEXT("Abort preserves data"), G.DataFragments, Data);
+        TestEqual(TEXT("Abort preserves movement"), G.MovesLeft, Moves);
+        FAIHeroesBattleRecord ArmiesAfter;
+        ArmiesAfter.PlayerBefore = G.PlayerArmy;
+        ArmiesAfter.EnemyBefore = F.Node->Defenders;
+        TestTrue(TEXT("Abort preserves both armies exactly"),
+            FAIHeroesBattleRecordRules::Equivalent(ArmiesBefore, ArmiesAfter));
+        TestTrue(TEXT("Abort preserves previous battle record"),
+            FAIHeroesBattleRecordRules::Equivalent(RecordBefore, G.LastBattleRecord));
+        TestEqual(TEXT("Abort preserves journal count"), G.BattleJournal.Num(), 1);
+        TestEqual(TEXT("Abort preserves journal content"), G.BattleJournal[0], FString(TEXT("Existing campaign evidence")));
+        TestEqual(TEXT("Abort preserves combat step"), G.LastCombatStep, FString(TEXT("Existing combat step")));
+        TestFalse(TEXT("Abort never captures node"), F.Node->bOwned);
+        TestTrue(TEXT("Abort preserves hero location"), G.GetHeroStrategicLocation().Equals(Position));
+        G.FastFinishLiveBattle(); G.ReturnFromLiveBattle(); G.Tick(5.f);
+        TestEqual(TEXT("Late callbacks cannot award resources"), G.DataFragments, Data);
+        TestEqual(TEXT("Late callbacks cannot spend movement"), G.MovesLeft, Moves);
+        // After spending resources a fresh session can commit, exactly once.
+        G.Gold = 240;
+        G.DataFragments = 0;
+        G.InteractWithNode(F.Node); F.Finish();
+        TestTrue(TEXT("A new session after reducing resources completes"),
+            G.GetLiveBattlePhase() == EAIHeroesLiveBattlePhase::Result);
+        TestTrue(TEXT("New session captures the node"), F.Node->bOwned);
+        TestEqual(TEXT("Only successful session adds journal"), G.BattleJournal.Num(), 2);
+        const int32 RewardedData = G.DataFragments;
+        G.FastFinishLiveBattle(); G.Tick(5.f);
+        TestEqual(TEXT("Fresh session cannot reward twice"), G.DataFragments, RewardedData);
+    }
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAIHeroesLiveRewardBoundaryTest,
+    "AIHeroes.LiveBattle.ExactRewardCapAndDefeatAtCap",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FAIHeroesLiveRewardBoundaryTest::RunTest(const FString& Parameters)
+{
+    const int32 Cap = FAIHeroesBaseRules::MaxResource;
+    {
+        FLiveBattleWorld F;
+        if (!TestTrue(TEXT("Disposable world exists"), F.IsValid())) return false;
+        F.Node->Configure(EAIHeroesNodeType::Ruins, TEXT("RUINS"), F.Node->Defenders);
+        F.Game->Gold = Cap - 100;
+        F.Game->DataFragments = Cap - 4;
+        F.Game->InteractWithNode(F.Node); F.Finish();
+        TestTrue(TEXT("Exact reward cap still commits victory"),
+            F.Game->GetLiveBattlePhase() == EAIHeroesLiveBattlePhase::Result &&
+            F.Game->LastBattleRecord.bVictory);
+        TestEqual(TEXT("Exact cap gold"), F.Game->Gold, Cap);
+        TestEqual(TEXT("Exact cap data"), F.Game->DataFragments, Cap);
+    }
+    {
+        FLiveBattleWorld F(true);
+        if (!TestTrue(TEXT("Disposable world exists"), F.IsValid())) return false;
+        F.Game->Gold = Cap;
+        F.Game->DataFragments = Cap;
+        F.Game->InteractWithNode(F.Node); F.Finish();
+        TestTrue(TEXT("Full resources do not block defeat"),
+            F.Game->GetLiveBattlePhase() == EAIHeroesLiveBattlePhase::Result &&
+            F.Game->LastBattleRecord.bDefeat);
+        TestEqual(TEXT("Defeat at cap preserves gold"), F.Game->Gold, Cap);
+        TestEqual(TEXT("Defeat at cap preserves data"), F.Game->DataFragments, Cap);
     }
     return true;
 }

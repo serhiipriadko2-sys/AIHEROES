@@ -4,11 +4,15 @@
 #include "AIHeroesZoneExpeditionHUD.h"
 #include "AIHeroesZoneExpeditionStore.h"
 #include "Camera/CameraComponent.h"
+#include "HAL/FileManager.h"
+#include "UnrealClient.h"
+#include "Misc/Paths.h"
+#include "Misc/Guid.h"
 #include "Components/DirectionalLightComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TextRenderComponent.h"
-#include "Engine/CameraActor.h"
+#include "Camera/CameraActor.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/SkyLight.h"
 #include "Engine/StaticMeshActor.h"
@@ -26,7 +30,7 @@ namespace
 {
 constexpr float GridScale = 160.f;
 constexpr float MarkerZ = 8.f;
-constexpr float RoadZ = -45.f;
+constexpr float ZoneExpeditionRoadZ = -45.f;
 
 FVector WorldAt(const FAIHeroesGeneratedZone& Z)
 {
@@ -75,6 +79,9 @@ void AAIHeroesZoneExpeditionGameMode::BeginPlay()
         Status(TEXT("BLOCKED invalid expedition launch seed or route count."));
         return;
     }
+#if !UE_BUILD_SHIPPING
+    bVisualQAEnabled = FParse::Param(FCommandLine::Get(), TEXT("ZoneExpeditionCapture"));
+#endif
     FString Error;
     if (!FAIHeroesZoneExpeditionRules::Create(
             static_cast<uint32>(Seed), Branches, Campaign, Error) ||
@@ -92,6 +99,7 @@ void AAIHeroesZoneExpeditionGameMode::BeginPlay()
     }
     bReady = true;
     RefreshScene();
+    ScheduleVisualQAFrame();
     Status(FString::Printf(
         TEXT("READY seed=%u zones=%d known=%d/ %d | CLICK or TAB select, ENTER confirm. No automatic orders or saves."),
         Campaign.Seed, Generated.Zones.Num(),
@@ -184,8 +192,8 @@ bool AAIHeroesZoneExpeditionGameMode::CreateScene()
         const auto* To = Generated.Zones.FindByPredicate(
             [&Road](const auto& Z) { return Z.Id == Road.To; });
         if (!From || !To) return false;
-        FVector A = WorldAt(*From); A.Z = RoadZ;
-        FVector B = WorldAt(*To); B.Z = RoadZ;
+        FVector A = WorldAt(*From); A.Z = ZoneExpeditionRoadZ;
+        FVector B = WorldAt(*To); B.Z = ZoneExpeditionRoadZ;
         const FVector Delta = B - A;
         auto* Actor = SpawnShape(Cube, (A + B) * .5f, Delta.Rotation(),
             FVector(Delta.Size() / 100.f, .20f, .10f),
@@ -235,8 +243,16 @@ void AAIHeroesZoneExpeditionGameMode::RefreshScene()
             {
                 Actor->SetActorHiddenInGame(!bKnown);
                 Actor->SetActorEnableCollision(bKnown);
-                Actor->SetActorScale3D(bSelected && bKnown
-                    ? FVector(1.28f) : FVector(1.f));
+                // Preserve the authored marker dimensions instead of shrinking
+                // every unselected world object to the unit cube.
+                const bool bBuilding = Zone.Role == EAIHeroesZoneRole::Headquarters ||
+                    Zone.Role == EAIHeroesZoneRole::Checkpoint ||
+                    Zone.Role == EAIHeroesZoneRole::Objective;
+                const float BaseSize = bBuilding ? 1.55f : 1.18f;
+                const float Highlight = bSelected && bKnown ? 1.18f : 1.f;
+                Actor->SetActorScale3D(FVector(
+                    BaseSize * Highlight, BaseSize * Highlight,
+                    BaseSize * (bBuilding ? .85f : 1.f) * Highlight));
             }
         if (auto* Found = ZoneLabels.Find(Zone.Id))
             if (auto* Label = Found->Get())
@@ -322,6 +338,7 @@ void AAIHeroesZoneExpeditionGameMode::ConfirmSelected()
         return;
     }
     RefreshScene();
+    ScheduleVisualQAFrame();
     Status(FString::Printf(
         TEXT("PLAYER CONFIRMED %s | battle=%d won=%d known=%d/%d | %s"),
         *SelectedSite.ToString(), Result.bBattle ? 1 : 0,
@@ -335,7 +352,10 @@ void AAIHeroesZoneExpeditionGameMode::AdvanceDay()
 {
     FString Error;
     if (FAIHeroesZoneExpeditionRules::EndPlayerDay(Campaign, Error))
+    {
+        ScheduleVisualQAFrame();
         Status(Campaign.LastEvent);
+    }
     else Status(TEXT("DAY BLOCKED: ") + Error);
 }
 
@@ -391,12 +411,53 @@ void AAIHeroesZoneExpeditionGameMode::Load()
         Generated.Zones.Num(), *Result.Message));
 }
 
+void AAIHeroesZoneExpeditionGameMode::ScheduleVisualQAFrame()
+{
+#if !UE_BUILD_SHIPPING
+    if (!bVisualQAEnabled) return;
+    ++VisualQASerial;
+    VisualQACountdown = VisualQASerial == 0 ? 2.5f : 1.0f;
+#endif
+}
+
+void AAIHeroesZoneExpeditionGameMode::CaptureVisualQAFrameTick(float DeltaSeconds)
+{
+#if !UE_BUILD_SHIPPING
+    if (!bVisualQAEnabled || VisualQACountdown < 0.f || !GetWorld() ||
+        !GetWorld()->GetGameViewport()) return;
+    VisualQACountdown -= FMath::Max(0.f, DeltaSeconds);
+    if (VisualQACountdown > 0.f) return;
+    VisualQACountdown = -1.f;
+
+    // PrintWindow frequently produces a black Unreal D3D swapchain.
+    // Request an engine-authored frame only in explicitly opted-in QA.
+    const FString Folder = FPaths::Combine(
+        FPaths::ProjectSavedDir(), TEXT("QA"), TEXT("ZoneExpeditionFrames"));
+    if (!IFileManager::Get().MakeDirectory(*Folder, true))
+    {
+        UE_LOG(LogTemp, Error, TEXT("[ZONE EXPEDITION] QA_CAPTURE_DIRECTORY_FAILED"));
+        return;
+    }
+    const FString File = FPaths::Combine(Folder, FString::Printf(
+        TEXT("Expedition_%02d_%s.png"), VisualQASerial,
+        *FGuid::NewGuid().ToString(EGuidFormats::Digits)));
+    FScreenshotRequest::RequestScreenshot(File, false, false);
+    UE_LOG(LogTemp, Display,
+        TEXT("[ZONE EXPEDITION] SCREENSHOT_REQUEST serial=%d path=%s"),
+        VisualQASerial, *File);
+#endif
+}
+
 void AAIHeroesZoneExpeditionGameMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
     if (!bReady || !GetWorld()) return;
     APlayerController* PC = GetWorld()->GetFirstPlayerController();
     if (!PC) return;
+    // Pawn possession can override the initial camera target during setup.
+    if (IsValid(ExpeditionCamera) && PC->GetViewTarget() != ExpeditionCamera.Get())
+        PC->SetViewTarget(ExpeditionCamera.Get());
+    CaptureVisualQAFrameTick(DeltaSeconds);
     if (PC->WasInputKeyJustPressed(EKeys::Tab)) CycleSelection();
     if (PC->WasInputKeyJustPressed(EKeys::LeftMouseButton)) ClickSelect();
     if (PC->WasInputKeyJustPressed(EKeys::Enter)) ConfirmSelected();

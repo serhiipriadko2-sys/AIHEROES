@@ -1,6 +1,7 @@
 #include "AIHeroesGameMode.h"
 
 #include "AIHeroesBattleRecord.h"
+#include "AIHeroesBattleRewardRules.h"
 #include "AIHeroesLiveBattleStage.h"
 #include "AIHeroesWorldNode.h"
 #include "Engine/World.h"
@@ -187,8 +188,18 @@ void AAIHeroesGameMode::CommitLiveBattle()
         return;
     }
 
+    FAIHeroesBattleRewardPlan Rewards;
+    if (!FAIHeroesBattleRewardRules::Plan(
+        Outcome.bVictory, Node->NodeType, Gold, DataFragments, Rewards, Error))
+    {
+        AbortLiveBattle(TEXT("Reward preflight failed: ") + Error);
+        return;
+    }
+
     // Preflight is complete. No fallible operation below this point.
     bLiveBattleCommitted = true;
+    Gold = Rewards.GoldAfter;
+    DataFragments = Rewards.DataAfter;
     MovesLeft -= LiveMoveCost;
     PlayerArmy = Outcome.PlayerAfter;
     Node->Defenders = Outcome.EnemyAfter;
@@ -200,8 +211,6 @@ void AAIHeroesGameMode::CommitLiveBattle()
     if (BattleJournal.Num() > 16) BattleJournal.RemoveAt(0);
     if (Outcome.bVictory)
     {
-        DataFragments += Node->NodeType == EAIHeroesNodeType::Ruins ? 4 : 2;
-        if (Node->NodeType == EAIHeroesNodeType::Ruins) Gold += 100;
         Node->Defenders.Empty();
         Node->SetOwned(true);
         MoveHeroTo(Node->GetActorLocation());

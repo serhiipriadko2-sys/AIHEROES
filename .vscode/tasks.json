@@ -4,17 +4,11 @@
     {
       "label": "AIHEROES: Build Unreal Editor",
       "type": "process",
-      "command": "C:\\Program Files\\dotnet\\dotnet.exe",
+      "command": "powershell.exe",
       "args": [
-        "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool.dll",
-        "AIHeroesEditor",
-        "Win64",
-        "Development",
-        "-Project=${workspaceFolder}\\AIHeroes.uproject",
-        "-WaitMutex",
-        "-NoHotReload",
-        "-NoUBA",
-        "-MaxParallelActions=1"
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}\\Tools\\build_aiheroes_editor.ps1"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -39,7 +33,9 @@
       "args": [
         "-NoProfile",
         "-File",
-        "${workspaceFolder}\\Tools\\run_aiheroes_automation.ps1"
+        "${workspaceFolder}\\Tools\\run_aiheroes_automation.ps1",
+        "-CompiledSnapshot",
+        "${workspaceFolder}\\Docs\\AIHEROES_BUILD_LATEST.json"
       ],
       "options": {
         "cwd": "${workspaceFolder}"

@@ -1,5 +1,6 @@
 #include "AIHeroesHUD.h"
 #include "AIHeroesHUDLayout.h"
+#include "AIHeroesHUDTextLayout.h"
 #include "AIHeroesMapLabelLayout.h"
 #include "AIHeroesBasePanel.h"
 
@@ -84,6 +85,26 @@ void AAIHeroesHUD::DrawHUD()
     const float Scale = Width < 700.f ? 0.78f : 1.f;
     const int32 TextLimit = FMath::Clamp(FMath::FloorToInt(Width / 8.f), 40, 152);
     UFont* Font = GEngine->GetSmallFont();
+    auto DrawFitted = [this, Font](const FString& Text, const FLinearColor& Color,
+        float X, float Y, float MaxWidth, float FontScale)
+    {
+        auto Measure = [this, Font, FontScale](const FString& Value)
+        {
+            float W = 0.f, H = 0.f;
+            GetTextSize(Value, W, H, Font, FontScale);
+            return W;
+        };
+        const FString Display = FAIHeroesHUDTextLayout::FitLine(Text, MaxWidth, Measure);
+        if (!Display.IsEmpty()) DrawText(Display, Color, X, Y, Font, FontScale);
+    };
+    auto DrawHeader = [this, Font, &DrawFitted](const FString& Text,
+        const FLinearColor& Color, float Y, float FontScale)
+    {
+        float W = 0.f, H = 0.f;
+        GetTextSize(TEXT("Ag"), W, H, Font, FontScale);
+        const float Span = FAIHeroesHUDTextLayout::HeaderLineWidth(CachedCanvasSize, Y, FMath::Max(1.f,H));
+        DrawFitted(Text, Color, 18.f, Y, Span, FontScale);
+    };
     if (Rules->IsBasePanelVisible())
     {
         DrawBasePanel(*Rules);
@@ -256,21 +277,27 @@ void AAIHeroesHUD::DrawHUD()
 
     DrawRect(FLinearColor(0.015f, 0.022f, 0.04f, 0.92f),
         0.f, 0.f, Width, 175.f);
-    DrawText(FString::Printf(TEXT("AI HEROES | TRAVEL V%d | PLAYER DECIDES / AI FIGHTS"), Rules->TravelRuleVersion),
-        FLinearColor(0.42f, 0.88f, 1.f), 18.f, 12.f, Font, Scale * 1.3f);
-    DrawText(FString::Printf(TEXT("DAY %d  |  MOVES %d/4  |  GOLD %d  |  WOOD %d  |  ORE %d  |  DATA %d"),
-        Rules->Day, Rules->MovesLeft, Rules->Gold, Rules->Wood, Rules->Ore, Rules->DataFragments),
-        FLinearColor::White, 18.f, 42.f, Font, Scale);
-    DrawText(TEXT("ARMY: ") + Rules->GetArmySummary() + FString::Printf(
-        TEXT("  |  HQ L%d  |  +%d GOLD/DAY"), Rules->BaseTier, Rules->GetDailyGoldIncome()),
-        FLinearColor(0.88f, 0.95f, 0.81f), 18.f, 68.f, Font, Scale);
-    DrawText(TEXT("AI: ") + Rules->GetCognitionSummary() +
-        TEXT(" | ") + Rules->GetScoutingStatus(),
-        FLinearColor(1.f, 0.85f, 0.35f), 18.f, 94.f, Font, Scale);
-    DrawText(Rules->GetSelectionSummary().Left(TextLimit),
-        FLinearColor(0.4f, 1.f, 0.92f), 18.f, 119.f, Font, Scale);
-    DrawText(TEXT("WASD camera  CLICK select  ENTER move/fight  E field  X convoy  H advise  Z route  SPACE day  K save  L load  V 3D"),
-        FLinearColor(0.72f, 0.78f, 0.87f), 18.f, 147.f, Font, Scale * 0.92f);
+    const bool bCompactHeader = Width < 1050.f;
+    DrawHeader(bCompactHeader
+        ? FString::Printf(TEXT("AI HEROES | TRAVEL V%d"), Rules->TravelRuleVersion)
+        : FString::Printf(TEXT("AI HEROES | TRAVEL V%d | PLAYER DECIDES / AI FIGHTS"), Rules->TravelRuleVersion),
+        FLinearColor(0.42f, 0.88f, 1.f), 12.f, Scale * 1.3f);
+    DrawHeader(bCompactHeader
+        ? FString::Printf(TEXT("DAY %d | MOVE %d/4 | GOLD %d W %d O %d DATA %d"),
+            Rules->Day, Rules->MovesLeft, Rules->Gold, Rules->Wood, Rules->Ore, Rules->DataFragments)
+        : FString::Printf(TEXT("DAY %d  |  MOVES %d/4  |  GOLD %d  |  WOOD %d  |  ORE %d  |  DATA %d"),
+            Rules->Day, Rules->MovesLeft, Rules->Gold, Rules->Wood, Rules->Ore, Rules->DataFragments),
+        FLinearColor::White, 42.f, Scale);
+    DrawHeader(TEXT("ARMY: ") + Rules->GetArmySummary() + FString::Printf(
+        TEXT(" | HQ L%d | +%d GOLD/DAY"), Rules->BaseTier, Rules->GetDailyGoldIncome()),
+        FLinearColor(0.88f, 0.95f, 0.81f), 68.f, Scale);
+    DrawHeader(TEXT("AI: ") + Rules->GetCognitionSummary() + TEXT(" | ") + Rules->GetScoutingStatus(),
+        FLinearColor(1.f, 0.85f, 0.35f), 94.f, Scale);
+    DrawHeader(Rules->GetSelectionSummary(), FLinearColor(0.4f, 1.f, 0.92f), 119.f, Scale);
+    DrawHeader(bCompactHeader
+        ? TEXT("CLICK select | ENTER confirm | H advise | I dossier | SPACE day | K save | L load")
+        : TEXT("WASD camera  CLICK select  ENTER move/fight  E field  X convoy  H advise  Z route  SPACE day  K save  L load  V 3D"),
+        FLinearColor(0.72f, 0.78f, 0.87f), 147.f, Scale * 0.92f);
 
     if (!Rules->IsBattleReplayActive() && !Rules->IsLiveBattleActive())
     {
@@ -280,11 +307,8 @@ void AAIHeroesHUD::DrawHUD()
         {
             DrawRect(FLinearColor(0.19f, 0.075f, 0.04f, 0.93f),
                 14.f, 179.f, ThreatWidth, 25.f);
-            const int32 ForecastLimit = FMath::Max(20,
-                FMath::FloorToInt((ThreatWidth - 18.f) / 7.5f));
-            DrawText(Rules->GetRivalForecast().Left(ForecastLimit),
-                FLinearColor(1.f, 0.79f, 0.51f),
-                22.f, 184.f, Font, Scale * 0.91f);
+            DrawFitted(Rules->GetRivalForecast(), FLinearColor(1.f, 0.79f, 0.51f),
+                22.f, 184.f, ThreatWidth - 18.f, Scale * 0.91f);
         }
     }
 
@@ -324,12 +348,10 @@ void AAIHeroesHUD::DrawHUD()
                 const auto PeerRect = FAIHeroesHUDLayout::Rect(Peer, CachedCanvasSize);
                 if (PeerRect.W > 0.f) GoalTextRight = FMath::Min(GoalTextRight, PeerRect.X);
             }
-            const int32 GoalTextLimit = FMath::Max(0,
-                FMath::FloorToInt((GoalTextRight - 28.f) / 8.f));
-            DrawText(Progress.Headline().Left(GoalTextLimit),
+            DrawFitted(Progress.Headline(),
                 Progress.bVictory ? FLinearColor(0.8f, 1.f, 0.55f) :
                     FLinearColor(0.44f, 0.93f, 0.9f),
-                14.f, GoalY + 6.f, Font, Scale * 0.92f);
+                14.f, GoalY + 6.f, GoalTextRight - 28.f, Scale * 0.92f);
             DrawRect(FLinearColor(0.07f, 0.30f, 0.31f, 0.99f),
                 GoalX, GoalY, GoalW, GoalH);
             DrawText(TEXT("GOALS O"), FLinearColor::White,
@@ -370,14 +392,14 @@ void AAIHeroesHUD::DrawHUD()
     }
     DrawRect(FLinearColor(0.015f, 0.023f, 0.046f, 0.94f),
         0.f, PanelY, Width, BottomHeight);
-    DrawText(TEXT("EVENT: ") + Rules->LastEvent.Left(TextLimit),
-        FLinearColor::White, 18.f, PanelY + 11.f, Font, Scale);
-    DrawText(TEXT("HERO ADVICE: ") + Rules->LastHint.Left(TextLimit),
-        FLinearColor(0.45f, 0.96f, 0.84f), 18.f, PanelY + 39.f, Font, Scale);
+    DrawFitted(TEXT("EVENT: ") + Rules->LastEvent,
+        FLinearColor::White, 18.f, PanelY + 11.f, Width - 36.f, Scale);
+    DrawFitted(TEXT("HERO ADVICE: ") + Rules->LastHint,
+        FLinearColor(0.45f, 0.96f, 0.84f), 18.f, PanelY + 39.f, Width - 36.f, Scale);
     const FString BattleDisplay = Rules->IsBattleReplayActive()
         ? Rules->GetBattleReplayStatus() : Rules->GetReplayDisplayText();
-    DrawText(BattleDisplay.Left(TextLimit),
-        FLinearColor(0.87f, 0.77f, 0.5f), 18.f, PanelY + 67.f, Font, Scale);
+    DrawFitted(BattleDisplay,
+        FLinearColor(0.87f, 0.77f, 0.5f), 18.f, PanelY + 67.f, Width - 36.f, Scale);
     DrawText(Width < 500.f ? TEXT("RULE AI") : Width < 700.f ? TEXT("RULE AI | NO LLM") :
         TEXT("LOCAL RULE AI  |  1B / 3B / 8B are themed tiers; no actual LLM loaded"),
         FLinearColor(0.78f, 0.75f, 0.79f), 18.f, PanelY + 89.f, Font, Scale * 0.85f);

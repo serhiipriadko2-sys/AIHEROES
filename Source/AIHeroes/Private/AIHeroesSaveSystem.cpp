@@ -8,7 +8,7 @@
 namespace
 {
 constexpr int32 SaveUserIndex = 0;
-constexpr int32 MaximumSequence = 1000000;
+constexpr int32 CampaignSaveMaximumSequence = 1000000;
 
 bool SameStack(const FAIHeroesArmyStack& A, const FAIHeroesArmyStack& B)
 {
@@ -206,7 +206,7 @@ bool FAIHeroesSaveSystem::Save(
     }
     const int32 LastSequence = Previous.Snapshot ?
         Previous.Snapshot->SaveSequence : 0;
-    if (LastSequence >= MaximumSequence)
+    if (LastSequence >= CampaignSaveMaximumSequence)
     {
         ResultMessage = TEXT("SAVE BLOCKED: snapshot sequence limit reached.");
         return false;

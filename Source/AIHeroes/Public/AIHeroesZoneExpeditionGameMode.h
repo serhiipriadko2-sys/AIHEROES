@@ -39,6 +39,11 @@ private:
     };
 
     bool bReady = false;
+    bool bVisualQAEnabled = false;
+    int32 VisualQASerial = INDEX_NONE;
+    float VisualQACountdown = -1.f;
+    void ScheduleVisualQAFrame();
+    void CaptureVisualQAFrameTick(float DeltaSeconds);
     FAIHeroesZoneExpeditionState Campaign;
     FAIHeroesGeneratedWorld Generated;
     FName SelectedSite = NAME_None;

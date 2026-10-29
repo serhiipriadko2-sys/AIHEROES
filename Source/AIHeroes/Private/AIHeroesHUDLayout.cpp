@@ -74,15 +74,23 @@ FAIHeroesHUDActionRect FAIHeroesHUDLayout::Rect(
         Rect.Y = AskCell.Y;
         return Rect;
     }
-    // Four equally sized landscape/portrait mobile utility cells: no
-    // invisible convoy/field controls at actual 320-360px phone widths.
+    // Portrait widths cannot fit FOUR 100px touch targets side by side.
+    // Reflow to two rows/two columns, preserving action IDs and sharing the
+    // identical geometry with the mouse/touch HitTest implementation.
     if (Viewport.X < 480.f && ActionId >= 202 && ActionId <= 205)
     {
-        Rect.W = (Viewport.X - 16.f - 18.f) / 4.f;
+        constexpr float Outer = 8.f;
+        constexpr float GapX = 8.f;
+        constexpr float RowStep = 32.f;
+        const int32 Index = ActionId - 202;
+        Rect.W = (Viewport.X - Outer * 2.f - GapX) * 0.5f;
         Rect.H = 29.f;
-        Rect.X = 8.f + (205 - ActionId) * (Rect.W + 6.f);
-        Rect.Y = Viewport.Y - BottomPanelHeight(Viewport.X) - 33.f;
-        if (Rect.W < 60.f || Rect.Y < 185.f)
+        Rect.X = Outer + (Index % 2) * (Rect.W + GapX);
+        Rect.Y = Viewport.Y - BottomPanelHeight(Viewport.X) - 65.f +
+            (Index / 2) * RowStep;
+        if (Rect.W < 100.f || Rect.Y < 185.f ||
+            Rect.X + Rect.W > Viewport.X - Outer ||
+            Rect.Y + Rect.H > Viewport.Y)
             return FAIHeroesHUDActionRect();
         return Rect;
     }

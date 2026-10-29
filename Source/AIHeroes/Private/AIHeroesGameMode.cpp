@@ -8,6 +8,7 @@
 #include "AIHeroesBattleRecord.h"
 #include "AIHeroesCampaignRules.h"
 #include "AIHeroesCampaignSave.h"
+#include "AIHeroesLoadPreflight.h"
 #include "AIHeroesSaveSystem.h"
 #include "AIHeroesCameraPawn.h"
 #include "AIHeroesHUD.h"
@@ -735,10 +736,22 @@ void AAIHeroesGameMode::LoadCampaign()
         return;
     }
 
-    // Preflight ALL actor references before changing a single game variable.
-    if (Nodes.Num() != Snapshot->NodeStates.Num())
+    // Validate actors, unique identities and exact map coverage before commit.
+    TArray<FAIHeroesActiveNodeIdentity> ActiveNodeIdentities;
+    ActiveNodeIdentities.Reserve(Nodes.Num());
+    for (AAIHeroesWorldNode* Node : Nodes)
     {
-        SetEvent(TEXT("LOAD BLOCKED: active map layout differs from the save."));
+        if (!IsValid(Node))
+        {
+            SetEvent(TEXT("LOAD BLOCKED: active map contains a missing node."));
+            return;
+        }
+        ActiveNodeIdentities.Add({FName(*Node->GetDisplayName()), Node->NodeType});
+    }
+    if (!FAIHeroesLoadPreflight::Validate(ActiveNodeIdentities, Snapshot->NodeStates,
+            Snapshot->HeroNodeId, Snapshot->SelectedNodeId, ValidationError))
+    {
+        SetEvent(TEXT("LOAD BLOCKED: ") + ValidationError + TEXT(" State unchanged."));
         return;
     }
 

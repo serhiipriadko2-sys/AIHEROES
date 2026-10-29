@@ -1,90 +1,181 @@
 param(
-    [int]$Seed = 20261029,
-    [int]$Branches = 3
+    [ValidateRange(0,2147483647)][int]$Seed = 20261029,
+    [ValidateRange(0,4)][int]$Branches = 3,
+    [switch]$KeepOpen
 )
-# Windows development-only visual acceptance. The process is uniquely tagged.
-# No campaign SaveGame is written, read, renamed or deleted by this script.
+# Launch a uniquely tagged opt-in game and accept ONLY engine GPU frames.
+# Never press K/L, call save APIs, or modify existing user campaign slots.
 $ErrorActionPreference = 'Stop'
-$root = 'C:\github\AIHEROES'
-$tag = 'AIHeroesZoneExpeditionQA.log'
-$log = Join-Path $root ('Saved\Logs\' + $tag)
-$saveDir = Join-Path $root 'Saved\SaveGames'
-$before = @{}
-if (Test-Path $saveDir) {
-    Get-ChildItem -LiteralPath $saveDir -File | ForEach-Object {
-        $before[$_.FullName] = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
-    }
-}
-$existing = @(Get-CimInstance Win32_Process | Where-Object {
-    $_.Name -eq 'UnrealEditor.exe' -and
-    $_.CommandLine -like '*-log=AIHeroesZoneExpeditionQA.log*'
-})
-if ($existing.Count -gt 0) { throw 'QA_BOUNDARY: dedicated prior window still running' }
-if (Test-Path $log) { Remove-Item -LiteralPath $log -Force }
-$exe = 'C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe'
-$game = Start-Process -FilePath $exe -PassThru -ArgumentList @(
-    ('"{0}"' -f (Join-Path $root 'AIHeroes.uproject')),
-    '"/Engine/Maps/Entry?game=/Script/AIHeroes.AIHeroesZoneExpeditionGameMode"',
-    '-game', '-windowed', '-ResX=1280', '-ResY=720', '-NoSplash',
-    '-NoP4', '-NoSound', "-ZoneSeed=$Seed", "-ZoneBranches=$Branches", "-log=$tag"
-)
+Add-Type -AssemblyName System.Drawing
 Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
-public static class ZoneExpeditionQAInput {
- [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr h, uint m, IntPtr w, IntPtr l);
+public static class AIHeroesExpeditionQAKeys {
+ [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr h,uint m,IntPtr w,IntPtr l);
 }
 '@
-function Await([string]$Regex, [int]$Limit = 110) {
-    for ($i = 0; $i -lt $Limit; $i++) {
-        if (Test-Path $log) {
-            $hit = Select-String -LiteralPath $log -Pattern $Regex | Select-Object -Last 1
-            if ($hit) { Write-Output $hit.Line; return }
+$Root = Split-Path -Parent $PSScriptRoot
+$Stamp = [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ')
+$Tag = 'AIHeroesZoneExpeditionQA_' + $Stamp + '.log'
+$Log = Join-Path $Root ('Saved\Logs\' + $Tag)
+$QaDir = Join-Path $Root ('Saved\QA\ZoneExpedition_' + $Stamp)
+$FrameDir = Join-Path $Root 'Saved\QA\ZoneExpeditionFrames'
+New-Item -ItemType Directory -Path $QaDir -ErrorAction Stop | Out-Null
+$SaveDir = Join-Path $Root 'Saved\SaveGames'
+function SaveHashes {
+    $Values = @{}
+    if (Test-Path $SaveDir) {
+        Get-ChildItem -LiteralPath $SaveDir -File | ForEach-Object {
+            $Values[$_.FullName] = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
         }
-        Start-Sleep -Milliseconds 350
     }
-    throw ('ZONE_EXPEDITION_QA_TIMEOUT ' + $Regex)
+    return $Values
 }
-function KeyPress([int]$Vk) {
-    $g = Get-Process -Id $game.Id -ErrorAction Stop
-    if ($g.MainWindowHandle -eq [IntPtr]::Zero) { throw 'QA_WINDOW_HANDLE_MISSING' }
-    if (-not [ZoneExpeditionQAInput]::PostMessage($g.MainWindowHandle, 0x100, [IntPtr]$Vk, [IntPtr]0)) {
-        throw 'QA_POST_KEYDOWN_FAILED'
+$Before = SaveHashes
+$Editor = 'C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe'
+$Mode = 'AIHeroesZoneExpeditionGameMode'
+$Project = Join-Path $Root 'AIHeroes.uproject'
+if (-not (Test-Path $Editor) -or -not (Test-Path $Project)) {
+    throw 'No installed game editor or .uproject'
+}
+$ArgsList = @(
+    $Project,('/Engine/Maps/Entry?game=/Script/AIHeroes.'+$Mode),
+    '-game','-windowed','-ResX=1280','-ResY=720','-NoSplash',
+    '-NoP4','-NoSound',('-ZoneSeed='+$Seed),('-ZoneBranches='+$Branches),
+    '-ZoneExpeditionCapture',('-log='+$Tag)
+)
+$Game = Start-Process -FilePath $Editor -PassThru -ArgumentList $ArgsList
+Write-Output ('EXPEDITION_QA_OWN_PID='+$Game.Id+' dir='+$QaDir)
+function AwaitLog([string]$Regex,[int]$Checks=160) {
+    for($i=0;$i -lt $Checks;$i++) {
+        $Game.Refresh()
+        if($Game.HasExited) { throw ('QA_GAME_CRASH exit='+$Game.ExitCode) }
+        if(Test-Path $Log) {
+            $Bad=Select-String -LiteralPath $Log -Pattern '\[ZONE EXPEDITION\] (BLOCKED|QA_CAPTURE_DIRECTORY_FAILED)' |
+                Select-Object -Last 1
+            if($Bad) { throw ('QA_LOG_FATAL '+$Bad.Line) }
+            $Hit=Select-String -LiteralPath $Log -Pattern $Regex|Select-Object -Last 1
+            if($Hit) { Write-Host $Hit.Line;return $Hit.Line }
+        }
+        Start-Sleep -Milliseconds 300
     }
-    Start-Sleep -Milliseconds 230
-    if (-not [ZoneExpeditionQAInput]::PostMessage($g.MainWindowHandle, 0x101, [IntPtr]$Vk, [IntPtr]0)) {
-        throw 'QA_POST_KEYUP_FAILED'
+    throw ('QA_TIMEOUT '+$Regex)
+}
+function PostKey([int]$Vk) {
+    $Proc=Get-Process -Id $Game.Id -ErrorAction Stop
+    $Identity=(Get-CimInstance Win32_Process -Filter ('ProcessId='+$Game.Id)).CommandLine
+    if($Proc.MainWindowHandle -eq [IntPtr]::Zero -or
+       $Identity -notlike ('*-log='+$Tag+'*') -or
+       $Identity -notlike ('*'+$Mode+'*')) { throw 'QA_WRONG_TARGET_WINDOW' }
+    if(-not [AIHeroesExpeditionQAKeys]::PostMessage($Proc.MainWindowHandle,0x100,[IntPtr]$Vk,[IntPtr]0)) {
+        throw 'QA_KEY_DOWN_FAILED'
     }
-    Start-Sleep -Milliseconds 620
+    Start-Sleep -Milliseconds 220
+    if(-not [AIHeroesExpeditionQAKeys]::PostMessage($Proc.MainWindowHandle,0x101,[IntPtr]$Vk,[IntPtr]0)) {
+        throw 'QA_KEY_UP_FAILED'
+    }
+    Start-Sleep -Milliseconds 600
 }
-function Capture([string]$OutputName) {
-    & (Join-Path $root 'Tools\qa_capture_targeted_game.ps1') -LogTag $tag -OutputPath (Join-Path $root ('Docs\' + $OutputName))
-    if ($LASTEXITCODE -ne 0) { throw 'QA_CAPTURE_FAILED' }
+$FrameReceipts = @()
+function CaptureFrame([int]$Serial,[string]$Name) {
+    $Line = AwaitLog ('\[ZONE EXPEDITION\] SCREENSHOT_REQUEST serial='+$Serial+' path=')
+    $Raw = ($Line -replace '^.*SCREENSHOT_REQUEST serial=[0-9]+ path=','').Trim()
+    $ExpectedFilenamePattern='^Expedition_'+('{0:D2}' -f $Serial)+'_[0-9a-fA-F]{32}\.png$'
+    $Filename=[IO.Path]::GetFileName($Raw.Replace('/','\'))
+    if($Filename -notmatch $ExpectedFilenamePattern -or
+       $Raw -notmatch '[\\/]Saved[\\/]QA[\\/]ZoneExpeditionFrames[\\/]') {
+        throw ('QA_UNTRUSTED_SCREENSHOT_PATH '+$Raw)
+    }
+    $Source=[IO.Path]::GetFullPath((Join-Path $FrameDir $Filename))
+    $Allowed=[IO.Path]::GetFullPath($FrameDir).TrimEnd('\')+'\'
+    if(-not $Source.StartsWith($Allowed,[StringComparison]::OrdinalIgnoreCase)) {
+        throw 'QA_SCREENSHOT_OUTSIDE_FRAME_DIR'
+    }
+    $Found=$false
+    for($i=0;$i -lt 140;$i++) {
+        if((Test-Path $Source) -and (Get-Item $Source).Length -gt 12000) {
+            $Found=$true;break
+        }
+        Start-Sleep -Milliseconds 250
+    }
+    if(-not $Found) { throw ('QA_GPU_FRAME_MISSING '+$Source) }
+    $Image=[System.Drawing.Bitmap]::FromFile($Source)
+    $Colors=New-Object 'System.Collections.Generic.HashSet[int]'
+    try {
+        if($Image.Width -ne 1280 -or $Image.Height -ne 720) {
+            throw ('QA_WRONG_FRAME_DIMENSIONS '+$Image.Width+'x'+$Image.Height)
+        }
+        for($y=25;$y -lt $Image.Height;$y+=27) {
+            for($x=25;$x -lt $Image.Width;$x+=29) {
+                [void]$Colors.Add($Image.GetPixel($x,$y).ToArgb())
+            }
+        }
+        if($Colors.Count -lt 8) { throw ('QA_BLANK_GPU_FRAME unique_colors='+$Colors.Count) }
+    } finally { $Image.Dispose() }
+    $Target=Join-Path $QaDir ($Name+'.png')
+    Copy-Item -LiteralPath $Source -Destination $Target -ErrorAction Stop
+    $A=(Get-FileHash -LiteralPath $Source -Algorithm SHA256).Hash
+    $B=(Get-FileHash -LiteralPath $Target -Algorithm SHA256).Hash
+    if($A -ne $B) { throw 'QA_IMAGE_COPY_HASH_DRIFT' }
+    $Info=Get-Item -LiteralPath $Target
+    $Receipt=[ordered]@{
+       stage=$Name; serial=$Serial; screenshot=$Target;
+       bytes=$Info.Length; sha256=$B.ToLowerInvariant();
+       width=1280; height=720; unique_sampled_colors=$Colors.Count
+    }
+    Write-Host ('EXPEDITION_GPU_FRAME_PASS stage='+$Name+' bytes='+$Info.Length+
+        ' colors='+$Colors.Count+' sha256='+$B)
+    return [pscustomobject]$Receipt
 }
-Await '\[ZONE EXPEDITION\] READY seed='
-Capture 'AIHEROES_EXPEDITION_START_2026-10-29.png'
-# Initial target FOREST is selected in this mode, but no command issued.
-KeyPress 0x0D  # HUMAN ENTER, not an AI auto-order.
-Await '\[ZONE EXPEDITION\] PLAYER CONFIRMED FOREST \| battle=1 won=1'
-Capture 'AIHEROES_EXPEDITION_FOREST_2026-10-29.png'
-KeyPress 0x20  # HUMAN SPACE: restore movement
-Await '\[ZONE EXPEDITION\] DAY 2'
-KeyPress 0x09  # HUMAN TAB: select next visible zone
-Await '\[ZONE EXPEDITION\] Selected known zone '
-KeyPress 0x0D  # HUMAN ENTER: next explicitly confirmed order
-Await '\[ZONE EXPEDITION\] PLAYER CONFIRMED '
-Capture 'AIHEROES_EXPEDITION_DAY2_2026-10-29.png'
-$after = @{}
-if (Test-Path $saveDir) {
-    Get-ChildItem -LiteralPath $saveDir -File | ForEach-Object {
-        $after[$_.FullName] = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
+try {
+    [void](AwaitLog '\[ZONE EXPEDITION\] READY seed=')
+    $FrameReceipts+=CaptureFrame 0 'initial'
+    PostKey 0x0D  # Player confirms FOREST battle
+    [void](AwaitLog '\[ZONE EXPEDITION\] PLAYER CONFIRMED FOREST \| battle=1 won=1')
+    $FrameReceipts+=CaptureFrame 1 'forest'
+    PostKey 0x20  # Player ends day 1
+    [void](AwaitLog '\[ZONE EXPEDITION\] DAY 2')
+    $FrameReceipts+=CaptureFrame 2 'day2'
+    PostKey 0x09  # Human cycles to visible ORE
+    [void](AwaitLog '\[ZONE EXPEDITION\] Selected known zone ORE')
+    PostKey 0x0D  # Player confirms ORE battle
+    [void](AwaitLog '\[ZONE EXPEDITION\] PLAYER CONFIRMED ORE \| battle=1 won=1')
+    $FrameReceipts+=CaptureFrame 3 'ore'
+
+    $After=SaveHashes
+    if($Before.Count -ne $After.Count) { throw 'QA_USER_SAVE_FILE_COUNT_CHANGED' }
+    foreach($Path in $Before.Keys) {
+        if(-not $After.ContainsKey($Path) -or $Before[$Path] -ne $After[$Path]) {
+            throw ('QA_USER_SAVE_HASH_DRIFT '+$Path)
+        }
+    }
+    $Result=[ordered]@{
+       status='PASS_ZONE_EXPEDITION_GAMEPLAY';
+       seed=$Seed;branches=$Branches; pid=$Game.Id;
+       generated_zones=7+$Branches;
+       player_confirmed_battles=2;
+       human_next_day=1;
+       screenshots=$FrameReceipts;
+       user_save_files_unchanged=$true;
+       save_writes=0;
+       observed_utc=[DateTime]::UtcNow.ToString('o');
+    }
+    $Receipt=Join-Path $QaDir 'receipt.json'
+    [IO.File]::WriteAllText($Receipt,($Result|ConvertTo-Json -Depth 10),
+        (New-Object Text.UTF8Encoding($false)))
+    Write-Output ('ZONE_EXPEDITION_GAME_QA_PASS receipt='+$Receipt+
+        ' scenes=4 battles=2 no_save_writes=1')
+    if($KeepOpen) { Write-Output ('OWN_WINDOW_LEFT_OPEN_PID='+$Game.Id) }
+} finally {
+    if(-not $KeepOpen -and $Game) {
+        $Process=Get-CimInstance Win32_Process -Filter ('ProcessId='+$Game.Id) -ErrorAction SilentlyContinue
+        if($Process -and $Process.CommandLine -like ('*-log='+$Tag+'*') -and
+           $Process.CommandLine -like ('*'+$Mode+'*')) {
+            $Window=Get-Process -Id $Game.Id -ErrorAction SilentlyContinue
+            if($Window) {
+                $Closed=$Window.CloseMainWindow()
+                Write-Output ('OWN_QA_WINDOW_GRACEFUL_CLOSE='+$Closed)
+            }
+        }
     }
 }
-if ($before.Count -ne $after.Count) { throw 'QA_SAVE_COUNT_CHANGED' }
-foreach ($path in $before.Keys) {
-    if (-not $after.ContainsKey($path) -or $after[$path] -ne $before[$path]) {
-        throw ('QA_PLAYER_SAVE_CHANGED ' + $path)
-    }
-}
-Write-Output ('ZONE_EXPEDITION_GAME_QA_PASS seed=' + $Seed +
-    ' branches=' + $Branches + ' player_confirmed_orders=2 user_save_writes=0 pid=' + $game.Id)

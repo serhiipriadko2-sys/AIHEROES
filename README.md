@@ -143,8 +143,33 @@ The 3D world still uses prototype geometry. Confirmed attacks run a live
 8x6-grid session: the hero chooses movement/attacks during play, and the
 campaign commits casualties/cost/rewards once after completion. Perspective
 camera, HP/initiative, pause/speed/fast-finish are implemented. Historical V1
-3D replay stays separate; V2 transcripts are readable with J, but the old V
-3D replay viewer remains V1-only. Author-created character assets, animation
+3D replay stays separate; J shows the transcript and V routes validated V1
+or V2 records to their corresponding 3D presentation without campaign rewards.
+Author-created character assets, animation
 polish and manual commands to units are not part of this slice.
 Android SDK is not validated, no Android APK or live 1B/3B/8B checkpoint
 has been tested. No assets or game concepts from Heroes III are copied.
+
+## Reproducible local QA
+
+In the open VS Code workspace, run **AIHEROES: Build Unreal Editor**, then
+**AIHEROES: Test all gameplay automation**. The build task records SHA-256
+for the project, all `Source/` and `Config/` files, and the compiled game DLL.
+The test task requires that compiled snapshot and checks it again after the
+full current `AIHeroes` group. Source or DLL drift fails the verification.
+
+Equivalent commands from the repository root:
+
+```powershell
+powershell.exe -NoProfile -File Tools/build_aiheroes_editor.ps1
+powershell.exe -NoProfile -File Tools/run_aiheroes_automation.ps1 -CompiledSnapshot Docs/AIHEROES_BUILD_LATEST.json
+powershell.exe -NoProfile -File Tools/test_aiheroes_build_evidence.ps1
+```
+
+Manifests/logs are under `Docs/BuildRuns/` and `Docs/AutomationRuns/`.
+Omitting `-CompiledSnapshot` remains supported for older QA scripts, but its
+receipt explicitly says `build_verified=false`: it tests a binary, not a
+verified current-source build. Installed Engine and Content assets are outside
+this hash scope. Coordinated wrappers serialize native work; other tools must
+still avoid concurrent Editor-Cmd runs. No process is automatically closed.
+Automation PASS is not manual gameplay or Android acceptance.

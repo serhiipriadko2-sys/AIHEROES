@@ -87,6 +87,31 @@ bool FAIHeroesHUDLayoutTest::RunTest(const FString& Parameters)
         FAIHeroesHUDLayout::HitTest(FVector2D(505.f, 630.f), Desktop), 1);
     TestEqual(TEXT("New 1280x720 PLAN ROUTE click remains functional"),
         FAIHeroesHUDLayout::HitTest(FVector2D(1010.f, 681.f), Desktop), 12);
+
+    // Narrow portrait screens must preserve four independently tappable
+    // controls instead of hiding or shrinking the CONVOY action.
+    for (const FVector2D View : {
+        FVector2D(320.f, 640.f), FVector2D(360.f, 640.f),
+        FVector2D(480.f, 800.f), FVector2D(640.f, 720.f)})
+    {
+        for (int32 Action = 202; Action <= 205; ++Action)
+        {
+            const auto R = FAIHeroesHUDLayout::Rect(Action, View);
+            const FVector2D Center(R.X + R.W * .5f, R.Y + R.H * .5f);
+            TestTrue(TEXT("Every narrow-screen utility has a 100x28 touch target"),
+                R.W >= 100.f && R.H >= 28.f &&
+                R.X >= 8.f && R.Y >= 0.f &&
+                R.X + R.W <= View.X && R.Y + R.H <= View.Y);
+            TestEqual(TEXT("Portrait touch routes to its own action"),
+                FAIHeroesHUDLayout::HitTest(Center, View), Action);
+            for (int32 Other = 202; Other <= 205; ++Other)
+            {
+                if (Other == Action) continue;
+                TestFalse(TEXT("Distinct portrait utility hitboxes cannot overlap"),
+                    FAIHeroesHUDLayout::Rect(Other, View).Contains(Center));
+            }
+        }
+    }
     return true;
 }
 #endif

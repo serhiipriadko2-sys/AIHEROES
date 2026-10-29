@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "date": "2026-10-29",
+  "observed_at_utc": "2026-10-29T06:46:57.206251+00:00",
+  "status": "PARTIAL",
+  "implementation": "implemented; runtime-unverified",
+  "baseline_head": "429ad91",
+  "head_at_receipt": "429ad91e33defebb618543f3ae58c2fd7ab67662",
+  "scope": [
+    "bijective map load preflight",
+    "atomic bounded live battle rewards",
+    "source/DLL bound native QA tooling"
+  ],
+  "artifacts": [
+    {
+      "path": ".vscode/tasks.json",
+      "bytes": 4996,
+      "sha256": "5dfc5422fbf60947297184ef4d0cadf6ade50a031a4fb23579fd1d7f9a8212cd"
+    },
+    {
+      "path": "README.md",
+      "bytes": 10095,
+      "sha256": "8ef8706f7ddc6cc453bc645d0118d5af2d7ed153d83f69c19227bb4b3218b764"
+    },
+    {
+      "path": "Docs/ADR/ADR-20261029-02_TRANSACTION_AND_QA_INTEGRITY.md",
+      "bytes": 3970,
+      "sha256": "cd268fdc806dc36dd7a9340408c9f2699122ab891d597e096f3f06797d521c7c"
+    },
+    {
+      "path": "Docs/INTEGRITY_CYCLE_2026-10-29.md",
+      "bytes": 3306,
+      "sha256": "b2b85a7d1e5e410827db1a9b3c649c619bb1315a5dff9e89de20ae048bccab0c"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesLoadPreflight.h",
+      "bytes": 709,
+      "sha256": "be89fd2ff345d9d872c86bc858631d927b9008677f6e81f95e2e1e01034c61ce"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLoadPreflight.cpp",
+      "bytes": 2292,
+      "sha256": "b4c7a2dc8bcf90308833beec94646c138d6e4012a69e3adfba6bd95967dd7fb3"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesLoadPreflightTests.cpp",
+      "bytes": 6842,
+      "sha256": "742d34ddd3383e7213de7db5a71e8d120af35b89d30a9ea73ca1eb4e04fafdbe"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesBattleRewardRules.h",
+      "bytes": 640,
+      "sha256": "1180cacb449dfbcb33784bfd71ad6003ce5a9e2d71ca379fdf8d26a40b09377a"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleRewardRules.cpp",
+      "bytes": 1646,
+      "sha256": "fa55bb8c6f4b7c804487ee4cd42b6f2cca52d7f9b46d655f97471a9be46ccd1d"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleRewardTests.cpp",
+      "bytes": 4631,
+      "sha256": "d70ce11259f7aa73af0402eaf3596568512359a1248285e9f97693edf9efbf53"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+      "bytes": 12813,
+      "sha256": "ed5452af7e16d36b378e2f8362fdcae22dc2667f2898af608be64ed9fe2dcb4e"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp",
+      "bytes": 16646,
+      "sha256": "515e3b4820a7c04d570c1934e85a931834cebf333de6d9d0e1ef3d5c796f8ea3"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+      "bytes": 36903,
+      "sha256": "d02c2445c69dddd6ddfc9283bbc1ed7b16111df64e8c07e0ca6d7a1a53f4f464"
+    },
+    {
+      "path": "Tools/aiheroes_build_evidence.ps1",
+      "bytes": 5627,
+      "sha256": "2da863667b174914696bb653449a27349d4e62c0b5e3e02cc1b165a0f4df2a9a"
+    },
+    {
+      "path": "Tools/build_aiheroes_editor.ps1",
+      "bytes": 2801,
+      "sha256": "fc6994099c297722b0df577eb799ba50e6a3664c8a67fb4a5f9512bd9983bb3b"
+    },
+    {
+      "path": "Tools/run_aiheroes_automation.ps1",
+      "bytes": 3699,
+      "sha256": "ea1bd1bec7f080c78e124ab0e85b83513cfebb8f233d62290bd6a1647249c6f8"
+    },
+    {
+      "path": "Tools/test_aiheroes_build_evidence.ps1",
+      "bytes": 6597,
+      "sha256": "5da0ba7c14885cf589364664fa50b65d66348809f6841bc3563e062b32a2e72b"
+    }
+  ],
+  "artifact_count": 17,
+  "artifact_bytes": 124213,
+  "checks": {
+    "sot30": "PASS knowledge30/30, hashes32/32; manifest0decd118a6300324b757d2587ec315a569aaf5800299d2b33bf046feaf56aeff",
+    "codex_static_setup": "PASS20/20",
+    "powershell51_fixtures": "PASS23/23",
+    "powershell_parser": "PASS4/4",
+    "vscode_tasks_json": "PASS",
+    "git_diff_check": "PASS",
+    "independent_static_review": "No P1/P2 found; not runtime proof",
+    "new_unreal_tests": "9 present; not executed",
+    "baseline_unreal_red": "not run; duplicate fixture includes former check counterexample",
+    "unreal_build": "2 attempts refused at live-process guard; UBT not started",
+    "full_aiheroes_group": "NOT RUN for current source",
+    "fresh_visual_smoke": "NOT RUN",
+    "manual_input_save_load": "NOT VERIFIED"
+  },
+  "blocker": {
+    "pid": 33940,
+    "process": "UnrealEditor.exe",
+    "mode": "AIHeroesZoneExpeditionGameMode -game",
+    "child_live_coding_pid": 54444,
+    "classification": "foreign parallel QA game, not evidence of an unsaved ordinary Editor",
+    "processes_closed": 0
+  },
+  "window_connection": "unavailable: missing field sandboxPolicy; no foreground-input fallback",
+  "build_verified": false,
+  "external_worktree_entries_preserved": [
+    {
+      "status": " M",
+      "path": "Source/AIHeroes/Private/AIHeroesHUD.cpp"
+    },
+    {
+      "status": " M",
+      "path": "Source/AIHeroes/Private/AIHeroesSaveSystem.cpp"
+    },
+    {
+      "status": " M",
+      "path": "Source/AIHeroes/Private/AIHeroesZoneExpeditionGameMode.cpp"
+    },
+    {
+      "status": " M",
+      "path": "Source/AIHeroes/Public/AIHeroesZoneExpeditionGameMode.h"
+    },
+    {
+      "status": " M",
+      "path": "Tools/qa_zone_expedition.ps1"
+    },
+    {
+      "status": " M",
+      "path": "Tools/verify_map_readability.ps1"
+    },
+    {
+      "status": "??",
+      "path": "Docs/AIHEROES_EXPEDITION_START_2026-10-29.png"
+    },
+    {
+      "status": "??",
+      "path": "Docs/AutomationRuns/20261029T063819446Z/"
+    },
+    {
+      "status": "??",
+      "path": "Docs/BuildRuns/"
+    },
+    {
+      "status": "??",
+      "path": "Docs/HUD_TEXT_FIT_2026-10-29.md"
+    },
+    {
+      "status": "??",
+      "path": "Source/AIHeroes/Private/AIHeroesHUDTextLayout.cpp"
+    },
+    {
+      "status": "??",
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesHUDTextTests.cpp"
+    },
+    {
+      "status": "??",
+      "path": "Source/AIHeroes/Public/AIHeroesHUDTextLayout.h"
+    }
+  ],
+  "boundaries": {
+    "git_commits_pushes": 0,
+    "sdk_model_installs": 0,
+    "user_save_writes": 0,
+    "canonical_sot30_changes": 0,
+    "real_llm_inference": "not implemented by this slice"
+  },
+  "next": [
+    "Close foreign QA game and pause concurrent writes",
+    "VSCode: AIHEROES: Build Unreal Editor",
+    "VSCode: AIHEROES: Test all gameplay automation",
+    "Verify fresh JSON and matching provenance",
+    "Visual live-grid smoke, then separate manual input/save/load acceptance"
+  ],
+  "rollback": "Revert only the named owned hunks/new files; no reset/clean or removal of foreign edits or user saves."
+}
