@@ -5,6 +5,7 @@
 #include "AIHeroesHUD.generated.h"
 
 class AAIHeroesGameMode;
+class UTexture2D;
 
 UCLASS()
 class AIHEROES_API AAIHeroesHUD : public AHUD
@@ -15,8 +16,16 @@ public:
     virtual void DrawHUD() override;
     int32 GetActionAt(const FVector2D& ScreenPoint) const;
     void PageAdvisorDossier(int32 Direction);
+    bool CloseExplorerMenu();
 
 private:
+    UPROPERTY()
+    TMap<FName,TObjectPtr<UTexture2D>> BattlePortraits;
+    void DrawAmberBattle(const AAIHeroesGameMode& Rules);
+    mutable bool bExplorerMenuOpen = false;
+    FString ExplorerLastEvent;
+    double ExplorerToastUntil = 0.0;
+    void DrawExplorerHUD(const AAIHeroesGameMode& Rules);
     FVector2D CachedCanvasSize = FVector2D::ZeroVector;
     int32 CachedDossierPageCount = 1;
     float DossierFontScale = -1.f;

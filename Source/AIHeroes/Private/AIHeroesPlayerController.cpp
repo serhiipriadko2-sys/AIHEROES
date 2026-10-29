@@ -318,6 +318,7 @@ void AAIHeroesPlayerController::PlayBattleIn3D()
 
 void AAIHeroesPlayerController::SkipBattleReplay()
 {
+    if (auto* H = Cast<AAIHeroesHUD>(GetHUD()); H && H->CloseExplorerMenu()) return;
     if (AAIHeroesGameMode* Game = Rules())
     {
         if (Game->IsBasePanelVisible()) Game->CloseBasePanel();

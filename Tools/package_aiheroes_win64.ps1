@@ -91,7 +91,9 @@ try {
         $ExeItem.Length -ne $Game.game_binary.bytes) {
         throw 'PACKAGE_BLOCKED: Game exe does not match compiled receipt'
     }
-    $BeforeInputs=@(Get-AIHeroesInputSnapshot -Root $Root)
+    # This helper returns a single, non-enumerated typed array. Do not wrap
+    # the invocation in @(): that would create a nested one-item array.
+    $BeforeInputs=Get-AIHeroesInputSnapshot -Root $Root
     $BeforeContent=@(ContentFiles)
     $BeforeSaves=@(SaveInventory)
     Assert-AIHeroesEntriesEqual -Expected @($Editor.inputs) -Actual $BeforeInputs

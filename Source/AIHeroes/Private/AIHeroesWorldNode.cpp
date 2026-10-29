@@ -1,5 +1,6 @@
 #include "AIHeroesWorldNode.h"
 #include "AIHeroesBaseRules.h"
+#include "AIHeroesArtDirection.h"
 
 #include "Components/PointLightComponent.h"
 #include "Components/SceneComponent.h"
@@ -132,4 +133,5 @@ void AAIHeroesWorldNode::RefreshVisual()
         (Defenders.IsEmpty() ? FColor(240, 240, 100) : FColor(255, 125, 100));
     Label->SetTextRenderColor(StateColor);
     Beacon->SetLightColor(FLinearColor(StateColor));
+    FAIHeroesArtDirection::ApplyNode(*this);
 }

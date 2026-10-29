@@ -1,0 +1,102 @@
+{
+  "origin": "Original procedural meshes and same-mesh portraits; no external assets",
+  "forward": "+X",
+  "units": "metres, FBX unit conversion to Unreal centimetres",
+  "assets": [
+    {
+      "unit": "Militia",
+      "mesh": "SM_Militia",
+      "triangles": 366,
+      "material_slots": [
+        "Leather",
+        "Dark",
+        "Cloth",
+        "Ivory",
+        "Bronze",
+        "Amber"
+      ],
+      "fbx_bytes": 29788,
+      "fbx_sha256": "5dede2914b5db8068ba19c91616b5ecc6109fa1f5c2d82700bdda3e7db22d8dc",
+      "portrait_bytes": 47656,
+      "portrait_sha256": "a91b6039c460270fc5f895372734c5d26f932dbb57ac465ab17f6ec94563d151"
+    },
+    {
+      "unit": "Scout",
+      "mesh": "SM_Scout",
+      "triangles": 388,
+      "material_slots": [
+        "Leather",
+        "Dark",
+        "Cloth",
+        "Bronze",
+        "Ivory"
+      ],
+      "fbx_bytes": 29468,
+      "fbx_sha256": "872cb9f97cfc734b39468b57514938d5d4cef233ba8eb7fbf404406032f4e55f",
+      "portrait_bytes": 44075,
+      "portrait_sha256": "45aacf3ab5f45ccba213d05794493cc7830566ec22f40396b71125714f1a4bce"
+    },
+    {
+      "unit": "Wolf",
+      "mesh": "SM_Wolf",
+      "triangles": 320,
+      "material_slots": [
+        "Fur",
+        "PaleFur",
+        "Dark",
+        "Amber"
+      ],
+      "fbx_bytes": 26700,
+      "fbx_sha256": "ac45984c4cbf18a004110160def21436f94d8aad42170e9cd0ffc5b2fc95897b",
+      "portrait_bytes": 42906,
+      "portrait_sha256": "ba213345f6fedd6d90fa1262f59fba29d689006848ed5719bafb67061923808d"
+    },
+    {
+      "unit": "Bandit",
+      "mesh": "SM_Bandit",
+      "triangles": 324,
+      "material_slots": [
+        "Leather",
+        "Dark",
+        "Bronze",
+        "Ivory",
+        "Rust"
+      ],
+      "fbx_bytes": 27932,
+      "fbx_sha256": "e3659bdd03cc459c6cc7e0a1510679e7dfe0ecdbefd0810cd072d11a557b5575",
+      "portrait_bytes": 43193,
+      "portrait_sha256": "67cef37c48d972319d2eb52a61410ec6a8ca30394412d662b9271ab6296c15bb"
+    },
+    {
+      "unit": "Raider",
+      "mesh": "SM_Raider",
+      "triangles": 336,
+      "material_slots": [
+        "Leather",
+        "Dark",
+        "Rust",
+        "Ivory",
+        "Bronze"
+      ],
+      "fbx_bytes": 27852,
+      "fbx_sha256": "729ef226a72996f1a96709afc6dea7681c86a0ca4d4551bceef8931151d237c3",
+      "portrait_bytes": 47415,
+      "portrait_sha256": "9915409887b5fbc28020a0b1b9bddbd3a1509c6513b3b07d776309fd2e79ddd6"
+    },
+    {
+      "unit": "Guardian",
+      "mesh": "SM_Guardian",
+      "triangles": 228,
+      "material_slots": [
+        "Stone",
+        "Ivory",
+        "Bronze",
+        "Amber"
+      ],
+      "fbx_bytes": 23292,
+      "fbx_sha256": "e7f526cf84f47ccc065e017884ce51fc6feb17b9abd3473f3a8d9bfe3eecb504",
+      "portrait_bytes": 51724,
+      "portrait_sha256": "a05723cdbae1d2a8479cb57e48f9514ed587866a9eef64b8e8b645be45830401"
+    }
+  ]
+}

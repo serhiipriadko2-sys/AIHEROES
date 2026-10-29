@@ -32,7 +32,7 @@ void AAIHeroesGameMode::RefreshAdventureRoads()
     if (!FAIHeroesTravelRules::BuildGraph(Snapshot, Graph, Error)) return;
     UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
     UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr,
-        TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+        TEXT("/Game/AmberMarch/Materials/M_Path.M_Path"));
     if (!Cube) return;
     // Same link list as movement authority; geometry never defines legality.
     for (const auto& Link : Graph.Links)
@@ -58,7 +58,7 @@ void AAIHeroesGameMode::RefreshAdventureRoads()
         if (Base)
         {
             auto* Material = UMaterialInstanceDynamic::Create(Base, Road);
-            Material->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.13f, 0.18f, 0.22f));
+            Material->SetVectorParameterValue(TEXT("Tint"), FLinearColor(0.52f, 0.43f, 0.28f));
             Mesh->SetMaterial(0, Material);
         }
         AdventureRoadActors.Add(Road);

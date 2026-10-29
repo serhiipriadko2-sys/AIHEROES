@@ -178,6 +178,7 @@ public:
     int32 GetLiveBattleActionCount() const { return LiveSession.Actions.Num(); }
     FString GetLiveBattleStatus() const;
     FString GetLiveArmyStatus(bool bPlayer) const;
+    const AAIHeroesLiveBattleStage* GetLiveBattlePresentation() const { return LiveBattleStage.Get(); }
     float GetLiveBattleSpeed() const { return LiveBattleSpeed; }
     void ToggleLiveBattlePause();
     void CycleLiveBattleSpeed();

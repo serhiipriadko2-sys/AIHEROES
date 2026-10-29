@@ -1,6 +1,7 @@
 #include "AIHeroesGameMode.h"
 
 #include "AIHeroesTravelPresentation.h"
+#include "AIHeroesArtDirection.h"
 #include "AIHeroesWorldNode.h"
 #include "Engine/StaticMeshActor.h"
 #include "Engine/World.h"
@@ -103,6 +104,7 @@ void AAIHeroesGameMode::DestroyTravelPresentation()
 
 void AAIHeroesGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+    FAIHeroesArtDirection::RemoveWorld(*this);
     CancelLocalModelExchange();
     DestroyTravelPresentation();
     Super::EndPlay(EndPlayReason);
@@ -110,6 +112,7 @@ void AAIHeroesGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AAIHeroesGameMode::Destroyed()
 {
+    FAIHeroesArtDirection::RemoveWorld(*this);
     CancelLocalModelExchange();
     DestroyTravelPresentation();
     Super::Destroyed();

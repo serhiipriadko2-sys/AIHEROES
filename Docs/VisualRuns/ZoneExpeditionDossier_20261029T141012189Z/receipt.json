@@ -1,0 +1,71 @@
+{
+    "status":  "PASS_ZONE_EXPEDITION_DOSSIER_PLAYTHROUGH",
+    "seed":  20261029,
+    "branches":  3,
+    "pid":  11464,
+    "generated_zones":  10,
+    "player_confirmed_battles":  2,
+    "read_only_advice_events":  2,
+    "read_only_dossier_events":  2,
+    "denied_mutating_commands_while_open":  2,
+    "dossier_open_log":  "[2026.10.29-14.10.30:056][468]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY DOSSIER OPEN options=3 known_choices=3 top=SUPPLY | no orders.",
+    "dossier_close_log":  "[2026.10.29-14.10.33:636][603]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY DOSSIER CLOSED | no orders executed.",
+    "advice_result":  "[2026.10.29-14.10.28:240][897]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY HERO ADVICE | HERO SEED: consider visible SUPPLY (2 moves). No guard on the visible destination. Select it yourself; ENTER authorizes.",
+    "inspect_result":  "[2026.10.29-14.10.29:566][311]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY HERO ADVICE | HERO SEED | FOREST costs 3 moves. SEED: defender outcome UNKNOWN; no battle forecast. Human ENTER required.",
+    "human_next_day":  1,
+    "screenshots":  [
+                        {
+                            "stage":  "initial",
+                            "serial":  0,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T141012189Z\\initial.png",
+                            "bytes":  367972,
+                            "sha256":  "f285051df04c4a2e99291fde503fedf00a478572721c5480a18fd2d9f30d197f",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  84
+                        },
+                        {
+                            "stage":  "dossier",
+                            "serial":  1,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T141012189Z\\dossier.png",
+                            "bytes":  222716,
+                            "sha256":  "6fdd01c990a724567bae3d61d0adf67e48f1fa6daad64bdefa951fe8622acac3",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  90
+                        },
+                        {
+                            "stage":  "forest",
+                            "serial":  2,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T141012189Z\\forest.png",
+                            "bytes":  401921,
+                            "sha256":  "6526a804e8b162e056c86808f0fb86a41e5e21ca5a5c9f81af26ba2aa83a216c",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  89
+                        },
+                        {
+                            "stage":  "day2",
+                            "serial":  3,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T141012189Z\\day2.png",
+                            "bytes":  397054,
+                            "sha256":  "e4fb3ca7379b2df3f552a9054fa9797dd5c89acf12c59046ee5a921173f11f60",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  87
+                        },
+                        {
+                            "stage":  "ore",
+                            "serial":  4,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T141012189Z\\ore.png",
+                            "bytes":  405867,
+                            "sha256":  "cbc950e153e737fe7b2b553901846956196e88c2b9af27ebdb52d4207336999a",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  93
+                        }
+                    ],
+    "user_save_files_unchanged":  true,
+    "save_writes":  0,
+    "observed_utc":  "2026-10-29T14:10:40.2319033Z"
+}

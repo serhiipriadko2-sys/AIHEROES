@@ -13,8 +13,10 @@ AAIHeroesCameraPawn::AAIHeroesCameraPawn()
     RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CameraRoot"));
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("PerspectiveCamera"));
     Camera->SetupAttachment(RootComponent);
-    Camera->SetRelativeRotation(FRotator(-43.f, 0.f, 0.f));
-    Camera->FieldOfView = 82.f;
+    Camera->SetRelativeRotation(FRotator(-52.f, 0.f, 0.f));
+    Camera->FieldOfView = 70.f;
+    Camera->PostProcessSettings.bOverride_MotionBlurAmount = true;
+    Camera->PostProcessSettings.MotionBlurAmount = 0.f;
     AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
@@ -22,7 +24,7 @@ void AAIHeroesCameraPawn::BeginPlay()
 {
     Super::BeginPlay();
     // From outside the board toward its centre: a rotatable 3D perspective.
-    SetActorLocation(FVector(-1850.f, 0.f, 1850.f));
+    SetActorLocation(FVector(-2550.f, 0.f, 2700.f));
 }
 
 void AAIHeroesCameraPawn::Tick(float DeltaSeconds)

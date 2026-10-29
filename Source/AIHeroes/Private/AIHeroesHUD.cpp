@@ -1,5 +1,6 @@
 #include "AIHeroesHUD.h"
 #include "AIHeroesHUDLayout.h"
+#include "AIHeroesExplorerLayout.h"
 #include "AIHeroesHUDTextLayout.h"
 #include "AIHeroesMapLabelLayout.h"
 #include "AIHeroesBasePanel.h"
@@ -57,6 +58,16 @@ int32 AAIHeroesHUD::GetActionAt(const FVector2D& ScreenPoint) const
         // Even a click outside the panel is consumed by this read-only modal.
         return FAIHeroesAdvisorDossierRules::HitTest(ScreenPoint, CachedCanvasSize);
     }
+    if (Rules && !Rules->IsBattleReplayActive() && FAIHeroesExplorerLayout::Frame(CachedCanvasSize).bSupported)
+    {
+        const int32 A = FAIHeroesExplorerLayout::Hit(ScreenPoint, CachedCanvasSize, bExplorerMenuOpen);
+        if (A == FAIHeroesExplorerLayout::MenuAction)
+        { bExplorerMenuOpen = !bExplorerMenuOpen; return FAIHeroesExplorerLayout::ConsumeAction; }
+        if (A == 0 && (!Rules->GetSelectedTravelPath().IsReachableThisTurn() || Rules->IsStrategicTravelMoving()))
+            return FAIHeroesExplorerLayout::ConsumeAction;
+        if (A != INDEX_NONE && A != FAIHeroesExplorerLayout::ConsumeAction) bExplorerMenuOpen = false;
+        return A;
+    }
     if (Rules && !Rules->IsBattleReplayActive() &&
         FAIHeroesAdvisorDossierRules::OpenButton(CachedCanvasSize).Contains(ScreenPoint))
     {
@@ -111,39 +122,16 @@ void AAIHeroesHUD::DrawHUD()
         return;
     }
 
+    if (!Rules->IsLiveBattleActive() && !Rules->IsBattleReplayActive() &&
+        FAIHeroesExplorerLayout::Frame(CachedCanvasSize).bSupported)
+    {
+        DrawExplorerHUD(*Rules);
+        return;
+    }
     if (Rules->IsLiveBattleActive())
     {
-        DrawRect(FLinearColor(0.015f, 0.025f, 0.045f, 0.96f), 0.f, 0.f, Width, 143.f);
-        DrawText(FString::Printf(TEXT("AI HEROES | LIVE GRID V2 | PROTOCOL %d | HERO COMMANDS"), Rules->ProtocolTier),
-            FLinearColor(0.4f, 0.9f, 1.f), 16.f, 12.f, Font, Scale * 1.15f);
-        DrawText(Rules->GetLiveBattleStatus().Left(TextLimit), FLinearColor::White,
-            16.f, 42.f, Font, Scale);
-        DrawText(TEXT("HERO: ") + Rules->GetLiveArmyStatus(true).Left(TextLimit - 6),
-            FLinearColor(0.4f, 0.9f, 1.f), 16.f, 69.f, Font, Scale);
-        DrawText(TEXT("ENEMY: ") + Rules->GetLiveArmyStatus(false).Left(TextLimit - 7),
-            FLinearColor(1.f, 0.65f, 0.3f), 16.f, 95.f, Font, Scale);
-        DrawText(TEXT("Q/E orbit  R/F zoom | SPACE pause | T speed | B fast finish | ENTER return after result"),
-            FLinearColor(0.8f, 0.85f, 0.9f), 16.f, 121.f, Font, Scale * 0.85f);
-        DrawRect(FLinearColor(0.015f, 0.025f, 0.045f, 0.96f),
-            0.f, Height - 126.f, Width, 126.f);
-        DrawText(Rules->LastEvent.Left(TextLimit), FLinearColor::White,
-            16.f, Height - 115.f, Font, Scale);
-        const bool bResult = Rules->GetLiveBattlePhase() == EAIHeroesLiveBattlePhase::Result;
-        const FString Labels[] = {
-            Rules->GetLiveBattlePhase() == EAIHeroesLiveBattlePhase::Paused ? TEXT("RESUME") : TEXT("PAUSE"),
-            FString::Printf(TEXT("SPEED %dx"), FMath::RoundToInt(Rules->GetLiveBattleSpeed())),
-            TEXT("FAST FINISH"), bResult ? TEXT("RETURN TO MAP") : TEXT("RESULT PENDING")};
-        for (int32 I = 0; I < 4; ++I)
-        {
-            float X, Y, W, H;
-            GetActionRect(100 + I, X, Y, W, H);
-            const bool bEnabled = I == 3 ? bResult : !bResult;
-            DrawRect(bEnabled ? FLinearColor(0.04f, 0.28f, 0.34f, 1.f) :
-                FLinearColor(0.08f, 0.1f, 0.13f, 1.f), X, Y, W, H);
-            DrawText(Labels[I], bEnabled ? FLinearColor::White : FLinearColor(0.4f, 0.4f, 0.4f),
-                X + 9.f, Y + 14.f, Font, Scale);
-        }
-        return; // No strategic node labels or hit targets under the arena.
+        DrawAmberBattle(*Rules);
+        return;
     }
 
     const auto MapContent = FAIHeroesMapLabelLayout::MapBounds(CachedCanvasSize);

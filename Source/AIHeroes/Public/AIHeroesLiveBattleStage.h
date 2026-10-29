@@ -47,6 +47,12 @@ public:
     FString GetStatusText() const;
     // Read-only view of the stage's current HP, including historical V2 replay.
     FString GetArmyStatus(bool bPlayer) const;
+    // HUD reads the presentation state: health changes only at the impact frame.
+    const TArray<FAIHeroesArmyStack>& GetPresentedArmy(bool bPlayer) const
+    { return bPlayer ? PlayerState : EnemyState; }
+    int32 GetInitialHealth(bool bPlayer, int32 Index) const;
+    int32 GetPresentedRound() const { return CurrentAction.Round; }
+    FString GetPresentedCaption() const;
 
 private:
     UPROPERTY()
@@ -61,6 +67,8 @@ private:
     TObjectPtr<UInstancedStaticMeshComponent> PathMarkers;
     UPROPERTY()
     TObjectPtr<UPointLightComponent> FillLight;
+    UPROPERTY()
+    TObjectPtr<UStaticMeshComponent> ShotProjectile;
     UPROPERTY()
     TObjectPtr<ACameraActor> BattleCamera;
     UPROPERTY()
@@ -92,6 +100,7 @@ private:
     UPROPERTY()
     TArray<TObjectPtr<UMaterialInstanceDynamic>> BoardMaterials;
 
+    TArray<int32> PlayerInitialHealth, EnemyInitialHealth;
     TArray<FAIHeroesArmyStack> PlayerState;
     TArray<FAIHeroesArmyStack> EnemyState;
     TArray<FIntPoint> PlayerPositions;

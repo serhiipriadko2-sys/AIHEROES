@@ -1,4 +1,5 @@
 #include "AIHeroesLiveBattleStage.h"
+#include "AIHeroesBattleArt.h"
 
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
@@ -61,6 +62,11 @@ AAIHeroesLiveBattleStage::AAIHeroesLiveBattleStage()
     FillLight->SetIntensity(30000.f);
     FillLight->SetAttenuationRadius(2700.f);
     FillLight->SetCastShadows(false);
+    ShotProjectile = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AmberShotProjectile"));
+    ShotProjectile->SetupAttachment(SceneRoot);
+    ShotProjectile->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    ShotProjectile->SetCastShadow(false);
+    ShotProjectile->SetHiddenInGame(true);
 }
 
 bool AAIHeroesLiveBattleStage::ValidCell(const FIntPoint& Cell)
@@ -161,16 +167,16 @@ bool AAIHeroesLiveBattleStage::Initialize(
         }
         return Material;
     };
-    PlayerMaterial = MakeMaterial(FLinearColor(0.035f, 0.52f, 0.95f));
-    EnemyMaterial = MakeMaterial(FLinearColor(0.95f, 0.16f, 0.035f));
+    PlayerMaterial = MakeMaterial(FLinearColor(0.055f, 0.40f, 0.39f));
+    EnemyMaterial = MakeMaterial(FLinearColor(0.61f, 0.19f, 0.08f));
     DamageMaterial = MakeMaterial(FLinearColor(1.f, 0.9f, 0.08f));
     ArenaBase->SetStaticMesh(CubeMesh);
     ArenaBase->SetMaterial(0, MakeMaterial(FLinearColor(0.035f, 0.05f, 0.08f)));
     LightTiles->SetStaticMesh(CubeMesh);
     DarkTiles->SetStaticMesh(CubeMesh);
     PathMarkers->SetStaticMesh(CubeMesh);
-    LightTiles->SetMaterial(0, MakeMaterial(FLinearColor(0.21f, 0.29f, 0.34f)));
-    DarkTiles->SetMaterial(0, MakeMaterial(FLinearColor(0.095f, 0.14f, 0.19f)));
+    LightTiles->SetMaterial(0, MakeMaterial(FLinearColor(0.25f, 0.30f, 0.23f)));
+    DarkTiles->SetMaterial(0, MakeMaterial(FLinearColor(0.17f, 0.22f, 0.18f)));
     PathMarkers->SetMaterial(0, MakeMaterial(FLinearColor(0.1f, 0.85f, 0.75f)));
     for (int32 X = 0; X < FAIHeroesGridBattle::Width; ++X)
     {
@@ -181,6 +187,12 @@ bool AAIHeroesLiveBattleStage::Initialize(
                 CellLocation(FIntPoint(X, Y), 0.f) - Center, FVector(1.73f, 1.73f, 0.07f)));
         }
     }
+    ShotProjectile->SetStaticMesh(CubeMesh);
+    ShotProjectile->SetMaterial(0, DamageMaterial);
+    FAIHeroesBattleArt::DecorateArena(*this);
+    PlayerInitialHealth.Reset(); EnemyInitialHealth.Reset();
+    for (const auto& U : PlayerArmy) PlayerInitialHealth.Add(U.TotalHealth);
+    for (const auto& U : EnemyArmy) EnemyInitialHealth.Add(U.TotalHealth);
     PlayerState = PlayerArmy;
     EnemyState = EnemyArmy;
     PlayerPositions = PlayerCells;
@@ -236,15 +248,17 @@ void AAIHeroesLiveBattleStage::SpawnFigure(bool bPlayer, int32 Index)
         Mesh->SetCastShadow(false);
         if (UMaterialInstanceDynamic* Material = bPlayer ? PlayerMaterial.Get() : EnemyMaterial.Get())
             Mesh->SetMaterial(0, Material);
+        // Basic shape remains a fallback only if the optional original mesh is absent.
+        FAIHeroesBattleArt::Apply(*Body, Army[Index].UnitId, bPlayer);
     }
     ATextRenderActor* Label = GetWorld()->SpawnActor<ATextRenderActor>(ATextRenderActor::StaticClass(),
-        CellLocation(Cells[Index], 165.f), FRotator::ZeroRotator, StageSpawnParameters(this));
+        CellLocation(Cells[Index], 235.f), FRotator::ZeroRotator, StageSpawnParameters(this));
     Labels.Add(Label);
     if (Label)
     {
         SpawnedActors.Add(Label);
         UTextRenderComponent* Text = Label->GetTextRender();
-        Text->SetWorldSize(30.f);
+        Text->SetWorldSize(24.f);
         Text->SetHorizontalAlignment(EHTA_Center);
         Text->SetTextRenderColor(bPlayer ? FColor(90, 220, 255) : FColor(255, 160, 100));
         Text->SetCastShadow(false);
@@ -261,20 +275,22 @@ void AAIHeroesLiveBattleStage::RefreshFigure(bool bPlayer, int32 Index)
     const FAIHeroesArmyStack& Stack = Army[Index];
     if (AStaticMeshActor* Body = Figure(bPlayer, Index))
     {
-        Body->SetActorLocation(CellLocation(Cells[Index]));
-        Body->SetActorScale3D(FigureScale(Stack));
+        const bool HasArt = FAIHeroesBattleArt::HasUnitMesh(*Body);
+        Body->SetActorLocation(CellLocation(Cells[Index], HasArt ? 7.f : 70.f));
+        // One miniature represents a stack. Casualties change the count, not body proportions.
+        Body->SetActorScale3D(HasArt ? FVector(.9f) : FigureScale(Stack));
         Body->SetActorHiddenInGame(!Stack.IsAlive());
-        if (UMaterialInstanceDynamic* Material = bPlayer ? PlayerMaterial.Get() : EnemyMaterial.Get())
+        if (HasArt) FAIHeroesBattleArt::TeamMark(*Body,bPlayer);
+        else if (UMaterialInstanceDynamic* Material = bPlayer ? PlayerMaterial.Get() : EnemyMaterial.Get())
             Body->GetStaticMeshComponent()->SetMaterial(0, Material);
     }
     if (Labels.IsValidIndex(Index) && IsValid(Labels[Index].Get()))
     {
-        Labels[Index]->SetActorLocation(CellLocation(Cells[Index], 165.f));
+        Labels[Index]->SetActorLocation(CellLocation(Cells[Index], 235.f));
         Labels[Index]->SetActorHiddenInGame(!Stack.IsAlive());
         Labels[Index]->GetTextRender()->SetText(FText::FromString(FString::Printf(
-            TEXT("%s[%d] %s %d\nHP %d | INIT %d"),
-            bPlayer ? TEXT("HERO") : TEXT("NPC"), Index,
-            *Stack.UnitId.ToString(), Stack.Count(), Stack.TotalHealth, Stack.Initiative)));
+            TEXT("%s  x%d"), *FAIHeroesBattleArt::GroupCode(bPlayer,Index), Stack.Count())));
+        // Detailed, localized health/initiative live in HUD cards, not overlapping 3D paragraphs.
     }
 }
 
@@ -364,7 +380,9 @@ void AAIHeroesLiveBattleStage::CommitCurrentAction()
         RefreshFigure(!CurrentAction.bPlayerAttacker, CurrentAction.TargetStackIndex);
         if (AStaticMeshActor* Target = Figure(!CurrentAction.bPlayerAttacker, CurrentAction.TargetStackIndex))
         {
-            if (DamageMaterial) Target->GetStaticMeshComponent()->SetMaterial(0, DamageMaterial);
+            if (FAIHeroesBattleArt::HasUnitMesh(*Target))
+                FAIHeroesBattleArt::TeamMark(*Target,!CurrentAction.bPlayerAttacker,true);
+            else if (DamageMaterial) Target->GetStaticMeshComponent()->SetMaterial(0, DamageMaterial);
         }
     }
 }
@@ -378,15 +396,17 @@ void AAIHeroesLiveBattleStage::UpdateAnimation(float Alpha)
             static_cast<float>(CurrentAction.Path.Num()) - UE_KINDA_SMALL_NUMBER);
         const int32 Segment = FMath::Clamp(FMath::FloorToInt(AlongPath), 0, CurrentAction.Path.Num() - 1);
         const FIntPoint From = Segment == 0 ? CurrentAction.FromCell : CurrentAction.Path[Segment - 1];
-        Attacker->SetActorLocation(FMath::Lerp(CellLocation(From),
-            CellLocation(CurrentAction.Path[Segment]), AlongPath - Segment));
+        const float Floor = FAIHeroesBattleArt::HasUnitMesh(*Attacker) ? 7.f : 70.f;
+        const FVector A = CellLocation(From,Floor), B = CellLocation(CurrentAction.Path[Segment],Floor);
+        Attacker->SetActorLocation(FMath::Lerp(A,B,AlongPath-Segment));
+        Attacker->SetActorRotation(FRotator(0,(B-A).Rotation().Yaw,0));
         const TArray<TObjectPtr<ATextRenderActor>>& Labels =
             CurrentAction.bPlayerAttacker ? PlayerLabels : EnemyLabels;
         if (Labels.IsValidIndex(CurrentAction.AttackerStackIndex) &&
             IsValid(Labels[CurrentAction.AttackerStackIndex].Get()))
         {
             Labels[CurrentAction.AttackerStackIndex]->SetActorLocation(
-                Attacker->GetActorLocation() + FVector(0.f, 0.f, 95.f));
+                Attacker->GetActorLocation() + FVector(0.f, 0.f, 228.f));
         }
     }
     else if (CurrentAction.Kind == EAIHeroesGridActionKind::Attack)
@@ -394,8 +414,22 @@ void AAIHeroesLiveBattleStage::UpdateAnimation(float Alpha)
         if (Attacker)
         {
             const FVector Direction = (CellLocation(CurrentAction.ToCell) - CellLocation(CurrentAction.FromCell)).GetSafeNormal();
-            Attacker->SetActorLocation(CellLocation(CurrentAction.FromCell) +
-                Direction * FMath::Sin(Alpha * UE_PI) * 65.f);
+            const float Floor=FAIHeroesBattleArt::HasUnitMesh(*Attacker)?7.f:70.f;
+            const bool Ranged=CurrentAction.AttackerId==FName(TEXT("Scout")) &&
+                (FMath::Abs(CurrentAction.ToCell.X-CurrentAction.FromCell.X)+
+                 FMath::Abs(CurrentAction.ToCell.Y-CurrentAction.FromCell.Y)>1);
+            Attacker->SetActorRotation(FRotator(0,Direction.Rotation().Yaw,0));
+            Attacker->SetActorLocation(CellLocation(CurrentAction.FromCell,Floor) +
+                Direction * FMath::Sin(Alpha * UE_PI) * (Ranged ? -12.f : 45.f));
+            ShotProjectile->SetHiddenInGame(!Ranged || Alpha<.08f || Alpha>=.45f);
+            if(Ranged && Alpha>=.08f && Alpha<.45f)
+            {
+                const float T=(Alpha-.08f)/.37f;
+                const FVector Shot=FMath::Lerp(CellLocation(CurrentAction.FromCell,115.f),
+                    CellLocation(CurrentAction.ToCell,90.f),T)+FVector(0,0,FMath::Sin(T*UE_PI)*45.f);
+                ShotProjectile->SetWorldLocationAndRotation(Shot,Direction.Rotation());
+                ShotProjectile->SetWorldScale3D(FVector(.55f,.035f,.035f));
+            }
         }
         if (Alpha >= 0.45f)
         {
@@ -435,6 +469,7 @@ void AAIHeroesLiveBattleStage::FinishPresentationImmediately()
         RefreshFigure(!CurrentAction.bPlayerAttacker, CurrentAction.TargetStackIndex);
     if (IsValid(DamageLabel.Get())) DamageLabel->SetActorHiddenInGame(true);
     PathMarkers->ClearInstances();
+    ShotProjectile->SetHiddenInGame(true);
     bPresenting = false;
 }
 
@@ -543,4 +578,26 @@ void AAIHeroesLiveBattleStage::CleanupPresentationActors()
     EnemyFigures.Empty();
     PlayerLabels.Empty();
     EnemyLabels.Empty();
+}
+
+
+int32 AAIHeroesLiveBattleStage::GetInitialHealth(bool bPlayer,int32 Index) const
+{
+    const auto& Values=bPlayer?PlayerInitialHealth:EnemyInitialHealth;
+    return Values.IsValidIndex(Index)?Values[Index]:0;
+}
+FString AAIHeroesLiveBattleStage::GetPresentedCaption() const
+{
+    if(bResultShown) return TEXT("Бой завершён. Результат применён один раз; вернитесь на карту.");
+    if(CurrentAction.Round<=0) return TEXT("Отряды готовы. Нажмите «Продолжить», чтобы наблюдать бой.");
+    const FString Actor=FAIHeroesBattleArt::GroupCode(CurrentAction.bPlayerAttacker,CurrentAction.AttackerStackIndex)
+        +TEXT(" ")+FAIHeroesBattleArt::UnitName(CurrentAction.AttackerId);
+    if(CurrentAction.Kind==EAIHeroesGridActionKind::Move)
+        return Actor+TEXT(" меняет позицию по клеткам поля.");
+    if(CurrentAction.Kind==EAIHeroesGridActionKind::Wait)
+        return Actor+TEXT(" ожидает: сейчас нет допустимой атаки.");
+    if(CurrentAction.Kind==EAIHeroesGridActionKind::Attack)
+        return FString::Printf(TEXT("%s атакует %s: %d урона."),*Actor,
+            *FAIHeroesBattleArt::GroupCode(!CurrentAction.bPlayerAttacker,CurrentAction.TargetStackIndex),CurrentAction.Damage);
+    return TEXT("Герой выбирает следующее действие.");
 }

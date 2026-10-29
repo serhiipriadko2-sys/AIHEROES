@@ -252,6 +252,26 @@
         "clear": true
       },
       "problemMatcher": []
+    },
+    {
+      "label": "AIHEROES: Verify Amber Vanguard battle visuals",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}\\Tools\\verify_amber_battle.ps1",
+        "-Visual"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
     }
   ]
 }

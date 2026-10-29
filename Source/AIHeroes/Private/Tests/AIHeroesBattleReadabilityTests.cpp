@@ -98,14 +98,14 @@ bool FAIHeroesBattleStableLabelIdentityTest::RunTest(const FString& Parameters)
         {FAIHeroesArmyStack(TEXT("Raider"), 6, 11, 5, 2, 5),
          FAIHeroesArmyStack(TEXT("Raider"), 4, 11, 5, 2, 5)},
         {FIntPoint(0, 2), FIntPoint(0, 3)}, {FIntPoint(7, 2), FIntPoint(7, 3)}))) return false;
-    const TCHAR* Ids[] = {TEXT("HERO[0]"), TEXT("HERO[1]"), TEXT("NPC[0]"), TEXT("NPC[1]")};
+    const TCHAR* Ids[] = {TEXT("A1"), TEXT("A2"), TEXT("B1"), TEXT("B2")};
     for (const TCHAR* Id : Ids)
     {
         ATextRenderActor* Label = LabelContaining(Stage, Id);
         if (TestNotNull(FString::Printf(TEXT("Receipt identity %s is visible"), Id), Label))
         {
             TestFalse(TEXT("Living group's label is not hidden"), Label->IsHidden());
-            TestTrue(TEXT("Initiative remains in the label"), Label->GetTextRender()->Text.ToString().Contains(TEXT("INIT")));
+            TestTrue(TEXT("Compact label retains actual stack count"), Label->GetTextRender()->Text.ToString().Contains(TEXT(" x")));
         }
     }
     TestEqual(TEXT("Both equal-name enemy figures are retained"), VisibleFigures(Stage), 4);
@@ -125,7 +125,7 @@ bool FAIHeroesBattleDeadLabelVisibilityTest::RunTest(const FString& Parameters)
         AAIHeroesLiveBattleStage* Stage = Fixture.SpawnStage();
         if (!TestNotNull(TEXT("Disposable stage exists"), Stage)) return false;
         if (!TestTrue(TEXT("Stage accepts explicit initial snapshot"), InitializePair(Stage, Variant == 0 ? 0 : 1))) return false;
-        ATextRenderActor* WolfLabel = LabelContaining(Stage, TEXT("Wolf"));
+        ATextRenderActor* WolfLabel = LabelContaining(Stage, TEXT("B1"));
         if (!TestNotNull(TEXT("Target's label actor exists for lifecycle checks"), WolfLabel)) return false;
         if (Variant > 0)
         {

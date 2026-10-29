@@ -33,6 +33,41 @@ struct FAIHeroesZoneExpeditionAdvice
     }
 };
 
+
+enum class EAIHeroesDossierReadiness : uint8
+{
+    ReadyNoGuard,
+    GuardOutcomeUnknown,
+    ThinReserves,
+    NoLivingArmy,
+    InsufficientMovement
+};
+
+// A reasoned, bounded comparison; NOT a battle forecast or executable order.
+// Every listed identity and route is already available in PlayerView.
+struct FAIHeroesZoneDossierOption
+{
+    FName Site = NAME_None;
+    int32 TravelCost = 0;
+    int32 MissingMoves = 0;
+    int32 RankScore = 0; // Explicit heuristic, not win probability.
+    bool bGuarded = false;
+    bool bReachableNow = false;
+    EAIHeroesDossierReadiness Readiness =
+        EAIHeroesDossierReadiness::InsufficientMovement;
+    FString Assessment;
+    FString Rationale;
+};
+
+struct FAIHeroesZoneExpeditionDossier
+{
+    bool bValid = false;
+    uint32 SourceRevision = 0; // Observation epoch only; no action consent.
+    int32 ConsideredKnownTargets = 0;
+    TArray<FAIHeroesZoneDossierOption> Options; // At most three.
+    FString Summary;
+};
+
 class AIHEROES_API FAIHeroesZoneExpeditionAdvisor
 {
 public:
@@ -43,4 +78,9 @@ public:
     static FAIHeroesZoneExpeditionAdvice Advise(
         const FAIHeroesZoneExpeditionState& State,
         FName InspectTarget = NAME_None);
+
+    // Deterministically rank up to three visible, not-yet-owned targets.
+    // Cannot select, move, battle, spend, save or access hidden topology.
+    static FAIHeroesZoneExpeditionDossier CompareKnown(
+        const FAIHeroesZoneExpeditionState& State);
 };

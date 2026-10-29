@@ -1,6 +1,7 @@
 #include "AIHeroesGameMode.h"
 
 #include "AIHeroesAdvisor.h"
+#include "AIHeroesArtDirection.h"
 #include "AIHeroesBaseRules.h"
 #include "AIHeroesDevelopmentRules.h"
 #include "AIHeroesRecruitmentAdvisor.h"
@@ -69,6 +70,7 @@ void AAIHeroesGameMode::BeginPlay()
     SpawnFieldDwellingVisuals();
     RefreshHeadquartersVisual();
     SpawnHeroMarker();
+    FAIHeroesArtDirection::ApplyWorld(*this);
     RefreshFogVisibility();
     RefreshAdventureRoads();
 
@@ -115,6 +117,9 @@ void AAIHeroesGameMode::SpawnWorld()
             Mesh->SetMobility(EComponentMobility::Movable);
             Mesh->SetStaticMesh(CubeMesh);
             Mesh->SetWorldScale3D(FVector(26.f, 26.f, 1.5f));
+            // Keep the legacy fallback, but do not let it intersect the authored island.
+            if (LoadObject<UStaticMesh>(nullptr, TEXT("/Game/AmberMarch/Meshes/SM_Island.SM_Island")))
+                Mesh->SetVisibility(false);
             Mesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
         }
     }

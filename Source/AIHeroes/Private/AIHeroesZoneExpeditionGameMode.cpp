@@ -2,6 +2,7 @@
 
 #include "AIHeroesCameraPawn.h"
 #include "AIHeroesZoneExpeditionHUD.h"
+#include "AIHeroesZoneScreenLayout.h"
 #include "AIHeroesZoneExpeditionAdvisor.h"
 #include "AIHeroesZoneExpeditionStore.h"
 #include "Camera/CameraComponent.h"
@@ -225,6 +226,7 @@ bool AAIHeroesZoneExpeditionGameMode::CreateScene()
         PC->SetViewTarget(ExpeditionCamera);
         PC->bShowMouseCursor = true;
         PC->bEnableClickEvents = true;
+        PC->bEnableTouchEvents = true;
     }
     else return false;
     return ZoneActors.Num() == Generated.Zones.Num() &&
@@ -308,13 +310,13 @@ void AAIHeroesZoneExpeditionGameMode::CycleSelection()
     }
 }
 
-void AAIHeroesZoneExpeditionGameMode::ClickSelect()
+void AAIHeroesZoneExpeditionGameMode::ClickSelectAtScreen(const FVector2D& Position)
 {
     if (!bReady || !GetWorld()) return;
     auto* PC = GetWorld()->GetFirstPlayerController();
     if (!PC) return;
     FHitResult Hit;
-    if (!PC->GetHitResultUnderCursor(ECC_Visibility, false, Hit)) return;
+    if (!PC->GetHitResultAtScreenPosition(Position, ECC_Visibility, false, Hit)) return;
     for (const auto& Entry : ZoneActors)
     {
         if (Entry.Value.Get() != Hit.GetActor() ||
@@ -384,6 +386,98 @@ void AAIHeroesZoneExpeditionGameMode::AskHero(bool bInspectSelection)
     const auto Advice = FAIHeroesZoneExpeditionAdvisor::Advise(
         Campaign, bInspectSelection ? SelectedSite : NAME_None);
     Status(TEXT("READ-ONLY HERO ADVICE | ") + Advice.Message);
+}
+
+void AAIHeroesZoneExpeditionGameMode::ToggleDossier()
+{
+    if (!bReady) return;
+    if (bDossierOpen)
+    {
+        bDossierOpen = false;
+        Dossier = FAIHeroesZoneExpeditionDossier();
+        Status(TEXT("READ-ONLY DOSSIER CLOSED | no orders executed."));
+        return;
+    }
+    FAIHeroesZoneExpeditionDossier Candidate =
+        FAIHeroesZoneExpeditionAdvisor::CompareKnown(Campaign);
+    if (!Candidate.bValid)
+    {
+        Status(TEXT("READ-ONLY DOSSIER BLOCKED | map preflight failed."));
+        return;
+    }
+    // The comparison is a frozen player-visible snapshot. Block ALL
+    // state-changing keys until D/Esc closes the panel; no stale order.
+    Dossier = MoveTemp(Candidate);
+    bDossierOpen = true;
+    const FString Top = Dossier.Options.IsEmpty()
+        ? TEXT("NONE") : Dossier.Options[0].Site.ToString();
+    Status(FString::Printf(
+        TEXT("READ-ONLY DOSSIER OPEN options=%d known_choices=%d top=%s | no orders."),
+        Dossier.Options.Num(), Dossier.ConsideredKnownTargets, *Top));
+    ScheduleVisualQAFrame();
+}
+
+bool AAIHeroesZoneExpeditionGameMode::HandleScreenPress(
+    const FVector2D& Position)
+{
+    if (!bReady || !GetWorld()) return false;
+    auto* PC = GetWorld()->GetFirstPlayerController();
+    if (!PC) return false;
+    int32 Width = 0;
+    int32 Height = 0;
+    PC->GetViewportSize(Width, Height);
+    const auto Layout = FAIHeroesZoneScreenLayout::Build(
+        FVector2D(Width, Height), bDossierOpen);
+    const auto Action = Layout.HitTest(Position);
+    if (bDossierOpen)
+    {
+        // Modal closes ONLY on the explicit CLOSE rect. Every other
+        // screen press is swallowed; it never selects a hidden map node.
+        if (Action == EAIHeroesZoneScreenAction::CloseComparison)
+        {
+            UE_LOG(LogTemp, Display,
+                TEXT("[ZONE INPUT] POINTER BUTTON CLOSE ROUTES"));
+            ToggleDossier();
+        }
+        return true;
+    }
+    if (Action == EAIHeroesZoneScreenAction::None)
+    {
+        // Header, bottom status and action-bar gutters are never
+        // projected into the 3D world as selection attempts.
+        const float BarTop = Layout.Buttons.IsEmpty() ?
+            Height - 185.f : Layout.Buttons[0].Rect.Y - 9.f;
+        return Position.Y < 137.f || Position.Y >= BarTop;
+    }
+
+    UE_LOG(LogTemp, Display, TEXT("[ZONE INPUT] POINTER BUTTON %s"),
+        FAIHeroesZoneScreenLayout::Name(Action));
+    switch (Action)
+    {
+        case EAIHeroesZoneScreenAction::NextSite:
+            CycleSelection(); break;
+        case EAIHeroesZoneScreenAction::HeroAdvice:
+            AskHero(false); break;
+        case EAIHeroesZoneScreenAction::InspectSite:
+            AskHero(true); break;
+        case EAIHeroesZoneScreenAction::CompareRoutes:
+            ToggleDossier(); break;
+        case EAIHeroesZoneScreenAction::ConfirmMove:
+            ConfirmSelected(); break;
+        case EAIHeroesZoneScreenAction::EndDay:
+            AdvanceDay(); break;
+        case EAIHeroesZoneScreenAction::Recruit:
+            Recruit(); break;
+        case EAIHeroesZoneScreenAction::UpgradeProtocol:
+            Upgrade(); break;
+        case EAIHeroesZoneScreenAction::Save:
+            Save(); break;
+        case EAIHeroesZoneScreenAction::Load:
+            Load(); break;
+        default:
+            break; // Includes malformed or modal-only actions.
+    }
+    return true;
 }
 
 void AAIHeroesZoneExpeditionGameMode::Save()
@@ -469,8 +563,52 @@ void AAIHeroesZoneExpeditionGameMode::Tick(float DeltaSeconds)
     if (IsValid(ExpeditionCamera) && PC->GetViewTarget() != ExpeditionCamera.Get())
         PC->SetViewTarget(ExpeditionCamera.Get());
     CaptureVisualQAFrameTick(DeltaSeconds);
+    if (PC->WasInputKeyJustPressed(EKeys::D))
+    {
+        ToggleDossier();
+        return;
+    }
+    if (bDossierOpen && PC->WasInputKeyJustPressed(EKeys::Escape))
+    {
+        ToggleDossier();
+        return;
+    }
+
+    // Screen touch and mouse take the same pure Canvas rectangle path.
+    // Touch first prevents a platform-synthesized mouse press from
+    // double-applying a movement, purchase, turn or SaveGame action.
+    if (PC->WasInputKeyJustPressed(EKeys::TouchKeys[ETouchIndex::Touch1]))
+    {
+        float TouchX = 0.f;
+        float TouchY = 0.f;
+        bool bPressed = false;
+        PC->GetInputTouchState(
+            ETouchIndex::Touch1, TouchX, TouchY, bPressed);
+        if (bPressed && FMath::IsFinite(TouchX) &&
+            FMath::IsFinite(TouchY))
+        {
+            const FVector2D Point(TouchX, TouchY);
+            if (!HandleScreenPress(Point))
+                ClickSelectAtScreen(Point);
+        }
+        return;
+    }
+    if (PC->WasInputKeyJustPressed(EKeys::LeftMouseButton))
+    {
+        float MouseX = 0.f;
+        float MouseY = 0.f;
+        if (PC->GetMousePosition(MouseX, MouseY) &&
+            FMath::IsFinite(MouseX) && FMath::IsFinite(MouseY))
+        {
+            const FVector2D Point(MouseX, MouseY);
+            if (!HandleScreenPress(Point))
+                ClickSelectAtScreen(Point);
+        }
+        return;
+    }
+    if (bDossierOpen) return; // No key orders or saves in a modal.
+
     if (PC->WasInputKeyJustPressed(EKeys::Tab)) CycleSelection();
-    if (PC->WasInputKeyJustPressed(EKeys::LeftMouseButton)) ClickSelect();
     if (PC->WasInputKeyJustPressed(EKeys::Enter)) ConfirmSelected();
     if (PC->WasInputKeyJustPressed(EKeys::SpaceBar)) AdvanceDay();
     if (PC->WasInputKeyJustPressed(EKeys::R)) Recruit();

@@ -1,0 +1,59 @@
+{
+  "origin": "Original procedural art by this project; no third-party meshes",
+  "assets": [
+    {
+      "name": "SM_Hearth",
+      "triangles": 412,
+      "bytes": 28956,
+      "sha256": "59150b083af6ffef884b3cb75a85332146ef651fe9c678de2da4c7abd782e994"
+    },
+    {
+      "name": "SM_Sawmill",
+      "triangles": 480,
+      "bytes": 30780,
+      "sha256": "00bfbb55fb47ea435151483ad3580a9f7c197ab82f3e2be7b31613f1b922b68c"
+    },
+    {
+      "name": "SM_Quarry",
+      "triangles": 192,
+      "bytes": 23612,
+      "sha256": "4fdcde111d6294a803f8fb5e4dad632560f2fa0d8ef6122540900a7dd5e8871c"
+    },
+    {
+      "name": "SM_Watchtower",
+      "triangles": 300,
+      "bytes": 25324,
+      "sha256": "9ed8de62bfb12c867fe41b96f96855cac89e90a4181f9b3ac50ca31085a0c6c8"
+    },
+    {
+      "name": "SM_Archive",
+      "triangles": 332,
+      "bytes": 26764,
+      "sha256": "111d944ea3eeaa02db3842f0c638101f443f8b319fe34eb62e025c6e94c7ec14"
+    },
+    {
+      "name": "SM_Seeker",
+      "triangles": 120,
+      "bytes": 20460,
+      "sha256": "de688cc9e2e7d743d7eb20ca896416370387306881dee1dabb607884212c3562"
+    },
+    {
+      "name": "SM_Pine",
+      "triangles": 70,
+      "bytes": 18620,
+      "sha256": "3ccb1bf98a38055a490b38134eb207293dd303d93a68cb30350ccee864e828c3"
+    },
+    {
+      "name": "SM_Boulder",
+      "triangles": 20,
+      "bytes": 15484,
+      "sha256": "59391fc4018a14d4d8bb65d24d79d7b70fd800e090b313df4154218d1c4fec17"
+    },
+    {
+      "name": "SM_Island",
+      "triangles": 1152,
+      "bytes": 37356,
+      "sha256": "3b24e2e36f7aede94996315c249bbe4c33ca72253f89c4201ca54f75d4139cdf"
+    }
+  ]
+}

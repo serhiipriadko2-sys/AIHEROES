@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "AIHeroesZoneExpeditionRules.h"
+#include "AIHeroesZoneExpeditionAdvisor.h"
 #include "AIHeroesZoneExpeditionGameMode.generated.h"
 
 class ACameraActor;
@@ -29,6 +30,8 @@ public:
     FName GetSelection() const { return SelectedSite; }
     FString GetLastMessage() const { return LastMessage; }
     FString GetSelectedPathInfo() const;
+    bool IsDossierOpen() const { return bDossierOpen; }
+    const FAIHeroesZoneExpeditionDossier& GetDossier() const { return Dossier; }
 
 private:
     struct FRoadVisual
@@ -48,6 +51,8 @@ private:
     FAIHeroesGeneratedWorld Generated;
     FName SelectedSite = NAME_None;
     FString LastMessage;
+    bool bDossierOpen = false;
+    FAIHeroesZoneExpeditionDossier Dossier;
     TMap<FName, TWeakObjectPtr<AStaticMeshActor>> ZoneActors;
     TMap<FName, TWeakObjectPtr<ATextRenderActor>> ZoneLabels;
     TArray<FRoadVisual> RoadVisuals;
@@ -58,12 +63,14 @@ private:
     bool CreateScene();
     void RefreshScene();
     void CycleSelection();
-    void ClickSelect();
+    void ClickSelectAtScreen(const FVector2D& Position);
+    bool HandleScreenPress(const FVector2D& Position);
     void ConfirmSelected();
     void AdvanceDay();
     void Recruit();
     void Upgrade();
     void AskHero(bool bInspectSelection);
+    void ToggleDossier();
     void Save();
     void Load();
     void Status(const FString& Message);

@@ -204,3 +204,115 @@ FAIHeroesZoneExpeditionAdvice FAIHeroesZoneExpeditionAdvisor::Advise(
         "HERO OFFLINE: no reachable unclaimed known target. Explore by authorized movement.");
     return Advice;
 }
+
+
+FAIHeroesZoneExpeditionDossier
+FAIHeroesZoneExpeditionAdvisor::CompareKnown(
+    const FAIHeroesZoneExpeditionState& State)
+{
+    FAIHeroesZoneExpeditionDossier Dossier;
+    FString Error;
+    FAIHeroesAdventureGraph Visible;
+    if (!FAIHeroesZoneExpeditionRules::PlayerView(State, Visible, Error))
+    {
+        Dossier.Summary = TEXT("Unverified map: no advice available.");
+        return Dossier; // No partial nodes, goals or road costs.
+    }
+
+    Dossier.bValid = true;
+    Dossier.SourceRevision = Visible.Revision;
+    const int32 LivingHP = TotalLivingHP(State);
+    TArray<FAIHeroesZoneDossierOption> Candidates;
+    for (const FAIHeroesAdventureNode& Node : Visible.Nodes)
+    {
+        if (Node.Id == State.HeroSite ||
+            FAIHeroesZoneExpeditionRules::IsCleared(State, Node.Id))
+            continue;
+
+        const FAIHeroesAdventurePathResult Route =
+            FAIHeroesAdventurePath::Find(
+                Visible, State.HeroSite, Node.Id, State.MovesLeft);
+        if (Route.Status != EAIHeroesAdventurePathStatus::Ready &&
+            Route.Status != EAIHeroesAdventurePathStatus::NeedsMoreMoves)
+            continue;
+
+        FAIHeroesZoneDossierOption Option;
+        Option.Site = Node.Id;
+        Option.TravelCost = Route.TotalCost;
+        Option.MissingMoves = Route.MissingMoves;
+        Option.bGuarded = Route.bBattleAtDestination;
+        Option.bReachableNow = Route.IsReachableThisTurn() &&
+            (!Route.bBattleAtDestination || LivingHP > 0);
+        Option.RankScore = StrategicValue(
+            State, Node.Id, Route.bBattleAtDestination) -
+            13 * Route.TotalCost;
+
+        // These bands assess army readiness and remaining moves only.
+        // Defender HP, battle probabilities and casualty counts are
+        // deliberately not inferred from the hidden encounter table.
+        if (Route.Status == EAIHeroesAdventurePathStatus::NeedsMoreMoves)
+        {
+            Option.Readiness = EAIHeroesDossierReadiness::InsufficientMovement;
+            Option.Assessment = FString::Printf(
+                TEXT("WAIT +%d MOVES | %s"),
+                Route.MissingMoves,
+                Route.bBattleAtDestination ?
+                    TEXT("GUARD UNKNOWN") : TEXT("NO GUARD"));
+            Option.RankScore -= 180 + 12 * Route.MissingMoves;
+        }
+        else if (Route.bBattleAtDestination && LivingHP <= 0)
+        {
+            Option.Readiness = EAIHeroesDossierReadiness::NoLivingArmy;
+            Option.Assessment = TEXT("NO TROOPS | BATTLE BLOCKED");
+            Option.RankScore -= 500;
+        }
+        else if (Route.bBattleAtDestination && LivingHP < 48)
+        {
+            Option.Readiness = EAIHeroesDossierReadiness::ThinReserves;
+            Option.Assessment = TEXT("THIN RESERVES | OUTCOME UNKNOWN");
+            Option.RankScore -= 65;
+        }
+        else if (Route.bBattleAtDestination)
+        {
+            Option.Readiness = EAIHeroesDossierReadiness::GuardOutcomeUnknown;
+            Option.Assessment = TEXT("GUARDED | OUTCOME UNKNOWN");
+        }
+        else
+        {
+            Option.Readiness = EAIHeroesDossierReadiness::ReadyNoGuard;
+            Option.Assessment = TEXT("NO GUARD | KNOWN PATH");
+        }
+
+        if (Node.Id == FName(TEXT("FOREST")) && State.Wood < 20)
+            Option.Rationale = TEXT("Wood reserve is low; forest may help.");
+        else if (Node.Id == FName(TEXT("ORE")) && State.Ore < 20)
+            Option.Rationale = TEXT("Ore reserve is low; mine may help.");
+        else if (Node.Id == FName(TEXT("SUPPLY")))
+            Option.Rationale = TEXT("Unguarded supply route has low exposure.");
+        else if (Option.bGuarded)
+            Option.Rationale = TEXT("Hostile checkpoint; losses uncalculated.");
+        else
+            Option.Rationale = TEXT("Explore a visible unclaimed destination.");
+
+        Candidates.Add(MoveTemp(Option));
+    }
+    Dossier.ConsideredKnownTargets = Candidates.Num();
+    Candidates.Sort([](
+        const FAIHeroesZoneDossierOption& A,
+        const FAIHeroesZoneDossierOption& B)
+    {
+        if (A.RankScore != B.RankScore)
+            return A.RankScore > B.RankScore;
+        if (A.TravelCost != B.TravelCost)
+            return A.TravelCost < B.TravelCost;
+        return A.Site.ToString().Compare(
+            B.Site.ToString(), ESearchCase::CaseSensitive) < 0;
+    });
+    const int32 Count = FMath::Min(3, Candidates.Num());
+    for (int32 I = 0; I < Count; ++I)
+        Dossier.Options.Add(MoveTemp(Candidates[I]));
+    Dossier.Summary = Candidates.IsEmpty()
+        ? TEXT("No discovered unclaimed site has a legal known route.")
+        : TEXT("Rules heuristic only. No win odds. D/Esc closes. Player Enter confirms.");
+    return Dossier;
+}
