@@ -45,7 +45,7 @@ if (-not (Test-Path $Editor) -or -not (Test-Path $Project)) {
 }
 $ArgsList = @(
     $Project,('/Engine/Maps/Entry?game=/Script/AIHeroes.'+$Mode),
-    '-game','-windowed','-ResX=1280','-ResY=720','-NoSplash',
+    '-game','-windowed',('-ResX='+$Width),('-ResY='+$Height),'-NoSplash',
     '-NoP4','-NoSound',('-ZoneSeed='+$Seed),('-ZoneBranches='+$Branches),
     '-ZoneExpeditionCapture',('-log='+$Tag)
 )
@@ -91,10 +91,10 @@ function ClickGame([int]$X,[int]$Y) {
     $Client=New-Object AIHeroesTouchQaClientRect
     if(-not [AIHeroesExpeditionQAKeys]::GetClientRect(
         $Proc.MainWindowHandle,[ref]$Client)) { throw 'QA_CLIENT_SIZE_UNREADABLE' }
-    if($Client.Right-ne1280 -or $Client.Bottom-ne720) {
+    if($Client.Right-ne$Width -or $Client.Bottom-ne$Height) {
         throw ('QA_CLIENT_SIZE_MISMATCH '+$Client.Right+'x'+$Client.Bottom)
     }
-    if($X-lt0 -or $Y-lt0 -or $X-ge1280 -or $Y-ge720) {
+    if($X-lt0 -or $Y-lt0 -or $X-ge$Width -or $Y-ge$Height) {
         throw 'QA_OUT_OF_WINDOW_BUTTON'
     }
     $Packed=[IntPtr](($Y -shl 16) -bor $X)
@@ -114,8 +114,24 @@ function ClickGame([int]$X,[int]$Y) {
     }
     Start-Sleep -Milliseconds 650
 }
-# 1280x720 contract: row-1 centers y=536, row-2 centers y=596.
-# Five column centers x=156,398,640,882,1124.
+# These positions are derived from the SAME formula as ZoneScreenLayout.
+# Never infer UI intent from a pixel outside its verified player window.
+$Margin=[Math]::Min([Math]::Max($Width * .03,18),42)
+$ButtonHeight=[Math]::Min([Math]::Max($Height * .072,42),54)
+$BarTop=$Height - 98 - ($ButtonHeight * 2) - 8
+$ButtonWidth=($Width - 2 * $Margin - 32) / 5
+function ClickButton([int]$Index) {
+    if($Index-lt0 -or $Index-ge10){throw 'BAD_UI_ACTION_INDEX'}
+    $Col=$Index % 5
+    $Row=[Math]::Floor($Index/5)
+    $X=[int][Math]::Round($Margin+($ButtonWidth+8)*$Col+$ButtonWidth*.5)
+    $Y=[int][Math]::Round($BarTop+($ButtonHeight+8)*$Row+$ButtonHeight*.5)
+    ClickGame $X $Y
+}
+function ClickClose {
+    $Y=[int][Math]::Round($BarTop+$ButtonHeight+8+$ButtonHeight*.5)
+    ClickGame ([int][Math]::Round($Width*.5)) $Y
+}
 $FrameReceipts = @()
 function CaptureFrame([int]$Serial,[string]$Name) {
     $Line = AwaitLog ('\[ZONE EXPEDITION\] SCREENSHOT_REQUEST serial='+$Serial+' path=')
@@ -142,7 +158,7 @@ function CaptureFrame([int]$Serial,[string]$Name) {
     $Image=[System.Drawing.Bitmap]::FromFile($Source)
     $Colors=New-Object 'System.Collections.Generic.HashSet[int]'
     try {
-        if($Image.Width -ne 1280 -or $Image.Height -ne 720) {
+        if($Image.Width -ne $Width -or $Image.Height -ne $Height) {
             throw ('QA_WRONG_FRAME_DIMENSIONS '+$Image.Width+'x'+$Image.Height)
         }
         for($y=25;$y -lt $Image.Height;$y+=27) {
@@ -161,7 +177,7 @@ function CaptureFrame([int]$Serial,[string]$Name) {
     $Receipt=[ordered]@{
        stage=$Name; serial=$Serial; screenshot=$Target;
        bytes=$Info.Length; sha256=$B.ToLowerInvariant();
-       width=1280; height=720; unique_sampled_colors=$Colors.Count
+       width=$Width; height=$Height; unique_sampled_colors=$Colors.Count
     }
     Write-Host ('EXPEDITION_GPU_FRAME_PASS stage='+$Name+' bytes='+$Info.Length+
         ' colors='+$Colors.Count+' sha256='+$B)
@@ -170,7 +186,7 @@ function CaptureFrame([int]$Serial,[string]$Name) {
 try {
     [void](AwaitLog '\[ZONE EXPEDITION\] READY seed=')
     $FrameReceipts+=CaptureFrame 0 'initial'
-    ClickGame 398 536  # HERO touch-sized HUD control; no order.
+    ClickButton 1  # HERO touch-sized HUD control; no order.
     [void](AwaitLog '\[ZONE INPUT\] POINTER BUTTON HERO')
     $AdvisorLine=AwaitLog '\[ZONE EXPEDITION\] READ-ONLY HERO ADVICE \| HERO'
     if($AdvisorLine -match 'RUINS|OUTPOST|PASS|WAY_0') {
@@ -184,7 +200,7 @@ try {
     }
     # Existing H + Shift+H keys were already tested; this run uses
     # the exact same action via the screen INSPECT button.
-    ClickGame 640 536
+    ClickButton 2
     [void](AwaitLog '\[ZONE INPUT\] POINTER BUTTON INSPECT')
     # Exact same read-only inspection is already verified via the HUD button.
     $InspectionLine=AwaitLog '\[ZONE EXPEDITION\] READ-ONLY HERO ADVICE \| HERO SEED \| FOREST costs'
@@ -194,26 +210,26 @@ try {
     if(Select-String -LiteralPath $Log -Pattern '\[ZONE EXPEDITION\] PLAYER CONFIRMED|\[ZONE EXPEDITION\] EXPEDITION SAVED' -ErrorAction SilentlyContinue) {
         throw 'SHIFT_H_INSPECT_WRONGFULLY_COMMITTED_STATE'
     }
-    ClickGame 882 536  # Read-only ROUTES button.
+    ClickButton 3  # Read-only ROUTES button.
     [void](AwaitLog '\[ZONE INPUT\] POINTER BUTTON ROUTES')
     $DossierOpen=AwaitLog '\[ZONE EXPEDITION\] READ-ONLY DOSSIER OPEN options=3 known_choices=3 top=SUPPLY'
     if($DossierOpen -match 'PASS|OUTPOST|RUINS|WAY_') {
         throw ('DOSSIER_LEAKED_FOGGED_TARGET '+$DossierOpen)
     }
     $FrameReceipts+=CaptureFrame 1 'dossier'
-    ClickGame 1124 536  # MOVE/FIGHT button must not work in modal.
-    ClickGame 156 596   # NEXT DAY button must not work in modal.
+    ClickButton 4  # MOVE/FIGHT is absent in modal.
+    ClickButton 5   # NEXT DAY is absent in modal.
     if(Select-String -LiteralPath $Log -Pattern '\[ZONE EXPEDITION\] PLAYER CONFIRMED|\[ZONE EXPEDITION\] DAY 2' -ErrorAction SilentlyContinue) {
         throw 'DOSSIER_ALLOWED_MUTATING_INPUT'
     }
-    ClickGame 640 596  # CLOSE ROUTES is the modal's only active button.
+    ClickClose  # CLOSE ROUTES is the modal's only active button.
     [void](AwaitLog '\[ZONE INPUT\] POINTER BUTTON CLOSE ROUTES')
     $DossierClose=AwaitLog '\[ZONE EXPEDITION\] READ-ONLY DOSSIER CLOSED \| no orders executed'
-    ClickGame 1124 536  # Explicit button MOVE / FIGHT after close.
+    ClickButton 4  # Explicit button MOVE / FIGHT after close.
     [void](AwaitLog '\[ZONE INPUT\] POINTER BUTTON MOVE / FIGHT')
     [void](AwaitLog '\[ZONE EXPEDITION\] PLAYER CONFIRMED FOREST \| battle=1 won=1')
     $FrameReceipts+=CaptureFrame 2 'forest'
-    ClickGame 156 596  # Explicit button NEXT DAY.
+    ClickButton 5  # Explicit button NEXT DAY.
     [void](AwaitLog '\[ZONE INPUT\] POINTER BUTTON NEXT DAY')
     [void](AwaitLog '\[ZONE EXPEDITION\] DAY 2')
     $FrameReceipts+=CaptureFrame 3 'day2'
