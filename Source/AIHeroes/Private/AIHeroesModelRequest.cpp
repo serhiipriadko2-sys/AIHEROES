@@ -71,10 +71,11 @@ void AppendArmy(FString& Out, const TArray<FAIHeroesArmyStack>& Army)
 
 bool FAIHeroesModelRequest::Build(const FAIHeroesProposalSnapshot& S,
     const FString& RequestId, const FString& SessionId, EAIHeroesModelGoal Goal,
-    FString& OutJson, FString& Error)
+    FString& OutJson, FString& Error, TArray<FAIHeroesAIProposal>* OutMenu)
 {
     using namespace AIHeroesModelRequestDetail;
     OutJson.Empty();
+    if (OutMenu) OutMenu->Reset();
     Error = TEXT("MODEL REQUEST: invalid bounded engine snapshot or correlation token.");
     if (!Token(RequestId) || !Token(SessionId) || !GoalName(Goal) || S.Day > 1000000) return false;
 
@@ -131,6 +132,17 @@ bool FAIHeroesModelRequest::Build(const FAIHeroesProposalSnapshot& S,
         J += TEXT("}");
     }
     J += TEXT("],\"legal_orders\":[");
+    // c0/c1 and subsequent orders exactly share the Python bridge menu order.
+    TArray<FAIHeroesAIProposal> Candidates;
+    for (const auto Kind : {EAIHeroesProposalKind::NoAction, EAIHeroesProposalKind::Advice})
+    {
+        FAIHeroesAIProposal Base;
+        Base.Kind = Kind; Base.ObservedDay = S.Day; Base.ObservedRevision = S.StateRevision;
+        Base.Explanation = Kind == EAIHeroesProposalKind::NoAction
+            ? TEXT("No strategic action proposed. Player remains in control.")
+            : TEXT("Review the visible map and army before deciding. No action executed.");
+        Candidates.Add(MoveTemp(Base));
+    }
     int32 Orders = 0;
     if (A.ProtocolTier >= 1 && !S.bBattleActive)
     {
@@ -149,6 +161,11 @@ bool FAIHeroesModelRequest::Build(const FAIHeroesProposalSnapshot& S,
             if (!FAIHeroesAIProposalGate::Validate(S, P).bAccepted) continue;
             const auto Path = FAIHeroesTravelRules::Find(A, A.HeroPosition, N->Id, A.MovesLeft);
             if (!Path.IsReachableThisTurn()) return false;
+            P.Explanation = FString::Printf(
+                TEXT("%s %s; engine-quoted cost %d moves. This is not a victory forecast. Player confirmation required."),
+                P.Order == EAIHeroesProposalOrder::AttackNode ? TEXT("Consider attacking") : TEXT("Consider moving to"),
+                *N->Id.ToString(), Path.TotalCost);
+            Candidates.Add(P);
             if (Orders++) J += TEXT(",");
             J += FString::Printf(TEXT("{\"order\":\"%s\",\"target_node\":\"%s\",\"cost\":%d}"),
                 P.Order == EAIHeroesProposalOrder::AttackNode ? TEXT("AttackNode") : TEXT("MoveToNode"),
@@ -158,6 +175,7 @@ bool FAIHeroesModelRequest::Build(const FAIHeroesProposalSnapshot& S,
     J += TEXT("]}");
     // The complete output is ASCII: TCHAR length equals UTF-8 byte length.
     if (J.Len() <= 0 || J.Len() > MaxBytes) return false;
+    if (OutMenu) *OutMenu = MoveTemp(Candidates);
     OutJson = MoveTemp(J);
     Error.Empty();
     return true;

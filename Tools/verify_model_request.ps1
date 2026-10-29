@@ -48,7 +48,7 @@ try {
     $Receipt.export_directory=$Directory
     $Frozen=Get-Content "$MapEvidence\source-manifest.json" -Raw -Encoding UTF8 | ConvertFrom-Json
     $Drift=@($Frozen | Where-Object {-not (Test-Path (Join-Path $Root $_.path)) -or (Get-FileHash (Join-Path $Root $_.path) -Algorithm SHA256).Hash -ne $_.sha256})
-    $BeforeSaves=@(Get-Content "$MapEvidence\player-saves.json" -Raw -Encoding UTF8 | ConvertFrom-Json)
+    $BeforeSaves=@((Get-Content "$MapEvidence\player-saves.json" -Raw -Encoding UTF8 | ConvertFrom-Json))
     $AfterSaves=@(Get-ChildItem "$Root\Saved\SaveGames" -Filter '*.sav' -File -ErrorAction SilentlyContinue | Sort-Object Name | ForEach-Object {[pscustomobject]@{name=$_.Name;bytes=$_.Length;sha256=(Get-FileHash $_.FullName -Algorithm SHA256).Hash}})
     $SaveDrift=@(Compare-Object $BeforeSaves $AfterSaves -Property name,bytes,sha256)
     $Receipt.source_drift=$Drift.path; $Receipt.save_drift=$SaveDrift

@@ -57,6 +57,7 @@ AAIHeroesGameMode::AAIHeroesGameMode()
 void AAIHeroesGameMode::BeginPlay()
 {
     Super::BeginPlay();
+    LocalModelReplies.Reset();
     TravelRuleVersion = FAIHeroesTravelRules::RoadVersion;
     bFogEnabled = true;
     FogKnownMask = FAIHeroesFogRules::InitialMask;
@@ -719,6 +720,7 @@ void AAIHeroesGameMode::SaveCampaign()
 void AAIHeroesGameMode::LoadCampaign()
 {
     if (BlockStrategicAction()) return;
+    LocalModelReplies.Reset(); // Pending inference cannot cross a load attempt.
     PendingSupplyFingerprint.Empty(); // Quote authorization never survives load.
     const FAIHeroesLoadedCampaign Loaded = FAIHeroesSaveSystem::Load(
         SaveNamespaceForPlayer(ActiveSaveSlot),

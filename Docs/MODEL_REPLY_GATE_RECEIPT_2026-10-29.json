@@ -1,0 +1,178 @@
+{
+  "schema": "aiheroes.model-reply-development.v1",
+  "status": "PASS_SCOPED_WINDOWS",
+  "observed_utc": "2026-10-29T12:53:02.126348+00:00",
+  "root": "C:\\github\\AIHEROES",
+  "head": "614530c3305c2bc3760c75c5bb30aff3c7ff4cf2",
+  "feature": "Engine-owned local-model candidate response gate; no inference or command execution",
+  "files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesModelReply.h",
+      "bytes": 1712,
+      "sha256": "566012f9674abacb14cfff7bd376db39ebd30de7a859bb8ade84b681a0f130c1"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesModelReply.cpp",
+      "bytes": 6483,
+      "sha256": "cb4b3ed5c0568d907cc1c25c4dc6cdca676ee5030f3024a95f2e65a17fc64bae"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesModelReplyTests.cpp",
+      "bytes": 15856,
+      "sha256": "dc990526f8e287a21512ec8781241c038fc173aa1e5f68d9aa9ab1fcbf95eeed"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesModelRequest.h",
+      "bytes": 756,
+      "sha256": "eb91578f9b0b2ed490b09a4b8e3d6486c958c0aa7df861365ff1672f2e138b90"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesModelRequest.cpp",
+      "bytes": 8270,
+      "sha256": "961ee2bc6e909a451f14da4cdf3e5ceff7cfd19a17e37276ed65b6a9cddfca54"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesModelRequestGameMode.cpp",
+      "bytes": 2963,
+      "sha256": "3038e8fdf1b26bf12487be197a835f2a1bec5fe14fd727107f3f25a523685c5e"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+      "bytes": 12698,
+      "sha256": "49a5fc787373e5dd3ffb9e10e8bc2fe4b925d839b0c25840e7e656818316f36d"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+      "bytes": 37125,
+      "sha256": "6ea1e5c5789ec891fc24b3976339fe5b0266580265bda3e640793a58a2b86f70"
+    },
+    {
+      "path": "Tools/verify_model_request.ps1",
+      "bytes": 5750,
+      "sha256": "31918673f88df82729bdd66a3f0c3c5c591e423266c15d31d122b13693fac0bf"
+    },
+    {
+      "path": "Tools/test_model_manifest_arrays.ps1",
+      "bytes": 2448,
+      "sha256": "e4837c55b05ae4c23c09db751c89037f12a3ea1c9fa5522f988875abfd6153f3"
+    },
+    {
+      "path": "Docs/MODEL_REPLY_GATE_V1.md",
+      "bytes": 5904,
+      "sha256": "db248010a0cbc966fba3f946accf81b5e6e9d5836147079aa2bb1f305086c4f2"
+    }
+  ],
+  "file_count": 11,
+  "scope_bytes": 99965,
+  "verification": {
+    "build_exit": 0,
+    "test_exit": 0,
+    "all_tests": 197,
+    "reply_tests": 9,
+    "reply_names": [
+      "AIHeroes.ModelReply.DeadlineAndClockBounds",
+      "AIHeroes.ModelReply.ForeignAndUnknownChoiceSweep",
+      "AIHeroes.ModelReply.FullStateAndHostDrift",
+      "AIHeroes.ModelReply.MenuFailureClearsOutputs",
+      "AIHeroes.ModelReply.MenuParityAndReadOnly",
+      "AIHeroes.ModelReply.ReadinessCannotBeForged",
+      "AIHeroes.ModelReply.RealGameModeRemainsOffline",
+      "AIHeroes.ModelReply.SingleUseCancelAndSessionReset",
+      "AIHeroes.ModelReply.StrictSelectionGrammar"
+    ],
+    "export_tests": 6,
+    "real_exports": 4,
+    "negative_export_controls": 12,
+    "manifest_regression_checks": 12,
+    "foreign_reply_test_cases": 512,
+    "source_files_verified": 188,
+    "source_drift": [],
+    "save_count": 4,
+    "save_drift": [],
+    "dll_sha256": "d28f7263a53dfa8bfd5e9910de6c725fd0a72550436840912c036532eb90bca5",
+    "dll_stable": true,
+    "new_visual_runs": 0
+  },
+  "evidence": [
+    {
+      "path": "Saved/QA/MapReadability_20261029T125050007Z/build.log",
+      "bytes": 7722,
+      "sha256": "ff29e2adde4ee9d906a677999dfc773f69ddbea445b287d9013a5dff2abdfd35"
+    },
+    {
+      "path": "Saved/QA/MapReadability_20261029T125050007Z/report/index.json",
+      "bytes": 78096,
+      "sha256": "91fd10ac944733337018eea458bee0cdbd24bc0070f9903a05a7f5d2e29d89d7"
+    },
+    {
+      "path": "Saved/QA/MapReadability_20261029T125050007Z/receipt.json",
+      "bytes": 1093,
+      "sha256": "283f774a710953c996cd1d80f1ad86005610f6290fbaab3f84d670618c3c4766"
+    },
+    {
+      "path": "Saved/QA/ModelRequestValidation_20261029T125049498Z/export.log",
+      "bytes": 196623,
+      "sha256": "14ae7608d27ee45fa4bc4ef4e2e3cf20bf6a52dcbd984d0ff3d816765615c8c6"
+    },
+    {
+      "path": "Saved/QA/ModelRequestValidation_20261029T125049498Z/interop.json",
+      "bytes": 1047,
+      "sha256": "0b0bec2ce6c785c39749fb6dcd9ece65b356acd384f6d176e3619c9b5fc5ff52"
+    },
+    {
+      "path": "Saved/QA/ModelRequestValidation_20261029T125049498Z/receipt.json",
+      "bytes": 2811,
+      "sha256": "fe13dcf6d4817229cf8b6ed13f9d52b8af7878c2af7ad7064d349ef5786b46cf"
+    },
+    {
+      "path": "Saved/QA/ManifestArrayRegression_0ee2c257b9a24f0fbcf3f34d30d33e37/receipt.json",
+      "bytes": 286,
+      "sha256": "92320aa5c581e4d0d890bd3365741a9efadc49a865fa8ff068871e59b1cbd696"
+    }
+  ],
+  "incidents": [
+    {
+      "run": "ModelRequestValidation_20261029T124820371Z",
+      "result": "Full build failed before tests: C3859/C1076 with Windows error 1455. New reply/request translation units compiled; no test success inferred."
+    },
+    {
+      "recovery": "Free commit increased to 5.39 GiB; one incremental retry used the same source and completed successfully. No process termination or OS configuration change."
+    },
+    {
+      "prior_run": "ModelRequestValidation_20261029T122652850Z",
+      "finding": "Four exports and 12 negative schema controls had passed. False save drift reproduced as one System.Object[] row; normalization yielded four matching saves."
+    }
+  ],
+  "qc": {
+    "nonempty_files": true,
+    "unique_paths": true,
+    "no_symlinks": true,
+    "scope_credential_pattern_scan": "PASS_LIMITED_PATTERN_SCAN",
+    "source_manifest_readback": "PASS",
+    "save_readback": "PASS"
+  },
+  "lifecycle": [
+    "written",
+    "compiled_windows",
+    "engine_automation_passed",
+    "game_export_scenario_passed",
+    "schema_interop_passed",
+    "hashes_verified"
+  ],
+  "non_claims": [
+    "No actual checkpoint loaded or verified.",
+    "No network transport/bridge-result adapter or model endpoint installed.",
+    "ASK HERO remains offline; response methods do not change UI or campaign.",
+    "Accepted responses occur only in synthetic readiness fixtures; production readiness stays false.",
+    "Input parser supports normalized inner selection only, not full HTTP/model envelope.",
+    "No Android/real-device test or new visual acceptance.",
+    "No commit, push, deployment, global settings change or unrelated process termination."
+  ],
+  "sources": [
+    "https://github.com/PowerShell/PowerShell/issues/3424",
+    "https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Core/FGuid",
+    "https://dev.epicgames.com/documentation/unreal-engine/run-automation-tests-in-unreal-engine",
+    "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md",
+    "https://devblogs.microsoft.com/cppblog/precompiled-header-pch-issues-and-recommendations/"
+  ]
+}

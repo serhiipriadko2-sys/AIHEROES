@@ -14,5 +14,6 @@ public:
     // Failure clears output; callers must never send an older request by accident.
     static bool Build(const FAIHeroesProposalSnapshot& Snapshot,
         const FString& RequestId, const FString& SessionId,
-        EAIHeroesModelGoal Goal, FString& OutJson, FString& Error);
+        EAIHeroesModelGoal Goal, FString& OutJson, FString& Error,
+        TArray<FAIHeroesAIProposal>* OutMenu = nullptr);
 };

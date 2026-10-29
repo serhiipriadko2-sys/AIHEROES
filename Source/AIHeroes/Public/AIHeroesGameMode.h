@@ -16,6 +16,7 @@
 #include "AIHeroesCampaignObjectives.h"
 #include "AIHeroesRivalStrategy.h"
 #include "AIHeroesFogRules.h"
+#include "AIHeroesModelReply.h"
 #include "AIHeroesGameMode.generated.h"
 
 class AAIHeroesWorldNode;
@@ -193,7 +194,15 @@ public:
     bool BuildLocalModelRequest(const FString& RequestId, const FString& SessionId,
         FString& OutJson, FString& Error) const;
 
+    // Prepare/consume a suggestion only. No HTTP, model readiness or gameplay writes.
+    bool BeginLocalModelAdvice(FString& OutJson, FString& Error);
+    FAIHeroesModelReplyResult CompleteLocalModelAdvice(const FString& SelectionJson);
+    void CancelLocalModelAdvice();
+    bool IsLocalModelAdvicePending() const { return LocalModelReplies.IsPending(); }
+
 private:
+    FAIHeroesModelReplySession LocalModelReplies;
+    bool BuildLocalModelSnapshot(FAIHeroesProposalSnapshot& Out) const;
     // Transient UI quote, never a campaign save or an AI authorization.
     bool bBasePanelOpen = false;
     // Explicitly false for legacy worlds and isolated GameMode tests.

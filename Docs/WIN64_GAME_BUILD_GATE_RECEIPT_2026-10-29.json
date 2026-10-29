@@ -1,0 +1,84 @@
+{
+    "schema":  1,
+    "status":  "PARTIAL",
+    "lifecycle":  "local game build tooling implemented; Windows Editor previous full suites tested; current game exe not rebuilt",
+    "observed_utc":  "2026-10-29T13:01:08.5183637Z",
+    "root":  "C:\\github\\AIHEROES",
+    "git_head":  "614530c3305c2bc3760c75c5bb30aff3c7ff4cf2",
+    "tool":  "Tools/build_aiheroes_game.ps1",
+    "scope":  "read-only current source plus new Tools/ and Docs/ QA artifacts; user saves and system settings untouched",
+    "assertions":  {
+                       "powershell_parse_errors":  0,
+                       "compiled_source_chain_old_count":  185,
+                       "focused_camera_test_pass":  1,
+                       "old_full_tests_pass":  188,
+                       "old_full_tests_total":  188,
+                       "new_full_tests_pass":  197,
+                       "new_full_tests_total":  197,
+                       "negative_gate_active_compiler":  "exit 1, exe hash unchanged",
+                       "negative_gate_stale_source":  "exit 1 AIHEROES_PROVENANCE_MISMATCH, exe hash unchanged",
+                       "negative_gate_zero_test_minimum":  "exit 1 ParameterArgumentValidationError, exe hash unchanged",
+                       "source_now_differs_from_old_tested_snapshot":  true,
+                       "new_current_game_exe_compiled":  false,
+                       "memory_pressure_c3859_c1076_observed":  true,
+                       "SoT30_knowledge_count":  30,
+                       "SoT30_sha_count":  32
+                   },
+    "files":  [
+                  {
+                      "path":  "Tools/build_aiheroes_game.ps1",
+                      "bytes":  7924,
+                      "sha256":  "4dd9706c21a857c3d2fdd86004bb7391c3313f2c7602d1997c158a469b26a0fd",
+                      "modified_utc":  "2026-10-29T12:53:00.1731119Z"
+                  },
+                  {
+                      "path":  "Docs/WIN64_GAME_BUILD_PARITY_GATE_2026-10-29.md",
+                      "bytes":  6716,
+                      "sha256":  "67f5fa3e55cfe3c329ea773b234b4dc02d97c63d180a079f845cd0ce697d7fb8",
+                      "modified_utc":  "2026-10-29T12:57:10.3264908Z"
+                  },
+                  {
+                      "path":  "Docs/AutomationRuns/20261029T124232027Z/index.json",
+                      "bytes":  1146,
+                      "sha256":  "acb23fc79e3cdce06a5881c2e26609f346c2a08b945de140ca4d524db2bb6b15",
+                      "modified_utc":  "2026-10-29T12:42:53.1503175Z"
+                  },
+                  {
+                      "path":  "Docs/AutomationRuns/20261029T124319338Z/index.json",
+                      "bytes":  74553,
+                      "sha256":  "6883f8745b25c213324a3cfc925a71fc66f9243c531a1b7c5c6badbe08e1bfd8",
+                      "modified_utc":  "2026-10-29T12:43:40.6420693Z"
+                  },
+                  {
+                      "path":  "Saved/QA/MapReadability_20261029T125050007Z/report/index.json",
+                      "bytes":  78096,
+                      "sha256":  "91fd10ac944733337018eea458bee0cdbd24bc0070f9903a05a7f5d2e29d89d7",
+                      "modified_utc":  "2026-10-29T12:51:42.1391530Z"
+                  },
+                  {
+                      "path":  "Binaries/Win64/AIHeroes.exe",
+                      "bytes":  333004800,
+                      "sha256":  "1246caccb100c69f586e3737160ead8bb02dfc38cf3cad699b7fa293760b8bf5",
+                      "modified_utc":  "2026-10-28T21:22:48.7147730Z"
+                  },
+                  {
+                      "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+                      "bytes":  2327040,
+                      "sha256":  "d28f7263a53dfa8bfd5e9910de6c725fd0a72550436840912c036532eb90bca5",
+                      "modified_utc":  "2026-10-29T12:51:19.5549779Z"
+                  }
+              ],
+    "file_count":  7,
+    "missing_postconditions":  [
+                                   "fresh Editor compiled.json for currently modified Source/",
+                                   "full AIHeroes automation with same Editor source/dll provenance",
+                                   "successful Win64 Game Development build and executable hash",
+                                   "packaged runtime/Android QA"
+                               ],
+    "nonclaims":  [
+                      "no Git commit/push/merge or release by this operator",
+                      "no pagefile or global system changes",
+                      "no currently tested standalone Game.exe",
+                      "no actual LLM inference validated by this work"
+                  ]
+}
