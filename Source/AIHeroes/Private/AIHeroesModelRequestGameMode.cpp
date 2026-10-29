@@ -42,6 +42,7 @@ bool AAIHeroesGameMode::BeginLocalModelAdvice(FString& OutJson, FString& Error)
     OutJson.Empty();
     Error = TEXT("MODEL REPLY: request requires a stable game-thread map.");
     if (!IsInGameThread()) return false;
+    CancelLocalModelExchange();
     FAIHeroesProposalSnapshot Snapshot;
     if (!BuildLocalModelSnapshot(Snapshot)) { LocalModelReplies.Cancel(); return false; }
     return LocalModelReplies.Begin(Snapshot, CampaignFingerprint(),
@@ -68,5 +69,5 @@ FAIHeroesModelReplyResult AAIHeroesGameMode::CompleteLocalModelAdvice(const FStr
 
 void AAIHeroesGameMode::CancelLocalModelAdvice()
 {
-    if (IsInGameThread()) LocalModelReplies.Cancel();
+    if (IsInGameThread()) CancelLocalModelExchange();
 }

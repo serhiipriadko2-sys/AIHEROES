@@ -29,7 +29,7 @@ void AAIHeroesZoneExpeditionHUD::DrawHUD()
         *S.HeroSite.ToString(), *G->GetSelection().ToString(),
         *G->GetSelectedPathInfo().Left(87)),
         FLinearColor(0.35f, 0.97f, 0.81f), 18, 90, Font);
-    DrawText(TEXT("TAB cycle visible zone   CLICK select   ENTER confirm move / battle   SPACE next day   R recruit HQ   P protocol   K save V2   L load V2"),
+    DrawText(TEXT("TAB/CLICK select | H advise | SHIFT+H inspect | ENTER confirm | SPACE day | R recruit | P protocol | K save | L load"),
         FLinearColor(0.83f, 0.89f, 0.98f), 18, 117, Font, 0.92f);
 
     DrawRect(FLinearColor(0.018f, 0.033f, 0.06f, 0.95f), 0, H - 86.f, W, 86.f);

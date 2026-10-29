@@ -2,6 +2,7 @@
 
 #include "AIHeroesCameraPawn.h"
 #include "AIHeroesZoneExpeditionHUD.h"
+#include "AIHeroesZoneExpeditionAdvisor.h"
 #include "AIHeroesZoneExpeditionStore.h"
 #include "Camera/CameraComponent.h"
 #include "HAL/FileManager.h"
@@ -375,6 +376,16 @@ void AAIHeroesZoneExpeditionGameMode::Upgrade()
     else Status(TEXT("PROTOCOL BLOCKED: ") + Error);
 }
 
+void AAIHeroesZoneExpeditionGameMode::AskHero(bool bInspectSelection)
+{
+    if (!bReady) return;
+    // H recommends from the player's discovered graph; Shift+H inspects
+    // only the selected, known target. Neither path grants an action.
+    const auto Advice = FAIHeroesZoneExpeditionAdvisor::Advise(
+        Campaign, bInspectSelection ? SelectedSite : NAME_None);
+    Status(TEXT("READ-ONLY HERO ADVICE | ") + Advice.Message);
+}
+
 void AAIHeroesZoneExpeditionGameMode::Save()
 {
     FString Message;
@@ -464,6 +475,9 @@ void AAIHeroesZoneExpeditionGameMode::Tick(float DeltaSeconds)
     if (PC->WasInputKeyJustPressed(EKeys::SpaceBar)) AdvanceDay();
     if (PC->WasInputKeyJustPressed(EKeys::R)) Recruit();
     if (PC->WasInputKeyJustPressed(EKeys::P)) Upgrade();
+    if (PC->WasInputKeyJustPressed(EKeys::H))
+        AskHero(PC->IsInputKeyDown(EKeys::LeftShift) ||
+                PC->IsInputKeyDown(EKeys::RightShift));
     if (PC->WasInputKeyJustPressed(EKeys::K)) Save();
     if (PC->WasInputKeyJustPressed(EKeys::L)) Load();
 }

@@ -1,0 +1,57 @@
+{
+    "status":  "PASS_ZONE_EXPEDITION_ADVISOR_PLAYTHROUGH",
+    "seed":  20261029,
+    "branches":  3,
+    "pid":  53116,
+    "generated_zones":  10,
+    "player_confirmed_battles":  2,
+    "read_only_advice_events":  2,
+    "advice_result":  "[2026.10.29-13.31.50:218][  1]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY HERO ADVICE | HERO SEED: consider visible SUPPLY (2 moves). No guard on the visible destination. Select it yourself; ENTER authorizes.",
+    "inspect_result":  "[2026.10.29-13.31.51:536][438]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY HERO ADVICE | HERO SEED | FOREST costs 3 moves. SEED: defender outcome UNKNOWN; no battle forecast. Human ENTER required.",
+    "human_next_day":  1,
+    "screenshots":  [
+                        {
+                            "stage":  "initial",
+                            "serial":  0,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T133133956Z\\initial.png",
+                            "bytes":  370325,
+                            "sha256":  "15e903c35a399985b6c574e109941eac5cb12087660547b5e965f20f6912ee1a",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  87
+                        },
+                        {
+                            "stage":  "forest",
+                            "serial":  1,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T133133956Z\\forest.png",
+                            "bytes":  402722,
+                            "sha256":  "4b1d3eee4ebe6d8cd32992af93c8892d6dad8eedc352c9454b75f7df595437c1",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  98
+                        },
+                        {
+                            "stage":  "day2",
+                            "serial":  2,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T133133956Z\\day2.png",
+                            "bytes":  397694,
+                            "sha256":  "7b34cc37caee70481d14c1ec20afa05afca48fb83085298cd6ea216c3db00445",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  91
+                        },
+                        {
+                            "stage":  "ore",
+                            "serial":  3,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T133133956Z\\ore.png",
+                            "bytes":  404094,
+                            "sha256":  "6d0306bec9e390d6b357cd323ac57acb730a5038865dce989c4969cdadd47dae",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  98
+                        }
+                    ],
+    "user_save_files_unchanged":  true,
+    "save_writes":  0,
+    "observed_utc":  "2026-10-29T13:31:57.6954715Z"
+}

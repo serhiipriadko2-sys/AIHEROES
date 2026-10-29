@@ -1,0 +1,250 @@
+{
+  "schema": "aiheroes.local-exchange-development.v1",
+  "status": "PASS_SCOPED_WINDOWS_MOCK_ONLY",
+  "observed_utc": "2026-10-29T13:26:11.071675+00:00",
+  "root": "C:\\github\\AIHEROES",
+  "head_context_only": "f96acd19b4b5cfe293913bcc6b810c22c1912994",
+  "feature": "Nonblocking direct-loopback request/response pump integrated into main GameMode; disabled unless explicitly invoked; production model readiness remains false",
+  "files": [
+    {
+      "path": ".vscode/tasks.json",
+      "bytes": 6623,
+      "sha256": "48d72cfb1e94195276446279f6485c43c8f29899d8a4b69cda6e9f8853bea99b"
+    },
+    {
+      "path": "Source/AIHeroes/AIHeroes.Build.cs",
+      "bytes": 416,
+      "sha256": "d1ab62bd9a09a1206fce6caee9fed31eb02529011e9826e9f0f78651326504fc"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+      "bytes": 13464,
+      "sha256": "60a20077f9c92796622201ca19bcb2b384a3ad45f7b340b81e55322455ad56a7"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+      "bytes": 37301,
+      "sha256": "72c3f73011fcac888c7bd86099b0c927b35555276fbe200dcf1144e1907a477f"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesModelRequestGameMode.cpp",
+      "bytes": 2995,
+      "sha256": "9feb3aebba83a2ddefe9fda3bfb799f876b371f89953213f235d28452472db77"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesTravelPresentationGameMode.cpp",
+      "bytes": 4494,
+      "sha256": "b38979fcccb6a1045bb286c367653f3e2cfc968592bdf51cbb33d939a511eaaa"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleReplayGameMode.cpp",
+      "bytes": 11976,
+      "sha256": "6238c3a9a7735c7ebff276f7e6d56e1574be7d8c39a7d08671cb472d93ed6abe"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesLocalExchange.h",
+      "bytes": 2409,
+      "sha256": "b4cb6f72c4903e9d061f2d200dab2e4f3a6157d6c952ec3a0e32485613fa04be"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLocalExchange.cpp",
+      "bytes": 6546,
+      "sha256": "c39d9068517953dc067503b6728662708ac8a04261d55a8213fe6bd9d12c3460"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLocalExchangeProtocol.cpp",
+      "bytes": 12618,
+      "sha256": "ac7157c0ff0e365eddf93e36b6196b0c97ddaec52a137bcd0ad381b9b58f3863"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLocalExchangeGameMode.cpp",
+      "bytes": 1822,
+      "sha256": "0bb306626369c5874b9c579460186155c329fbeb1bb311e9d86d219d8cec517c"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLocalExchangeSmoke.cpp",
+      "bytes": 5369,
+      "sha256": "a14c104da3380c413ce75d7547ab538df475fd5c0c3f7743b1496caabe4547d6"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesLocalExchangeTests.cpp",
+      "bytes": 10864,
+      "sha256": "70b52ae44b6c7ab5307dd185b92bf777ad03109049fc963195bf53605ff6e73a"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesZoneExpeditionAdvisorTests.cpp",
+      "bytes": 10606,
+      "sha256": "8d0cf8f73cdb443d2323a0e5816ef12fe16314a6b6df331489f8878d53d2a159"
+    },
+    {
+      "path": "Tools/qa_local_exchange.py",
+      "bytes": 11354,
+      "sha256": "541ffaf92f7d10cc375ef1254c2ca51f1514fb23b0cf300cd4800d686dae097e"
+    },
+    {
+      "path": "Tools/verify_local_exchange.ps1",
+      "bytes": 4001,
+      "sha256": "076c877f9686cdf00505b539408d7aa17c01712a38e07146aa25580686ecf670"
+    },
+    {
+      "path": "Docs/LOCAL_MODEL_ASYNC_EXCHANGE_V1.md",
+      "bytes": 7320,
+      "sha256": "9db397a1b0058e92ace1956bf6f4becbe13dba42d160101943949a4d19043fcd"
+    }
+  ],
+  "file_count": 17,
+  "scope_bytes": 150178,
+  "verification": {
+    "all_tests": 208,
+    "local_exchange_tests": 7,
+    "failed": 0,
+    "test_warnings": 0,
+    "not_run": 0,
+    "actual_loopback_scenarios": 10,
+    "loopback_requests": 10,
+    "source_files": 197,
+    "source_unchanged_final": true,
+    "dll_stable_final": true,
+    "dll_sha256": "559d072765c27520cbfc3944345bf53339ca772b036358f0a5fb293db19558e6",
+    "player_saves": 4,
+    "saves_unchanged_final": true,
+    "real_unreal_exports": 4,
+    "negative_schema_controls": 12,
+    "cases": [
+      {
+        "index": 0,
+        "frames": 1074,
+        "choice_valid": true
+      },
+      {
+        "index": 1,
+        "frames": 2,
+        "choice_valid": false
+      },
+      {
+        "index": 2,
+        "frames": 2,
+        "choice_valid": false
+      },
+      {
+        "index": 3,
+        "frames": 26,
+        "choice_valid": false
+      },
+      {
+        "index": 4,
+        "frames": 26,
+        "choice_valid": false
+      },
+      {
+        "index": 5,
+        "frames": 25,
+        "choice_valid": false
+      },
+      {
+        "index": 6,
+        "frames": 1071,
+        "choice_valid": false
+      },
+      {
+        "index": 7,
+        "frames": 11366,
+        "choice_valid": false
+      },
+      {
+        "index": 8,
+        "frames": 114,
+        "choice_valid": false
+      },
+      {
+        "index": 9,
+        "frames": 1044,
+        "choice_valid": true
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "path": "Saved/QA/LocalExchangeValidation_20261029T132436201Z/receipt.json",
+      "bytes": 849,
+      "sha256": "613145b6d36a109fb09c46f9520bc903c4c84ebc7b74230c16fe41f55facb010"
+    },
+    {
+      "path": "Saved/QA/ModelRequestValidation_20261029T132436750Z/receipt.json",
+      "bytes": 2811,
+      "sha256": "58b9460917bae96e2b30051ba35208bdb21677f425f18a6936f121f3b4321964"
+    },
+    {
+      "path": "Saved/QA/MapReadability_20261029T132437250Z/build.log",
+      "bytes": 2658,
+      "sha256": "573070ca64452695d90354630bd0a2f7a232a7561b07d8afabea5258e6490df4"
+    },
+    {
+      "path": "Saved/QA/MapReadability_20261029T132437250Z/report/index.json",
+      "bytes": 82499,
+      "sha256": "e2e57aa6efcb7cbc3f93259bece1ac5d28b829abe53bb0f681d411f0cce98ce2"
+    },
+    {
+      "path": "Saved/QA/MapReadability_20261029T132437250Z/source-manifest.json",
+      "bytes": 39663,
+      "sha256": "7caba443a5c5995c8210720a3da3f22e5426c55439136f0079270d14e7fbd831"
+    },
+    {
+      "path": "Saved/QA/LocalExchange_20261029T132522562958Z_a51536ab/receipt.json",
+      "bytes": 2881,
+      "sha256": "3fd309fb29658e6aa47bda501f9b302430ac69ddc70d42f066e63403f1d89803"
+    },
+    {
+      "path": "Saved/QA/LocalExchange_20261029T132522562958Z_a51536ab/game.log",
+      "bytes": 180621,
+      "sha256": "69d54ff85f3360c2eac34c9e7af2431d199fe524f4ed010c00e1d476d9699d9f"
+    }
+  ],
+  "network_profile": {
+    "address": "127.0.0.1",
+    "port_range": [
+      1024,
+      65535
+    ],
+    "request_path": "/v1/chat/completions",
+    "http_request_version": "1.0",
+    "nonstreaming": true,
+    "requires_content_length": true,
+    "proxy": false,
+    "dns": false,
+    "redirects": false,
+    "header_bytes_limit": 8192,
+    "body_bytes_limit": 32768,
+    "request_bytes_limit": 131072,
+    "send_receive_bytes_per_tick_each": 8192,
+    "deadline_seconds": 4,
+    "deadline_check": "next game tick; no OS hard-deadline claim"
+  },
+  "qc": {
+    "scope_nonempty": true,
+    "unique_safe_paths": true,
+    "symlinks_and_junctions": false,
+    "credential_pattern_scan": "PASS_SCOPE_ONLY"
+  },
+  "incidents": [
+    "Initial full run: 207 passed, 1 concurrent expedition test failed; bad numerical proxy replaced with whole-state comparison and negative controls.",
+    "Initial loopback QA refused an existing engine process; no unrelated process terminated."
+  ],
+  "boundaries": [
+    "No real LLM inference or checkpoint/parameter-count attestation.",
+    "Default ASK HERO and tactical combat remain offline; no automatic network or gameplay actions.",
+    "Mock uses one real protocol purchase and one EndTurn in a disposable game; transport changes no campaign or offline advice.",
+    "No Android/device performance, production binary packaging or new graphical acceptance.",
+    "Restricted Content-Length/ASCII nonstreaming profile; chunked/gzip/redirected responses rejected.",
+    "No commit/push/canon/global-settings/memory changes.",
+    "Parallel expedition features preserved; only the faulty test assertion was repaired by this slice."
+  ],
+  "sources": [
+    "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Sockets/FSocket",
+    "https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Sockets/FSocket/Recv",
+    "https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Json/TJsonReader",
+    "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/CoreUObject/UScriptStruct",
+    "https://www.rfc-editor.org/rfc/rfc9112.html",
+    "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md"
+  ]
+}

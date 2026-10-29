@@ -63,6 +63,7 @@ private:
     void AdvanceDay();
     void Recruit();
     void Upgrade();
+    void AskHero(bool bInspectSelection);
     void Save();
     void Load();
     void Status(const FString& Message);

@@ -103,12 +103,14 @@ void AAIHeroesGameMode::DestroyTravelPresentation()
 
 void AAIHeroesGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+    CancelLocalModelExchange();
     DestroyTravelPresentation();
     Super::EndPlay(EndPlayReason);
 }
 
 void AAIHeroesGameMode::Destroyed()
 {
+    CancelLocalModelExchange();
     DestroyTravelPresentation();
     Super::Destroyed();
 }

@@ -17,6 +17,7 @@
 #include "AIHeroesRivalStrategy.h"
 #include "AIHeroesFogRules.h"
 #include "AIHeroesModelReply.h"
+#include "AIHeroesLocalExchange.h"
 #include "AIHeroesGameMode.generated.h"
 
 class AAIHeroesWorldNode;
@@ -200,7 +201,19 @@ public:
     void CancelLocalModelAdvice();
     bool IsLocalModelAdvicePending() const { return LocalModelReplies.IsPending(); }
 
+    // Optional loopback transport. Disabled unless an explicit host call opts in.
+    // A successful exchange is NOT verified weights; offline UI stays authoritative.
+    bool StartLocalModelExchange(int32 Port, const FString& Model, bool bExplicitLocalOptIn, FString& Error);
+    void CancelLocalModelExchange();
+    bool IsLocalModelExchangePending() const { return LocalModelExchange.IsPending(); }
+    const FAIHeroesModelReplyResult& GetLocalModelExchangeResult() const { return LocalExchangeResult; }
+
 private:
+    FAIHeroesLocalExchange LocalModelExchange;
+    FAIHeroesModelReplyResult LocalExchangeResult;
+    bool bLocalExchangeHandled = true;
+    void TickLocalModelExchange();
+    void BeginLocalExchangeSmoke();
     FAIHeroesModelReplySession LocalModelReplies;
     bool BuildLocalModelSnapshot(FAIHeroesProposalSnapshot& Out) const;
     // Transient UI quote, never a campaign save or an AI authorization.

@@ -233,6 +233,25 @@
         "clear": true
       },
       "problemMatcher": []
+    },
+    {
+      "label": "AIHEROES: Verify async local model exchange",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${workspaceFolder}\\Tools\\verify_local_exchange.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
     }
   ]
 }
