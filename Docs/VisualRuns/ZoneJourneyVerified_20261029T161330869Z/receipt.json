@@ -1,0 +1,84 @@
+{
+    "status":  "PASS_ZONE_JOURNEY_READONLY_GAME_QA",
+    "seed":  20261029,
+    "branches":  3,
+    "pid":  19784,
+    "generated_zones":  10,
+    "player_confirmed_battles":  2,
+    "read_only_advice_events":  2,
+    "read_only_dossier_events":  2,
+    "read_only_journey_events":  1,
+    "blocked_modal_journey_hotkey":  1,
+    "journey_result":  "[2026.10.29-16.13.46:546][340]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY JOURNEY FOREST | EARLIEST DAY 1 | 1 MOVES / 0 END-DAYS | NEXT: CONFIRM FOREST 3 MOVES | GUARD OUTCOME UNKNOWN | NO ORDER EXECUTED",
+    "denied_mutating_commands_while_open":  2,
+    "dossier_open_log":  "[2026.10.29-16.13.49:765][690]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY DOSSIER OPEN options=3 known_choices=3 top=SUPPLY | no orders.",
+    "dossier_close_log":  "[2026.10.29-16.13.54:615][231]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY DOSSIER CLOSED | no orders executed.",
+    "advice_result":  "[2026.10.29-16.13.47:932][492]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY HERO ADVICE | HERO SEED: consider visible SUPPLY (2 moves). No guard on the visible destination. Select it yourself; ENTER authorizes.",
+    "inspect_result":  "[2026.10.29-16.13.49:240][635]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY HERO ADVICE | HERO SEED | FOREST costs 3 moves. SEED: defender outcome UNKNOWN; no battle forecast. Human ENTER required.",
+    "human_next_day":  1,
+    "screenshots":  [
+                        {
+                            "stage":  "initial",
+                            "serial":  0,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T161330869Z\\initial.png",
+                            "bytes":  578707,
+                            "sha256":  "e6c1331e0e546a9a2ba7c9bbe0b3bb68f656ea44865abf70a3a42f80971ac5ce",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  341
+                        },
+                        {
+                            "stage":  "journey",
+                            "serial":  1,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T161330869Z\\journey.png",
+                            "bytes":  596640,
+                            "sha256":  "0245ac4e1e688fa544511088c67ebf8fe9120bd4137965ba968ca9f3fba63d5b",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  353
+                        },
+                        {
+                            "stage":  "dossier",
+                            "serial":  2,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T161330869Z\\dossier.png",
+                            "bytes":  311388,
+                            "sha256":  "8fbccfb4dfc94c9904e84996c5e2e94987f5fc9b391542679789a3ac38936a46",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  250
+                        },
+                        {
+                            "stage":  "forest",
+                            "serial":  3,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T161330869Z\\forest.png",
+                            "bytes":  567258,
+                            "sha256":  "bc8eafd60410cb0a83a264371d6a11e9a6308f77298ec24e4cfd0bf5ee2251bf",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  336
+                        },
+                        {
+                            "stage":  "day2",
+                            "serial":  4,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T161330869Z\\day2.png",
+                            "bytes":  562526,
+                            "sha256":  "8c5d61d1bbb876f1a8de484dd07d8005eb0401da0fb15a6a7c0370e574dc803d",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  341
+                        },
+                        {
+                            "stage":  "ore",
+                            "serial":  5,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T161330869Z\\ore.png",
+                            "bytes":  556170,
+                            "sha256":  "3592507ae061ac93dbf6470526f5bfd4c5af0662ff011efd47646e1e70e553ce",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  341
+                        }
+                    ],
+    "user_save_files_unchanged":  true,
+    "save_writes":  0,
+    "observed_utc":  "2026-10-29T16:14:00.9729138Z"
+}

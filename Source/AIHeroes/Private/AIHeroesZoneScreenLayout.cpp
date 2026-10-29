@@ -19,6 +19,33 @@ const TCHAR* FAIHeroesZoneScreenLayout::Name(EAIHeroesZoneScreenAction Action)
     }
 }
 
+bool FAIHeroesZoneScreenLayout::ContainsChrome(const FVector2D& Point) const
+{
+    if (!bSupported || !bWideChrome ||
+        !FMath::IsFinite(Point.X) || !FMath::IsFinite(Point.Y)) return false;
+    return MissionPanel.Contains(Point) || InspectorPanel.Contains(Point) ||
+        MiniMapPanel.Contains(Point);
+}
+
+const TCHAR* FAIHeroesZoneScreenLayout::DisplayName(EAIHeroesZoneScreenAction Action)
+{
+    switch (Action)
+    {
+        case EAIHeroesZoneScreenAction::NextSite: return TEXT("СЛЕД. МЕСТО");
+        case EAIHeroesZoneScreenAction::HeroAdvice: return TEXT("СОВЕТ ГЕРОЯ");
+        case EAIHeroesZoneScreenAction::InspectSite: return TEXT("ОБЪЕКТ");
+        case EAIHeroesZoneScreenAction::CompareRoutes: return TEXT("МАРШРУТЫ");
+        case EAIHeroesZoneScreenAction::ConfirmMove: return TEXT("ИДТИ / БОЙ");
+        case EAIHeroesZoneScreenAction::EndDay: return TEXT("КОНЕЦ ДНЯ");
+        case EAIHeroesZoneScreenAction::Recruit: return TEXT("НАЁМ");
+        case EAIHeroesZoneScreenAction::UpgradeProtocol: return TEXT("РАЗВИТИЕ ИИ");
+        case EAIHeroesZoneScreenAction::Save: return TEXT("СОХРАНИТЬ");
+        case EAIHeroesZoneScreenAction::Load: return TEXT("ЗАГРУЗИТЬ");
+        case EAIHeroesZoneScreenAction::CloseComparison: return TEXT("ЗАКРЫТЬ");
+        default: return TEXT("");
+    }
+}
+
 FAIHeroesZoneScreenLayout FAIHeroesZoneScreenLayout::Build(
     const FVector2D& Viewport, bool bComparisonOpen)
 {
@@ -31,6 +58,13 @@ FAIHeroesZoneScreenLayout FAIHeroesZoneScreenLayout::Build(
         Viewport.X > 10000.f || Viewport.Y > 10000.f)
         return Result;
     Result.bSupported = true;
+    Result.bWideChrome = Viewport.X >= 1200.f && Viewport.Y >= 700.f;
+    if (Result.bWideChrome)
+    {
+        Result.MissionPanel = {18.f, 145.f, 246.f, 144.f};
+        Result.MiniMapPanel = {18.f, 302.f, 210.f, 158.f};
+        Result.InspectorPanel = {static_cast<float>(Viewport.X) - 280.f, 145.f, 262.f, 254.f};
+    }
 
     const float Margin = FMath::Clamp(Viewport.X * .03f, 18.f, 42.f);
     const float Gap = 8.f;
@@ -55,7 +89,7 @@ FAIHeroesZoneScreenLayout FAIHeroesZoneScreenLayout::Build(
             {(static_cast<float>(Viewport.X) - CloseWidth) * .5f,
              RowTop + ButtonHeight + Gap,
              CloseWidth, ButtonHeight},
-            Name(EAIHeroesZoneScreenAction::CloseComparison), false
+            DisplayName(EAIHeroesZoneScreenAction::CloseComparison), false
         });
         return Result;
     }
@@ -86,7 +120,7 @@ FAIHeroesZoneScreenLayout FAIHeroesZoneScreenLayout::Build(
             {Margin + (ButtonWidth + Gap) * Column,
              RowTop + (ButtonHeight + Gap) * Row,
              ButtonWidth, ButtonHeight},
-            Name(Action), bHighImpact
+            DisplayName(Action), bHighImpact
         });
     }
     return Result;

@@ -1,0 +1,24 @@
+{
+  "origin": "Original, procedural meshes; no extracted reference-image pixels",
+  "purpose": "Visual-only, collisions off, no road/path authority",
+  "assets": [
+    {
+      "name": "SM_RidgeOutcrop",
+      "triangles": 210,
+      "bytes": 23036,
+      "sha256": "789ad9a520ebef564467a23ce41bd38ca07949ab28939e33ff5f11ee4be3626b"
+    },
+    {
+      "name": "SM_Waystone",
+      "triangles": 174,
+      "bytes": 23020,
+      "sha256": "765936ca7a7f74b399f6d58a336c69cd7f9f69caf918f97650cba5a0e1dc3fe2"
+    },
+    {
+      "name": "SM_Waystation",
+      "triangles": 404,
+      "bytes": 25052,
+      "sha256": "5f6ab228b61254c00909b985500c3e8f2384ed6a8d6ea318235e0649b2d0af53"
+    }
+  ]
+}

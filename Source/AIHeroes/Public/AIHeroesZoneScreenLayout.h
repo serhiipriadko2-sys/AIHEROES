@@ -48,11 +48,20 @@ struct AIHEROES_API FAIHeroesZoneScreenLayout
     static FAIHeroesZoneScreenLayout Build(
         const FVector2D& Viewport, bool bComparisonOpen);
     static const TCHAR* Name(EAIHeroesZoneScreenAction Action);
+    // Readable Russian text; Name() remains the stable QA/action-log token.
+    static const TCHAR* DisplayName(EAIHeroesZoneScreenAction Action);
 
     bool bSupported = false;
     bool bComparisonOpen = false;
     FVector2D Viewport = FVector2D::ZeroVector;
     FAIHeroesZoneScreenRect ComparisonPanel;
+    // Decorative, non-authoritative chrome, only on wide landscape screens.
+    // Hit-test consumes these regions so a painted card cannot select a node.
+    bool bWideChrome = false;
+    FAIHeroesZoneScreenRect MissionPanel;
+    FAIHeroesZoneScreenRect InspectorPanel;
+    FAIHeroesZoneScreenRect MiniMapPanel;
+    bool ContainsChrome(const FVector2D& Point) const;
     TArray<FAIHeroesZoneScreenButton> Buttons;
 
     EAIHeroesZoneScreenAction HitTest(const FVector2D& Point) const

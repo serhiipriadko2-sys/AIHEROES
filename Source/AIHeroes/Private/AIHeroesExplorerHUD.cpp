@@ -2,21 +2,23 @@
 #include "AIHeroesExplorerLayout.h"
 #include "AIHeroesHUDTextLayout.h"
 #include "AIHeroesMapLabelLayout.h"
+#include "AIHeroesReferenceUI.h"
+#include "AIHeroesBattleArt.h"
+#include "AIHeroesFogRules.h"
 #include "AIHeroesGameMode.h"
 #include "AIHeroesWorldNode.h"
 #include "Engine/Canvas.h"
 #include "Engine/Engine.h"
+#include "Engine/Texture2D.h"
 #include "HAL/PlatformTime.h"
 #include "GameFramework/PlayerController.h"
 
 namespace AmberHUD
 {
-const FLinearColor Ink(0.018f,0.028f,0.031f,0.97f);
-const FLinearColor Card(0.035f,0.054f,0.056f,0.98f);
-const FLinearColor Paper(0.91f,0.88f,0.76f,1.f);
-const FLinearColor Muted(0.53f,0.62f,0.59f,1.f);
-const FLinearColor Amber(0.92f,0.57f,0.20f,1.f);
-const FLinearColor Teal(0.33f,0.79f,0.72f,1.f);
+const FLinearColor Ink(.0035f,.007f,.011f,1.f),Card(.008f,.014f,.020f,1.f);
+const FLinearColor Paper(.94f,.91f,.81f,1.f),Muted(.56f,.61f,.60f,1.f);
+const FLinearColor Gold(.83f,.56f,.23f,1.f),Edge(.23f,.15f,.065f,1.f);
+const FLinearColor Teal(.22f,.68f,.78f,1.f),Blue(.016f,.063f,.14f,1.f);
 FString Site(EAIHeroesNodeType T)
 {
     switch(T){
@@ -25,29 +27,32 @@ FString Site(EAIHeroesNodeType T)
         case EAIHeroesNodeType::OreMine:return TEXT("Рудник");
         case EAIHeroesNodeType::Outpost:return TEXT("Сторожевая башня");
         case EAIHeroesNodeType::Ruins:return TEXT("Древний архив");
-        default:return TEXT("Неизвестный объект");
-    }
+        default:return TEXT("Неизвестный объект");}
+}
+EAIHeroesGlyph SiteIcon(EAIHeroesNodeType T)
+{
+    switch(T){case EAIHeroesNodeType::ForestMine:return EAIHeroesGlyph::Wood;
+        case EAIHeroesNodeType::OreMine:return EAIHeroesGlyph::Ore;
+        case EAIHeroesNodeType::Ruins:return EAIHeroesGlyph::Data;
+        default:return EAIHeroesGlyph::Castle;}
 }
 FString Purpose(EAIHeroesNodeType T)
 {
     switch(T){
         case EAIHeroesNodeType::Headquarters:return TEXT("Строительство, найм и развитие героя");
-        case EAIHeroesNodeType::ForestMine:return TEXT("Доход после захвата: +15 дерева в день");
-        case EAIHeroesNodeType::OreMine:return TEXT("Доход после захвата: +12 руды в день");
-        case EAIHeroesNodeType::Outpost:return TEXT("Доход после захвата: +30 золота в день");
-        default:return TEXT("Цель экспедиции: знания древних машин");
-    }
+        case EAIHeroesNodeType::ForestMine:return TEXT("После захвата: +15 дерева в день");
+        case EAIHeroesNodeType::OreMine:return TEXT("После захвата: +12 руды в день");
+        case EAIHeroesNodeType::Outpost:return TEXT("После захвата: +30 золота в день");
+        default:return TEXT("Здесь хранятся знания древних машин");}
 }
 FString MenuName(int32 A)
 {
-    switch(A){
-        case 202:return TEXT("Задачи  [O]");case 210:return TEXT("Отчёт героя  [I]");
+    switch(A){case 202:return TEXT("Задачи  [O]");case 210:return TEXT("Отчёт героя  [I]");
         case 12:return TEXT("План пути  [Z]");case 200:return TEXT("Совет по армии  [N]");
         case 204:return TEXT("Полевой лагерь  [3]");case 205:return TEXT("Обоз  [X]");
         case 7:return TEXT("Сохранить  [K]");case 8:return TEXT("Загрузить  [L]");
         case 9:return TEXT("Сменить слот  [C]");case 10:return TEXT("Журнал боя  [J]");
-        case 11:return TEXT("Повтор боя  [V]");default:return TEXT("");
-    }
+        case 11:return TEXT("Повтор боя  [V]");default:return TEXT("");}
 }
 }
 
@@ -55,7 +60,6 @@ bool AAIHeroesHUD::CloseExplorerMenu()
 {
     const bool Old=bExplorerMenuOpen;bExplorerMenuOpen=false;return Old;
 }
-
 void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
 {
     using namespace AmberHUD;
@@ -69,56 +73,136 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
         if(!Fit.IsEmpty())DrawText(Fit,C,X,Y,Font,Scale);
     };
     auto Panel=[this](const FAIHeroesHUDActionRect& R,const FLinearColor& C)
-    {DrawRect(C,R.X,R.Y,R.W,R.H);};
+    {
+        if(R.W<=0||R.H<=0)return;
+        DrawRect(C,R.X,R.Y,R.W,R.H);
+        DrawLine(R.X+5,R.Y,R.X+R.W-5,R.Y,Edge,1.f);
+        DrawLine(R.X+5,R.Y+R.H,R.X+R.W-5,R.Y+R.H,Edge,1.f);
+        DrawLine(R.X,R.Y+5,R.X,R.Y+R.H-5,Edge,1.f);
+        DrawLine(R.X+R.W,R.Y+5,R.X+R.W,R.Y+R.H-5,Edge,1.f);
+        for(int32 CX:{0,1})for(int32 CY:{0,1})
+        {
+            const float X=R.X+CX*R.W,Y=R.Y+CY*R.H,SX=CX?-1.f:1.f,SY=CY?-1.f:1.f;
+            DrawLine(X+SX*3,Y+SY*10,X+SX*3,Y+SY*3,Gold,1.f);
+            DrawLine(X+SX*3,Y+SY*3,X+SX*10,Y+SY*3,Gold,1.f);
+        }
+    };
+    auto Glyph=[this](EAIHeroesGlyph K,float X,float Y,float Size,const FLinearColor& C)
+    {
+        for(const auto& L:FAIHeroesReferenceUI::Glyph(K))
+            DrawLine(X+L.A.X*Size,Y+L.A.Y*Size,X+L.B.X*Size,Y+L.B.Y*Size,C,1.5f);
+    };
     float MX=-1,MY=-1;if(PlayerOwner)PlayerOwner->GetMousePosition(MX,MY);
     auto Button=[&](int32 A,const FString& S,bool Primary=false,bool Enabled=true)
     {
         const auto R=FAIHeroesExplorerLayout::Button(A,V,bExplorerMenuOpen);if(R.W<=0)return;
         const bool Hover=R.Contains({MX,MY});
-        Panel(R,!Enabled?FLinearColor(.055f,.067f,.063f):Primary?Amber:
-            Hover?FLinearColor(.11f,.20f,.19f):FLinearColor(.065f,.105f,.106f));
-        if(Hover&&Enabled)DrawRect(Teal,R.X,R.Y,3,R.H);
-        Text(S,R.X+12,R.Y+(R.H-16)*.5f,R.W-24,!Enabled?Muted:Primary?Ink:Paper,1.10f);
+        Panel(R,!Enabled?FLinearColor(.013f,.019f,.022f):Primary?FLinearColor(.43f,.23f,.055f):
+            A==2?Blue:Hover?FLinearColor(.035f,.07f,.10f):Card);
+        if(Hover&&Enabled)DrawRect(Gold,R.X+3,R.Y+4,2,R.H-8);
+        EAIHeroesGlyph Icon=EAIHeroesGlyph::Scroll;
+        const bool HasIcon=A==400||A==203||A==1||A==2;
+        if(A==400)Icon=EAIHeroesGlyph::Castle;
+        if(A==203)Icon=EAIHeroesGlyph::Hero;
+        if(A==2)Icon=EAIHeroesGlyph::Hourglass;
+        const bool IconFits=HasIcon&&R.W>=125;
+        if(IconFits)Glyph(Icon,R.X+10,R.Y+(R.H-28)*.5f,28,Enabled?Gold:Muted);
+        Text(S,R.X+(IconFits?46:12),R.Y+(R.H-16)*.5f,R.W-(IconFits?58:24),Enabled?Paper:Muted,1.08f);
     };
-    Panel(F.Header,Ink);DrawRect(Amber,0,F.Header.H-2,V.X,2);
-    Text(TEXT("РУБЕЖИ ИСКРЫ"),20,12,F.bWide?330:V.X-132,Paper,F.bWide?1.65f:1.3f);
-    if(F.bWide)Text(TEXT("Зелёная низина / экспедиция 01"),20,40,330,Muted,.95f);
-    const FString Resources=FString::Printf(TEXT("День %d    Золото %d    Дерево %d    Руда %d    Данные %d"),G.Day,G.Gold,G.Wood,G.Ore,G.DataFragments);
-    if(V.X<640)
-    {
-        Text(FString::Printf(TEXT("День %d  /  Золото %d  /  Дерево %d"),G.Day,G.Gold,G.Wood),20,58,V.X-40,Paper,1.f);
-        Text(FString::Printf(TEXT("Руда %d  /  Данные %d"),G.Ore,G.DataFragments),20,80,V.X-40,Paper,1.f);
-    }
-    else Text(Resources,F.bWide?350:20,F.bWide?23:58,F.bWide?V.X-458:V.X-40,Paper,F.bWide?1.15f:1.0f);
+
+    Panel(F.Header,Ink);
+    Glyph(EAIHeroesGlyph::Compass,16,10,38,Gold);
+    Text(TEXT("AIHEROES"),63,9,F.bWide?220:V.X-180,Gold,F.bWide?1.9f:1.55f);
+    Text(TEXT("Рубежи Искры"),64,36,F.bWide?220:V.X-190,Paper,.95f);
     Button(700,bExplorerMenuOpen?TEXT("Закрыть"):TEXT("Меню"));
-    Panel(F.Mission,Card);
+    const float DayX=F.bWide?285.f:V.X-224.f;
+    if(V.X>=640)
+    {
+        Glyph(EAIHeroesGlyph::Sun,DayX,14,26,Gold);
+        Text(FString::Printf(TEXT("День %d"),G.Day),DayX+34,11,92,Paper,1.15f);
+        Text(FString::Printf(TEXT("Неделя %d"),(G.Day-1)/7+1),DayX+34,34,92,Muted,.85f);
+    }
+    const int32 Values[]={G.Gold,G.Wood,G.Ore,G.DataFragments};
+    const TCHAR* Names[]={TEXT("Золото"),TEXT("Дерево"),TEXT("Руда"),TEXT("Данные")};
+    const EAIHeroesGlyph Icons[]={EAIHeroesGlyph::Gold,EAIHeroesGlyph::Wood,EAIHeroesGlyph::Ore,EAIHeroesGlyph::Data};
+    for(int32 I=0;I<4;++I)
+    {
+        if(F.bWide)
+        {
+            const float W=(V.X-532.f)/4.f,X=420.f+I*W;
+            Glyph(Icons[I],X,19,27,I==3?Teal:Gold);
+            Text(Names[I],X+36,10,W-42,Muted,.85f);
+            Text(FString::FromInt(Values[I]),X+36,29,W-42,Paper,1.3f);
+            if(I==0)Text(FString::Printf(TEXT("+%d / день"),G.GetDailyGoldIncome()),X+36,49,W-42,Teal,.72f);
+        }
+        else
+        {
+            const int32 Cols=V.X<640?2:4;
+            const float W=(V.X-32.f)/Cols,X=16+(I%Cols)*W,Y=56+(I/Cols)*25;
+            Glyph(Icons[I],X,Y,19,I==3?Teal:Gold);
+            Text(FString::Printf(TEXT("%s %d"),Names[I],Values[I]),X+26,Y+1,W-30,Paper,.96f);
+        }
+    }
+    if(V.X<640)Text(FString::Printf(TEXT("День %d"),G.Day),V.X-175,36,70,Muted,.85f);
+
+    Panel(F.Mission,Card);Glyph(EAIHeroesGlyph::Compass,F.Mission.X+10,F.Mission.Y+12,23,Gold);
     FString Objective=TEXT("Выберите лесопилку и разведайте путь");
     for(const AAIHeroesWorldNode* N:G.Nodes)if(IsValid(N)&&N->NodeType==EAIHeroesNodeType::ForestMine&&N->bOwned)Objective=TEXT("Следующая цель: захватите рудник");
     for(const AAIHeroesWorldNode* N:G.Nodes)if(IsValid(N)&&N->NodeType==EAIHeroesNodeType::OreMine&&N->bOwned)Objective=TEXT("Откройте путь к древнему архиву");
     if(G.GetCampaignProgress().bVictory)Objective=TEXT("Экспедиция завершена!");
-    Text(TEXT("ЦЕЛЬ ЭКСПЕДИЦИИ"),F.Mission.X+12,F.Mission.Y+6,F.Mission.W-24,Amber,.85f);
-    Text(Objective,F.Mission.X+12,F.Mission.Y+25,F.Mission.W-24,Paper,1.0f);
+    Text(TEXT("ЦЕЛЬ ЭКСПЕДИЦИИ"),F.Mission.X+41,F.Mission.Y+6,F.Mission.W-50,Gold,.85f);
+    Text(Objective,F.Mission.X+41,F.Mission.Y+25,F.Mission.W-50,Paper,.96f);
 
-    // Simple, sparse site badges. Never label undiscovered sites.
     TArray<FAIHeroesHUDActionRect> Occupied={F.Mission};
-    if(PlayerOwner)
-    for(const AAIHeroesWorldNode* N:G.Nodes)
+    if(F.Overview.W>0)Occupied.Add(F.Overview);
+    if(PlayerOwner)for(const AAIHeroesWorldNode* N:G.Nodes)
     {
         if(!IsValid(N)||N->IsHidden()||!G.IsNodeDiscovered(FName(*N->GetDisplayName())))continue;
         FVector2D At;
         if(!PlayerOwner->ProjectWorldLocationToScreen(N->GetActorLocation()+FVector(0,0,250),At)||!F.Map.Contains(At))continue;
-        FAIHeroesHUDActionRect R{static_cast<float>(At.X)-75,static_cast<float>(At.Y)-18,150,32};
+        FAIHeroesHUDActionRect R{static_cast<float>(At.X)-92,static_cast<float>(At.Y)-18,184,34};
         R.X=FMath::Clamp(R.X,F.Map.X,F.Map.X+F.Map.W-R.W);
         R.Y=FMath::Clamp(R.Y,F.Map.Y,F.Map.Y+F.Map.H-R.H);
         bool Free=true;for(const auto& O:Occupied)Free&=!FAIHeroesMapLabelLayout::Overlaps(R,O,4);
         if(!Free)continue;Occupied.Add(R);
         const bool Selected=G.SelectedNode.Get()==N;
-        Panel(R,Selected?FLinearColor(.065f,.19f,.18f,.98f):Ink);
-        DrawRect(Selected?Amber:N->bOwned?Teal:Muted,R.X,R.Y,3,R.H);
-        Text(Site(N->NodeType),R.X+10,R.Y+8,R.W-20,Selected?Paper:N->bOwned?Teal:Paper,1.f);
+        Panel(R,Selected?Blue:Ink);
+        Glyph(SiteIcon(N->NodeType),R.X+7,R.Y+5,24,Selected?Gold:N->bOwned?Teal:Paper);
+        Text(Site(N->NodeType),R.X+38,R.Y+9,R.W-45,Selected?Gold:N->bOwned?Teal:Paper,.98f);
     }
 
-    Panel(F.Inspector,Card);DrawRect(Amber,F.Inspector.X,F.Inspector.Y,3,F.Inspector.H);
+    // A schematic overview of the known road graph, NOT a painted full-map reveal.
+    if(F.Overview.W>0)
+    {
+        FAIHeroesAdvisorSnapshot S;S.TravelRuleVersion=G.TravelRuleVersion;
+        S.bFogEnabled=true;S.ExploredSitesMask=0;S.HeroPosition=G.GetHeroStrategicLocation();
+        for(const AAIHeroesWorldNode* N:G.Nodes)
+        {
+            if(!IsValid(N))continue;
+            FAIHeroesAdvisorNode A;A.Id=FName(*N->GetDisplayName());A.Type=N->NodeType;
+            A.Location=N->GetActorLocation();A.bOwned=N->bOwned;
+            if(G.IsNodeDiscovered(A.Id)&&!N->IsHidden())
+            {S.ExploredSitesMask|=FAIHeroesFogRules::SiteBit(A.Id);A.Guards=N->Defenders;}
+            S.Nodes.Add(A);
+        }
+        const auto O=FAIHeroesReferenceUI::Overview(S);
+        Panel(F.Overview,Ink);
+        Text(TEXT("РАЗВЕДАННЫЕ ПУТИ"),F.Overview.X+12,F.Overview.Y+10,F.Overview.W-24,Gold,.84f);
+        const float X=F.Overview.X+16,Y=F.Overview.Y+36,W=F.Overview.W-32,H=F.Overview.H-58;
+        auto P=[&](FVector2D UV){return FVector2D(X+UV.X*W,Y+UV.Y*H);};
+        if(O.bValid)
+        {
+            for(const auto& L:O.Links){const auto A=P(O.Marks[L.X].UV),B=P(O.Marks[L.Y].UV);DrawLine(A.X,A.Y,B.X,B.Y,Edge,2.f);}
+            for(const auto& M:O.Marks){const auto At=P(M.UV);Glyph(SiteIcon(M.Type),At.X-8,At.Y-8,16,M.bOwned?Teal:Gold);}
+            const auto Hero=P(O.HeroUV);DrawLine(Hero.X-6,Hero.Y,Hero.X,Hero.Y-6,Paper,2.f);
+            DrawLine(Hero.X,Hero.Y-6,Hero.X+6,Hero.Y,Paper,2.f);DrawLine(Hero.X+6,Hero.Y,Hero.X,Hero.Y+6,Paper,2.f);
+            DrawLine(Hero.X,Hero.Y+6,Hero.X-6,Hero.Y,Paper,2.f);
+            Text(FString::Printf(TEXT("Открыто %d / 5  ·  север ↑"),O.Marks.Num()),F.Overview.X+12,F.Overview.Y+F.Overview.H-21,F.Overview.W-24,Muted,.82f);
+        }
+        else Text(TEXT("Обзор недоступен"),X,Y,W,Muted,.9f);
+    }
+
+    Panel(F.Inspector,Card);
     const auto* N=G.SelectedNode.Get();
     const bool Valid=IsValid(N)&&G.Nodes.Contains(G.SelectedNode)&&G.IsNodeDiscovered(FName(*N->GetDisplayName()));
     const auto Path=G.GetSelectedTravelPath();
@@ -129,14 +213,16 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
     {
         int32 Guards=0;for(const auto& U:N->Defenders)if(U.IsAlive())Guards+=U.Count();
         const bool Hostile=!N->bOwned&&Guards>0;
-        Text(Site(N->NodeType),X,Y,Span,Paper,F.bWide?1.65f:1.3f);
+        if(F.bWide)Glyph(SiteIcon(N->NodeType),X,Y,31,Gold);
+        Text(Site(N->NodeType),X+(F.bWide?43:0),Y+2,Span-(F.bWide?43:0),Paper,F.bWide?1.40f:1.3f);
         if(F.bWide)
         {
-            Text(N->bOwned?TEXT("ВАША ТЕРРИТОРИЯ"):Hostile?TEXT("ПОД ОХРАНОЙ"):TEXT("СВОБОДНАЯ ТЕРРИТОРИЯ"),X,Y+34,Span,N->bOwned?Teal:Amber,.95f);
-            Text(Purpose(N->NodeType),X,Y+66,Span,Muted,1.05f);
-            Text(FString::Printf(TEXT("Охрана: %d    Движение: %d / 4"),Guards,G.MovesLeft),X,Y+98,Span,Paper,1.1f);
-            Text(!Hostile?TEXT("Можно посетить без боя"):G.ProtocolTier==0?TEXT("Исход боя: пока не оценён"):TEXT("Спросите героя перед нападением"),X,Y+130,Span,Muted,1.05f);
-            Text(TEXT("Вы решаете. Герой ведёт бой."),X,Y+160,Span,Teal,1.0f);
+            Text(N->bOwned?TEXT("ВАША ТЕРРИТОРИЯ"):Hostile?TEXT("ПОД ОХРАНОЙ"):TEXT("СВОБОДНАЯ ТЕРРИТОРИЯ"),X,Y+42,Span,N->bOwned?Teal:Gold,.95f);
+            DrawLine(X,Y+69,X+Span,Y+69,Edge,1.f);
+            Text(Purpose(N->NodeType),X,Y+82,Span,Paper,1.04f);
+            Text(FString::Printf(TEXT("Охрана: %d   ·   Ходы: %d / 4"),Guards,G.MovesLeft),X,Y+113,Span,Paper,1.08f);
+            Text(!Hostile?TEXT("Можно посетить без боя"):G.ProtocolTier==0?TEXT("Риск неизвестен: герой ещё учится"):TEXT("Спросите героя перед нападением"),X,Y+145,Span,Muted,1.02f);
+            Text(TEXT("Вы выбираете путь. ИИ ведёт бой."),X,Y+178,Span,Teal,.92f);
         }
         else Text(FString::Printf(TEXT("%s  /  охрана %d  /  ходы %d из 4"),N->bOwned?TEXT("Ваш объект"):TEXT("Не захвачен"),Guards,G.MovesLeft),X,Y+28,Span,Muted,1.f);
         if(Ready)CTA=FString::Printf(TEXT("%s  /  %d хода"),Hostile?TEXT("Атаковать"):TEXT("Перейти"),Path.TotalCost);
@@ -151,16 +237,39 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
         if(F.bWide){Text(TEXT("1  Выберите цель"),X,Y+85,Span,Paper);Text(TEXT("2  Спросите героя"),X,Y+120,Span,Paper);Text(TEXT("3  Подтвердите поход"),X,Y+155,Span,Paper);}
     }
     if(!bExplorerMenuOpen)Button(0,CTA,true,Ready);
-    Panel(F.Dock,Ink);DrawRect(FLinearColor(.18f,.25f,.22f),0,F.Dock.Y,V.X,1);
-    Button(400,TEXT("База  [G]"));Button(203,TEXT("Герой  [Y]"));Button(1,TEXT("Спросить  [H]"));Button(2,TEXT("Конец хода"));
+
+    if(F.Hero.W>0)
+    {
+        Panel(F.Hero,Ink);const float HX=F.Hero.X+12,HY=F.Hero.Y+12,HW=F.Hero.W-24;
+        const TCHAR* Tiers[]={TEXT("Семя"),TEXT("Аналитик"),TEXT("Память"),TEXT("Планировщик")};
+        Glyph(EAIHeroesGlyph::Hero,HX,HY,28,Gold);
+        Text(FString::Printf(TEXT("Искра  /  %s"),Tiers[FMath::Clamp(G.ProtocolTier,0,3)]),HX+38,HY+2,HW-38,Paper,1.12f);
+        Text(TEXT("АРМИЯ ГЕРОЯ"),HX,HY+37,HW,Gold,.85f);
+        const int32 Show=FMath::Min(G.PlayerArmy.Num(),2);
+        for(int32 I=0;I<Show;++I)
+        {
+            const auto& U=G.PlayerArmy[I];const float RY=HY+58+I*59;
+            UTexture2D* Portrait=BattlePortraits.FindRef(U.UnitId);
+            if(!Portrait){const FString PP=FAIHeroesBattleArt::PortraitPath(U.UnitId);if(!PP.IsEmpty())Portrait=LoadObject<UTexture2D>(nullptr,*PP);if(Portrait)BattlePortraits.Add(U.UnitId,Portrait);}
+            Panel({HX,RY,48,48},Card);
+            if(Portrait)DrawTextureSimple(Portrait,HX+2,RY+2,44.f/256.f,false);
+            else Glyph(EAIHeroesGlyph::Army,HX+8,RY+8,32,Gold);
+            Text(FString::Printf(TEXT("%s · %d"),*FAIHeroesBattleArt::UnitName(U.UnitId),U.Count()),HX+58,RY+3,HW-58,Paper,1.05f);
+            Text(FString::Printf(TEXT("ОЗ %d  ·  атака %d  ·  защита %d"),U.TotalHealth,U.Attack,U.Defense),HX+58,RY+26,HW-58,Muted,.85f);
+        }
+        if(Show==0)Text(TEXT("Армия пуста. Найм доступен на базе."),HX,HY+60,HW,Muted,.95f);
+        Text(G.PlayerArmy.Num()>2?FString::Printf(TEXT("Ещё отрядов: %d"),G.PlayerArmy.Num()-2):TEXT("ИИ по правилам · модель не подключена"),HX,F.Hero.Y+F.Hero.H-21,HW,Muted,.78f);
+    }
+    Panel(F.Dock,Ink);
+    Button(400,TEXT("Постройки [G]"));Button(203,TEXT("Развитие [Y]"));Button(1,TEXT("Спросить [H]"));Button(2,TEXT("Конец хода"));
     const double Now=FPlatformTime::Seconds();
     if(ExplorerLastEvent!=G.LastEvent){ExplorerLastEvent=G.LastEvent;ExplorerToastUntil=Now+4.5;}
-    const FString Footer=Now<ExplorerToastUntil ? TEXT("Событие: ")+ExplorerLastEvent :
-        FString::Printf(TEXT("Ходы %d / 4   |   Герой: %s   |   ИИ по правилам, модель не загружена"),G.MovesLeft,G.ProtocolTier==0?TEXT("Искра-семя"):TEXT("Аналитик"));
+    const FString Footer=Now<ExplorerToastUntil?TEXT("Событие: ")+ExplorerLastEvent:
+        FString::Printf(TEXT("Ходы %d / 4   |   WASD — камера, Q / E — поворот, R / F — масштаб   |   ИИ по правилам"),G.MovesLeft);
     Text(Footer,16,F.Dock.Y+F.Dock.H-24,V.X-32,Muted,.9f);
     if(bExplorerMenuOpen)
     {
-        Panel(F.Menu,Ink);Text(TEXT("ЭКСПЕДИЦИЯ И УПРАВЛЕНИЕ"),F.Menu.X+12,F.Menu.Y+10,F.Menu.W-24,Amber,.9f);
+        Panel(F.Menu,Ink);Text(TEXT("ЭКСПЕДИЦИЯ И УПРАВЛЕНИЕ"),F.Menu.X+12,F.Menu.Y+10,F.Menu.W-24,Gold,.9f);
         for(int32 A:{202,210,12,200,204,205,7,8,9,10,11})Button(A,MenuName(A));
     }
     if(G.IsAdvisorDossierVisible())DrawAdvisorDossier(G);

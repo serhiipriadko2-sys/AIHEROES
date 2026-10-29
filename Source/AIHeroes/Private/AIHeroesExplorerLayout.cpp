@@ -15,6 +15,8 @@ FAIHeroesExplorerFrame FAIHeroesExplorerLayout::Frame(const FVector2D& V)
         (F.bWide?F.Dock.Y-12:F.Inspector.Y-12)-(F.Header.H+12)};
     F.Mission={20,F.Header.H+12,FMath::Min(320.f,F.Map.W-16),48};
     F.Menu={FMath::Max(12.f,W-310),F.Header.H+8,FMath::Min(290.f,W-24),FMath::Min(492.f,F.Dock.Y-F.Header.H-16)};
+    if(F.bWide && H>=640.f) F.Overview={20,F.Dock.Y-178,190,162};
+    if(F.bWide && F.Dock.Y>=620.f) F.Hero={W-310,400,290,FMath::Min(216.f,F.Dock.Y-412.f)};
     return F;
 }
 TArray<int32> FAIHeroesExplorerLayout::Actions(bool MenuOpen)
@@ -52,7 +54,7 @@ int32 FAIHeroesExplorerLayout::Hit(const FVector2D& P,const FVector2D& V,bool Op
 {
     const auto F=Frame(V);if(!F.bSupported || !FMath::IsFinite(P.X) || !FMath::IsFinite(P.Y))return INDEX_NONE;
     for(int32 A:Actions(Open))if(Button(A,V,Open).Contains(P))return A;
-    if(F.Header.Contains(P)||F.Dock.Contains(P)||F.Inspector.Contains(P)||F.Mission.Contains(P)||
+    if(F.Header.Contains(P)||F.Dock.Contains(P)||F.Inspector.Contains(P)||F.Mission.Contains(P)||F.Overview.Contains(P)||F.Hero.Contains(P)||
         (Open&&F.Menu.Contains(P)))return ConsumeAction;
     // An open utility menu consumes outside taps to avoid accidental map orders.
     return Open?ConsumeAction:INDEX_NONE;

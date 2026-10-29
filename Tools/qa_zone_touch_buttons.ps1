@@ -233,10 +233,10 @@ try {
     [void](AwaitLog '\[ZONE INPUT\] POINTER BUTTON NEXT DAY')
     [void](AwaitLog '\[ZONE EXPEDITION\] DAY 2')
     $FrameReceipts+=CaptureFrame 3 'day2'
-    ClickGame 156 536  # Explicit button NEXT site.
+    ClickButton 0  # Explicit button NEXT site.
     [void](AwaitLog '\[ZONE INPUT\] POINTER BUTTON NEXT')
     [void](AwaitLog '\[ZONE EXPEDITION\] Selected known zone ORE')
-    ClickGame 1124 536  # Separate explicit button MOVE / FIGHT for ORE.
+    ClickButton 4  # Separate explicit button MOVE / FIGHT for ORE.
     [void](AwaitLog '\[ZONE EXPEDITION\] PLAYER CONFIRMED ORE \| battle=1 won=1')
     $FrameReceipts+=CaptureFrame 4 'ore'
 
@@ -247,14 +247,17 @@ try {
             throw ('QA_USER_SAVE_HASH_DRIFT '+$Path)
         }
     }
+    $AcceptedButtons=@(Select-String -LiteralPath $Log -Pattern '\[ZONE INPUT\] POINTER BUTTON')
+    if($AcceptedButtons.Count-ne8){throw ('WRONG_NUMBER_OF_AUTHORIZED_UI_ACTIONS '+$AcceptedButtons.Count)}
     $Result=[ordered]@{
        status='PASS_ZONE_EXPEDITION_TOUCH_BUTTONS_PLAYTHROUGH';
-       seed=$Seed;branches=$Branches; pid=$Game.Id;
+       seed=$Seed;branches=$Branches; pid=$Game.Id; viewport_width=$Width;viewport_height=$Height;
        generated_zones=7+$Branches;
        player_confirmed_battles=2;
        read_only_advice_events=2;
        read_only_dossier_events=2;
-       mouse_button_events=9;
+       pointer_press_attempts=10;
+       accepted_pointer_buttons=$AcceptedButtons.Count;
        actual_android_touch_events=0;
        actual_touch_device_tested=$false;
        denied_mutating_commands_while_open=2;
@@ -272,7 +275,7 @@ try {
     [IO.File]::WriteAllText($Receipt,($Result|ConvertTo-Json -Depth 10),
         (New-Object Text.UTF8Encoding($false)))
     Write-Output ('ZONE_EXPEDITION_TOUCH_BUTTONS_GAME_QA_PASS receipt='+$Receipt+
-        ' scenes=5 battles=2 pointer_buttons=9 no_save_writes=1')
+        ' scenes=5 battles=2 presses=10 recognized=8 no_save_writes=1')
     if($KeepOpen) { Write-Output ('OWN_WINDOW_LEFT_OPEN_PID='+$Game.Id) }
 } finally {
     if(-not $KeepOpen -and $Game) {

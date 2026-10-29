@@ -1,4 +1,8 @@
 #include "AIHeroesArtDirection.h"
+#include "AIHeroesScenicCoast.h"
+#include "AIHeroesSceneryV3.h"
+#include "AIHeroesScenicCrossing.h"
+#include "AIHeroesTravelRules.h"
 #include "AIHeroesWorldNode.h"
 #include "AIHeroesGameMode.h"
 #include "Components/StaticMeshComponent.h"
@@ -94,6 +98,29 @@ void FAIHeroesArtDirection::ApplyWorld(AAIHeroesGameMode& G)
             Forest->AddInstance(FTransform(FRotator(0,R.FRandRange(0,360),0),FVector(At.X,At.Y,-8),FVector(S)),false);
         }
     }
+    FAIHeroesScenicCoast::Attach(*Environment);
+    const bool bSceneryAttached=FAIHeroesSceneryV3::Attach(*Environment);
+    // Visible crossing is permitted only on the actual discovered Road V2 link.
+    if(G.TravelRuleVersion==FAIHeroesTravelRules::RoadVersion &&
+       G.IsNodeDiscovered(FName(TEXT("FOREST"))))
+    {
+        const AAIHeroesWorldNode* Hq=nullptr;
+        const AAIHeroesWorldNode* ForestSite=nullptr;
+        for(const auto& Node:G.Nodes)
+        {
+            if(!IsValid(Node.Get()))continue;
+            if(Node->GetDisplayName()==TEXT("HQ"))Hq=Node.Get();
+            else if(Node->GetDisplayName()==TEXT("FOREST"))ForestSite=Node.Get();
+        }
+        if(Hq&&ForestSite)
+        {
+            const bool bCrossing=FAIHeroesScenicCrossing::Attach(
+                *Environment,Hq->GetActorLocation(),ForestSite->GetActorLocation());
+            UE_LOG(LogTemp,Display,TEXT("[AMBER RIVER V4] bridge_on_known_road=%d"),
+                bCrossing?1:0);
+        }
+    }
+    UE_LOG(LogTemp,Display,TEXT("[AMBER SCENERY V3] attached=%d visual_only=1"),bSceneryAttached?1:0);
     if(IsValid(G.HeroMarker.Get()))
     {
         auto* Hero=Decor(*G.HeroMarker,TEXT("AmberHero"),Mesh(TEXT("SM_Seeker")),G.HeroMarker->GetRootComponent());

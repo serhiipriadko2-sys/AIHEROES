@@ -1,0 +1,203 @@
+﻿{
+    "status":  "PASS_WINDOWS_SCENERY_V3",
+    "observed_utc":  "2026-10-29T15:39:53.7752840Z",
+    "project_root":  "C:\\github\\AIHEROES",
+    "qareport":  "C:\\github\\AIHEROES\\Saved\\QA\\MapReadability_20261029T153556397Z",
+    "used_user_reference_images_as_guidance":  true,
+    "copied_reference_pixels":  false,
+    "source_asset_count":  3,
+    "triangle_count":  788,
+    "placed_components":  11,
+    "user_save_files":  4,
+    "player_save_drift":  0,
+    "source_drift":  0,
+    "editor_build":  "PASS",
+    "all_tests":  236,
+    "failed":  0,
+    "not_run":  0,
+    "warnings":  0,
+    "expected_new_test_paths":  [
+                                    "AIHeroes.Visual.SceneryV3.DeterministicSafeLocations",
+                                    "AIHeroes.Visual.SceneryV3.OriginalAssetsLoaded",
+                                    "AIHeroes.Visual.SceneryV3.NonInteractiveAndIdempotent"
+                                ],
+    "visual_resolutions":  [
+                               "1280x720",
+                               "960x720",
+                               "640x720"
+                           ],
+    "screenshots":  [
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T153556397Z\\viewport_1280\\VIEW_READY.png",
+                            "bytes":  819270,
+                            "sha256":  "DD32E329F9D7C32E69E3EEB1660455D4CC165CFB96DE994E12B74953DF564A91",
+                            "width":  1280,
+                            "height":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T153556397Z\\viewport_1280\\VIEW_MOVING.png",
+                            "bytes":  783741,
+                            "sha256":  "10EB83C1A187297F5B0D0EDC35A99E97C49636B19C4AE8A441DB2E7BCF1138B2",
+                            "width":  1280,
+                            "height":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T153556397Z\\viewport_1280\\VIEW_OVER_BUDGET.png",
+                            "bytes":  782625,
+                            "sha256":  "3EFC2960EAEFFF931EF0415446D6716EC315F108216205A645191ABF6DDF8272",
+                            "width":  1280,
+                            "height":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T153556397Z\\viewport_960\\VIEW_READY.png",
+                            "bytes":  593278,
+                            "sha256":  "F252A8C0CC28A12606F27A51B868EE669B5677DE85F02AE8CE311F627F105E0C",
+                            "width":  960,
+                            "height":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T153556397Z\\viewport_960\\VIEW_MOVING.png",
+                            "bytes":  575924,
+                            "sha256":  "3580B28C08536F45FECDC5EEB10E6AF107B30355E10455158BB06E5574DC6507",
+                            "width":  960,
+                            "height":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T153556397Z\\viewport_960\\VIEW_OVER_BUDGET.png",
+                            "bytes":  573474,
+                            "sha256":  "962D69A5C93D5E02130B6F0887E302C856B7E09337DDBD405C6978FF559145FE",
+                            "width":  960,
+                            "height":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T153556397Z\\viewport_640\\VIEW_READY.png",
+                            "bytes":  400901,
+                            "sha256":  "53324101ABB6E00040F8FA1C5C3C4AC3FF5F08228579E5A10874396BA8BAFC71",
+                            "width":  640,
+                            "height":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T153556397Z\\viewport_640\\VIEW_MOVING.png",
+                            "bytes":  393101,
+                            "sha256":  "0988A10A69079AF6CF539AF6C27F98A5B7DA721DCACC2ACB76D5AAB2A2ED2659",
+                            "width":  640,
+                            "height":  720
+                        },
+                        {
+                            "path":  "Saved\\QA\\MapReadability_20261029T153556397Z\\viewport_640\\VIEW_OVER_BUDGET.png",
+                            "bytes":  390357,
+                            "sha256":  "9327474DDE22D9C27EF17EA6D2DE306BB55765C85785808DADBC01D53D971718",
+                            "width":  640,
+                            "height":  720
+                        }
+                    ],
+    "assets":  [
+                   {
+                       "name":  "SM_RidgeOutcrop",
+                       "path":  "/Game/AmberMarch/Meshes/SM_RidgeOutcrop",
+                       "extent_cm":  682.341292969047,
+                       "material_slots":  2
+                   },
+                   {
+                       "name":  "SM_Waystone",
+                       "path":  "/Game/AmberMarch/Meshes/SM_Waystone",
+                       "extent_cm":  233.941349024821,
+                       "material_slots":  5
+                   },
+                   {
+                       "name":  "SM_Waystation",
+                       "path":  "/Game/AmberMarch/Meshes/SM_Waystation",
+                       "extent_cm":  283.9410429574588,
+                       "material_slots":  3
+                   }
+               ],
+    "files":  [
+                  {
+                      "path":  "Tools\\build_amber_scenery_v3.py",
+                      "bytes":  6203,
+                      "sha256":  "5902c4ed2b13538a9c154ed9ca52c59c4282a19d90282358664c1b969c36dbf9"
+                  },
+                  {
+                      "path":  "Tools\\import_amber_scenery_v3.py",
+                      "bytes":  2978,
+                      "sha256":  "28bdf9db64039a0247eb18ebc9c7bc4239bd7cf7d0dd158e6d3926383a17b188"
+                  },
+                  {
+                      "path":  "Tools\\preview_amber_scenery_v3.py",
+                      "bytes":  1490,
+                      "sha256":  "a7971faccb477af300fdcfa1ef34f3cc33b42d694adc203e9ef4bc76656ee68d"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\SceneryV3\\SceneryV3.blend",
+                      "bytes":  115784,
+                      "sha256":  "32912ff8a5efb9456bb7314e7628855be5b163bc527a9688dc22373eec134adf"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\SceneryV3\\asset_manifest.json",
+                      "bytes":  712,
+                      "sha256":  "7436544a147eec40e27bc29909fbf2aae88531e8389049989fc96bbaf3578311"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\SceneryV3\\SM_RidgeOutcrop.fbx",
+                      "bytes":  23036,
+                      "sha256":  "789ad9a520ebef564467a23ce41bd38ca07949ab28939e33ff5f11ee4be3626b"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\SceneryV3\\SM_Waystone.fbx",
+                      "bytes":  23020,
+                      "sha256":  "765936ca7a7f74b399f6d58a336c69cd7f9f69caf918f97650cba5a0e1dc3fe2"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\SceneryV3\\SM_Waystation.fbx",
+                      "bytes":  25052,
+                      "sha256":  "5f6ab228b61254c00909b985500c3e8f2384ed6a8d6ea318235e0649b2d0af53"
+                  },
+                  {
+                      "path":  "Content\\AmberMarch\\Meshes\\SM_RidgeOutcrop.uasset",
+                      "bytes":  75713,
+                      "sha256":  "6b82da5134f3f52643d824e77ff338ebdf13519ee2912d8cb5dfc1466bdad846"
+                  },
+                  {
+                      "path":  "Content\\AmberMarch\\Meshes\\SM_Waystone.uasset",
+                      "bytes":  76833,
+                      "sha256":  "100f65777b90789b34b19b345774bc35d02d3269a367e6a4693ac1cbcae3a1c8"
+                  },
+                  {
+                      "path":  "Content\\AmberMarch\\Meshes\\SM_Waystation.uasset",
+                      "bytes":  79765,
+                      "sha256":  "8a67c455a09b2bf0b41f13ac6301cf77c956e27b0b3cd58b0bb151d9b87d23f5"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Public\\AIHeroesSceneryV3.h",
+                      "bytes":  369,
+                      "sha256":  "73ba0f22162e61ccc8e8a7a013e04f1d5f02ee0af01a8dd07c8e1082f5fee841"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\AIHeroesSceneryV3.cpp",
+                      "bytes":  2879,
+                      "sha256":  "362e5802363c56e33c2d139b068bdb2f69010ea9391673f2cfd05b27087dcf78"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\Tests\\AIHeroesSceneryV3Tests.cpp",
+                      "bytes":  3831,
+                      "sha256":  "a1d233334fe07d1a0bf4672db6e1be4b1e9016d62cf7f9a1a9a3b2608323e7e8"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\AIHeroesArtDirection.cpp",
+                      "bytes":  5964,
+                      "sha256":  "f36fb87e824a476fa34e207ec1e3c67c6857e6911b97be6596debcc159d5a0ec"
+                  },
+                  {
+                      "path":  "Docs\\SCENERY_V3_2026-10-29.md",
+                      "bytes":  5446,
+                      "sha256":  "0eedb832607678cb01dba9d05f7a2d5a02a25ab044bbcc67d2c8658e6d9aa136"
+                  }
+              ],
+    "limitations":  [
+                        "3D style remains intentionally low-poly; not photorealistic",
+                        "No bridges, river geometry, full terrain sculpting or interactive props",
+                        "No Android build or device frame-rate results",
+                        "No real LLM, unchanged campaign rules",
+                        "No git commit or push"
+                    ]
+}

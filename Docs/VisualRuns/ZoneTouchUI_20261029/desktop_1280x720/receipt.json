@@ -1,0 +1,74 @@
+{
+    "status":  "PASS_ZONE_EXPEDITION_TOUCH_BUTTONS_PLAYTHROUGH",
+    "seed":  20261029,
+    "branches":  3,
+    "pid":  20400,
+    "generated_zones":  10,
+    "player_confirmed_battles":  2,
+    "read_only_advice_events":  2,
+    "read_only_dossier_events":  2,
+    "mouse_button_events":  9,
+    "actual_android_touch_events":  0,
+    "actual_touch_device_tested":  false,
+    "denied_mutating_commands_while_open":  2,
+    "dossier_open_log":  "[2026.10.29-14.56.59:404][792]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY DOSSIER OPEN options=3 known_choices=3 top=SUPPLY | no orders.",
+    "dossier_close_log":  "[2026.10.29-14.57.03:460][155]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY DOSSIER CLOSED | no orders executed.",
+    "advice_result":  "[2026.10.29-14.56.56:884][977]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY HERO ADVICE | HERO SEED: consider visible SUPPLY (2 moves). No guard on the visible destination. Select it yourself; ENTER authorizes.",
+    "inspect_result":  "[2026.10.29-14.56.58:166][386]LogTemp: Display: [ZONE EXPEDITION] READ-ONLY HERO ADVICE | HERO SEED | FOREST costs 3 moves. SEED: defender outcome UNKNOWN; no battle forecast. Human ENTER required.",
+    "human_next_day":  1,
+    "screenshots":  [
+                        {
+                            "stage":  "initial",
+                            "serial":  0,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T145640528Z\\initial.png",
+                            "bytes":  305630,
+                            "sha256":  "8f3e2abe7e81c5448b218f49ce05e7f2cd21af9f86cdde3f04d5656494c1db24",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  93
+                        },
+                        {
+                            "stage":  "dossier",
+                            "serial":  1,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T145640528Z\\dossier.png",
+                            "bytes":  184305,
+                            "sha256":  "9aaf0807dfb988bcc6e29d166f6253e8cded13b922ed8fc1ffd46303a4d674c0",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  71
+                        },
+                        {
+                            "stage":  "forest",
+                            "serial":  2,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T145640528Z\\forest.png",
+                            "bytes":  330742,
+                            "sha256":  "5d4b68a9dc4e3a5cd8fda97e21b29a757320d6db3de3c96073b05f571bc8daa0",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  99
+                        },
+                        {
+                            "stage":  "day2",
+                            "serial":  3,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T145640528Z\\day2.png",
+                            "bytes":  325749,
+                            "sha256":  "8957e2157027198222be5e466f30ae264bf6b2a5ac61d4dfa24100491afaa5ab",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  96
+                        },
+                        {
+                            "stage":  "ore",
+                            "serial":  4,
+                            "screenshot":  "C:\\github\\AIHEROES\\Saved\\QA\\ZoneExpedition_20261029T145640528Z\\ore.png",
+                            "bytes":  333618,
+                            "sha256":  "4ca008a142849edb397695123d845b4b545a8b9461183ccba54c2e619a2a06bd",
+                            "width":  1280,
+                            "height":  720,
+                            "unique_sampled_colors":  99
+                        }
+                    ],
+    "user_save_files_unchanged":  true,
+    "save_writes":  0,
+    "observed_utc":  "2026-10-29T14:57:10.4652593Z"
+}

@@ -79,12 +79,24 @@ bool FAIHeroesLiveStagePauseTest::RunTest(const FString& Parameters)
         Stage->Initialize(StageHeroes(), StageEnemies(),
             {FIntPoint(0, 2)}, {FIntPoint(7, 2)}))) return false;
     TestNotNull(TEXT("Separate perspective camera exists"), Stage->GetViewTarget());
-    bool bInitiativeVisible = false;
+    // Presentation v2 keeps floating tags compact to avoid covering figures.
+    // Health and initiative are read from the exact roster used by HUD cards.
+    bool bCompactGroupTag = false;
+    bool bOldOverlappingDebugText = false;
     for (TActorIterator<ATextRenderActor> It(Fixture.World); It; ++It)
     {
-        bInitiativeVisible |= It->GetTextRender()->Text.ToString().Contains(TEXT("INIT 3"));
+        const FString Label = It->GetTextRender()->Text.ToString();
+        bCompactGroupTag |= Label.Contains(TEXT("A1")) && Label.Contains(TEXT("x8"));
+        bOldOverlappingDebugText |= Label.Contains(TEXT("INIT"));
     }
-    TestTrue(TEXT("Stack label exposes actual initiative"), bInitiativeVisible);
+    TestTrue(TEXT("Floating label identifies group A1 and its real count"), bCompactGroupTag);
+    TestFalse(TEXT("Old initiative debug paragraph no longer overlaps figures"), bOldOverlappingDebugText);
+    const auto& VisibleRoster = Stage->GetPresentedArmy(true);
+    if (TestTrue(TEXT("HUD presentation exposes allied roster"), VisibleRoster.Num() == 1))
+    {
+        TestEqual(TEXT("HUD reads actual initial initiative"), VisibleRoster[0].Initiative, 3);
+        TestEqual(TEXT("HUD reads actual health"), VisibleRoster[0].TotalHealth, 96);
+    }
     TestFalse(TEXT("Initialization has no future action to play"), Stage->IsPresenting());
     TestTrue(TEXT("An actual event can be presented"), Stage->PresentAction(StageWaitAction()));
     TestTrue(TEXT("Presentation has begun"), Stage->IsPresenting());

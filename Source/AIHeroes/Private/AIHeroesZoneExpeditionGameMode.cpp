@@ -3,6 +3,8 @@
 #include "AIHeroesCameraPawn.h"
 #include "AIHeroesZoneExpeditionHUD.h"
 #include "AIHeroesZoneScreenLayout.h"
+#include "AIHeroesZoneJourney.h"
+#include "AIHeroesZoneExpeditionArt.h"
 #include "AIHeroesZoneExpeditionAdvisor.h"
 #include "AIHeroesZoneExpeditionStore.h"
 #include "Camera/CameraComponent.h"
@@ -51,6 +53,18 @@ FLinearColor SiteColor(EAIHeroesZoneRole Role)
         case EAIHeroesZoneRole::SideRoute: return FLinearColor(0.36f, 0.67f, 0.68f);
         default: return FLinearColor::White;
     }
+}
+
+FString VisibleZoneTitle(FName Id)
+{
+    if (Id == FName(TEXT("HQ"))) return TEXT("Цитадель Искры");
+    if (Id == FName(TEXT("SUPPLY"))) return TEXT("Снабжение");
+    if (Id == FName(TEXT("FOREST"))) return TEXT("Лесопилка");
+    if (Id == FName(TEXT("ORE"))) return TEXT("Рудник");
+    if (Id == FName(TEXT("PASS"))) return TEXT("Перевал");
+    if (Id == FName(TEXT("OUTPOST"))) return TEXT("Застава");
+    if (Id == FName(TEXT("RUINS"))) return TEXT("Древний архив");
+    return Id.ToString();
 }
 }
 
@@ -149,7 +163,7 @@ bool AAIHeroesZoneExpeditionGameMode::CreateScene()
     };
 
     if (!SpawnShape(Cube, FVector(1250.f, 0.f, -118.f), FRotator::ZeroRotator,
-        FVector(38.f, 36.f, 1.1f), FLinearColor(0.052f, 0.073f, 0.104f), false))
+        FVector(100.f, 95.f, 1.1f), FLinearColor(0.052f, 0.073f, 0.104f), false))
         return false;
     if (auto* Sun = GetWorld()->SpawnActor<ADirectionalLight>(
         FVector::ZeroVector, FRotator(-65.f, -34.f, 0.f), Params))
@@ -178,8 +192,8 @@ bool AAIHeroesZoneExpeditionGameMode::CreateScene()
             FRotator(90.f, 180.f, 0.f), Params);
         if (!Label || !Label->GetTextRender()) return false;
         auto* Text = Label->GetTextRender();
-        Text->SetWorldSize(58.f);
-        Text->SetTextRenderColor(FColor(15, 25, 39));
+        Text->SetWorldSize(82.f);
+        Text->SetTextRenderColor(FColor(14, 30, 42));
         Text->SetHorizontalAlignment(EHTA_Center);
         Text->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         Text->SetCastShadow(false);
@@ -202,6 +216,7 @@ bool AAIHeroesZoneExpeditionGameMode::CreateScene()
             FLinearColor(.21f, .37f, .46f), false);
         if (!Actor) return false;
         RoadVisuals.Add({Actor, Road.From, Road.To});
+        FAIHeroesZoneExpeditionArt::StyleRoad(*Actor);
     }
     const auto* HQ = Generated.Zones.FindByPredicate(
         [](const auto& Z) { return Z.Id == FName(TEXT("HQ")); });
@@ -219,7 +234,7 @@ bool AAIHeroesZoneExpeditionGameMode::CreateScene()
         return false;
     auto* FixedView = ExpeditionCamera->GetCameraComponent();
     FixedView->SetProjectionMode(ECameraProjectionMode::Orthographic);
-    FixedView->SetOrthoWidth(4500.f);
+    FixedView->SetOrthoWidth(3900.f); // Diagonal diorama view, not a hidden-map zoom.
     FixedView->bConstrainAspectRatio = false;
     if (auto* PC = GetWorld()->GetFirstPlayerController())
     {
@@ -229,6 +244,10 @@ bool AAIHeroesZoneExpeditionGameMode::CreateScene()
         PC->bEnableTouchEvents = true;
     }
     else return false;
+    // Only original, non-colliding art. A missing kit falls back to
+    // the validated primitive map without changing campaign rules.
+    if (!FAIHeroesZoneExpeditionArt::Apply(*this, Generated, ZoneActors, HeroMarker))
+        UE_LOG(LogTemp, Warning, TEXT("[AMBER EXPEDITION] original art unavailable; primitive fallback"));
     return ZoneActors.Num() == Generated.Zones.Num() &&
         ZoneLabels.Num() == Generated.Zones.Num();
 }
@@ -262,20 +281,59 @@ void AAIHeroesZoneExpeditionGameMode::RefreshScene()
             {
                 Label->SetActorHiddenInGame(!bKnown);
                 if (Label->GetTextRender())
-                    Label->GetTextRender()->SetText(FText::FromString(
-                        Zone.Id.ToString() +
-                        (bCleared ? TEXT(" [OURS]") :
-                            Zone.bGuarded ? TEXT(" [GUARD]") : TEXT("")) +
-                        (bSelected ? TEXT(" [SELECT]") : TEXT(""))));
+                {
+                    FString Caption = VisibleZoneTitle(Zone.Id);
+                    if (bCleared) Caption += TEXT(" [НАШЕ]");
+                    else if (Zone.bGuarded) Caption += TEXT(" [ОХРАНА]");
+                    if (bSelected) Caption = TEXT("> ") + Caption;
+                    Label->GetTextRender()->SetText(FText::FromString(Caption));
+                }
             }
         if (Zone.Id == Campaign.HeroSite && HeroMarker.IsValid())
             HeroMarker->SetActorLocation(WorldAt(Zone) + FVector(0.f, 0.f, 220.f));
+    }
+    // Framing is a presentation concern. Follow the player's confirmed
+    // location, leaving forward space for the next visible destination.
+    // Never follow selection: a read-only click must not grant a move.
+    if (IsValid(ExpeditionCamera) && HeroMarker.IsValid())
+    {
+        const float FocusX = FMath::Clamp(
+            HeroMarker->GetActorLocation().X + 280.f, 280.f, 2450.f);
+        const FVector Focus(FocusX, 0.f, 0.f);
+        const FVector CameraPosition(FocusX - 2300.f, 0.f, 3300.f);
+        ExpeditionCamera->SetActorLocation(CameraPosition);
+        ExpeditionCamera->SetActorRotation((Focus - CameraPosition).Rotation());
     }
     for (const FRoadVisual& Road : RoadVisuals)
         if (Road.Actor.IsValid())
             Road.Actor->SetActorHiddenInGame(
                 !FAIHeroesZoneExpeditionRules::IsDiscovered(Campaign, Road.From) ||
                 !FAIHeroesZoneExpeditionRules::IsDiscovered(Campaign, Road.To));
+}
+
+void AAIHeroesZoneExpeditionGameMode::GetVisibleSiteMarkers(
+    TArray<FAIHeroesVisibleSiteMarker>& Out) const
+{
+    Out.Reset();
+    if (!bReady) return;
+    // Only provide actors that have passed the exact player-visible fog gate.
+    // Their positions are presentation data, not a navigable graph.
+    for (const auto& Zone : Generated.Zones)
+    {
+        if (!FAIHeroesZoneExpeditionRules::IsDiscovered(Campaign, Zone.Id))
+            continue;
+        const auto* Found = ZoneActors.Find(Zone.Id);
+        const AStaticMeshActor* Actor = Found ? Found->Get() : nullptr;
+        if (!IsValid(Actor)) continue;
+        FAIHeroesVisibleSiteMarker Marker;
+        Marker.Id = Zone.Id;
+        Marker.Anchor = Actor->GetActorLocation() + FVector(0.f, 0.f, 270.f);
+        Marker.bSelected = Zone.Id == SelectedSite;
+        Marker.bCleared = FAIHeroesZoneExpeditionRules::IsCleared(
+            Campaign, Zone.Id);
+        Marker.bKnownGuard = Zone.bGuarded && !Marker.bCleared;
+        Out.Add(Marker);
+    }
 }
 
 FString AAIHeroesZoneExpeditionGameMode::GetSelectedPathInfo() const
@@ -388,6 +446,38 @@ void AAIHeroesZoneExpeditionGameMode::AskHero(bool bInspectSelection)
     Status(TEXT("READ-ONLY HERO ADVICE | ") + Advice.Message);
 }
 
+void AAIHeroesZoneExpeditionGameMode::PreviewJourney()
+{
+    if (!bReady || SelectedSite.IsNone()) return;
+    const auto Plan = FAIHeroesZoneJourney::Plan(Campaign, SelectedSite);
+    if (!Plan.HasPlan())
+    {
+        Status(TEXT("READ-ONLY JOURNEY BLOCKED | ") + Plan.Explanation);
+        return;
+    }
+    FString Next = TEXT("ALREADY HERE");
+    if (!Plan.Steps.IsEmpty())
+    {
+        const auto& First = Plan.Steps[0];
+        if (First.Kind == EAIHeroesJourneyStepKind::EndDay)
+            Next = TEXT("NEXT: PLAYER END DAY");
+        else
+            Next = FString::Printf(
+                TEXT("NEXT: CONFIRM %s %d MOVES"),
+                *First.Destination.ToString(), First.MoveCost);
+    }
+    // Arrival day is the earliest *conditional* itinerary over today's
+    // visible graph, not a victory/casualty forecast or queued command.
+    Status(FString::Printf(
+        TEXT("READ-ONLY JOURNEY %s | EARLIEST DAY %d | %d MOVES / %d END-DAYS | %s | %s | NO ORDER EXECUTED"),
+        *Plan.Goal.ToString(), Plan.ArrivalDay,
+        Plan.TravelConfirmations, Plan.DayAdvances,
+        *Next,
+        Plan.bGuardianOutcomeUnknown ?
+            TEXT("GUARD OUTCOME UNKNOWN") : TEXT("NO KNOWN GOAL GUARD")));
+    ScheduleVisualQAFrame();
+}
+
 void AAIHeroesZoneExpeditionGameMode::ToggleDossier()
 {
     if (!bReady) return;
@@ -447,7 +537,8 @@ bool AAIHeroesZoneExpeditionGameMode::HandleScreenPress(
         // projected into the 3D world as selection attempts.
         const float BarTop = Layout.Buttons.IsEmpty() ?
             Height - 185.f : Layout.Buttons[0].Rect.Y - 9.f;
-        return Position.Y < 137.f || Position.Y >= BarTop;
+        return Position.Y < 137.f || Position.Y >= BarTop ||
+            Layout.ContainsChrome(Position);
     }
 
     UE_LOG(LogTemp, Display, TEXT("[ZONE INPUT] POINTER BUTTON %s"),
@@ -616,6 +707,7 @@ void AAIHeroesZoneExpeditionGameMode::Tick(float DeltaSeconds)
     if (PC->WasInputKeyJustPressed(EKeys::H))
         AskHero(PC->IsInputKeyDown(EKeys::LeftShift) ||
                 PC->IsInputKeyDown(EKeys::RightShift));
+    if (PC->WasInputKeyJustPressed(EKeys::I)) PreviewJourney();
     if (PC->WasInputKeyJustPressed(EKeys::K)) Save();
     if (PC->WasInputKeyJustPressed(EKeys::L)) Load();
 }

@@ -1,0 +1,120 @@
+﻿{
+    "label":  "PASS_WINDOWS_LOCAL_ART_ONLY",
+    "recorded_at":  "2026-10-29T19:14:06.3659330+03:00",
+    "project_root":  "C:\\github\\AIHEROES",
+    "qa_evidence":  "C:\\github\\AIHEROES\\Saved\\QA\\MapReadability_20261029T161046765Z",
+    "qa_receipt_sha256":  "1bf1926d37d769b6f2701e5acfd1bb87292a286f65bb0153515c7f88a63b525e",
+    "automation_report_sha256":  "b8616940b1628af528174afb50bae0edc2a8b9651f797b05d49f7717b92af4c3",
+    "build":  "PASS",
+    "tests_success":  245,
+    "new_tests_success":  3,
+    "tests_failed":  0,
+    "tests_skipped":  0,
+    "visual_runs":  3,
+    "screenshots":  9,
+    "sizes":  [
+                  "1280x720",
+                  "960x720",
+                  "640x720"
+              ],
+    "original_meshes":  2,
+    "triangles_total":  1784,
+    "source_files_checked":  229,
+    "source_drift":  0,
+    "player_saves_checked":  4,
+    "save_drift":  0,
+    "normals_repaired":  90,
+    "mobile_android_tested":  false,
+    "terrain_physically_sculpted":  false,
+    "new_gameplay_road_added":  false,
+    "copied_reference_pixels":  false,
+    "commit_or_push":  false,
+    "file_count":  17,
+    "files":  [
+                  {
+                      "path":  "ArtSource\\AmberMarch\\RiverV4\\RiverV4.blend",
+                      "bytes":  125140,
+                      "sha256":  "95236865575f345b6f201e078158d2f94aa0952478b50fc5559e5758f02aedd2"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\RiverV4\\SM_Silverbrook.fbx",
+                      "bytes":  53276,
+                      "sha256":  "107466ef7a4f4c088393d948e369d06c08525d42e35258e57139f699968e99d1"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\RiverV4\\SM_BrookBridge.fbx",
+                      "bytes":  24620,
+                      "sha256":  "5eee4d821370bde5f2c8dc503009df7eed802a891da1d6e2937d80e739790a1a"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\RiverV4\\asset_manifest.json",
+                      "bytes":  552,
+                      "sha256":  "173bbc14dd982a91fc322f9448e1b74e11870ad1158c552e21b5d2deb5bbaa42"
+                  },
+                  {
+                      "path":  "Content\\AmberMarch\\Meshes\\SM_Silverbrook.uasset",
+                      "bytes":  109528,
+                      "sha256":  "f277667e310e4f2082d951e51050eb10d34497b4d5294b16b08768b6a0364c34"
+                  },
+                  {
+                      "path":  "Content\\AmberMarch\\Meshes\\SM_BrookBridge.uasset",
+                      "bytes":  78725,
+                      "sha256":  "f6edfc31ed88e338127f047a237d71c1815ef2f59aa8315f527a039d93f70957"
+                  },
+                  {
+                      "path":  "Tools\\build_amber_river_v4.py",
+                      "bytes":  6279,
+                      "sha256":  "ea35f2c61418b8ba42d0f6816fbd1f4395adb04a5fb8db714b3d9ebca6db172b"
+                  },
+                  {
+                      "path":  "Tools\\import_amber_river_v4.py",
+                      "bytes":  2692,
+                      "sha256":  "ebc93d35ff37a5a01292d586e54f0ba655c6418393178dae5ee7d392acf75a79"
+                  },
+                  {
+                      "path":  "Tools\\inspect_amber_river_normals.py",
+                      "bytes":  723,
+                      "sha256":  "71b5968382a3383d31b5a168db2d79b6079caa6b4d278db3a5ffaba93c9f5da4"
+                  },
+                  {
+                      "path":  "Tools\\stage_amber_river_normals_v4.py",
+                      "bytes":  2411,
+                      "sha256":  "140fff89ceb728e397db2d8f9e45ff56cc8860e7a0d6b6144ae33d37d108f839"
+                  },
+                  {
+                      "path":  "Tools\\reimport_amber_river_normals_v4.py",
+                      "bytes":  2619,
+                      "sha256":  "0c5b125c30b67ea087a3a17dbe1c73c4ebc21e78e65ec838af0cbb0c61d5525b"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Public\\AIHeroesScenicCrossing.h",
+                      "bytes":  537,
+                      "sha256":  "90993551189bd4bf01e33514e8f4c17b840109eacc06da1043ecae85fdadc49a"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\AIHeroesScenicCrossing.cpp",
+                      "bytes":  3512,
+                      "sha256":  "48414b85cf75754762f84171dd29392f4ada10391ebbe9cf73b1847523c6551f"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\Tests\\AIHeroesScenicCrossingTests.cpp",
+                      "bytes":  4526,
+                      "sha256":  "acf07babc45ea684d2f455f751f8f5d8c4fce9f93ba5fa8bdfd4c6fa5c964f9c"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\AIHeroesArtDirection.cpp",
+                      "bytes":  6910,
+                      "sha256":  "8e0b1e3ae0abbeb9ab795b31d63e02b626bc072181e716af141bc2ae1227c1e2"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\AIHeroesTravelGameMode.cpp",
+                      "bytes":  3630,
+                      "sha256":  "dfe2cc8a097738bc8e3930ba61c5c04b89d6a803def313a280179bd50598b941"
+                  },
+                  {
+                      "path":  "Docs\\RIVER_CROSSING_ART_V4_2026-10-29.md",
+                      "bytes":  6729,
+                      "sha256":  "81547058993aba7f3fdd0fcb7f94534ffafce0e2c20e514cc7f261abec187ccc"
+                  }
+              ]
+}

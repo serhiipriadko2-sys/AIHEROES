@@ -1,0 +1,18 @@
+{
+  "origin": "Original procedural geometry, no reference image pixels",
+  "authority": "Decorative and non-colliding; must follow verified HQ-FOREST road geometry",
+  "assets": [
+    {
+      "name": "SM_Silverbrook",
+      "triangles": 1220,
+      "bytes": 53276,
+      "sha256": "107466ef7a4f4c088393d948e369d06c08525d42e35258e57139f699968e99d1"
+    },
+    {
+      "name": "SM_BrookBridge",
+      "triangles": 564,
+      "bytes": 24620,
+      "sha256": "5eee4d821370bde5f2c8dc503009df7eed802a891da1d6e2937d80e739790a1a"
+    }
+  ]
+}

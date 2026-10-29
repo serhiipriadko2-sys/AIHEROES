@@ -63,7 +63,21 @@ bool FAmberAssetsTest::RunTest(const FString&)
             for(const auto& Slot:Mesh->GetStaticMaterials())TestNotNull(TEXT("Palette bound"),Slot.MaterialInterface.Get());
         }
         if(TestNotNull(TEXT("Portrait loads"),Portrait))
-        {TestEqual(TEXT("Portrait width"),Portrait->GetSizeX(),256);TestEqual(TEXT("Portrait height"),Portrait->GetSizeY(),256);}
+        {
+            // In commandlet/-NullRHI tests asynchronous platform mips may not
+            // exist yet (GetSizeX can report 0). Check the imported source
+            // metadata explicitly; actual GPU rendering requires separate QA.
+            const FIntPoint Imported=Portrait->GetImportedSize();
+            TestEqual(TEXT("Original portrait source width"),Imported.X,256);
+            TestEqual(TEXT("Original portrait source height"),Imported.Y,256);
+            const int32 PlatformWidth=Portrait->GetSizeX();
+            const int32 PlatformHeight=Portrait->GetSizeY();
+            if(PlatformWidth>0 || PlatformHeight>0)
+            {
+                TestEqual(TEXT("Ready portrait platform width matches source"),PlatformWidth,Imported.X);
+                TestEqual(TEXT("Ready portrait platform height matches source"),PlatformHeight,Imported.Y);
+            }
+        }
         TestFalse(TEXT("Russian title not raw identifier"),FAIHeroesBattleArt::UnitName(FName(Id))==FString(Id));
     }
     TestEqual(TEXT("Six distinct meshes, not six aliases"),Unique.Num(),6);

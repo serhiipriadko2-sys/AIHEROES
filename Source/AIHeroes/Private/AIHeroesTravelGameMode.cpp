@@ -1,6 +1,8 @@
 #include "AIHeroesGameMode.h"
 
 #include "AIHeroesTravelRules.h"
+#include "AIHeroesScenicCrossing.h"
+#include "EngineUtils.h"
 #include "AIHeroesWorldNode.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMeshActor.h"
@@ -23,6 +25,16 @@ FAIHeroesAdventurePathResult AAIHeroesGameMode::GetSelectedTravelPath() const
 
 void AAIHeroesGameMode::RefreshAdventureRoads()
 {
+    // A legacy V1 load has no authoritative Road V2 link: hide the bridge.
+    // Exploration/fog changes also hide the bridge when FOREST is undiscovered.
+    if(GetWorld())
+    {
+        const bool bCrossingKnown=TravelRuleVersion==FAIHeroesTravelRules::RoadVersion &&
+            IsNodeDiscovered(FName(TEXT("FOREST")));
+        for(TActorIterator<AActor> It(GetWorld());It;++It)
+            if(It->GetOwner()==this && It->ActorHasTag(TEXT("AmberEnvironment")))
+                FAIHeroesScenicCrossing::SetShown(**It,bCrossingKnown);
+    }
     for (AStaticMeshActor* Road : AdventureRoadActors) if (IsValid(Road)) Road->Destroy();
     AdventureRoadActors.Reset();
     if (!GetWorld() || TravelRuleVersion != FAIHeroesTravelRules::RoadVersion) return;

@@ -10,6 +10,17 @@ class ACameraActor;
 class AStaticMeshActor;
 class ATextRenderActor;
 
+// Strictly player-visible presentation data. The original generator oracle
+// and enemy HP remain private; screen labels cannot authorize movement.
+struct FAIHeroesVisibleSiteMarker
+{
+    FName Id = NAME_None;
+    FVector Anchor = FVector::ZeroVector;
+    bool bSelected = false;
+    bool bCleared = false;
+    bool bKnownGuard = false;
+};
+
 // Explicit alternate mode, NEVER the default Campaign v1.
 // URL: /Engine/Maps/Entry?game=/Script/AIHeroes.AIHeroesZoneExpeditionGameMode
 // Only a human Enter click confirms combat; autonomous Grid V2 resolves
@@ -32,6 +43,7 @@ public:
     FString GetSelectedPathInfo() const;
     bool IsDossierOpen() const { return bDossierOpen; }
     const FAIHeroesZoneExpeditionDossier& GetDossier() const { return Dossier; }
+    void GetVisibleSiteMarkers(TArray<FAIHeroesVisibleSiteMarker>& Out) const;
 
 private:
     struct FRoadVisual
@@ -70,6 +82,7 @@ private:
     void Recruit();
     void Upgrade();
     void AskHero(bool bInspectSelection);
+    void PreviewJourney();
     void ToggleDossier();
     void Save();
     void Load();

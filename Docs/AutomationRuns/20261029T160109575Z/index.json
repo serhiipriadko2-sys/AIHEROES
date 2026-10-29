@@ -1,0 +1,156 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "DESKTOP-ITUAMNF",
+			"instance": "F1B55FB04C3AAB3A2BC35A88F87346EB",
+			"instanceName": "DESKTOP-ITUAMNF-14804",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 10 (22H2) [10.0.19045.6093] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3070",
+			"cPUModel": "Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.29-16.01.26",
+	"succeeded": 5,
+	"succeededWithWarnings": 0,
+	"failed": 1,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 1.1432094573974609,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "CanonicalEqualCostChoices",
+			"fullTestPath": "AIHeroes.ZoneJourney.CanonicalEqualCostChoices",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"F1B55FB04C3AAB3A2BC35A88F87346EB"
+			],
+			"duration": 0.0078609026968479156,
+			"dateTime": "2026.10.29-16.01.25",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ExplicitNextDayAndDayCap",
+			"fullTestPath": "AIHeroes.ZoneJourney.ExplicitNextDayAndDayCap",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"F1B55FB04C3AAB3A2BC35A88F87346EB"
+			],
+			"duration": 0.008843597024679184,
+			"dateTime": "2026.10.29-16.01.25",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "GuardWallFogAndTamperingFailClosed",
+			"fullTestPath": "AIHeroes.ZoneJourney.GuardWallFogAndTamperingFailClosed",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"F1B55FB04C3AAB3A2BC35A88F87346EB"
+			],
+			"duration": 0.008195098489522934,
+			"dateTime": "2026.10.29-16.01.25",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ImmediateMoveAndNoSideEffects",
+			"fullTestPath": "AIHeroes.ZoneJourney.ImmediateMoveAndNoSideEffects",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"F1B55FB04C3AAB3A2BC35A88F87346EB"
+			],
+			"duration": 0.0081777982413768768,
+			"dateTime": "2026.10.29-16.01.25",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SeedSweep640KnownOnlyNoMutation",
+			"fullTestPath": "AIHeroes.ZoneJourney.SeedSweep640KnownOnlyNoMutation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"F1B55FB04C3AAB3A2BC35A88F87346EB"
+			],
+			"duration": 1.0423252582550049,
+			"dateTime": "2026.10.29-16.01.25",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "TrueStagingVersusNineMoveShortcut",
+			"fullTestPath": "AIHeroes.ZoneJourney.TrueStagingVersusNineMoveShortcut",
+			"tags": [],
+			"state": "Fail",
+			"deviceInstance": [
+				"F1B55FB04C3AAB3A2BC35A88F87346EB"
+			],
+			"duration": 0.067806899547576904,
+			"dateTime": "2026.10.29-16.01.26",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'First hop uses player-confirmed B staging' to be B, but it was A.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "C:\\github\\AIHEROES\\Source\\AIHeroes\\Private\\Tests\\AIHeroesZoneJourneyTests.cpp",
+					"lineNumber": 123,
+					"timestamp": "2026.10.29-16.01.26"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'HQ to B is legal eight move order' to be 8, but it was 4.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "C:\\github\\AIHEROES\\Source\\AIHeroes\\Private\\Tests\\AIHeroesZoneJourneyTests.cpp",
+					"lineNumber": 124,
+					"timestamp": "2026.10.29-16.01.26"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'Final hop four moves' to be 4, but it was 8.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "C:\\github\\AIHEROES\\Source\\AIHeroes\\Private\\Tests\\AIHeroesZoneJourneyTests.cpp",
+					"lineNumber": 127,
+					"timestamp": "2026.10.29-16.01.26"
+				}
+			],
+			"warnings": 0,
+			"errors": 3,
+			"artifacts": []
+		}
+	]
+}
