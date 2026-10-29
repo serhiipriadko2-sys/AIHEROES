@@ -91,16 +91,43 @@ FAIHeroesCampaignProgress FAIHeroesCampaignObjectives::Evaluate(
     }
     Result.bVictory = Result.Total == GoalCount && Result.Completed == Result.Total;
 
+    // Objective IDs are independent of the display language and backed by
+    // the same conditions as the existing campaign victory calculation.
     if (Result.bVictory)
     {
+        Result.NextFocusId = FName(TEXT("VICTORY"));
         Result.NextAction = TEXT("Victory achieved. You may keep exploring or save the campaign (K).");
     }
-    else if (!bForest) Result.NextAction = TEXT("Capture FOREST");
-    else if (!bOre) Result.NextAction = TEXT("Capture ORE");
-    else if (!bOutpost) Result.NextAction = TEXT("Capture OUTPOST");
-    else if (!bRuins) Result.NextAction = TEXT("Capture RUINS");
-    else if (Input.ProtocolTier < 3) Result.NextAction = TEXT("Unlock the next protocol (P)");
-    else Result.NextAction = TEXT("Upgrade your themed model slot (M)");
+    else if (!bForest)
+    {
+        Result.NextFocusId = FName(TEXT("FOREST"));
+        Result.NextAction = TEXT("Capture FOREST");
+    }
+    else if (!bOre)
+    {
+        Result.NextFocusId = FName(TEXT("ORE"));
+        Result.NextAction = TEXT("Capture ORE");
+    }
+    else if (!bOutpost)
+    {
+        Result.NextFocusId = FName(TEXT("OUTPOST"));
+        Result.NextAction = TEXT("Capture OUTPOST");
+    }
+    else if (!bRuins)
+    {
+        Result.NextFocusId = FName(TEXT("RUINS"));
+        Result.NextAction = TEXT("Capture RUINS");
+    }
+    else if (Input.ProtocolTier < 3)
+    {
+        Result.NextFocusId = FName(TEXT("PROTOCOL"));
+        Result.NextAction = TEXT("Unlock the next protocol (P)");
+    }
+    else
+    {
+        Result.NextFocusId = FName(TEXT("MODEL_SLOT"));
+        Result.NextAction = TEXT("Upgrade your themed model slot (M)");
+    }
 
     return Result;
 }

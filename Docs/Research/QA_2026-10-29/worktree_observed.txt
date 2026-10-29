@@ -1,0 +1,20 @@
+ M Docs/ADR/ADR-20261029-04_TACTICAL_CAMERA_BLUR.md
+ M Docs/ARCHITECTURE.md
+ M Source/AIHeroes/Private/AIHeroesArtDirection.cpp
+?? ArtSource/AmberMarch/ArchitectureV6/
+?? ArtSource/AmberMarch/ReliefV5/
+?? Content/AmberMarch/Meshes/SM_IslandReliefV5.uasset
+?? Content/AmberMarch/Meshes/SM_IslandReliefV5_Mobile.uasset
+?? Docs/AMBER_RELIEF_V5_2026-10-29.md
+?? Docs/HOTA_DEEP_RESEARCH_2026-10-29.md
+?? Docs/Research/HOTA_SCENARIO_RULES_2026-10-29.md
+?? Docs/Research/QA_2026-10-29/
+?? Source/AIHeroes/Private/AIHeroesReliefV5.cpp
+?? Source/AIHeroes/Private/Tests/AIHeroesReliefV5Tests.cpp
+?? Source/AIHeroes/Public/AIHeroesReliefV5.h
+?? Tools/build_amber_architecture_v6.py
+?? Tools/build_amber_relief_v5.py
+?? Tools/finalize_amber_architecture_v6.py
+?? Tools/import_amber_relief_v5.py
+?? Tools/preview_amber_relief_v5.py
+?? debug.log

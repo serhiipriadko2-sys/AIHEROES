@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "date_client": "2026-10-29",
+  "created_utc": "2026-10-29T16:51:29.101991+00:00",
+  "status": "PARTIAL",
+  "scope": "HotA documentary research, current-capability documentation correction, frozen camera QA evidence read-back; no new native run",
+  "lifecycle": {
+    "research": "PASS_DOCUMENTARY_SYSTEM_REVIEW",
+    "documentation_qc": "PASS",
+    "current_native_qa": "NOT_RUN_APPROVAL_SERVICE_UNAVAILABLE",
+    "current_worktree_gameplay": "UNVERIFIED_SOURCE_DRIFT",
+    "hota_executable_qa": "NOT_RUN",
+    "fresh_camera_graphics": "NOT_VERIFIED",
+    "android": "NOT_VERIFIED",
+    "real_llm": "NOT_VERIFIED"
+  },
+  "actions_this_continuation": [
+    "Created synthesis and scenario supplement.",
+    "Corrected stale architecture capability and network-boundary descriptions.",
+    "Updated camera ADR with genuine RED, compiled build and later frozen report read-back.",
+    "Ran static20 and fixture23 checks only; inspected web sources and artifacts.",
+    "Requested VS Code CLI open of the synthesis; no visual window read-back."
+  ],
+  "preserved": [
+    "Concurrent ReliefV5/ArchitectureV6 and ArtDirection work",
+    "V1/V2 rules and saves",
+    "Private .iskra/sot30 mirror",
+    "Other authors model transport and expedition integrations"
+  ],
+  "forbidden_actions_not_taken": [
+    "Approval bypass",
+    "New native UE run after approval-service rejection",
+    "Unrelated process termination",
+    "SDK/model/HotA installation",
+    "Git stage/commit/push/reset/branch/deploy",
+    "Persistent user memory write"
+  ],
+  "blocker": {
+    "kind": "approval_service_review_failure",
+    "message": "Your workspace is out of credits. Add credits to continue.",
+    "unsafe_determination": false,
+    "user_guidance_requested": true,
+    "fallback": "documentation and unprivileged static/fixture checks only"
+  },
+  "guard_receipt": {
+    "ordinal": 1,
+    "authoritative": true,
+    "decision": "PROCEED",
+    "scope": "read-only research and scoped documentation; native blocked",
+    "execution_kind": "reasoned checklist, not a live external Guard service",
+    "metrics": "metric computation unavailable"
+  },
+  "git_head_observed": "85810dd8af8a622597c890a1c9ecbb932edce77c",
+  "baseline_architecture_sha256": "0009074d7851b32f043005ad7d9b09e87f3508d7c96029f7db19ecd07acea31c",
+  "artifacts": [
+    {
+      "path": "Docs/HOTA_DEEP_RESEARCH_2026-10-29.md",
+      "bytes": 23881,
+      "sha256": "386895642f65583c791e2878461c1c1c09dc54ca21a57057fdb8175d647e27eb"
+    },
+    {
+      "path": "Docs/Research/HOTA_ADVENTURE_ECONOMY_2026-10-29.md",
+      "bytes": 26162,
+      "sha256": "77c73e6b8d9e37b5416c388a9676d152024a903e1bf220e1b037dfdb5f6c09ca"
+    },
+    {
+      "path": "Docs/Research/HOTA_COMBAT_2026-10-29.md",
+      "bytes": 27080,
+      "sha256": "cf9f8c0af03b76609c11fecb5d213162be00a72dfd0ca6a7458f75baab85da9d"
+    },
+    {
+      "path": "Docs/Research/HOTA_SCENARIO_RULES_2026-10-29.md",
+      "bytes": 12573,
+      "sha256": "cb74ea79218e493d03a0c007db6863beec4cdc8d2f665aa9dd2696d60c712113"
+    },
+    {
+      "path": "Docs/Research/HOTA_VERSIONS_MAPS_2026-10-29.md",
+      "bytes": 24430,
+      "sha256": "dd4692482f4ce2adbb1d114b3c5dc0d0211b85907297c84e96dd505034431570"
+    },
+    {
+      "path": "Docs/ARCHITECTURE.md",
+      "bytes": 6354,
+      "sha256": "d256dbcc2df34b1248dfad1c4f206952e25cec47741ac65c01d7029820aec58e"
+    },
+    {
+      "path": "Docs/ADR/ADR-20261029-04_TACTICAL_CAMERA_BLUR.md",
+      "bytes": 3060,
+      "sha256": "4ff417f77567b8a94c89619a9997588c34263194e02f6156f4f42a623472bc2b"
+    },
+    {
+      "path": "C:/github/AIHEROES/Docs/Research/QA_2026-10-29/build_evidence_fixtures.log",
+      "bytes": 463,
+      "sha256": "884e9eb33c4850352e12a8432cf5cf40f3da6da156484bb3acd15b7f9660e3f7"
+    },
+    {
+      "path": "C:/github/AIHEROES/Docs/Research/QA_2026-10-29/codex_static.log",
+      "bytes": 1048,
+      "sha256": "5ff2ba1c0b358da91ef7da8ca5e0df262b22e088e1a5cdce2e14127f7b8d5bac"
+    },
+    {
+      "path": "C:/github/AIHEROES/Docs/Research/QA_2026-10-29/documentation.diff",
+      "bytes": 9879,
+      "sha256": "91faed524f417faa414ba23d170b03d6bb1b3a563c1169acf25b9ff1b1e21062"
+    },
+    {
+      "path": "C:/github/AIHEROES/Docs/Research/QA_2026-10-29/research_qc.json",
+      "bytes": 7275,
+      "sha256": "616baf87fbfdd67b93e8b93c660debebecddada6506409e41f40357ec4954798"
+    },
+    {
+      "path": "C:/github/AIHEROES/Docs/Research/QA_2026-10-29/worktree_observed.txt",
+      "bytes": 852,
+      "sha256": "7b6aa77a37b8991c3c9fb2cac0714d7cd3d0f3ea670d1d9a5e594660a9b76abd"
+    }
+  ],
+  "camera_hunk_current_source_references": [
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleStage.cpp",
+      "bytes": 27586,
+      "sha256": "b625682e3c0afce7626ef9ce3d19c2aef111b547a31b79bd156bd4088f2cf693"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleReadabilityTests.cpp",
+      "bytes": 11438,
+      "sha256": "c066339f8910352a2a15c2b7b6b4b9d3dd04e4dca1f7082ba402e3763bc54afd"
+    }
+  ],
+  "camera_tdd": {
+    "red_report": {
+      "path": "Docs/AutomationRuns/20261029T122444769Z/index.json",
+      "bytes": 2494,
+      "sha256": "b07bc6163c228191eefc2e1c6c690eed2b03e8621a6180fa605559faa90dd5dd"
+    },
+    "red_failed": 1,
+    "compiled_after_fix": {
+      "path": "Docs/BuildRuns/20261029T122621300Z/compiled.json",
+      "bytes": 51046,
+      "sha256": "42a67d63d971d401e8f31e784d5fb6053897be17214d44b0cdc0fc44676fa3c6"
+    },
+    "later_stored_success_test": "AIHeroes.LiveBattle.Readability.TacticalCameraHasNoMotionBlur",
+    "test_state": "Success",
+    "new_execution_this_continuation": false,
+    "visual_effect_not_inferred_from_test": true
+  },
+  "stored_full_suite": {
+    "execution_owner": "preexisting independent project workstream; read back here, not newly executed",
+    "compiled_manifest": {
+      "path": "Docs/BuildRuns/20261029T161702109Z/compiled.json",
+      "bytes": 63193,
+      "sha256": "b681d8494db8124aa3852e24642dc7cddac99873451d620d2ad5d053778e683b"
+    },
+    "report": {
+      "path": "Docs/AutomationRuns/20261029T161717792Z/index.json",
+      "bytes": 97360,
+      "sha256": "74459041c620d87406c3d759c8801d6f1da3c14fa056da16896c53437378edc3"
+    },
+    "provenance": {
+      "path": "Docs/AutomationRuns/20261029T161717792Z/provenance.json",
+      "bytes": 63313,
+      "sha256": "06966e882a95547e18b41b6d364e5b7a54e5b3650502a77146fa2a7766dae741"
+    },
+    "checks": {
+      "report_hash_matches": true,
+      "manifest_inputs_match": true,
+      "manifest_binary_matches": true,
+      "full_group": true,
+      "passed_build_verified": true,
+      "all_tests_success": true,
+      "no_failures_skips_warnings": true,
+      "count_agrees": true
+    },
+    "tests": 245,
+    "warnings": 0,
+    "inputs": 229,
+    "snapshot_scope_only": true
+  },
+  "current_drift_observed": {
+    "changed_from_frozen_manifest": [
+      "Source/AIHeroes/Private/AIHeroesArtDirection.cpp"
+    ],
+    "additional_inputs": [
+      "Source/AIHeroes/Private/AIHeroesReliefV5.cpp",
+      "Source/AIHeroes/Private/Tests/AIHeroesReliefV5Tests.cpp",
+      "Source/AIHeroes/Public/AIHeroesReliefV5.h"
+    ],
+    "note": "Concurrent writers observed; this is not a frozen current-worktree manifest."
+  },
+  "static_checks": {
+    "codex_setup": {
+      "passed": 20,
+      "total": 20
+    },
+    "build_evidence_fixtures": {
+      "passed": 23,
+      "total": 23
+    },
+    "document_qc": {
+      "coverage_topics": 28,
+      "files": 5,
+      "bytes": 114126,
+      "words_whitespace": 8486,
+      "broken_local_links": 0
+    }
+  },
+  "primary_web_spot_checks": [
+    "https://h3hota.com/en/download",
+    "https://download.h3hota.com/upd/changelogs/eng.txt",
+    "https://h3hota.com/en/faq",
+    "https://h3hota.com/en/documentation",
+    "https://h3hota.com/en/template-format",
+    "https://sites.google.com/site/heroes3hd/eng/hd"
+  ],
+  "rollback": "Only reverse own documentation.diff hunks and remove own newly created research artifacts if explicitly requested. Do not reset worktree, erase saves, undo other art/source changes or rewrite V1/V2.",
+  "DeltaDOmegaLambda": {
+    "delta": "Systemic reference study and evidence-qualified capability map",
+    "D": "web + source read-back + stored provenance comparison + static/fixture checks",
+    "omega_percent": 90,
+    "Lambda": "new HotA patch, contradictory runtime result, source drift or restored approval service enabling fresh QA"
+  }
+}

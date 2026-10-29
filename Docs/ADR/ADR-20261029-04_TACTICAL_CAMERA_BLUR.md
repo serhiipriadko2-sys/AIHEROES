@@ -27,7 +27,23 @@ Scope: one Stage camera hunk, one readability test, research/QA docs and receipt
 Rollback: only this test/hunk/new docs; no reset/clean, external edits, user-save
 deletion, process closure, Git writes or private-canon changes.
 
-Status: tests prepared; runtime verification pending.
+Status: camera hunk compiled in
+`Docs/BuildRuns/20261029T122621300Z/compiled.json` after the genuine RED report
+`Docs/AutomationRuns/20261029T122444769Z/index.json` (override absent, amount 0.5).
+Later existing full-suite artifacts were read back and compared:
+`Docs/AutomationRuns/20261029T161717792Z/index.json` + `provenance.json`, matched
+to `Docs/BuildRuns/20261029T161702109Z/compiled.json`: 245/245 Success, no warnings,
+including TacticalCameraHasNoMotionBlur. This is verification of stored evidence,
+not a new native run by the research pass. Source/DLL equality is snapshot-scoped.
+
+Fresh native execution was not performed after the approval service returned
+"workspace is out of credits". Independent-agent review also failed to start.
+Concurrent art/source changes were then observed; the frozen 245-test result is
+not promoted to current-worktree PASS. No approval bypass, process termination,
+SDK install, Git write or new graphics claim is implied. Fresh same-build moving
+frames remain pending; previous 2x images predate this override and are not proof
+that temporal ghosting/overlap is fixed.
 
 ΔDΩΛ: Δ tactical-view readability; D prior images + local UE camera API → RED/GREEN;
-Ω pending runtime; Λ temporal artifacts, source drift or failed QA.
+Ω 95% for observed source/build/report linkage, lower for visual effect;
+Λ temporal artifacts, source drift or failed fresh QA.

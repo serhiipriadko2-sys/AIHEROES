@@ -10,6 +10,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "Materials/MaterialInterface.h"
 #include "Math/RandomStream.h"
+#include "Misc/PackageName.h"
 
 namespace
 {
@@ -17,6 +18,17 @@ UStaticMesh* AmberMesh(const TCHAR* Name)
 {
     return LoadObject<UStaticMesh>(nullptr,
         *FString::Printf(TEXT("/Game/AmberMarch/Meshes/%s.%s"), Name, Name));
+}
+
+// A missing optional kit must be a normal fallback, not a load warning.
+UStaticMesh* OptionalArchitectureMesh(const TCHAR* Name)
+{
+#if WITH_EDITOR
+    const FString Package = FString::Printf(
+        TEXT("/Game/AmberMarch/Meshes/%s"), Name);
+    if (!FPackageName::DoesPackageExist(Package)) return nullptr;
+#endif
+    return AmberMesh(Name);
 }
 
 UMaterialInterface* AmberMaterial(const TCHAR* Name)
@@ -70,12 +82,20 @@ void AddGrove(AActor& Owner, USceneComponent* Root, UStaticMesh* Mesh,
 
 const TCHAR* NodeMesh(FName Id)
 {
-    if (Id == FName(TEXT("HQ"))) return TEXT("SM_Hearth");
+    // Additive V6 kit: when optional imported assets are absent the game
+    // keeps using the exact pre-existing AmberMarch meshes.
+    if (Id == FName(TEXT("HQ")))
+        return OptionalArchitectureMesh(TEXT("SM_CitadelCrownV6")) ?
+            TEXT("SM_CitadelCrownV6") : TEXT("SM_Hearth");
     if (Id == FName(TEXT("FOREST"))) return TEXT("SM_Sawmill");
     if (Id == FName(TEXT("ORE"))) return TEXT("SM_Quarry");
-    if (Id == FName(TEXT("PASS")) || Id == FName(TEXT("OUTPOST")))
-        return TEXT("SM_Watchtower");
-    if (Id == FName(TEXT("RUINS"))) return TEXT("SM_Archive");
+    if (Id == FName(TEXT("PASS"))) return TEXT("SM_Watchtower");
+    if (Id == FName(TEXT("OUTPOST")))
+        return OptionalArchitectureMesh(TEXT("SM_FrontierGateV6")) ?
+            TEXT("SM_FrontierGateV6") : TEXT("SM_Watchtower");
+    if (Id == FName(TEXT("RUINS")))
+        return OptionalArchitectureMesh(TEXT("SM_ArchiveSanctumV6")) ?
+            TEXT("SM_ArchiveSanctumV6") : TEXT("SM_Archive");
     if (Id == FName(TEXT("SUPPLY"))) return TEXT("SM_Hearth");
     // The optional WAY markers keep their distinct prototype shape.
     return nullptr;
@@ -205,9 +225,13 @@ bool FAIHeroesZoneExpeditionArt::Apply(
             Zone.Role == EAIHeroesZoneRole::Objective;
         const float ActorScale = bLarge ? 1.55f : 1.18f;
         Art->SetRelativeLocation(FVector(0.f, 0.f, -58.f / ActorScale));
-        Art->SetRelativeScale3D(FVector(
-            Zone.Id == FName(TEXT("SUPPLY")) ? .32f : .54f));
-        Art->SetCastShadow(false);
+        // Keep the new, more detailed landmark silhouettes within the
+        // existing click-target footprint and camera framing.
+        const bool bV6 = FString(Name).EndsWith(TEXT("V6"));
+        const float MeshScale = Zone.Id == FName(TEXT("SUPPLY")) ?
+            .32f : (bV6 ? .43f : .54f);
+        Art->SetRelativeScale3D(FVector(MeshScale));
+        Art->SetCastShadow(bV6 && bLarge);
         Actor->GetStaticMeshComponent()->SetVisibility(false, false);
         // The invisible original click collider remains the authority.
     }

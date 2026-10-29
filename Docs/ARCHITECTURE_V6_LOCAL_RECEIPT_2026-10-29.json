@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "status": "AUTHORING_PASS_ENGINE_IMPORT_PENDING",
+  "scope": "Three original V6 architecture meshes and static checks; no production deployment",
+  "asset_count": 3,
+  "triangle_count": 3309,
+  "preview_count": 3,
+  "imported_asset_files": 0,
+  "unreal_compile": "NOT_VERIFIED_FOR_THIS_SOURCE_SNAPSHOT",
+  "runtime_gpu_visual": "NOT_VERIFIED_FOR_V6",
+  "player_save_mutations": 0,
+  "provenance": [
+    {
+      "path": "ArtSource/AmberMarch/ArchitectureV6/asset_manifest.json",
+      "bytes": 1589,
+      "sha256": "05eacb370a01fdf1d6ccf8dc88a4fbfe5dfd261a9f48995ab86bcc430ec5bf71"
+    },
+    {
+      "path": "ArtSource/AmberMarch/ArchitectureV6/ArchitectureV6.blend",
+      "bytes": 134989,
+      "sha256": "208f13aa037e8b1f430ba348fcbc70f98d624a2e881a53b05fdb425ab408fa89"
+    },
+    {
+      "path": "ArtSource/AmberMarch/ArchitectureV6/SM_CitadelCrownV6.fbx",
+      "bytes": 47388,
+      "sha256": "86670f046b8dc7a1d9c0e416ffa18c7e8f515a85a3738bc0a4590da427592926"
+    },
+    {
+      "path": "ArtSource/AmberMarch/ArchitectureV6/SM_FrontierGateV6.fbx",
+      "bytes": 30012,
+      "sha256": "e8c1645a1d5d538c64c20d019f84af212d7f0e0ff27a4a40ad5d74f65b99f08c"
+    },
+    {
+      "path": "ArtSource/AmberMarch/ArchitectureV6/SM_ArchiveSanctumV6.fbx",
+      "bytes": 44396,
+      "sha256": "a55ca00c6e90b7cff91ca02e8ee02c33188c4d69913f45baf9f68b45de517593"
+    },
+    {
+      "path": "ArtSource/AmberMarch/ArchitectureV6/citadel_preview.png",
+      "bytes": 407331,
+      "sha256": "117a25bc40ba7f87ce3f62b9c0a248b702e9d81174904df84548b8ea7e838fc5",
+      "dimensions": [
+        800,
+        450
+      ]
+    },
+    {
+      "path": "ArtSource/AmberMarch/ArchitectureV6/frontier_preview.png",
+      "bytes": 389424,
+      "sha256": "7ba460a8d6fa3084f9c640dc5d5a1c3d1b593d1b562bd9962faf4de20becce43",
+      "dimensions": [
+        800,
+        450
+      ]
+    },
+    {
+      "path": "ArtSource/AmberMarch/ArchitectureV6/archive_preview.png",
+      "bytes": 393873,
+      "sha256": "68f6f394b1f860e4b61b529ee2de46d6490948c7f8cefdfcdffd8d12101a0d79",
+      "dimensions": [
+        800,
+        450
+      ]
+    },
+    {
+      "path": "Tools/build_amber_architecture_v6.py",
+      "bytes": 13221,
+      "sha256": "7451ee1a43beab7dee581dd4312d4675359ae17a70abaf3e5e7ce322e3c9b38c"
+    },
+    {
+      "path": "Tools/finalize_amber_architecture_v6.py",
+      "bytes": 3906,
+      "sha256": "0b60c4c27d13fb47f17ee1eabf9f38440e163e33362d2d3c7f980d8d84b0804e"
+    },
+    {
+      "path": "Tools/preview_amber_architecture_v6.py",
+      "bytes": 2747,
+      "sha256": "028a94311b96751713eaef902a1c3ca1874150d11e4782f13977b7e917190bd6"
+    },
+    {
+      "path": "Tools/import_amber_architecture_v6.py",
+      "bytes": 4440,
+      "sha256": "cf212e033bbb69095a8870663f46dd823bd59531a1503f8599e30e27f186ec57"
+    },
+    {
+      "path": "Tools/verify_amber_architecture_v6.py",
+      "bytes": 5317,
+      "sha256": "fd8ac52e7fbbd30d13d361f2d3dcb01648c436a44ee868290fd049c0fbdc51ec"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesZoneExpeditionArt.cpp",
+      "bytes": 10615,
+      "sha256": "32f377da07fb3cdd7dadd350b822459324f4c4b96a915cb6bf6f649ddc0a5830"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesArchitectureV6Tests.cpp",
+      "bytes": 1997,
+      "sha256": "3ac83b2511fb5935b2417c404c04cefd2529194f69f69226b526083bd7c8cf2c"
+    }
+  ]
+}

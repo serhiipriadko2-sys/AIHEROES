@@ -37,6 +37,7 @@ struct FAIHeroesCampaignProgress
     int32 Total = 0;
     bool bVictory = false;
     FString NextAction;
+    FName NextFocusId = NAME_None; // The canonical next goal, independent of localization.
 
     FString Headline() const;
     TArray<FString> Report() const;

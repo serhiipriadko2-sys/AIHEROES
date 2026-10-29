@@ -54,6 +54,8 @@ int32 FAIHeroesExplorerLayout::Hit(const FVector2D& P,const FVector2D& V,bool Op
 {
     const auto F=Frame(V);if(!F.bSupported || !FMath::IsFinite(P.X) || !FMath::IsFinite(P.Y))return INDEX_NONE;
     for(int32 A:Actions(Open))if(Button(A,V,Open).Contains(P))return A;
+    // The mission ribbon is a deliberate, read-only goals shortcut.
+    if(!Open && F.Mission.Contains(P))return 202;
     if(F.Header.Contains(P)||F.Dock.Contains(P)||F.Inspector.Contains(P)||F.Mission.Contains(P)||F.Overview.Contains(P)||F.Hero.Contains(P)||
         (Open&&F.Menu.Contains(P)))return ConsumeAction;
     // An open utility menu consumes outside taps to avoid accidental map orders.

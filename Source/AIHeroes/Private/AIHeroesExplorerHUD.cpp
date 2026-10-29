@@ -1,6 +1,7 @@
 #include "AIHeroesHUD.h"
 #include "AIHeroesExplorerLayout.h"
 #include "AIHeroesHUDTextLayout.h"
+#include "AIHeroesCampaignGuide.h"
 #include "AIHeroesMapLabelLayout.h"
 #include "AIHeroesReferenceUI.h"
 #include "AIHeroesBattleArt.h"
@@ -145,13 +146,32 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
     }
     if(V.X<640)Text(FString::Printf(TEXT("День %d"),G.Day),V.X-175,36,70,Muted,.85f);
 
-    Panel(F.Mission,Card);Glyph(EAIHeroesGlyph::Compass,F.Mission.X+10,F.Mission.Y+12,23,Gold);
-    FString Objective=TEXT("Выберите лесопилку и разведайте путь");
-    for(const AAIHeroesWorldNode* N:G.Nodes)if(IsValid(N)&&N->NodeType==EAIHeroesNodeType::ForestMine&&N->bOwned)Objective=TEXT("Следующая цель: захватите рудник");
-    for(const AAIHeroesWorldNode* N:G.Nodes)if(IsValid(N)&&N->NodeType==EAIHeroesNodeType::OreMine&&N->bOwned)Objective=TEXT("Откройте путь к древнему архиву");
-    if(G.GetCampaignProgress().bVictory)Objective=TEXT("Экспедиция завершена!");
-    Text(TEXT("ЦЕЛЬ ЭКСПЕДИЦИИ"),F.Mission.X+41,F.Mission.Y+6,F.Mission.W-50,Gold,.85f);
-    Text(Objective,F.Mission.X+41,F.Mission.Y+25,F.Mission.W-50,Paper,.96f);
+    // One player-facing objective source: the actual campaign victory rules.
+    const auto Progress=G.GetCampaignProgress();
+    const auto* N=G.SelectedNode.Get();
+    const bool Valid=IsValid(N)&&G.Nodes.Contains(G.SelectedNode)&&
+        G.IsNodeDiscovered(FName(*N->GetDisplayName()));
+    const auto Path=G.GetSelectedTravelPath();
+    const bool Ready=Valid&&Path.IsReachableThisTurn()&&!G.IsStrategicTravelMoving();
+    FAIHeroesCampaignGuideContext GuideContext;
+    GuideContext.SelectedId=Valid?FName(*N->GetDisplayName()):NAME_None;
+    GuideContext.bTravelMoving=G.IsStrategicTravelMoving();
+    GuideContext.bRouteReady=Ready;
+    GuideContext.bNeedsMoreMoves=Valid&&Path.Status==EAIHeroesAdventurePathStatus::NeedsMoreMoves;
+    GuideContext.MissingMoves=Path.MissingMoves;
+    GuideContext.bHasArmy=false;
+    for(const auto& Unit:G.PlayerArmy)if(Unit.IsAlive())GuideContext.bHasArmy=true;
+    for(const AAIHeroesWorldNode* Site:G.Nodes)
+        if(IsValid(Site)&&!Site->IsHidden()&&
+           FName(*Site->GetDisplayName())==Progress.NextFocusId&&
+           G.IsNodeDiscovered(Progress.NextFocusId))
+            GuideContext.bTargetDiscovered=true;
+    const auto Guide=FAIHeroesCampaignGuide::Build(Progress,GuideContext);
+    const bool MissionHover=F.Mission.Contains({MX,MY});
+    Panel(F.Mission,MissionHover?Blue:Card);
+    Glyph(EAIHeroesGlyph::Compass,F.Mission.X+10,F.Mission.Y+12,23,Gold);
+    Text(Guide.Heading,F.Mission.X+41,F.Mission.Y+6,F.Mission.W-50,Gold,.85f);
+    Text(Guide.NextStep,F.Mission.X+41,F.Mission.Y+25,F.Mission.W-50,Paper,.96f);
 
     TArray<FAIHeroesHUDActionRect> Occupied={F.Mission};
     if(F.Overview.W>0)Occupied.Add(F.Overview);
@@ -203,10 +223,7 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
     }
 
     Panel(F.Inspector,Card);
-    const auto* N=G.SelectedNode.Get();
-    const bool Valid=IsValid(N)&&G.Nodes.Contains(G.SelectedNode)&&G.IsNodeDiscovered(FName(*N->GetDisplayName()));
-    const auto Path=G.GetSelectedTravelPath();
-    const bool Ready=Valid&&Path.IsReachableThisTurn()&&!G.IsStrategicTravelMoving();
+
     const float X=F.Inspector.X+16,Y=F.Inspector.Y+14,Span=F.Inspector.W-32;
     FString CTA=TEXT("Выберите объект на карте");
     if(Valid)
@@ -222,7 +239,7 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
             Text(Purpose(N->NodeType),X,Y+82,Span,Paper,1.04f);
             Text(FString::Printf(TEXT("Охрана: %d   ·   Ходы: %d / 4"),Guards,G.MovesLeft),X,Y+113,Span,Paper,1.08f);
             Text(!Hostile?TEXT("Можно посетить без боя"):G.ProtocolTier==0?TEXT("Риск неизвестен: герой ещё учится"):TEXT("Спросите героя перед нападением"),X,Y+145,Span,Muted,1.02f);
-            Text(TEXT("Вы выбираете путь. ИИ ведёт бой."),X,Y+178,Span,Teal,.92f);
+            Text(Guide.FocusId==GuideContext.SelectedId?Guide.Detail:TEXT("Вы выбираете путь. ИИ ведёт бой."),X,Y+178,Span,Teal,.92f);
         }
         else Text(FString::Printf(TEXT("%s  /  охрана %d  /  ходы %d из 4"),N->bOwned?TEXT("Ваш объект"):TEXT("Не захвачен"),Guards,G.MovesLeft),X,Y+28,Span,Muted,1.f);
         if(Ready)CTA=FString::Printf(TEXT("%s  /  %d хода"),Hostile?TEXT("Атаковать"):TEXT("Перейти"),Path.TotalCost);
@@ -234,7 +251,7 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
     {
         Text(TEXT("Начните с карты"),X,Y,Span,Paper,1.4f);
         Text(TEXT("Нажмите на лесопилку или рудник"),X,Y+32,Span,Muted,1.f);
-        if(F.bWide){Text(TEXT("1  Выберите цель"),X,Y+85,Span,Paper);Text(TEXT("2  Спросите героя"),X,Y+120,Span,Paper);Text(TEXT("3  Подтвердите поход"),X,Y+155,Span,Paper);}
+        if(F.bWide){Text(Guide.Detail,X,Y+85,Span,Paper);Text(TEXT("Нажмите «Цели», чтобы увидеть все задачи"),X,Y+120,Span,Muted,.88f);Text(TEXT("Игровой приказ всегда подтверждаете вы"),X,Y+155,Span,Teal,.88f);}
     }
     if(!bExplorerMenuOpen)Button(0,CTA,true,Ready);
 

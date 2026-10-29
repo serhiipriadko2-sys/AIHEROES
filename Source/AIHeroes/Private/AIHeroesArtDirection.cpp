@@ -1,5 +1,6 @@
 #include "AIHeroesArtDirection.h"
 #include "AIHeroesScenicCoast.h"
+#include "AIHeroesReliefV5.h"
 #include "AIHeroesSceneryV3.h"
 #include "AIHeroesScenicCrossing.h"
 #include "AIHeroesTravelRules.h"
@@ -63,7 +64,11 @@ void FAIHeroesArtDirection::ApplyWorld(AAIHeroesGameMode& G)
     using namespace AmberArt;
     UWorld* W=G.GetWorld();if(!W)return;
     for(TActorIterator<AActor> It(W);It;++It)if(It->GetOwner()==&G&&It->ActorHasTag(TEXT("AmberEnvironment")))return;
-    auto* Island=Mesh(TEXT("SM_Island"));if(!Island)return;
+    // New terrain is an isolated visual mesh. Preserve old island as safe fallback.
+    auto* Island=Mesh(FAIHeroesReliefV5::PlatformMeshName());
+    const bool bReliefV5=Island!=nullptr;
+    if(!Island)Island=Mesh(TEXT("SM_Island"));
+    if(!Island)return;
     FActorSpawnParameters P;P.Owner=&G;
     auto* Environment=W->SpawnActor<AActor>(FVector::ZeroVector,FRotator::ZeroRotator,P);
     if(!Environment)return;Environment->Tags.Add(TEXT("AmberEnvironment"));
@@ -95,7 +100,7 @@ void FAIHeroesArtDirection::ApplyWorld(AAIHeroesGameMode& G)
             if(At.X>-750&&At.X<450&&FMath::Abs(At.Y)<360)Clear=false;
             if(!Clear)continue;
             const float S=R.FRandRange(.65f,1.1f);
-            Forest->AddInstance(FTransform(FRotator(0,R.FRandRange(0,360),0),FVector(At.X,At.Y,-8),FVector(S)),false);
+            Forest->AddInstance(FTransform(FRotator(0,R.FRandRange(0,360),0),FVector(At.X,At.Y,bReliefV5 ? FAIHeroesReliefV5::HeightCm(At.X,At.Y)+3.0 : -8.0),FVector(S)),false);
         }
     }
     FAIHeroesScenicCoast::Attach(*Environment);

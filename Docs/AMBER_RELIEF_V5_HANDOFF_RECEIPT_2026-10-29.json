@@ -1,0 +1,101 @@
+﻿{
+    "status":  "PARTIAL_ART_VERIFIED_GAME_RETEST_BLOCKED",
+    "recorded_at":  "2026-10-29T19:57:32.4360074+03:00",
+    "source_receipt_sha256":  "2cc76e4d54de3185e313d5f2189e7b4fde65c4c650df7f5e3a06174b5427c504",
+    "checks":  {
+                   "player_save_drift_count":  0,
+                   "powershell_verifier_syntax":  "PASS",
+                   "desktop_mobile_common_vertex_heights":  625,
+                   "android_build":  "NOT_RUN",
+                   "blender_geometry":  "PASS",
+                   "unreal_editor_asset_import":  "PASS",
+                   "visual_game_screenshot":  "NOT_CAPTURED_FOR_V5",
+                   "game_editor_full_retest":  "NOT_RUN_AFTER_TEST_PATCH"
+               },
+    "runtime_limitation":  "Existing UnrealEditor process and low free virtual memory",
+    "user_action_required_to_repeat":  "Close unrelated Unreal Editor or free resources, then run Tools\\verify_amber_relief_v5.ps1",
+    "lifecycle":  "CREATED_IMPORTED_ART_CHECKED_NOT_VERIFIED_GAME",
+    "file_count":  16,
+    "files":  [
+                  {
+                      "path":  "Tools\\build_amber_relief_v5.py",
+                      "bytes":  5878,
+                      "sha256":  "e07704d2d01e291ef06c22e662906f68c50022341d3116d3785fc220e7b82603"
+                  },
+                  {
+                      "path":  "Tools\\import_amber_relief_v5.py",
+                      "bytes":  2832,
+                      "sha256":  "7f3f2a465333d4f565b647477385f8a2c0faad3bdccd59f027726b79b79d251c"
+                  },
+                  {
+                      "path":  "Tools\\preview_amber_relief_v5.py",
+                      "bytes":  2852,
+                      "sha256":  "b2e9cb88a47afc8c8bdb4c763b83239eda3e3ac48b147381678cc41c9b9a9a13"
+                  },
+                  {
+                      "path":  "Tools\\check_amber_relief_v5.py",
+                      "bytes":  3736,
+                      "sha256":  "e4d243f35ca9b43e0a235b62c9e374010a7383107e5061aa42fcbe9e5205ce73"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\ReliefV5\\ReliefV5.blend",
+                      "bytes":  851638,
+                      "sha256":  "8f4bda7ffe24a5b397c3391f83dd80e8eb8acc5fe804b50c8770f0d462f4b0bc"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\ReliefV5\\SM_IslandReliefV5.fbx",
+                      "bytes":  742140,
+                      "sha256":  "e8b7efc01d3a05e4bfedb411e65a2e0d9449963e648318264e6d301b18d0fe4e"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\ReliefV5\\SM_IslandReliefV5_Mobile.fbx",
+                      "bytes":  279628,
+                      "sha256":  "57eca3a660f4eb086e0bca121e3cf5c32541ecc72593772d31d33b684798665f"
+                  },
+                  {
+                      "path":  "ArtSource\\AmberMarch\\ReliefV5\\asset_manifest.json",
+                      "bytes":  1613,
+                      "sha256":  "96acc9b7f2591c3e6c2a3d2dc244cbd1b2326af00df09812c268ba786eedc0d5"
+                  },
+                  {
+                      "path":  "Content\\AmberMarch\\Meshes\\SM_IslandReliefV5.uasset",
+                      "bytes":  569103,
+                      "sha256":  "bddd965c1cfd558e6603a2405634b12c7cd7fb659a166f3c7af7334a90d3b7ff"
+                  },
+                  {
+                      "path":  "Content\\AmberMarch\\Meshes\\SM_IslandReliefV5_Mobile.uasset",
+                      "bytes":  290385,
+                      "sha256":  "7bbfa6af1cd32b1f067783298963cfaa8a94d15ad450a0ce0589849c1a61032a"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Public\\AIHeroesReliefV5.h",
+                      "bytes":  383,
+                      "sha256":  "14cc7885783aeca9f523b5138b1a65fe5a319b28d017a0f0922c3e1f9b9aa9ec"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\AIHeroesReliefV5.cpp",
+                      "bytes":  3136,
+                      "sha256":  "668eaa9518632b1008a2356897e449acff9a2e2c9f968ac40b55adc630a250ce"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\Tests\\AIHeroesReliefV5Tests.cpp",
+                      "bytes":  4235,
+                      "sha256":  "07f4e2b592050f21efd32a754bddb4ac89d861fdda53520204913eb888e2457c"
+                  },
+                  {
+                      "path":  "Source\\AIHeroes\\Private\\AIHeroesArtDirection.cpp",
+                      "bytes":  7199,
+                      "sha256":  "1094e03ed65abf945baac65ce25bc084aaab9b1d2cb0a7e2973a8e934bf9f16e"
+                  },
+                  {
+                      "path":  "Docs\\AMBER_RELIEF_V5_2026-10-29.md",
+                      "bytes":  5371,
+                      "sha256":  "d5a85ae839d753825f9c32d596b1bee65dc3987cf9d878db8691cc6b17894373"
+                  },
+                  {
+                      "path":  "Tools\\verify_amber_relief_v5.ps1",
+                      "bytes":  3181,
+                      "sha256":  "ee10e8d0a626659d4415d16c0995927b7a6febc0ce60f28798c098cb2c256645"
+                  }
+              ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "status": "DESIGN_CANDIDATE_NOT_IMPLEMENTED",
+  "user_selected_basis": "main five-site campaign",
+  "document": {
+    "path": "Docs/MAIN_CAMPAIGN_VERTICAL_SLICE_2026-10-29.md",
+    "bytes": 11758,
+    "sha256": "f59e1793d4d186e041cc1b116dc5d7c28786fc019056ad1eac6704602a25272a",
+    "lines": 122
+  },
+  "qc": {
+    "utf8": "PASS",
+    "scope_and_invariants": "PASS",
+    "source_contradictions": "source read-back only",
+    "independent_agent_review": "UNAVAILABLE; no independent-review PASS claimed",
+    "native_qa": "NOT_RUN"
+  },
+  "next_gate": "user approval of first slice D1, then implementation plan",
+  "source_writes": 0,
+  "canon_writes": 0,
+  "git_writes": 0
+}

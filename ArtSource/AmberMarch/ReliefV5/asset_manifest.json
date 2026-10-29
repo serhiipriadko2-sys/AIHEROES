@@ -1,0 +1,86 @@
+{
+  "origin": "Original procedural topology; no third-party art",
+  "art_scope": "Visual terrain only; no collision, physics or path changes",
+  "profile": "One height function, separate desktop and Android mesh density",
+  "assets": [
+    {
+      "name": "SM_IslandReliefV5",
+      "grid": 120,
+      "triangles": 28800,
+      "bytes": 742140,
+      "sha256": "e8b7efc01d3a05e4bfedb411e65a2e0d9449963e648318264e6d301b18d0fe4e"
+    },
+    {
+      "name": "SM_IslandReliefV5_Mobile",
+      "grid": 72,
+      "triangles": 10368,
+      "bytes": 279628,
+      "sha256": "57eca3a660f4eb086e0bca121e3cf5c32541ecc72593772d31d33b684798665f"
+    }
+  ],
+  "strategic_site_samples": [
+    {
+      "point_cm": [
+        -650,
+        0
+      ],
+      "height_cm": -12.0
+    },
+    {
+      "point_cm": [
+        -100,
+        -650
+      ],
+      "height_cm": -12.0
+    },
+    {
+      "point_cm": [
+        150,
+        600
+      ],
+      "height_cm": -12.0
+    },
+    {
+      "point_cm": [
+        700,
+        -300
+      ],
+      "height_cm": -12.0
+    },
+    {
+      "point_cm": [
+        750,
+        650
+      ],
+      "height_cm": -12.0
+    },
+    {
+      "point_cm": [
+        -375,
+        -325
+      ],
+      "height_cm": -50.0
+    },
+    {
+      "point_cm": [
+        -1100,
+        800
+      ],
+      "height_cm": 116.09729
+    },
+    {
+      "point_cm": [
+        -1000,
+        -1000
+      ],
+      "height_cm": 139.78595
+    },
+    {
+      "point_cm": [
+        1200,
+        0
+      ],
+      "height_cm": 101.1963
+    }
+  ]
+}
