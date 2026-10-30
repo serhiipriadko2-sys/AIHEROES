@@ -1,0 +1,89 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "DESKTOP-ITUAMNF",
+			"instance": "B0C297C747D357C591749FA161F7794F",
+			"instanceName": "DESKTOP-ITUAMNF-17120",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 10 (22H2) [10.0.19045.6093] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3070",
+			"cPUModel": "Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.30-14.14.31",
+	"succeeded": 4,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.036429803818464279,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "MeasuredBoundedLongWordsAndSurrogates",
+			"fullTestPath": "AIHeroes.Dossier.MeasuredBoundedLongWordsAndSurrogates",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"B0C297C747D357C591749FA161F7794F"
+			],
+			"duration": 0.0079245008528232574,
+			"dateTime": "2026.10.30-14.14.31",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "MeasuredInvalidInputsFailClosed",
+			"fullTestPath": "AIHeroes.Dossier.MeasuredInvalidInputsFailClosed",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"B0C297C747D357C591749FA161F7794F"
+			],
+			"duration": 0.0082476027309894562,
+			"dateTime": "2026.10.30-14.14.31",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "MeasuredReportsRetainLimitsAndPages",
+			"fullTestPath": "AIHeroes.Dossier.MeasuredReportsRetainLimitsAndPages",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"B0C297C747D357C591749FA161F7794F"
+			],
+			"duration": 0.012052901089191437,
+			"dateTime": "2026.10.30-14.14.31",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "MeasuredRussianAndMixedGlyphs",
+			"fullTestPath": "AIHeroes.Dossier.MeasuredRussianAndMixedGlyphs",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"B0C297C747D357C591749FA161F7794F"
+			],
+			"duration": 0.0082047991454601288,
+			"dateTime": "2026.10.30-14.14.31",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

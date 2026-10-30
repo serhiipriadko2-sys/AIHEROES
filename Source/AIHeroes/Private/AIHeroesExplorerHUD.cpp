@@ -214,6 +214,7 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
 
     TArray<FAIHeroesHUDActionRect> Occupied={F.Mission};
     if(F.Overview.W>0)Occupied.Add(F.Overview);
+    if(F.CompactArmy.W>0)Occupied.Add(F.CompactArmy);
     if(PlayerOwner)for(const AAIHeroesWorldNode* MapSite:G.Nodes)
     {
         if(!IsValid(MapSite)||MapSite->IsHidden()||!G.IsNodeDiscovered(FName(*MapSite->GetDisplayName())))continue;
@@ -322,6 +323,37 @@ void AAIHeroesHUD::DrawExplorerHUD(const AAIHeroesGameMode& G)
         }
         if(Show==0)Text(TEXT("Армия пуста. Найм доступен на базе."),HX,HY+60,HW,Muted,.95f);
         Text(G.PlayerArmy.Num()>2?FString::Printf(TEXT("Ещё отрядов: %d"),G.PlayerArmy.Num()-2):TEXT("ИИ по правилам · модель не подключена"),HX,F.Hero.Y+F.Hero.H-21,HW,Muted,.78f);
+    }
+    if(F.CompactArmy.W>0)
+    {
+        // Map-layer army summary for 640/960-width layouts. The world
+        // does not change and labels never draw over this reserved area.
+        const auto& R=F.CompactArmy;
+        Panel(R,Ink);
+        const bool Short=R.H<70.f;
+        Glyph(EAIHeroesGlyph::Army,R.X+9,R.Y+(Short?5.f:8.f),
+            Short?17.f:22.f,Gold);
+        Text(FString::Printf(TEXT("АРМИЯ ГЕРОЯ · %d ОТР."),G.PlayerArmy.Num()),
+            R.X+(Short?31.f:36.f),R.Y+(Short?5.f:10.f),
+            R.W-(Short?43.f:48.f),Gold,Short?.79f:.86f);
+        int32 Living=0;
+        for(const auto& U:G.PlayerArmy)if(U.IsAlive())++Living;
+        if(Living==0)
+            Text(TEXT("Нет бойцов. Найм на базе [G]."),
+                R.X+11,R.Y+(Short?29.f:38.f),R.W-22,
+                Muted,Short?.88f:.98f);
+        else
+        {
+            const int32 Visible=FMath::Min(G.PlayerArmy.Num(),2);
+            for(int32 I=0;I<Visible;++I)
+            {
+                const auto& U=G.PlayerArmy[I];
+                const FString Row=FString::Printf(TEXT("%s · %d бойц. · %d ОЗ"),
+                    *FAIHeroesBattleArt::UnitName(U.UnitId),U.Count(),U.TotalHealth);
+                Text(Row,R.X+11,R.Y+(Short?21.f:31.f)+I*(Short?17.f:21.f),
+                    R.W-22,U.IsAlive()?Paper:Muted,Short?.84f:.96f);
+            }
+        }
     }
     Panel(F.Dock,Ink);
     Button(400,TEXT("Постройки [G]"));Button(203,TEXT("Тактики [Y]"));Button(1,TEXT("Спросить [H]"));Button(2,TEXT("Конец хода"));

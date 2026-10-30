@@ -2,7 +2,7 @@
     "schema":  1,
     "status":  "compiled",
     "build_verified":  true,
-    "created_utc":  "2026-10-30T13:50:58.6898689Z",
+    "created_utc":  "2026-10-30T14:21:34.3055990Z",
     "target":  "AIHeroesEditor Win64 Development",
     "scope":  "AIHeroes.uproject + all Source/ and Config/ files; engine and Content excluded",
     "inputs":  [
@@ -128,8 +128,13 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesAdvisorDossierHUD.cpp",
-                       "bytes":  5150,
-                       "sha256":  "f181cac4f994ceeddac01c8c989a3d6d24c5f17a7a9b701ef33e323671d1a06a"
+                       "bytes":  4990,
+                       "sha256":  "9a4d4155c604856cc5e923126b1182c810fe95ea844e48dd460a0e7f4fb1bf4b"
+                   },
+                   {
+                       "path":  "Source/AIHeroes/Private/AIHeroesAdvisorDossierMeasured.cpp",
+                       "bytes":  4699,
+                       "sha256":  "f5416457ea87d637a2047e8b658fd579203402ff3a497db93dd269bf2a086956"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesAIProposalGameMode.cpp",
@@ -258,18 +263,18 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesExplorerCopy.cpp",
-                       "bytes":  2562,
-                       "sha256":  "0dc48b5be91d0ff35e4e3d220d84d92678d764881c8597487559d72fe2c2d4da"
+                       "bytes":  4267,
+                       "sha256":  "e58ab5848d487a2b9380391ef523f9f5456586053e30d528cd4c5ec9f0a9778e"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesExplorerHUD.cpp",
-                       "bytes":  19423,
-                       "sha256":  "155fb292c22d42c07aecc8dddfdcc4b04045fd2bb2a0c22ae153adf7801b815c"
+                       "bytes":  20870,
+                       "sha256":  "c95484add34f2c2f8aa583a175c3803714adcd02afd664f1324dd4c111180ee8"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesExplorerLayout.cpp",
-                       "bytes":  2970,
-                       "sha256":  "23fa47f04402ff078dad15dcdf75d399b480fedbb858bd55a1a72de7f947bc92"
+                       "bytes":  3821,
+                       "sha256":  "eee4b8315b4e522180f079cba9cb0ac7666ccaa889acdf4833403b756884013b"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesFieldDwelling.cpp",
@@ -592,6 +597,11 @@
                        "sha256":  "f2beef04cbf56cf684052990490850a33b42cc444ab93a259fe9ca9a91d1feea"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesAdvisorMeasuredWrapTests.cpp",
+                       "bytes":  6262,
+                       "sha256":  "bd0f3688e41a109d21d8acc47b7106c053bd43eae9809b42a8a3bc99e90c714f"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesAdvisorTests.cpp",
                        "bytes":  3733,
                        "sha256":  "51ef3b4c740a3d46310903630826032b2c1508fd464d83725e59de807bebaea7"
@@ -683,13 +693,13 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesExplorerCopyTests.cpp",
-                       "bytes":  4070,
-                       "sha256":  "04dce5ec2ebd2f52c33f0b6f1d8bcf1838033e1ac10bcbebd30b69f1bf7ea0e1"
+                       "bytes":  7084,
+                       "sha256":  "3146861c6f94a2f98e2f40758f17cb3a439c669d8bc1774b798863f1525cdebd"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesExplorerVisualTests.cpp",
-                       "bytes":  5570,
-                       "sha256":  "5e74a94c9d7b3c61a5bb4b20440dbdc6bcbd3b12c4a0276cae43eaae25fd40d3"
+                       "bytes":  9112,
+                       "sha256":  "047319299761e35f0aa4468ab4e26c97c9b51f4236a5255539e021043703008a"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesFieldDwellingTests.cpp",
@@ -928,8 +938,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesAdvisorDossier.h",
-                       "bytes":  2129,
-                       "sha256":  "6040f22997ba2e865e191182f22250a0704bae7bc068286f03cc292d69e4d3d8"
+                       "bytes":  2543,
+                       "sha256":  "d5cbfa3fc24a21c88070d0ec2241379b80abb47bdf449147b8009216747a4eb4"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesAIProposalGate.h",
@@ -1028,8 +1038,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesExplorerLayout.h",
-                       "bytes":  766,
-                       "sha256":  "4ab43c9024b58d17b4b51dd419753727d4bdce0762e1b312d9c35c8b06a4554f"
+                       "bytes":  779,
+                       "sha256":  "7979fa0cfaa040f5054add47e18222e6c95fb8a1f57249c7aca89b2663b7b684"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesFieldDwelling.h",
@@ -1058,8 +1068,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesHUD.h",
-                       "bytes":  1154,
-                       "sha256":  "cf38fae6067f237c3ea4546daf3f0258f65d07d1f6656f9395b4b105fc4bd495"
+                       "bytes":  1401,
+                       "sha256":  "0610052a0f61e7d94c159256acb308174cfae17a22dee64925b0296626979343"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesHUDLayout.h",
@@ -1284,7 +1294,7 @@
                ],
     "binary":  {
                    "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
-                   "bytes":  3089408,
-                   "sha256":  "7b8905f9cbac54b9ff479d6e3ca2cc0c71f58d7dd9e2b4a349f6f367ac50ebfb"
+                   "bytes":  3128832,
+                   "sha256":  "376455222af879071299c25b91b81bc836e49ebb7135c4cd97361ade60d65e7c"
                }
 }

@@ -1,0 +1,104 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "DESKTOP-ITUAMNF",
+			"instance": "BEE5D159490DB567AC8A4D94C05C3F16",
+			"instanceName": "DESKTOP-ITUAMNF-69064",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 10 (22H2) [10.0.19045.6093] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3070",
+			"cPUModel": "Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.30-14.22.16",
+	"succeeded": 5,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.040764503180980682,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "CompactDockActions",
+			"fullTestPath": "AIHeroes.Visual.ExplorerCopy.CompactDockActions",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"BEE5D159490DB567AC8A4D94C05C3F16"
+			],
+			"duration": 0.0078535974025726318,
+			"dateTime": "2026.10.30-14.22.16",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "EmptyArmyRefusalIsRussian",
+			"fullTestPath": "AIHeroes.Visual.ExplorerCopy.EmptyArmyRefusalIsRussian",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"BEE5D159490DB567AC8A4D94C05C3F16"
+			],
+			"duration": 0.0083549022674560547,
+			"dateTime": "2026.10.30-14.22.16",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "KnownArrivalAndMovementLocalized",
+			"fullTestPath": "AIHeroes.Visual.ExplorerCopy.KnownArrivalAndMovementLocalized",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"BEE5D159490DB567AC8A4D94C05C3F16"
+			],
+			"duration": 0.0080185011029243469,
+			"dateTime": "2026.10.30-14.22.16",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "KnownEventsLocalized",
+			"fullTestPath": "AIHeroes.Visual.ExplorerCopy.KnownEventsLocalized",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"BEE5D159490DB567AC8A4D94C05C3F16"
+			],
+			"duration": 0.0084490999579429626,
+			"dateTime": "2026.10.30-14.22.16",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "UnknownMessagesUntouched",
+			"fullTestPath": "AIHeroes.Visual.ExplorerCopy.UnknownMessagesUntouched",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"BEE5D159490DB567AC8A4D94C05C3F16"
+			],
+			"duration": 0.0080884024500846863,
+			"dateTime": "2026.10.30-14.22.16",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

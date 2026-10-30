@@ -31,34 +31,26 @@ void AAIHeroesHUD::DrawAdvisorDossier(const AAIHeroesGameMode& Rules)
                 return W;
             });
     };
-    if (!FMath::IsNearlyEqual(DossierFontScale, Scale))
-    {
-        // Russian campaign goals and advice use Cyrillic, punctuation and
-        // Latin symbols. A conservative measured glyph width keeps the
-        // complete paged report readable without cutting its content.
-        DossierGlyphWidth = 1.f;
-        for (int32 Character = 32; Character < 127; ++Character)
-        {
-            float W = 0.f, H = 0.f;
-            GetTextSize(FString::Chr(static_cast<TCHAR>(Character)), W, H, Font, Scale);
-            DossierGlyphWidth = FMath::Max(DossierGlyphWidth, W);
-        }
-        const FString Cyrillic =
-            TEXT("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ")
-            TEXT("абвгдеёжзийклмнопрстуфхцчшщъыьэюя")
-            TEXT("«»—№");
-        for (int32 I = 0; I < Cyrillic.Len(); ++I)
-        {
-            float W = 0.f, H = 0.f;
-            GetTextSize(FString::Chr(Cyrillic[I]), W, H, Font, Scale);
-            DossierGlyphWidth = FMath::Max(DossierGlyphWidth, W);
-        }
-        DossierFontScale = Scale;
-    }
-    const int32 Columns = FMath::Clamp(
-        FMath::FloorToInt(L.TextWidth / (DossierGlyphWidth + 1.f)), 16, 160);
     const auto& Dossier = Rules.GetAdvisorDossier();
-    const TArray<FString> Lines = FAIHeroesAdvisorDossierRules::Wrap(Dossier.Paragraphs, Columns);
+    if (!FMath::IsNearlyEqual(CachedDossierWrapScale, Scale) ||
+        !FMath::IsNearlyEqual(CachedDossierWrapWidth, L.TextWidth) ||
+        CachedDossierParagraphs != Dossier.Paragraphs)
+    {
+        // Only recompute at report/layout changes, not sixty times a second.
+        // GetTextSize measures the actual Cyrillic/Latin glyph sequence.
+        CachedDossierWrappedLines = FAIHeroesAdvisorDossierRules::WrapMeasured(
+            Dossier.Paragraphs, L.TextWidth,
+            [this, Font, Scale](const FString& Candidate)
+            {
+                float W = 0.f, H = 0.f;
+                GetTextSize(Candidate, W, H, Font, Scale);
+                return W;
+            });
+        CachedDossierParagraphs = Dossier.Paragraphs;
+        CachedDossierWrapWidth = L.TextWidth;
+        CachedDossierWrapScale = Scale;
+    }
+    const TArray<FString>& Lines = CachedDossierWrappedLines;
     CachedDossierPageCount = FAIHeroesAdvisorDossierRules::PageCount(Lines.Num(), L.RowsPerPage);
     const int32 Page = FAIHeroesAdvisorDossierRules::ClampPage(
         Rules.GetAdvisorDossierPage(), CachedDossierPageCount);
@@ -88,6 +80,11 @@ void AAIHeroesHUD::DrawAdvisorDossier(const AAIHeroesGameMode& Rules)
             FLinearColor(0.68f, 0.73f, 0.8f),
             L.TextX, L.TextY + Row * L.RowHeight, Font, Scale);
     }
+    if (Lines.IsEmpty() && !Dossier.Paragraphs.IsEmpty())
+        DrawText(Fit(TEXT("Текст отчёта не помещается в окно"),
+                L.TextWidth, Scale),
+            FLinearColor(1.f, 0.63f, 0.32f),
+            L.TextX, L.TextY, Font, Scale);
     DrawText(Fit(FString::Printf(TEXT("СТРАНИЦА %d/%d  |  PgUp / PgDn"),
                 Page + 1, CachedDossierPageCount),
             L.TextWidth, Scale * 0.85f),

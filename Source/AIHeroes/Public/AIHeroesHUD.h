@@ -29,8 +29,12 @@ private:
     void DrawCampaignVictoryBanner(const AAIHeroesGameMode& Rules);
     FVector2D CachedCanvasSize = FVector2D::ZeroVector;
     int32 CachedDossierPageCount = 1;
-    float DossierFontScale = -1.f;
-    float DossierGlyphWidth = 8.f;
+    // Full text is measured only when the report or layout changes. Never
+    // perform long deterministic text reflow on every drawn frame.
+    TArray<FString> CachedDossierParagraphs;
+    TArray<FString> CachedDossierWrappedLines;
+    float CachedDossierWrapWidth = -1.f;
+    float CachedDossierWrapScale = -1.f;
     void GetActionRect(int32 Index, float& X, float& Y, float& W, float& H) const;
     void DrawAdvisorDossier(const AAIHeroesGameMode& Rules);
     void DrawBasePanel(const AAIHeroesGameMode& Rules);

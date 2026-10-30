@@ -5,7 +5,7 @@
 // Presentation-only shell. IDs still dispatch through the existing controller.
 struct FAIHeroesExplorerFrame
 {
-    FAIHeroesHUDActionRect Header, Dock, Inspector, Menu, Map, Mission, Overview, Hero;
+    FAIHeroesHUDActionRect Header, Dock, Inspector, Menu, Map, Mission, Overview, Hero, CompactArmy;
     bool bWide = false;
     bool bSupported = false;
 };

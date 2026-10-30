@@ -62,6 +62,66 @@ bool FCompactExplorerEvents::RunTest(const FString&)
     return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCompactExplorerBattleRefusal,
+    "AIHeroes.Visual.ExplorerCopy.EmptyArmyRefusalIsRussian",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FCompactExplorerBattleRefusal::RunTest(const FString&)
+{
+    const FString EngineEvent=TEXT(
+        "No living army. Recruit units before confirming an attack.");
+    const FString Compact=FAIHeroesExplorerCopy::EventText(EngineEvent,640.f);
+    const FString Wide=FAIHeroesExplorerCopy::EventText(EngineEvent,1280.f);
+    TestTrue(TEXT("Actual GameMode's blocked attack has Russian footer text"),
+        Compact.Contains(TEXT("Нет живых бойцов")) &&
+        Compact.Contains(TEXT("базе [G]")) &&
+        !Compact.Contains(TEXT("Recruit")));
+    TestTrue(TEXT("Wide display gives the same lawful advice in Russian"),
+        Wide.Contains(TEXT("Атака отменена")) &&
+        Wide.Contains(TEXT("Наймите")));
+    const FString Different=EngineEvent+TEXT(" changed");
+    TestEqual(TEXT("Unknown diagnostic remains exact, no guessed translation"),
+        FAIHeroesExplorerCopy::EventText(Different,640.f),Different);
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCompactExplorerArrival,
+    "AIHeroes.Visual.ExplorerCopy.KnownArrivalAndMovementLocalized",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FCompactExplorerArrival::RunTest(const FString&)
+{
+    for (const FString& Id : {
+            FString(TEXT("HQ")), FString(TEXT("FOREST")),
+            FString(TEXT("ORE")), FString(TEXT("OUTPOST")),
+            FString(TEXT("RUINS"))})
+    {
+        for (int32 Remaining : {0, 1, 4})
+        {
+            const FString Event=FString::Printf(
+                TEXT("Hero moved to %s. Remaining moves: %d."),
+                *Id, Remaining);
+            const FString Russian=FAIHeroesExplorerCopy::EventText(Event,640.f);
+            TestTrue(TEXT("Known arrival communicates actual movement in Russian"),
+                Russian.Contains(TEXT("герой прибыл")) &&
+                Russian.Contains(FString::Printf(TEXT("%d/4"),Remaining)) &&
+                !Russian.Contains(TEXT("Remaining moves")));
+            TestTrue(TEXT("Wide arrival also has the same authoritative number"),
+                FAIHeroesExplorerCopy::EventText(Event,1280.f).Contains(
+                    FString::Printf(TEXT("%d из 4"),Remaining)));
+        }
+    }
+    for (const FString& Event:{
+            FString(TEXT("Hero moved to SECRET. Remaining moves: 0.")),
+            FString(TEXT("Hero moved to HQ. Remaining moves: 99.")),
+            FString(TEXT("Hero moved to HQ. Remaining moves: -1.")),
+            FString(TEXT("Hero moved to HQ. Remaining moves: 0. extra")),
+            FString(TEXT("Hero moved to HQ. Remaining moves: zero."))})
+    {
+        TestEqual(TEXT("Unknown or malformed movement evidence stays unchanged"),
+            FAIHeroesExplorerCopy::EventText(Event,640.f),Event);
+    }
+    return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FCompactExplorerUnknown,
     "AIHeroes.Visual.ExplorerCopy.UnknownMessagesUntouched",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)

@@ -26,6 +26,48 @@ bool FExplorerLayoutTest::RunTest(const FString&)
         TestFalse(TEXT("Invalid small sizes fail closed"),FAIHeroesExplorerLayout::Frame(V).bSupported);
     return true;
 }
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FExplorerCompactArmyTest,
+    "AIHeroes.Visual.Explorer.CompactArmyMapPanel",
+    EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FExplorerCompactArmyTest::RunTest(const FString&)
+{
+    for(const FVector2D V:{
+        FVector2D(480,800),FVector2D(640,720),FVector2D(960,720),
+        FVector2D(1024,640)})
+    {
+        const auto F=FAIHeroesExplorerLayout::Frame(V);
+        TestTrue(TEXT("Compact supported map has visible army card"),
+            F.CompactArmy.W>=250.f &&
+            F.CompactArmy.H>=(V.X>=640.f?54.f:70.f));
+        TestTrue(TEXT("Army card stays inside map"),
+            FAIHeroesMapLabelLayout::ContainsRect(F.Map,F.CompactArmy));
+        if(V.X==640.f || V.X==960.f)
+            TestTrue(TEXT("First row of visible site labels stays below army card"),
+                F.CompactArmy.Y+F.CompactArmy.H+4.f < F.Mission.Y+62.f);
+        for(const auto R:{F.Header,F.Dock,F.Mission,F.Inspector,F.Overview,F.Hero})
+            if(R.W>0.f)
+                TestFalse(TEXT("Army never obscures another HUD panel"),
+                    FAIHeroesMapLabelLayout::Overlaps(F.CompactArmy,R,0.f));
+        const FVector2D Centre(F.CompactArmy.X+F.CompactArmy.W*.5f,
+            F.CompactArmy.Y+F.CompactArmy.H*.5f);
+        TestEqual(TEXT("Tapping army card cannot order movement or combat"),
+            FAIHeroesExplorerLayout::Hit(Centre,V,false),
+            FAIHeroesExplorerLayout::ConsumeAction);
+        const FVector2D Mission(F.Mission.X+F.Mission.W*.5f,
+            F.Mission.Y+F.Mission.H*.5f);
+        TestEqual(TEXT("Goals ribbon retains its existing action"),
+            FAIHeroesExplorerLayout::Hit(Mission,V,false),202);
+    }
+    for(const FVector2D V:{
+        FVector2D(320,640),FVector2D(640,480),FVector2D(1280,720)})
+    {
+        const auto F=FAIHeroesExplorerLayout::Frame(V);
+        TestEqual(TEXT("No armory overlay in too-small or existing hero-card layout"),
+            F.CompactArmy.W,0.f);
+    }
+    return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FExplorerHitTest,"AIHeroes.Visual.Explorer.ButtonsMatchHitAreas",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FExplorerHitTest::RunTest(const FString&)
 {
@@ -44,6 +86,36 @@ bool FExplorerHitTest::RunTest(const FString&)
         const auto F=FAIHeroesExplorerLayout::Frame(V);
         TestEqual(TEXT("Header blocks click-through"),FAIHeroesExplorerLayout::Hit({2,2},V,Open),219);
         if(!Open)TestEqual(TEXT("Hidden save target has no area"),FAIHeroesExplorerLayout::Button(7,V,false).W,0.f);
+    }
+    return true;
+}
+// Independently test click protection at the REAL overlay edges, not an
+// assumed fixed position. The compact card may move as the layout evolves.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FExplorerCompactArmyHitTest,
+    "AIHeroes.Visual.Explorer.CompactArmyOverlayStopsClickThrough",
+    EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FExplorerCompactArmyHitTest::RunTest(const FString&)
+{
+    for(const FVector2D V:{FVector2D(640,720),FVector2D(960,720)})
+    {
+        const auto F=FAIHeroesExplorerLayout::Frame(V);
+        TestTrue(TEXT("Narrow PC screen has map and no wide Hero card"),
+            F.bSupported && F.Map.W>0.f && F.Hero.W==0.f);
+        if(!TestTrue(TEXT("Compact roster has a visible map rectangle"),
+            F.CompactArmy.W>200.f && F.CompactArmy.H>=50.f))return false;
+        for(const FVector2D Inside:{
+            FVector2D(F.CompactArmy.X+2.f,F.CompactArmy.Y+2.f),
+            FVector2D(F.CompactArmy.X+F.CompactArmy.W-2.f,
+                      F.CompactArmy.Y+F.CompactArmy.H-2.f)})
+        {
+            TestEqual(TEXT("Overlay border pixels do not issue map orders"),
+                FAIHeroesExplorerLayout::Hit(Inside,V,false),
+                FAIHeroesExplorerLayout::ConsumeAction);
+        }
+        const FVector2D ClearMap(F.CompactArmy.X+F.CompactArmy.W*.5f,
+            F.CompactArmy.Y-6.f);
+        TestEqual(TEXT("Nearby map remains interactive"),
+            FAIHeroesExplorerLayout::Hit(ClearMap,V,false),INDEX_NONE);
     }
     return true;
 }

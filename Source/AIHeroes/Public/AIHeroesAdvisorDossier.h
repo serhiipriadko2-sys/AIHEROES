@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "AIHeroesHUDLayout.h"
+#include "Templates/Function.h"
 
 // Transient UI evidence only. Never serialized as campaign state or AI memory.
 struct FAIHeroesAdvisorDossier
@@ -42,6 +43,12 @@ public:
     // All generated text is reachable through pages, including long tokens.
     // Oversized input gets an explicit limit marker, never silent truncation.
     static TArray<FString> Wrap(const TArray<FString>& Paragraphs, int32 Columns);
+    // Measured-width reflow for Cyrillic and mixed-width fonts. On invalid
+    // dimensions/metrics returns no lines; no silent text clipping.
+    // Keeps the existing 64-paragraph/MaxCharacters bounds and limit marker.
+    static TArray<FString> WrapMeasured(
+        const TArray<FString>& Paragraphs, float MaxPixelWidth,
+        TFunctionRef<float(const FString&)> Measure);
     // UI-only labels; the original technical report and its evidence remain intact.
     static FString DisplayTitle(const FAIHeroesAdvisorDossier& Dossier);
     static FString FreshnessLabel(bool bFresh);

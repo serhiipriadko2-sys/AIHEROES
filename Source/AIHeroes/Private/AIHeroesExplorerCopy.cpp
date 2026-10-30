@@ -43,6 +43,38 @@ FString FAIHeroesExplorerCopy::EventText(
             ? TEXT("Выберите цель · Совет · Подтвердить")
             : TEXT("Выберите цель, спросите героя, затем подтвердите поход. ИИ ведёт бой.");
     }
+    if (EngineEvent == TEXT(
+        "No living army. Recruit units before confirming an attack."))
+    {
+        // Exact GameMode denial only. Unknown engine errors still pass
+        // through unchanged; this cannot enable an illegal attack.
+        return Compact
+            ? TEXT("Нет живых бойцов · найм на базе [G]")
+            : TEXT("Атака отменена: нет живых бойцов. Наймите армию на базе [G].");
+    }
+
+    // Only exact, publicly-known destination IDs and the authoritative
+    // 0..4 movement budget are eligible for a localized arrival toast.
+    constexpr const TCHAR* ArrivalPrefix = TEXT("Hero moved to ");
+    const FString ArrivalTail(TEXT(". Remaining moves: "));
+    if (EngineEvent.StartsWith(ArrivalPrefix, ESearchCase::CaseSensitive) &&
+        EngineEvent.EndsWith(TEXT("."), ESearchCase::CaseSensitive))
+    {
+        const FString Tail = EngineEvent.Mid(FCString::Strlen(ArrivalPrefix));
+        FString Id, Remaining;
+        if (Tail.Split(ArrivalTail, &Id, &Remaining, ESearchCase::CaseSensitive) &&
+            Remaining.Len() == 2 && Remaining[1] == TCHAR('.') &&
+            Remaining[0] >= TCHAR('0') && Remaining[0] <= TCHAR('4'))
+        {
+            if (const TCHAR* Site = AIHeroesExplorerCopyDetail::KnownSite(Id))
+            {
+                const int32 Moves = Remaining[0] - TCHAR('0');
+                return Compact
+                    ? FString::Printf(TEXT("%s · герой прибыл · ходы %d/4"), Site, Moves)
+                    : FString::Printf(TEXT("Герой прибыл: %s. Осталось ходов: %d из 4."), Site, Moves);
+            }
+        }
+    }
 
     constexpr const TCHAR* SelectedSuffix =
         TEXT(" selected. Ask H for advice; Enter to move/attack.");

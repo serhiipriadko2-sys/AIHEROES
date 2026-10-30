@@ -17,6 +17,24 @@ FAIHeroesExplorerFrame FAIHeroesExplorerLayout::Frame(const FVector2D& V)
     F.Menu={FMath::Max(12.f,W-310),F.Header.H+8,FMath::Min(290.f,W-24),FMath::Min(492.f,F.Dock.Y-F.Header.H-16)};
     if(F.bWide && H>=640.f) F.Overview={20,F.Dock.Y-178,190,162};
     if(F.bWide && F.Dock.Y>=620.f) F.Hero={W-310,400,290,FMath::Min(216.f,F.Dock.Y-412.f)};
+    // Keep the two friendly stacks visible on compact maps, where the
+    // wide Hero card is absent. This is read-only and inside the map inset.
+    if(F.Hero.W<=0.f && W>=480.f && F.Map.H>=180.f)
+    {
+        // At 640px put the card alongside the goals ribbon, not over
+        // the central hero and city. Keep enough horizontal separation.
+        const bool Upper=W>=640.f;
+        const float ArmyW=Upper && W<800.f ? 260.f :
+            FMath::Min(294.f,F.Map.W-16.f);
+        // Leave a measured gap before the first right-hand site label:
+        // at 640x720 the ORE label begins just beneath this card.
+        const float ArmyH=Upper?54.f:78.f;
+        F.CompactArmy={
+            F.Map.X+F.Map.W-ArmyW-8.f,
+            Upper?F.Map.Y+2.f:F.Map.Y+F.Map.H-ArmyH-8.f,
+            ArmyW,ArmyH
+        };
+    }
     return F;
 }
 TArray<int32> FAIHeroesExplorerLayout::Actions(bool MenuOpen)
@@ -56,7 +74,7 @@ int32 FAIHeroesExplorerLayout::Hit(const FVector2D& P,const FVector2D& V,bool Op
     for(int32 A:Actions(Open))if(Button(A,V,Open).Contains(P))return A;
     // The mission ribbon is a deliberate, read-only goals shortcut.
     if(!Open && F.Mission.Contains(P))return 202;
-    if(F.Header.Contains(P)||F.Dock.Contains(P)||F.Inspector.Contains(P)||F.Mission.Contains(P)||F.Overview.Contains(P)||F.Hero.Contains(P)||
+    if(F.Header.Contains(P)||F.Dock.Contains(P)||F.Inspector.Contains(P)||F.Mission.Contains(P)||F.Overview.Contains(P)||F.Hero.Contains(P)||F.CompactArmy.Contains(P)||
         (Open&&F.Menu.Contains(P)))return ConsumeAction;
     // An open utility menu consumes outside taps to avoid accidental map orders.
     return Open?ConsumeAction:INDEX_NONE;

@@ -1,7 +1,9 @@
 param(
     [ValidateSet('Victory', 'Defeat', 'TwoGroups', 'MissingStage')]
     [string]$Scenario = 'Victory',
-    [string]$CompiledSnapshot
+    [string]$CompiledSnapshot,
+    [ValidateRange(640,3840)][int]$ViewportWidth = 1280,
+    [ValidateRange(480,2160)][int]$ViewportHeight = 720
 )
 
 $ErrorActionPreference = 'Stop'
@@ -64,7 +66,7 @@ try {
     $Started = [DateTime]::UtcNow
     $Arguments = @(
         ('"' + (Join-Path $Root 'AIHeroes.uproject') + '"'),
-        '-game', '-windowed', '-ResX=1280', '-ResY=720', '-NoSplash', '-NoP4', '-NoSound',
+        '-game', '-windowed', "-ResX=$ViewportWidth", "-ResY=$ViewportHeight", '-NoSplash', '-NoP4', '-NoSound',
         '-AIHeroesLiveSmoke', "-AIHeroesLiveSmokeScenario=$Scenario",
         ('-abslog="' + (Join-Path $Directory 'smoke.log') + '"')
     )
@@ -99,11 +101,24 @@ try {
         if ($File.LastWriteTimeUtc -lt $Started -or $File.Length -lt 1000) {
             throw "Screenshot is not fresh: $Name"
         }
+        $Png = [IO.File]::ReadAllBytes($Path)
+        if ($Png.Length -lt 33 -or
+            [BitConverter]::ToString($Png,0,8) -ne '89-50-4E-47-0D-0A-1A-0A' -or
+            [Text.Encoding]::ASCII.GetString($Png,12,4) -ne 'IHDR') {
+            throw "Missing PNG signature or IHDR: $Name"
+        }
+        $ActualWidth=[int64]$Png[16]*16777216+[int64]$Png[17]*65536+[int64]$Png[18]*256+$Png[19]
+        $ActualHeight=[int64]$Png[20]*16777216+[int64]$Png[21]*65536+[int64]$Png[22]*256+$Png[23]
+        if ($ActualWidth -ne $ViewportWidth -or $ActualHeight -ne $ViewportHeight) {
+            throw "Screenshot geometry differs from requested viewport: $Name actual=$ActualWidth x $ActualHeight"
+        }
         Copy-Item -LiteralPath $Path -Destination (Join-Path $Directory $Name)
         [pscustomobject]@{
             path = "Docs/VisualRuns/${Id}_$Scenario/$Name"
             bytes = [long]$File.Length
             sha256 = (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
+            width = $ActualWidth
+            height = $ActualHeight
         }
     })
     $Evidence = [pscustomobject][ordered]@{
@@ -115,6 +130,8 @@ try {
         finished_utc = [DateTime]::UtcNow.ToString('o')
         pid = $Process.Id
         native_exit = $NativeExit
+        viewport_width = $ViewportWidth
+        viewport_height = $ViewportHeight
         compiled_snapshot_sha256 = $ManifestHash
         binary = $Manifest.binary
         inputs_verified_before_and_after = $true
