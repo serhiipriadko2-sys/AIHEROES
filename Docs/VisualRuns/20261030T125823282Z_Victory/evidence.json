@@ -1,0 +1,52 @@
+{
+    "schema":  1,
+    "status":  "PASS",
+    "scenario":  "Victory",
+    "mode":  "real-window scripted fixture; not manual input or balance acceptance",
+    "started_utc":  "2026-10-30T12:58:23.3170126Z",
+    "finished_utc":  "2026-10-30T12:58:50.0019126Z",
+    "pid":  20848,
+    "native_exit":  0,
+    "compiled_snapshot_sha256":  "8277309ac5f9eb7527cf211cee9013c6a24400a8cdb41d9125a09f42d1028989",
+    "binary":  {
+                   "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+                   "bytes":  3039744,
+                   "sha256":  "155a2d4a139a944793fa5848cbbdc3a4c9d3aa1747810ccacc0c9e2babf3f1b0"
+               },
+    "inputs_verified_before_and_after":  true,
+    "save_files_checked":  4,
+    "save_hashes_unchanged":  true,
+    "screenshots":  [
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_START.png",
+                            "bytes":  661941,
+                            "sha256":  "c8d6598ca796772898829886f92a6d656848acefadc3187a14ba7d494c442902"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_PAUSED.png",
+                            "bytes":  642830,
+                            "sha256":  "babe4938e8acbe9f4f976d4ade853086f0577c2752ec78262c549ffe940c24b3"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_2X.png",
+                            "bytes":  694720,
+                            "sha256":  "e5d5f1105858ffafc0007648e08ec0fe324201e27722fa13588c71876181a927"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_RESULT.png",
+                            "bytes":  694754,
+                            "sha256":  "ae822d31235660d1900c1b3f0896fc0b8a26c7942f3f9f31a6cd6a36b89164b6"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_RETURN.png",
+                            "bytes":  795068,
+                            "sha256":  "00256fd0c8dfc826a9e1abbf9c2b3a69451a18892a19c04b0b035eeb140c62a9"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_DOSSIER.png",
+                            "bytes":  124220,
+                            "sha256":  "da4cf60304a9548460cd94a26845abd1d3e9f39d55e171b6c975ab4a483d2e07"
+                        }
+                    ],
+    "harness_pass_line":  "[2026.10.30-12.58.45:133][305]LogTemp: Display: [LIVE GRID SMOKE] PASS scenario=Victory real actor ticks, pause, normal2x, fastfinish at4x, one commit, exact camera return, read-only dossier; no save writes"
+}

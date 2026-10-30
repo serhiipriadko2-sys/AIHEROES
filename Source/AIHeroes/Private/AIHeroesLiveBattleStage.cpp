@@ -590,14 +590,10 @@ FString AAIHeroesLiveBattleStage::GetPresentedCaption() const
 {
     if(bResultShown) return TEXT("Бой завершён. Результат применён один раз; вернитесь на карту.");
     if(CurrentAction.Round<=0) return TEXT("Отряды готовы. Нажмите «Продолжить», чтобы наблюдать бой.");
-    const FString Actor=FAIHeroesBattleArt::GroupCode(CurrentAction.bPlayerAttacker,CurrentAction.AttackerStackIndex)
-        +TEXT(" ")+FAIHeroesBattleArt::UnitName(CurrentAction.AttackerId);
-    if(CurrentAction.Kind==EAIHeroesGridActionKind::Move)
-        return Actor+TEXT(" меняет позицию по клеткам поля.");
-    if(CurrentAction.Kind==EAIHeroesGridActionKind::Wait)
-        return Actor+TEXT(" ожидает: сейчас нет допустимой атаки.");
-    if(CurrentAction.Kind==EAIHeroesGridActionKind::Attack)
-        return FString::Printf(TEXT("%s атакует %s: %d урона."),*Actor,
-            *FAIHeroesBattleArt::GroupCode(!CurrentAction.bPlayerAttacker,CurrentAction.TargetStackIndex),CurrentAction.Damage);
-    return TEXT("Герой выбирает следующее действие.");
+    return FAIHeroesBattleArt::ActionCaption(CurrentAction);
+}
+
+FString AAIHeroesLiveBattleStage::GetPresentedDecisionReason() const
+{
+    return bResultShown ? FString() : FAIHeroesBattleArt::ActionReason(CurrentAction);
 }

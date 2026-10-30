@@ -28,10 +28,12 @@ void AAIHeroesHUD::DrawAmberBattle(const AAIHeroesGameMode& G)
     const bool Result=Phase==EAIHeroesLiveBattlePhase::Result;
     const bool Paused=Phase==EAIHeroesLiveBattlePhase::Paused;
     const AAIHeroesLiveBattleStage* Stage=G.GetLiveBattlePresentation();
+    FAIHeroesGridAction LastAction;
+    const bool HasTextAction=!Stage&&!Result&&G.TryGetLatestLiveBattleAction(LastAction);
     const auto Fallback=FAIHeroesBattleFallbackView::Build(
         Stage!=nullptr,Result,Paused,G.GetLiveBattleActionCount(),
         Stage?FString():G.GetLiveArmyStatus(true),
-        Stage?FString():G.GetLiveArmyStatus(false));
+        Stage?FString():G.GetLiveArmyStatus(false),HasTextAction?&LastAction:nullptr);
     const FString Title=Result
         ? G.LastBattleRecord.bVictory ? TEXT("ПОБЕДА") : G.LastBattleRecord.bDefeat ? TEXT("ПОРАЖЕНИЕ") : TEXT("БОЙ ЗАВЕРШЁН")
         : Paused ? TEXT("СРАЖЕНИЕ / ПАУЗА") : TEXT("СРАЖЕНИЕ");
@@ -105,8 +107,10 @@ void AAIHeroesHUD::DrawAmberBattle(const AAIHeroesGameMode& G)
     Text(Caption,16,Bottom+12,V.X-32,Paper,1.15f);
     // Live combat never invents a result or rewards just because its visual
     // stage is missing. Only a committed result can show player casualties.
+    const FString Decision=Stage?Stage->GetPresentedDecisionReason():Fallback.DecisionReason;
     const FString Guidance = Result
         ? FAIHeroesBattleAftermath::Build(G.LastBattleRecord).PlayerLine
+        : !Decision.IsEmpty() ? Decision
         : Fallback.bVisible
         ? TEXT("Пауза, скорость и досмотреть быстро — кнопки внизу.")
         : V.X>=900?TEXT("Q / E — поворот   R / F — масштаб   Пробел — пауза. A и B — стороны, цифра — отряд.")

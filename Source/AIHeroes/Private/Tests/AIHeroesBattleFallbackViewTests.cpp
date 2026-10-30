@@ -1,6 +1,8 @@
 #include "AIHeroesBattleFallbackView.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
+#include "AIHeroesGridBattle.h"
+#include "AIHeroesBattleArt.h"
 #include "Misc/AutomationTest.h"
 
 namespace
@@ -97,6 +99,67 @@ bool FBattleFallbackInput::RunTest(const FString&)
         Copy.ActionLabel, FString(TEXT("Действий: 0")));
     TestTrue(TEXT("Missing roster stays explicitly unknown"),
         Copy.PlayerRoster[0].Contains(TEXT("недоступны")));
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBattleFallbackActualEvent,
+    "AIHeroes.Playability.LiveBattleFallback.ActualEventAndDecisionReason",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FBattleFallbackActualEvent::RunTest(const FString&)
+{
+    FAIHeroesGridAction Action;
+    Action.Kind=EAIHeroesGridActionKind::Attack;Action.Round=2;
+    Action.bPlayerAttacker=true;Action.AttackerStackIndex=0;
+    Action.TargetStackIndex=1;Action.AttackerId=TEXT("Militia");
+    Action.TargetId=TEXT("Raider");Action.Damage=7;
+    Action.TargetHealthBefore=20;Action.TargetHealthAfter=13;
+    Action.Reason=TEXT("highest threat");
+    const auto Before=Action.ToLogLine();
+    const auto View=FAIHeroesBattleFallbackView::Build(
+        false,false,true,7,TEXT("Militia #1: 8 units / 90 HP / INIT 3"),
+        TEXT("Raider #2: 2 units / 13 HP / INIT 5"),&Action);
+    TestTrue(TEXT("Fallback describes the actual attacker and target group"),
+        View.Status.Contains(TEXT("A1"))&&View.Status.Contains(TEXT("B2")));
+    TestTrue(TEXT("Fallback exposes actual damage, not generic preparation"),
+        View.Status.Contains(TEXT("7")));
+    TestTrue(TEXT("Target choice is grounded in the event's threat reason"),
+        View.DecisionReason.Contains(TEXT("угроз")));
+    TestEqual(TEXT("Display never modifies the event"),Action.ToLogLine(),Before);
+    const auto Normal=FAIHeroesBattleFallbackView::Build(true,false,false,7,
+        TEXT("Unused"),TEXT("Unused"),&Action);
+    TestTrue(TEXT("An intact arena never leaks an ahead-of-animation fallback"),
+        Normal.Status.IsEmpty()&&Normal.DecisionReason.IsEmpty());
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBattleFallbackReasonBoundaries,
+    "AIHeroes.Playability.LiveBattleFallback.ReasonVocabularyAndBoundaries",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FBattleFallbackReasonBoundaries::RunTest(const FString&)
+{
+    FAIHeroesGridAction Action;
+    Action.Round=1;Action.AttackerId=TEXT("Scout");Action.AttackerStackIndex=1;
+    Action.bPlayerAttacker=true;
+    const TCHAR* Reasons[]={TEXT("first legal target"),TEXT("highest threat"),
+        TEXT("finish damaged stack"),TEXT("lethal priority"),TEXT("no reachable target"),
+        TEXT("no target in range after movement")};
+    for(const TCHAR* Reason:Reasons)
+    {
+        Action.Reason=Reason;
+        const auto Text=FAIHeroesBattleArt::ActionReason(Action);
+        TestTrue(TEXT("Known reason is a translated label, not an inferred new policy"),
+            Text.StartsWith(TEXT("Причина: "))&&!Text.Contains(Reason));
+    }
+    Action.Reason=TEXT("future-policy\nraw-event");
+    const auto Unknown=FAIHeroesBattleArt::ActionReason(Action);
+    TestTrue(TEXT("Unknown vocabulary remains explicitly quoted event data"),
+        Unknown.Contains(TEXT("future-policy raw-event")));
+    TestFalse(TEXT("Unknown event reason cannot introduce a second UI line"),Unknown.Contains(TEXT("\n")));
+    Action.Reason.Reset();
+    TestTrue(TEXT("Missing reason is not invented"),
+        FAIHeroesBattleArt::ActionReason(Action).Contains(TEXT("не записана")));
+    Action.Round=0;
+    TestTrue(TEXT("No action yet means no claimed decision"),
+        FAIHeroesBattleArt::ActionReason(Action).IsEmpty()&&
+        FAIHeroesBattleArt::ActionCaption(Action).IsEmpty());
     return true;
 }
 #endif

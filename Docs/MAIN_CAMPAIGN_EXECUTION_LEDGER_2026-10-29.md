@@ -160,3 +160,92 @@ M4 cohesion/compact-army polish and M5 continuous campaign acceptance.
 ΔDΩΛ: Δ M1 display/query gaps closed without changing rules; D native RED →
 GREEN 278/278 → same-DLL scripted frames and battles; Ω95% for automated
 observations, not a human playability rating; Λ source drift or human acceptance.
+
+## M2 / resumed 2026-10-30, test-first
+
+Context refreshed from clean HEAD 6bfe493, active main GameMode, pinned SoT30
+PASS and matching M1 source/DLL. No assumption of a human playthrough.
+Current context: Docs/PROJECT_CONTEXT_2026-10-30.md.
+
+Ruling: continue in the user-requested shared workspace, without worktrees,
+commits or deletion of execution evidence. Keep the existing ledger instead
+of commit-oriented SDD helper state. Price: final source/DLL drift gates remain
+mandatory. A fresh read-only final reviewer is required by the execution skill.
+
+Pre-flight M1→M2: M1 produces legal strategic CTA; M2 must preserve GameMode
+locks while presentation fails. M2→M3: no speculative rewards or new save fields;
+result stays tied to the existing protected commit. Normal Stage reads its own
+presented action; only missing Stage may read the latest completed logical Step.
+
+RED inputs: destroyed Stage before GC; real Attack event with side+index,
+damage7 and Reason=highest threat. Added optional event input / reason output
+as data-only API surface; existing fallback behavior is still unchanged pending
+observed failure. Baselines for 14 files, 53 Content and 4 save files are in
+Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/baseline.json.
+
+No M2 completion claim yet. Do not count a compilation error as regression RED.
+
+M2 first GREEN: 283/283, no test warnings; immutable snapshot
+Docs/BuildRuns/20261030T123902574Z/compiled.json. It includes the parallel new
+AIHeroesFullCampaignJourneyTests.cpp (not ours), which uses GUID-owned QA slots.
+Initial MissingStage + Victory/Defeat/TwoGroups scripted graphics passed.
+
+Fresh read-only review (gpt-6-astra) found no Critical/Important own-diff defect.
+Minor deferred: fallback label "Раунд n / actions" is ambiguous; make labels
+explicit in the planned cohesion pass, with a label regression.
+
+Final: Ruling: reviewer left the pre-existing no-Stage frame-rate pacing outside
+the patch. Re-grade as Important for M2 usability: 2x/4x buttons should change
+text display duration rather than silently do nothing. Cost of leaving it is
+an unreadable fallback that can finish before the player can react. One fix pass:
+native RED for text timing, then a transient display timer only; never change
+GridRules, outcome, saved state or authoritative per-action content. No re-review;
+verify that fix with RED→GREEN and a fresh full suite as the skill requires.
+
+Final: fixed text pacing — SpeedIsPresentationOnlyWithoutArena failed on the
+three expected 1x/2x/4x counters, then passed in the full suite 284/284,
+warnings=0, report Docs/AutomationRuns/20261030T125527178Z/index.json.
+Final compiled snapshot: Docs/BuildRuns/20261030T125053914Z/compiled.json.
+Transient 0.6 base presentation seconds, speed-scaled decrement, paused freeze,
+fast-finish bypass and per-session resets; no timer in GridRules or saved state.
+The native test also verifies the resulting V2 record and exactly one commit.
+
+Ruling: reuse BattleArt's presentation-only formatter for normal presented
+actions and missing-stage completed-event copies, rather than a second rule or
+caption subsystem. Price: a little extra presentation-code coupling, but one
+translation vocabulary. Unknown reasons remain bounded quoted event data.
+
+Fresh review summary and its exact scope are preserved in
+Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/independent_review.md.
+No second review of the post-review timing fix was claimed. Final visual runs
+are being repeated on the post-fix DLL; earlier 283-test frames remain history.
+
+## M2 / verified automated checkpoint, 2026-10-30
+
+Post-fix visible scenarios all PASS on the same DLL/source snapshot:
+Docs/VisualRuns/20261030T125755552Z_MissingStage,
+20261030T125823282Z_Victory, 20261030T125850919Z_Defeat,
+20261030T125918547Z_TwoGroups. Six fresh PNGs each, native exits0,
+source/DLL/manifest stable, four existing user saves unchanged.
+Inspected final MissingStage PAUSED/RESULT, TwoGroups 2X and Defeat RETURN.
+Speed effectiveness is grounded in the new native timing regression, not in
+the filename 2X or the generic harness PASS wording alone.
+
+Task M2: implemented + native/scripted verified. Human UI / forced GC / narrow
+viewport text acceptance remain unverified. VS Code task added and parsed;
+Windows UI connection failed with missing sandboxPolicy, so task scripts ran
+through the workspace terminal, not falsely claimed UI task clicks. No process
+was forcibly closed, no installs/commits/pushes/OS settings or save schema changes.
+
+Final: minor (deferred): distinguish round and action count explicitly in the
+fallback header; change belongs to the cohesion pass and needs a label test.
+The reviewed patch is retained separately from final post-fix hunks.
+
+Next: M3 actual committed reward/aftermath receipt, preserving the existing
+BattleAftermath and save compatibility. Parallel native end-to-end campaign
+test remains external authorship; its successful result is included in 284,
+not relabelled as human campaign acceptance or this task's implementation.
+
+ΔDΩΛ: Δ robust, reason-grounded, speed-controlled text combat; D two initial
+REDs + timing RED → 284/284 GREEN → four final visible scenarios; Ω95% for
+automated observations; Λ source drift, narrow-layout or human feedback.

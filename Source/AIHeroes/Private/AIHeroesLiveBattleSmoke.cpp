@@ -22,11 +22,12 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
 #if !UE_BUILD_SHIPPING
     FString Scenario = TEXT("Victory");
     FParse::Value(FCommandLine::Get(), TEXT("AIHeroesLiveSmokeScenario="), Scenario);
-    if (Scenario != TEXT("Victory") && Scenario != TEXT("Defeat") && Scenario != TEXT("TwoGroups"))
+    if (Scenario != TEXT("Victory") && Scenario != TEXT("Defeat") &&
+        Scenario != TEXT("TwoGroups") && Scenario != TEXT("MissingStage"))
     {
         // Reject the development fixture selector before touching any army or
         // starting a session. No unsupported value silently falls back to victory.
-        UE_LOG(LogTemp, Error, TEXT("[LIVE GRID SMOKE] FAIL unknown scenario; use Victory, Defeat or TwoGroups"));
+        UE_LOG(LogTemp, Error, TEXT("[LIVE GRID SMOKE] FAIL unknown scenario; use Victory, Defeat, TwoGroups or MissingStage"));
         FPlatformMisc::RequestExitWithStatus(false, 2);
         return;
     }
@@ -39,6 +40,7 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
         int32 InitialData = 0;
         int32 InitialGold = 0;
         int32 ExpectedMoveCost = 0;
+        int32 PausedActions = 0;
         FString Scenario;
         FString ScreenshotPrefix;
         FString BeforeBattleFingerprint;
@@ -52,7 +54,8 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
     };
     TSharedRef<FSmokeState> State = MakeShared<FSmokeState>();
     State->Scenario = Scenario;
-    State->ScreenshotPrefix = Scenario == TEXT("Victory") ? TEXT("LIVE_GRID_V2") :
+    State->ScreenshotPrefix = Scenario == TEXT("MissingStage") ? TEXT("LIVE_GRID_V2_MISSING_STAGE") :
+        Scenario == TEXT("Victory") ? TEXT("LIVE_GRID_V2") :
         Scenario == TEXT("Defeat") ? TEXT("LIVE_GRID_V2_DEFEAT") : TEXT("LIVE_GRID_V2_TWO_GROUPS");
     TWeakObjectPtr<AAIHeroesGameMode> WeakThis(this);
     FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda(
@@ -145,6 +148,17 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
             case 2:
                 if (G->GetLiveBattleActionCount() < 1) break;
                 G->ToggleLiveBattlePause();
+                if(State->Scenario==TEXT("MissingStage"))
+                {
+                    auto* Stage=const_cast<AAIHeroesLiveBattleStage*>(G->GetLiveBattlePresentation());
+                    if(!IsValid(Stage))return Fail(TEXT("stage missing before deliberate loss"));
+                    Stage->Destroy();
+                    if(G->GetLiveBattlePresentation())return Fail(TEXT("destroyed stage still offered as HUD view"));
+                    State->PausedActions=G->GetLiveBattleActionCount();
+                    G->EndTurn();G->RecruitMilitia();G->UpgradeProtocol();
+                    if(G->CampaignFingerprint()!=State->BeforeBattleFingerprint)
+                        return Fail(TEXT("presentation loss opened a strategic action"));
+                }
                 State->Due = State->Elapsed + 0.8f;
                 ++State->Phase;
                 break;
@@ -157,6 +171,12 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
                 break;
             case 11:
                 G->CycleLiveBattleSpeed();
+                if(State->Scenario==TEXT("MissingStage"))
+                {
+                    if(G->GetLiveBattleActionCount()!=State->PausedActions)
+                        return Fail(TEXT("text-mode pause advanced the session"));
+                    G->ToggleLiveBattlePause();State->Phase=30;break;
+                }
                 for (TActorIterator<AAIHeroesLiveBattleStage> It(G->GetWorld()); It; ++It)
                     It->OrbitCamera(28.f, -100.f);
                 G->ToggleLiveBattlePause();
@@ -167,6 +187,13 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
                 Capture(TEXT("2X"));
                 State->Phase = 12;
                 break;
+            case 30:
+                if(G->GetLiveBattleActionCount()<=State->PausedActions)break;
+                G->ToggleLiveBattlePause();
+                if(G->GetLiveBattlePhase()!=EAIHeroesLiveBattlePhase::Paused ||
+                    G->CampaignFingerprint()!=State->BeforeBattleFingerprint)
+                    return Fail(TEXT("text-mode resume committed early or failed to pause"));
+                State->Due=State->Elapsed+.5f;State->Phase=4;break;
             case 12:
                 G->CycleLiveBattleSpeed();
                 G->FastFinishLiveBattle();
@@ -193,6 +220,15 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
                      G->LastBattleRecord.EnemyBefore[1].UnitId != FName(TEXT("Raider"))))
                     return Fail(TEXT("duplicate enemy formations were collapsed"));
                 const FString Committed = G->CampaignFingerprint();
+                if(State->Scenario==TEXT("MissingStage"))
+                {
+                    const auto& R=G->LastBattleRecord;
+                    const auto Outcome=FAIHeroesGridBattle::RunToEnd(R.PlayerBefore,R.EnemyBefore,R.ProtocolTier);
+                    const auto Reference=FAIHeroesBattleRecordRules::Capture(
+                        R.NodeId,R.Day,R.ProtocolTier,R.PlayerBefore,R.EnemyBefore,Outcome,2);
+                    if(!FAIHeroesBattleRecordRules::Equivalent(R,Reference))
+                        return Fail(TEXT("visual loss differs from the same V2 session outcome"));
+                }
                 G->CommitLiveBattle(); // A repeated completion callback is inert.
                 G->FastFinishLiveBattle();
                 if (G->CampaignFingerprint() != Committed ||

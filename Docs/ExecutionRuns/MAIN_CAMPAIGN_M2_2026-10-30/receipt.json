@@ -1,0 +1,570 @@
+{
+  "schema": "aiheroes.main-campaign.m2.execution.v1",
+  "status": "AUTOMATED_PASS_HUMAN_ACCEPTANCE_PARTIAL",
+  "client_date": "2026-10-30",
+  "created_utc": "2026-10-30T13:02:32.803827+00:00",
+  "head": "6bfe4937531dacf86a0c22952d5e8c8145fe54e7",
+  "scope": "M2 missing/destroyed presentation, actual-action caption/reason, transient text pacing and opt-in QA; context refreshed",
+  "implemented": [
+    "Destroyed Stage excluded before GC",
+    "Normal HUD reads presented event; fallback reads an already-produced event copy",
+    "Actual event caption and bounded faithful Reason vocabulary",
+    "Transient text interval at 1x/2x/4x, paused freeze, bounded fast-finish bypass"
+  ],
+  "unchanged": [
+    "Grid V1/V2 rules",
+    "damage/initiative/target policy",
+    "balance",
+    "save schema",
+    "default GameMode",
+    "SoT30 canon",
+    "agent/core/connector policies"
+  ],
+  "source_inputs": 254,
+  "binary": {
+    "path": "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+    "bytes": 3039744,
+    "sha256": "155a2d4a139a944793fa5848cbbdc3a4c9d3aa1747810ccacc0c9e2babf3f1b0"
+  },
+  "tests": {
+    "group": "AIHeroes",
+    "passed": 284,
+    "failed": 0,
+    "warnings": 0,
+    "not_run": 0,
+    "in_process": 0,
+    "m2_groups": [
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.ActionReadbackDoesNotAdvanceOrPersist",
+        "state": "Success"
+      },
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.ActualEventAndDecisionReason",
+        "state": "Success"
+      },
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.ArenaAvailableIsSilent",
+        "state": "Success"
+      },
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.DestroyedStageIsNotAView",
+        "state": "Success"
+      },
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.EmptyAndNegativeInputSafe",
+        "state": "Success"
+      },
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.PausedDoesNotClaimProgress",
+        "state": "Success"
+      },
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.ReasonVocabularyAndBoundaries",
+        "state": "Success"
+      },
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.ResultOffersReturn",
+        "state": "Success"
+      },
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.RunningKeepsKnownArmies",
+        "state": "Success"
+      },
+      {
+        "name": "AIHeroes.Playability.LiveBattleFallback.SpeedIsPresentationOnlyWithoutArena",
+        "state": "Success"
+      }
+    ]
+  },
+  "tdd": {
+    "initial_red": {
+      "report": {
+        "path": "Docs/AutomationRuns/20261030T122859246Z/index.json",
+        "bytes": 11622,
+        "sha256": "eedb88c41a94bfd0567aa28e10b309e563c93f0c036c9cd378edd8304b296525"
+      },
+      "expected_failures": 2,
+      "previous_groups_passed": 5
+    },
+    "review_fix_red": {
+      "report": {
+        "path": "Docs/AutomationRuns/20261030T124904265Z/index.json",
+        "bytes": 7648,
+        "sha256": "dc8a60cf0ae09d7817cff81e0c97fe1cbf4ed3c69169105fdec0aa4231833e6a"
+      },
+      "expected_failures": 1,
+      "expected_timing_assertions": 3
+    },
+    "final_green": {
+      "path": "Docs/AutomationRuns/20261030T125527178Z/index.json",
+      "bytes": 113497,
+      "sha256": "fb7da217e16b775c24eb2f95aa52cace30a9b364dc206ff828fcb425215df352"
+    },
+    "note": "Compiler errors are not counted as RED; strict report wrapper rejected Unreal exit0 with failed assertions"
+  },
+  "review": {
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "mode": "fresh read-only; no reviewer executions or writes",
+    "critical": 0,
+    "important_in_initial_own_diff": 0,
+    "minor_deferred": [
+      "Ambiguous round/action-count label"
+    ],
+    "existing_pacing_regraded_important": true,
+    "one_fix_pass_verified": true,
+    "post_fix_independent_rereview_claimed": false,
+    "source": "independent_review.md"
+  },
+  "visual": {
+    "mode": "visible scripted disposable fixtures; not human input or balance acceptance",
+    "scenarios": [
+      {
+        "scenario": "MissingStage",
+        "receipt": {
+          "path": "Docs/VisualRuns/20261030T125755552Z_MissingStage/evidence.json",
+          "bytes": 3088,
+          "sha256": "47fdbf1d5138e95fbb2e3b1adc0526151ae15c98944953f4e16235cca2e92269"
+        },
+        "native_exit": 0,
+        "frames": 6
+      },
+      {
+        "scenario": "Victory",
+        "receipt": {
+          "path": "Docs/VisualRuns/20261030T125823282Z_Victory/evidence.json",
+          "bytes": 2964,
+          "sha256": "9e37aaa1c8b6c84f1b1b2954627fa141fde745341372a1fe5ed2527762636542"
+        },
+        "native_exit": 0,
+        "frames": 6
+      },
+      {
+        "scenario": "Defeat",
+        "receipt": {
+          "path": "Docs/VisualRuns/20261030T125850919Z_Defeat/evidence.json",
+          "bytes": 2998,
+          "sha256": "f15b663d3d91bd79cdccf0161722cac9e6b1596deb07a662ee93fdc91f5efb9b"
+        },
+        "native_exit": 0,
+        "frames": 6
+      },
+      {
+        "scenario": "TwoGroups",
+        "receipt": {
+          "path": "Docs/VisualRuns/20261030T125918547Z_TwoGroups/evidence.json",
+          "bytes": 3046,
+          "sha256": "279e997a522d3e31a886599112200380329732609ca46f629a44705c8bf04923"
+        },
+        "native_exit": 0,
+        "frames": 6
+      }
+    ],
+    "frames": 24,
+    "inspected_frames": [
+      "Docs/VisualRuns/20261030T125755552Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_PAUSED.png",
+      "Docs/VisualRuns/20261030T125755552Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_RESULT.png",
+      "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_2X.png",
+      "Docs/VisualRuns/20261030T125850919Z_Defeat/LIVE_GRID_V2_DEFEAT_RETURN.png"
+    ],
+    "frame_hashes": [
+      {
+        "path": "Docs/VisualRuns/20261030T125755552Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_START.png",
+        "bytes": 660328,
+        "sha256": "d4030ae7fb38e5f1eecb416738ef41e4edac4c69185901c408aeba59888eb66e",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125755552Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_PAUSED.png",
+        "bytes": 867941,
+        "sha256": "7495e9b48b406c505aaaede345a5016023f313e58aa0d94b38349a936f444395",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125755552Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_2X.png",
+        "bytes": 872103,
+        "sha256": "1575d29e24cc49f08f014415cd6bdf28f4d104574a63ab6fa9ae898d600b068c",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125755552Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_RESULT.png",
+        "bytes": 860109,
+        "sha256": "b7ce19fb5e0f26817108e657e8f3223c6694281f09f0c714875c9f6b78a7f30b",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125755552Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_RETURN.png",
+        "bytes": 799031,
+        "sha256": "400b1657e65cb03123e17335f79a3709b9295ee73e6c04a9ae93888f812c5bbb",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125755552Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_DOSSIER.png",
+        "bytes": 123139,
+        "sha256": "bf6efadbd427e852a7e6e0cc090e3869b96cfa65aad5913833e128cfbe5c060f",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_START.png",
+        "bytes": 661941,
+        "sha256": "c8d6598ca796772898829886f92a6d656848acefadc3187a14ba7d494c442902",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_PAUSED.png",
+        "bytes": 642830,
+        "sha256": "babe4938e8acbe9f4f976d4ade853086f0577c2752ec78262c549ffe940c24b3",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_2X.png",
+        "bytes": 694720,
+        "sha256": "e5d5f1105858ffafc0007648e08ec0fe324201e27722fa13588c71876181a927",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_RESULT.png",
+        "bytes": 694754,
+        "sha256": "ae822d31235660d1900c1b3f0896fc0b8a26c7942f3f9f31a6cd6a36b89164b6",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_RETURN.png",
+        "bytes": 795068,
+        "sha256": "00256fd0c8dfc826a9e1abbf9c2b3a69451a18892a19c04b0b035eeb140c62a9",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125823282Z_Victory/LIVE_GRID_V2_DOSSIER.png",
+        "bytes": 124220,
+        "sha256": "da4cf60304a9548460cd94a26845abd1d3e9f39d55e171b6c975ab4a483d2e07",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125850919Z_Defeat/LIVE_GRID_V2_DEFEAT_START.png",
+        "bytes": 660113,
+        "sha256": "6290564e89f5c8f9bea2457910dd432c996372fc8175d4085f4058296bf009c6",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125850919Z_Defeat/LIVE_GRID_V2_DEFEAT_PAUSED.png",
+        "bytes": 622344,
+        "sha256": "8f3c9bdb651cf9701c9aebbfea73749bfca34c313d6118f06178e9bed923e7ea",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125850919Z_Defeat/LIVE_GRID_V2_DEFEAT_2X.png",
+        "bytes": 675019,
+        "sha256": "4f8d3065e3c03173253419b1b33bddedbb312eadb556ebf7427969196f62837a",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125850919Z_Defeat/LIVE_GRID_V2_DEFEAT_RESULT.png",
+        "bytes": 684038,
+        "sha256": "2791bc002a3d903710971b268e6f08389b19e7c7b1687a8b8c0bf7e70505ce93",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125850919Z_Defeat/LIVE_GRID_V2_DEFEAT_RETURN.png",
+        "bytes": 788279,
+        "sha256": "8930ddfee9319f86d4b20d9fc69101628ecc54b29ae436a018f5668db1bb4885",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125850919Z_Defeat/LIVE_GRID_V2_DEFEAT_DOSSIER.png",
+        "bytes": 123822,
+        "sha256": "11374377ffa355a4a3448de4ed72ac69679b3ca73b0a001ba4f178a3123f7ff3",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_START.png",
+        "bytes": 637518,
+        "sha256": "98dd72ab268ca594f479341b9bbc48e32425d073e5bca1c18db1ad79bd2a073c",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_PAUSED.png",
+        "bytes": 648599,
+        "sha256": "800be1286c864a821bad88b87d9c5de7a6129cba21b0575c355a91ebcf730746",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_2X.png",
+        "bytes": 700618,
+        "sha256": "71bbb14bcfe7ba052022d92135c8dddeed92485122ede2099417ab72eb19a6c3",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RESULT.png",
+        "bytes": 677773,
+        "sha256": "b5e41c5de1beb6c38745bdbb1311e5c27e31f25153573e53cdbfaf397f1d5764",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RETURN.png",
+        "bytes": 794972,
+        "sha256": "5713554609bd7b21e46fdace6f4c09bdf8bdb456d227226ecb795a793d2544e1",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "path": "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_DOSSIER.png",
+        "bytes": 124041,
+        "sha256": "8a529f145e485622bdfa3ea39e3a4ef4cfdd09ce0b799e5cc03c35e0b0600759",
+        "width": 1280,
+        "height": 720
+      }
+    ],
+    "timing_proof": "Native timing regression, not a 2X filename or generic smoke PASS wording alone"
+  },
+  "preservation": {
+    "content_files": 53,
+    "content_hashes_unchanged": true,
+    "user_save_files": 4,
+    "user_save_hashes_unchanged": true,
+    "head_unchanged": true,
+    "source_and_binary_current": true
+  },
+  "parallel_work": [
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesFullCampaignJourneyTests.cpp",
+      "bytes": 16430,
+      "sha256": "072ef458b266acddc265d92822c625516bb7c0f6e0bc3f1e1fd88df212cc992e",
+      "ownership": "external; preserved and tested, not authored here"
+    }
+  ],
+  "changed_files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+      "bytes": 13982,
+      "sha256": "ee85c327eb6a2d073f28e3cc879b3ce109dfdec9bd435d0576279605faa3ec98",
+      "baseline_sha256": "0a013ac3aef54186ff15c2dfc18fb6eebd8d3df92d4e7fd1bc5f8704feda4d31"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+      "bytes": 14113,
+      "sha256": "34de8120243fa8238132ba117d8432b688c2700a51c7616f567f02b300ee595d",
+      "baseline_sha256": "ed5452af7e16d36b378e2f8362fdcae22dc2667f2898af608be64ed9fe2dcb4e"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesBattleArt.h",
+      "bytes": 990,
+      "sha256": "014bf0a61343a65701a8160158b0cab1f371b987114d02a8bbf3e9a94c08b528",
+      "baseline_sha256": "39bff396a30469089fa7e5b7a68abdf06daec70d5403a95f7d065f0eb8be5e52"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleArt.cpp",
+      "bytes": 8735,
+      "sha256": "e6d9faadb16243df0002f524549af1de6b1017246aa1a7e10828a7a0076aa512",
+      "baseline_sha256": "36cfe4b90c2458e0ca34af67efe987ff907567c666ae41570862852ecf465b21"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesLiveBattleStage.h",
+      "bytes": 4895,
+      "sha256": "21390ca9a357fe58cf8fbe76ecc024343d13dbb7c4f433512cbf0d66f122d620",
+      "baseline_sha256": "2b89c0b7c2d205e9afda1f54f550789bc3afdd2f0099c7b3fa9d4309ad8cb9fd"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleStage.cpp",
+      "bytes": 26952,
+      "sha256": "524ef83a7700350415d10c1caa8d232bbf4c769c9800ea2033897e6e7a3152a4",
+      "baseline_sha256": "b625682e3c0afce7626ef9ce3d19c2aef111b547a31b79bd156bd4088f2cf693"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp",
+      "bytes": 7078,
+      "sha256": "ea03cbb83fb15005374c721b52293125807a7707c2b17d9f3c397e8242252e14",
+      "baseline_sha256": "e9d44713abf6c5f09e1a112c5222ba33743d4b6e891cd6999148f31c4963a38e"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesBattleFallbackView.h",
+      "bytes": 696,
+      "sha256": "b95270b2d117e497e63c3deb6df08be6bed14b04dffa73086370b56972da3367",
+      "baseline_sha256": "f0937e86381a6bdf6435c3114715a1c33e1274a18655e7e947e305633ad514a3"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleFallbackView.cpp",
+      "bytes": 2283,
+      "sha256": "f1b12a43295d84ae0c73e59e958c28337c817b8856c1c9df29f16b5772babe7f",
+      "baseline_sha256": "f1b53c4c2c7e81fa2c37f56efa38431ebdba8418bc65d7aaac003c46a0c2afe7"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp",
+      "bytes": 21484,
+      "sha256": "5fbba7328b4b5b1134e551486c5c1ea0f39512b85a78980192c30a367a656c54",
+      "baseline_sha256": "515e3b4820a7c04d570c1934e85a931834cebf333de6d9d0e1ef3d5c796f8ea3"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleFallbackViewTests.cpp",
+      "bytes": 8197,
+      "sha256": "763cc542e42aeb8b1a90eb085374dec0b70d0a806975280467f902d25bffe522",
+      "baseline_sha256": "dd218fb9012cd16835c51b2459a2a9ff2ddb7a5efbdf12f505e66c24fe73adb5"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp",
+      "bytes": 15241,
+      "sha256": "1cd0cd9af3e94e05bea010b7097b9a1225dcb89e64ba83056815419d0e78ce81",
+      "baseline_sha256": "333f484b552c28fb6bdf6dbfb3ba098d3e6d4669cac172c76cb4ad2553552147"
+    },
+    {
+      "path": "Tools/verify_live_grid_smoke.ps1",
+      "bytes": 6381,
+      "sha256": "fd607ad9347a7b9d904b09e32ef3e4af20f5e1b74b837596045b91937ef345ab",
+      "baseline_sha256": "8824d59fb4442606ffae49bf16b50025b4576897a613f28d86a7f363837442c3"
+    },
+    {
+      "path": ".vscode/tasks.json",
+      "bytes": 8540,
+      "sha256": "dac315c5e914b31b989ab4c545bcac19ce9f19963a28f247ed61fd1bcf923055",
+      "baseline_sha256": "9d2d80ef551f9a12c48a6288a40e4880288c5547c88a648fe7307fd05a07de5c"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "Docs/BuildRuns/20261030T125053914Z/compiled.json",
+      "bytes": 70137,
+      "sha256": "8277309ac5f9eb7527cf211cee9013c6a24400a8cdb41d9125a09f42d1028989"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261030T125527178Z/index.json",
+      "bytes": 113497,
+      "sha256": "fb7da217e16b775c24eb2f95aa52cace30a9b364dc206ff828fcb425215df352"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261030T125527178Z/provenance.json",
+      "bytes": 70257,
+      "sha256": "36e84a693c591d8cb655dc7b267e032883b9c2de75a132ebe5f72e39fa850857"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261030T122859246Z/index.json",
+      "bytes": 11622,
+      "sha256": "eedb88c41a94bfd0567aa28e10b309e563c93f0c036c9cd378edd8304b296525"
+    },
+    {
+      "path": "Docs/AutomationRuns/20261030T124904265Z/index.json",
+      "bytes": 7648,
+      "sha256": "dc8a60cf0ae09d7817cff81e0c97fe1cbf4ed3c69169105fdec0aa4231833e6a"
+    },
+    {
+      "path": "Docs/PROJECT_CONTEXT_2026-10-30.md",
+      "bytes": 6647,
+      "sha256": "3a543f30b21dd746d8a4ee877fea92082769e475b5d29628549573501c1abd11"
+    },
+    {
+      "path": "Docs/MAIN_CAMPAIGN_EXECUTION_LEDGER_2026-10-29.md",
+      "bytes": 15460,
+      "sha256": "bd13c7838f762c2e9bd884394c86b64c9a260b7eb7eeefd2f9a653f60ecfeca2"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/baseline.json",
+      "bytes": 15270,
+      "sha256": "7db1a1b4158e62a55d0082a525a6d0cc5be0bef39a5446b4f6a34e57f1b7cebc"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/independent_review.md",
+      "bytes": 1795,
+      "sha256": "a63fabe82af878d5d675b97f37c51ef0c3b4e9bffe4bb8a04eec2bab79c2ef68"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/review_package.md",
+      "bytes": 1596,
+      "sha256": "b2fe9078f59d6b1061275b034ed7b3d276c42cd80ed0e9db6c991dcc16500e0d"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/owned_changes.patch",
+      "bytes": 25593,
+      "sha256": "a625cba5e8786fd648dd0f3d0191c166256d0948c1b502a30a8d3ef24243bb4e"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/owned_changes.json",
+      "bytes": 3770,
+      "sha256": "f5346e2f7127eeb120886eba460010e85e6f4a216008466891c005e641c9ada9"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/final_owned_changes.patch",
+      "bytes": 29868,
+      "sha256": "c79b54b8be8baec42b8f14aa36552ebaffb3d9c67361f1bbf6b4ea68c368a850"
+    },
+    {
+      "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/final_owned_changes.json",
+      "bytes": 3770,
+      "sha256": "ba69a15e393c8178073e7bbdd11aef1bd7bc67791a5a2dda91eec9a69a1187fa"
+    }
+  ],
+  "final_checks": [
+    {
+      "name": "sot30",
+      "exit": 0,
+      "log": {
+        "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/final_sot30.log",
+        "bytes": 194,
+        "sha256": "3d5b879a9d9bf5a10c65ed5fa126b9ff87d578bb5876502279c6a49e89b42e59"
+      }
+    },
+    {
+      "name": "static",
+      "exit": 0,
+      "log": {
+        "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/final_static.log",
+        "bytes": 1375,
+        "sha256": "67639746b30dda204b9a05fb1171e86c60a80777cbd79ef60a291033aae615d2"
+      }
+    },
+    {
+      "name": "git_diff_check",
+      "exit": 0,
+      "log": {
+        "path": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M2_2026-10-30/final_git_diff_check.log",
+        "bytes": 1866,
+        "sha256": "b43a16ac78637d747033218d65a6b54c8e76f20257c36911d2d06a5eb71dc6fd"
+      }
+    }
+  ],
+  "rulings": [
+    {
+      "decision": "Use existing shared workspace/ledger; no worktrees or commits",
+      "price": "Concurrent edits require hash gates rather than isolation"
+    },
+    {
+      "decision": "Include existing text pacing defect as Important M2 usability work",
+      "price": "One extra transient timer and RED/GREEN/full-suite pass"
+    },
+    {
+      "decision": "Reuse BattleArt for captions in both presentation modes",
+      "price": "Small added presentation-code coupling; single vocabulary"
+    }
+  ],
+  "limits": [
+    "Windows UI connection failed with missing sandboxPolicy; task scripts ran via terminal, no UI task-click claim",
+    "Manual input, forced-GC fault injection and narrow-viewport fallback remain unverified",
+    "One round/action label ambiguity deferred to cohesion work",
+    "Separate visible launches do not prove a human consecutive campaign run",
+    "Parallel native end-to-end victory/save test is not human UI acceptance or our authorship",
+    "Editor DLL verified; no Game/cook/package, physical Android or real-model inference acceptance",
+    "Build logs contain existing non-preferred MSVC / ReferenceUI float-conversion warnings; test warnings are zero"
+  ],
+  "rollback": "Only own final_owned_changes hunks after matching current hashes; never reset entire shared files or delete user saves. No rollback performed.",
+  "delta": "Context refreshed; M2 implemented with native RED/GREEN, fresh review + one tested pacing fix, same-DLL four-scenario graphics; full human acceptance remains partial"
+}

@@ -53,6 +53,7 @@ public:
     int32 GetInitialHealth(bool bPlayer, int32 Index) const;
     int32 GetPresentedRound() const { return CurrentAction.Round; }
     FString GetPresentedCaption() const;
+    FString GetPresentedDecisionReason() const;
 
 private:
     UPROPERTY()

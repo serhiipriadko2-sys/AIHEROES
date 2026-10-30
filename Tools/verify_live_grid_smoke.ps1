@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('Victory', 'Defeat', 'TwoGroups')]
+    [ValidateSet('Victory', 'Defeat', 'TwoGroups', 'MissingStage')]
     [string]$Scenario = 'Victory',
     [string]$CompiledSnapshot
 )
@@ -10,6 +10,7 @@ $ErrorActionPreference = 'Stop'
 $Scenario = switch ($Scenario.ToLowerInvariant()) {
     'defeat' { 'Defeat' }
     'twogroups' { 'TwoGroups' }
+    'missingstage' { 'MissingStage' }
     default { 'Victory' }
 }
 $Root = Split-Path -Parent $PSScriptRoot
@@ -47,6 +48,7 @@ try {
     $Prefix = switch ($Scenario) {
         'Defeat' { 'LIVE_GRID_V2_DEFEAT' }
         'TwoGroups' { 'LIVE_GRID_V2_TWO_GROUPS' }
+        'MissingStage' { 'LIVE_GRID_V2_MISSING_STAGE' }
         default { 'LIVE_GRID_V2' }
     }
     $Names = @('START', 'PAUSED', '2X', 'RESULT', 'RETURN', 'DOSSIER') |

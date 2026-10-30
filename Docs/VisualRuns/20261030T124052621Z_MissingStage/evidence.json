@@ -1,0 +1,52 @@
+{
+    "schema":  1,
+    "status":  "PASS",
+    "scenario":  "MissingStage",
+    "mode":  "real-window scripted fixture; not manual input or balance acceptance",
+    "started_utc":  "2026-10-30T12:40:52.6607668Z",
+    "finished_utc":  "2026-10-30T12:41:19.3684663Z",
+    "pid":  42732,
+    "native_exit":  0,
+    "compiled_snapshot_sha256":  "09c5577555a4d768797fa27f063327c1e8754a257ffd289e91efb27952869f6a",
+    "binary":  {
+                   "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+                   "bytes":  3035648,
+                   "sha256":  "a9940ed0c407b08adbaefd36cf2936f88d23c2871eaa594077267367a12bc37e"
+               },
+    "inputs_verified_before_and_after":  true,
+    "save_files_checked":  4,
+    "save_hashes_unchanged":  true,
+    "screenshots":  [
+                        {
+                            "path":  "Docs/VisualRuns/20261030T124052621Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_START.png",
+                            "bytes":  657300,
+                            "sha256":  "fa44393fc309236db955d6626c11880fff343c52486548bc00bd2fe0e0afb92f"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T124052621Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_PAUSED.png",
+                            "bytes":  866226,
+                            "sha256":  "452e5a3c71484b98b83021551756269ca322d8ab88167f5403be957fcb07fc94"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T124052621Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_2X.png",
+                            "bytes":  868585,
+                            "sha256":  "b388c6ce65028cfcd66110aff04bef9247f20bc89a53c53473d247d74cf9aa46"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T124052621Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_RESULT.png",
+                            "bytes":  859802,
+                            "sha256":  "fb332431f640d0711c0e2e04d0f3e12deada80a477e4f0b53afa5497d873f0cb"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T124052621Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_RETURN.png",
+                            "bytes":  799422,
+                            "sha256":  "788f0392ffa86885d47da16e5c956b53fa1fb2cdcce0a4a49281fee96c33778d"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T124052621Z_MissingStage/LIVE_GRID_V2_MISSING_STAGE_DOSSIER.png",
+                            "bytes":  122929,
+                            "sha256":  "eb74ef043440720b140927ca1af0d3cdd8f1c161291afd78c4bec8f4eb26ba37"
+                        }
+                    ],
+    "harness_pass_line":  "[2026.10.30-12.41.15:549][188]LogTemp: Display: [LIVE GRID SMOKE] PASS scenario=MissingStage real actor ticks, pause, normal2x, fastfinish at4x, one commit, exact camera return, read-only dossier; no save writes"
+}

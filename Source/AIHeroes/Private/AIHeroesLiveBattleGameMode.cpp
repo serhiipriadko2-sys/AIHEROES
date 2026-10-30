@@ -103,6 +103,7 @@ bool AAIHeroesGameMode::StartLiveBattle(AAIHeroesWorldNode* Node, int32 MoveCost
     bLiveBattleCommitted = false;
     bFastFinishingLiveBattle = false;
     LiveBattleSpeed = 1.f;
+    LiveTextPresentationSeconds = 0.f;
     LiveResultText.Empty();
     LiveBattlePhase = EAIHeroesLiveBattlePhase::Running;
     InvalidateRoutePreview();
@@ -132,6 +133,18 @@ void AAIHeroesGameMode::TickLiveBattle(float DeltaSeconds)
     }
     if (LiveBattlePhase != EAIHeroesLiveBattlePhase::Running) return;
     if (IsValid(LiveBattleStage.Get()) && LiveBattleStage->IsPresenting()) return;
+
+    // Missing geometry must not turn normal playback into one Step per frame.
+    // Time is measured in 1x presentation seconds; pause freezes this branch,
+    // speed scales only its duration, and fast finish bypasses it entirely.
+    if (!IsValid(LiveBattleStage.Get()) && !bFastFinishingLiveBattle &&
+        LiveTextPresentationSeconds > 0.f)
+    {
+        if (!FMath::IsFinite(DeltaSeconds) || DeltaSeconds < 0.f) return;
+        LiveTextPresentationSeconds = FMath::Max(0.f,
+            LiveTextPresentationSeconds - DeltaSeconds * LiveBattleSpeed);
+        if (LiveTextPresentationSeconds > 0.f) return;
+    }
 
     // Even fast completion uses the same current session, bounded per frame.
     const int32 Budget = bFastFinishingLiveBattle ? 16 : 1;
@@ -164,6 +177,8 @@ void AAIHeroesGameMode::TickLiveBattle(float DeltaSeconds)
                 LiveBattleStage->FinishPresentationImmediately();
             }
         }
+        if (!IsValid(LiveBattleStage.Get()) && !bFastFinishingLiveBattle)
+            LiveTextPresentationSeconds = .6f;
     }
 }
 
@@ -243,6 +258,7 @@ void AAIHeroesGameMode::ClearLiveStage(bool bReleaseViewTarget)
 void AAIHeroesGameMode::AbortLiveBattle(const FString& Error)
 {
     ClearLiveStage();
+    LiveTextPresentationSeconds = 0.f;
     LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
     bFastFinishingLiveBattle = false;
     LiveBattleNode.Reset();
@@ -282,11 +298,25 @@ void AAIHeroesGameMode::ReturnFromLiveBattle()
 {
     if (LiveBattlePhase != EAIHeroesLiveBattlePhase::Result) return;
     ClearLiveStage();
+    LiveTextPresentationSeconds = 0.f;
     LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
     bFastFinishingLiveBattle = false;
     LiveBattleNode.Reset();
     SetEvent(TEXT("Returned to map. Battle result already applied once; K saves, L loads."));
     AnnounceCampaignVictoryIfEarned();
+}
+
+const AAIHeroesLiveBattleStage* AAIHeroesGameMode::GetLiveBattlePresentation() const
+{
+    return IsValid(LiveBattleStage.Get()) ? LiveBattleStage.Get() : nullptr;
+}
+
+bool AAIHeroesGameMode::TryGetLatestLiveBattleAction(FAIHeroesGridAction& OutAction) const
+{
+    OutAction = FAIHeroesGridAction();
+    if (!IsLiveBattleActive() || LiveSession.Actions.IsEmpty()) return false;
+    OutAction = LiveSession.Actions.Last();
+    return true;
 }
 
 FString AAIHeroesGameMode::GetLiveBattleStatus() const

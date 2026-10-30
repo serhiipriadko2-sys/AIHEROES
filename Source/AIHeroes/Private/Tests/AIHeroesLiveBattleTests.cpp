@@ -325,4 +325,87 @@ bool FAIHeroesLiveRewardBoundaryTest::RunTest(const FString& Parameters)
     }
     return true;
 }
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveDestroyedStageIsNotAView,
+    "AIHeroes.Playability.LiveBattleFallback.DestroyedStageIsNotAView",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FLiveDestroyedStageIsNotAView::RunTest(const FString&)
+{
+    FLiveBattleWorld F;
+    if(!TestTrue(TEXT("Disposable world exists"),F.IsValid()))return false;
+    F.Game->InteractWithNode(F.Node);
+    auto* Stage=const_cast<AAIHeroesLiveBattleStage*>(F.Game->GetLiveBattlePresentation());
+    if(!TestNotNull(TEXT("Initial live presentation exists"),Stage))return false;
+    F.Game->ToggleLiveBattlePause();
+    Stage->Destroy();
+    TestNull(TEXT("Destroyed presentation is not a valid HUD view"),
+        F.Game->GetLiveBattlePresentation());
+    const int32 Moves=F.Game->MovesLeft,Gold=F.Game->Gold;
+    F.Game->EndTurn();F.Game->RecruitMilitia();F.Game->UpgradeProtocol();
+    F.Game->Tick(.2f);
+    TestEqual(TEXT("Visual loss keeps strategic movement locked"),F.Game->MovesLeft,Moves);
+    TestEqual(TEXT("Visual loss keeps purchases locked"),F.Game->Gold,Gold);
+    TestEqual(TEXT("Paused visual loss calculates no future action"),
+        F.Game->GetLiveBattleActionCount(),0);
+    F.Finish();
+    TestEqual(TEXT("Visual loss commits exactly once"),F.Game->BattleJournal.Num(),1);
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveActionReadbackIsNotAStep,
+    "AIHeroes.Playability.LiveBattleFallback.ActionReadbackDoesNotAdvanceOrPersist",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FLiveActionReadbackIsNotAStep::RunTest(const FString&)
+{
+    FLiveBattleWorld F;
+    if(!TestTrue(TEXT("Disposable world exists"),F.IsValid()))return false;
+    FAIHeroesGridAction Action;Action.Reason=TEXT("stale");
+    TestFalse(TEXT("Exploration exposes no stale battle event"),F.Game->TryGetLatestLiveBattleAction(Action));
+    TestTrue(TEXT("Missing readback clears prior caller data"),Action.Reason.IsEmpty());
+    F.Game->InteractWithNode(F.Node);
+    TestFalse(TEXT("Begin has no precomputed future action"),F.Game->TryGetLatestLiveBattleAction(Action));
+    F.Game->Tick(1.f/60.f);
+    TestTrue(TEXT("One Step yields a current event copy"),F.Game->TryGetLatestLiveBattleAction(Action));
+    const auto* Stage=F.Game->GetLiveBattlePresentation();
+    if(!TestNotNull(TEXT("Normal stage remains present"),Stage))return false;
+    TestFalse(TEXT("Presented event has a reason from the actual Step"),Stage->GetPresentedDecisionReason().IsEmpty());
+    const int32 Count=F.Game->GetLiveBattleActionCount();
+    const FString Before=F.Game->GetLiveBattleStatus();
+    Action.Reason=TEXT("changed only in caller");
+    TestEqual(TEXT("Returned copy cannot alter the logical event"),F.Game->GetLiveBattleStatus(),Before);
+    TestEqual(TEXT("View and reason reads are not additional Steps"),F.Game->GetLiveBattleActionCount(),Count);
+    F.Finish();F.Game->ReturnFromLiveBattle();
+    TestFalse(TEXT("Returning to exploration closes live event readback"),F.Game->TryGetLatestLiveBattleAction(Action));
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveTextPresentationTempo,
+    "AIHeroes.Playability.LiveBattleFallback.SpeedIsPresentationOnlyWithoutArena",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FLiveTextPresentationTempo::RunTest(const FString&)
+{
+    FLiveBattleWorld F;
+    if(!TestTrue(TEXT("Disposable world exists"),F.IsValid()))return false;
+    F.Game->InteractWithNode(F.Node);
+    auto* Stage=const_cast<AAIHeroesLiveBattleStage*>(F.Game->GetLiveBattlePresentation());
+    if(!TestNotNull(TEXT("Initial presentation exists"),Stage))return false;
+    Stage->Destroy();
+    F.Game->Tick(.01f);
+    TestEqual(TEXT("First text event is available immediately"),F.Game->GetLiveBattleActionCount(),1);
+    F.Game->Tick(.1f);
+    TestEqual(TEXT("At 1x the current text event remains readable"),F.Game->GetLiveBattleActionCount(),1);
+    F.Game->CycleLiveBattleSpeed();
+    F.Game->Tick(.26f);
+    TestEqual(TEXT("At 2x presentation time advances the same session"),F.Game->GetLiveBattleActionCount(),2);
+    F.Game->CycleLiveBattleSpeed();
+    F.Game->Tick(.16f);
+    TestEqual(TEXT("At 4x the next display interval is shorter"),F.Game->GetLiveBattleActionCount(),3);
+    F.Game->ToggleLiveBattlePause();
+    const int32 PausedCount=F.Game->GetLiveBattleActionCount();
+    F.Game->Tick(10.f);
+    TestEqual(TEXT("Pause freezes text presentation and calculation"),F.Game->GetLiveBattleActionCount(),PausedCount);
+    F.Finish();
+    TestEqual(TEXT("Fast finish bypasses display waiting but commits once"),F.Game->BattleJournal.Num(),1);
+    FString Error;
+    TestTrue(TEXT("Final record still verifies with unchanged Grid V2"),
+        FAIHeroesBattleRecordRules::Verify(F.Game->LastBattleRecord,Error));
+    return true;
+}
 #endif

@@ -1,4 +1,5 @@
 #include "AIHeroesBattleArt.h"
+#include "AIHeroesGridBattle.h"
 
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -6,6 +7,43 @@
 #include "Engine/StaticMesh.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
+
+FString FAIHeroesBattleArt::ActionCaption(const FAIHeroesGridAction& Action)
+{
+    if(Action.Round<=0)return FString();
+    const FString Actor=GroupCode(Action.bPlayerAttacker,Action.AttackerStackIndex)
+        +TEXT(" ")+UnitName(Action.AttackerId);
+    switch(Action.Kind)
+    {
+        case EAIHeroesGridActionKind::Move:
+            return FString::Printf(TEXT("%s: (%d,%d) → (%d,%d)."),*Actor,
+                Action.FromCell.X,Action.FromCell.Y,Action.ToCell.X,Action.ToCell.Y);
+        case EAIHeroesGridActionKind::Attack:
+            return FString::Printf(TEXT("%s атакует %s: %d урона."),*Actor,
+                *GroupCode(!Action.bPlayerAttacker,Action.TargetStackIndex),Action.Damage);
+        case EAIHeroesGridActionKind::Wait:
+            return Actor+TEXT(" ожидает: сейчас нет допустимой атаки.");
+        default:return TEXT("Событие боя не распознано.");
+    }
+}
+
+FString FAIHeroesBattleArt::ActionReason(const FAIHeroesGridAction& Action)
+{
+    if(Action.Round<=0)return FString();
+    const FString& Reason=Action.Reason;
+    if(Reason==TEXT("first legal target"))return TEXT("Причина: первая допустимая цель.");
+    if(Reason==TEXT("highest threat"))return TEXT("Причина: цель с наибольшей угрозой.");
+    if(Reason==TEXT("finish damaged stack"))return TEXT("Причина: добить повреждённый отряд.");
+    if(Reason==TEXT("lethal priority"))return TEXT("Причина: приоритет уничтожения отряда.");
+    if(Reason==TEXT("no reachable target"))return TEXT("Причина: нет достижимой цели.");
+    if(Reason==TEXT("no target in range after movement"))
+        return TEXT("Причина: после движения нет цели в радиусе атаки.");
+    if(Reason.IsEmpty())return TEXT("Причина в событии не записана.");
+    // Unknown future vocabulary is quoted as event data, never inferred policy.
+    FString Safe=Reason.Left(160);
+    Safe.ReplaceInline(TEXT("\r"),TEXT(" "));Safe.ReplaceInline(TEXT("\n"),TEXT(" "));
+    return TEXT("Причина из события: ")+Safe;
+}
 
 namespace AIHeroesBattleArtDetail
 {

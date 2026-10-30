@@ -178,7 +178,9 @@ public:
     int32 GetLiveBattleActionCount() const { return LiveSession.Actions.Num(); }
     FString GetLiveBattleStatus() const;
     FString GetLiveArmyStatus(bool bPlayer) const;
-    const AAIHeroesLiveBattleStage* GetLiveBattlePresentation() const { return LiveBattleStage.Get(); }
+    const AAIHeroesLiveBattleStage* GetLiveBattlePresentation() const;
+    // Copy of an already produced Step only; never advances or selects an action.
+    bool TryGetLatestLiveBattleAction(FAIHeroesGridAction& OutAction) const;
     float GetLiveBattleSpeed() const { return LiveBattleSpeed; }
     void ToggleLiveBattlePause();
     void CycleLiveBattleSpeed();
@@ -259,6 +261,8 @@ private:
     int32 LiveDay = 0;
     int32 LiveProtocolTier = 0;
     float LiveBattleSpeed = 1.f;
+    // Transient presentation time only; never part of a save or Grid session.
+    float LiveTextPresentationSeconds = 0.f;
     bool bFastFinishingLiveBattle = false;
     bool bLiveBattleCommitted = false;
     bool BlockStrategicAction();

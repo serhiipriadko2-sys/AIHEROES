@@ -1,0 +1,261 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "DESKTOP-ITUAMNF",
+			"instance": "BF5FA8ED4BA26CD7E08D5D89B58D26CB",
+			"instanceName": "DESKTOP-ITUAMNF-59652",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 10 (22H2) [10.0.19045.6093] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3070",
+			"cPUModel": "Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.30-12.49.20",
+	"succeeded": 0,
+	"succeededWithWarnings": 0,
+	"failed": 1,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.11323779821395874,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "SpeedIsPresentationOnlyWithoutArena",
+			"fullTestPath": "AIHeroes.Playability.LiveBattleFallback.SpeedIsPresentationOnlyWithoutArena",
+			"tags": [],
+			"state": "Fail",
+			"deviceInstance": [
+				"BF5FA8ED4BA26CD7E08D5D89B58D26CB"
+			],
+			"duration": 0.11323779821395874,
+			"dateTime": "2026.10.30-12.49.20",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogStreaming: FlushAsyncLoading(353): 1 QueuedPackages, 0 AsyncPackages",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES TRAVEL] v1 PATH FOREST | 2 moves | battle needs player confirmation",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES] LIVE GRID V2: hero chooses each next action. Campaign is unchanged until the result.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] BEGIN node=FOREST actions=0 campaign_commit=0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] R1 NPC[0] Wolf MOVE (7,2) -> (6,2) (5,2) (4,2) | highest threat",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] R1 NPC[0] Wolf WAIT (4,2) | no target in range after movement",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'At 1x the current text event remains readable' to be 1, but it was 2.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "C:\\github\\AIHEROES\\Source\\AIHeroes\\Private\\Tests\\AIHeroesLiveBattleTests.cpp",
+					"lineNumber": 394,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] R1 HERO[1] Scout MOVE (0,3) -> (1,3) (1,2) | first legal target",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'At 2x presentation time advances the same session' to be 2, but it was 3.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "C:\\github\\AIHEROES\\Source\\AIHeroes\\Private\\Tests\\AIHeroesLiveBattleTests.cpp",
+					"lineNumber": 397,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] R1 HERO[1] Scout ATTACK -> [0] Wolf (-18 HP, 36->18) | first legal target",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'At 4x the next display interval is shorter' to be 3, but it was 4.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "C:\\github\\AIHEROES\\Source\\AIHeroes\\Private\\Tests\\AIHeroesLiveBattleTests.cpp",
+					"lineNumber": 400,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] R1 HERO[0] Militia MOVE (0,2) -> (0,1) (1,1) | first legal target",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] R1 HERO[0] Militia WAIT (1,1) | no target in range after movement",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] R2 NPC[0] Wolf MOVE (4,2) -> (3,2) (2,2) (2,1) | highest threat",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] R2 NPC[0] Wolf ATTACK -> [0] Militia (-4 HP, 96->92) | highest threat",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] R2 HERO[1] Scout ATTACK -> [0] Wolf (-18 HP, 18->0) | first legal target",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES] LIVE RESULT: VICTORY | 2 rounds | your units: 11 | enemy units: 0. Applied once; RETURN TO MAP to save.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTemp: [AI HEROES LIVE] COMMIT node=FOREST actions=9 moves=2 data=2",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-12.49.20"
+				}
+			],
+			"warnings": 0,
+			"errors": 3,
+			"artifacts": []
+		}
+	]
+}

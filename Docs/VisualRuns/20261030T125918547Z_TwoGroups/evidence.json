@@ -1,0 +1,52 @@
+{
+    "schema":  1,
+    "status":  "PASS",
+    "scenario":  "TwoGroups",
+    "mode":  "real-window scripted fixture; not manual input or balance acceptance",
+    "started_utc":  "2026-10-30T12:59:18.5804916Z",
+    "finished_utc":  "2026-10-30T12:59:45.2692426Z",
+    "pid":  55468,
+    "native_exit":  0,
+    "compiled_snapshot_sha256":  "8277309ac5f9eb7527cf211cee9013c6a24400a8cdb41d9125a09f42d1028989",
+    "binary":  {
+                   "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+                   "bytes":  3039744,
+                   "sha256":  "155a2d4a139a944793fa5848cbbdc3a4c9d3aa1747810ccacc0c9e2babf3f1b0"
+               },
+    "inputs_verified_before_and_after":  true,
+    "save_files_checked":  4,
+    "save_hashes_unchanged":  true,
+    "screenshots":  [
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_START.png",
+                            "bytes":  637518,
+                            "sha256":  "98dd72ab268ca594f479341b9bbc48e32425d073e5bca1c18db1ad79bd2a073c"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_PAUSED.png",
+                            "bytes":  648599,
+                            "sha256":  "800be1286c864a821bad88b87d9c5de7a6129cba21b0575c355a91ebcf730746"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_2X.png",
+                            "bytes":  700618,
+                            "sha256":  "71bbb14bcfe7ba052022d92135c8dddeed92485122ede2099417ab72eb19a6c3"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RESULT.png",
+                            "bytes":  677773,
+                            "sha256":  "b5e41c5de1beb6c38745bdbb1311e5c27e31f25153573e53cdbfaf397f1d5764"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_RETURN.png",
+                            "bytes":  794972,
+                            "sha256":  "5713554609bd7b21e46fdace6f4c09bdf8bdb456d227226ecb795a793d2544e1"
+                        },
+                        {
+                            "path":  "Docs/VisualRuns/20261030T125918547Z_TwoGroups/LIVE_GRID_V2_TWO_GROUPS_DOSSIER.png",
+                            "bytes":  124041,
+                            "sha256":  "8a529f145e485622bdfa3ea39e3a4ef4cfdd09ce0b799e5cc03c35e0b0600759"
+                        }
+                    ],
+    "harness_pass_line":  "[2026.10.30-12.59.40:244][332]LogTemp: Display: [LIVE GRID SMOKE] PASS scenario=TwoGroups real actor ticks, pause, normal2x, fastfinish at4x, one commit, exact camera return, read-only dossier; no save writes"
+}

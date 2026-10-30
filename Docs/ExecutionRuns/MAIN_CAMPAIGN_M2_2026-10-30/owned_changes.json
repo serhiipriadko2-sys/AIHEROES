@@ -1,0 +1,86 @@
+[
+  {
+    "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+    "bytes": 13856,
+    "sha256": "98196253f155ee44bc6a9c66ec9b6046c0bccb1059dcafa6b6439c3eb0e5a4cc",
+    "baseline_sha256": "0a013ac3aef54186ff15c2dfc18fb6eebd8d3df92d4e7fd1bc5f8704feda4d31"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+    "bytes": 13254,
+    "sha256": "a17af08d036f4789442295218755843fc09b795bbd5f438d6e0443ba53d9b344",
+    "baseline_sha256": "ed5452af7e16d36b378e2f8362fdcae22dc2667f2898af608be64ed9fe2dcb4e"
+  },
+  {
+    "path": "Source/AIHeroes/Public/AIHeroesBattleArt.h",
+    "bytes": 990,
+    "sha256": "014bf0a61343a65701a8160158b0cab1f371b987114d02a8bbf3e9a94c08b528",
+    "baseline_sha256": "39bff396a30469089fa7e5b7a68abdf06daec70d5403a95f7d065f0eb8be5e52"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesBattleArt.cpp",
+    "bytes": 8735,
+    "sha256": "e6d9faadb16243df0002f524549af1de6b1017246aa1a7e10828a7a0076aa512",
+    "baseline_sha256": "36cfe4b90c2458e0ca34af67efe987ff907567c666ae41570862852ecf465b21"
+  },
+  {
+    "path": "Source/AIHeroes/Public/AIHeroesLiveBattleStage.h",
+    "bytes": 4895,
+    "sha256": "21390ca9a357fe58cf8fbe76ecc024343d13dbb7c4f433512cbf0d66f122d620",
+    "baseline_sha256": "2b89c0b7c2d205e9afda1f54f550789bc3afdd2f0099c7b3fa9d4309ad8cb9fd"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesLiveBattleStage.cpp",
+    "bytes": 26952,
+    "sha256": "524ef83a7700350415d10c1caa8d232bbf4c769c9800ea2033897e6e7a3152a4",
+    "baseline_sha256": "b625682e3c0afce7626ef9ce3d19c2aef111b547a31b79bd156bd4088f2cf693"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp",
+    "bytes": 7078,
+    "sha256": "ea03cbb83fb15005374c721b52293125807a7707c2b17d9f3c397e8242252e14",
+    "baseline_sha256": "e9d44713abf6c5f09e1a112c5222ba33743d4b6e891cd6999148f31c4963a38e"
+  },
+  {
+    "path": "Source/AIHeroes/Public/AIHeroesBattleFallbackView.h",
+    "bytes": 696,
+    "sha256": "b95270b2d117e497e63c3deb6df08be6bed14b04dffa73086370b56972da3367",
+    "baseline_sha256": "f0937e86381a6bdf6435c3114715a1c33e1274a18655e7e947e305633ad514a3"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesBattleFallbackView.cpp",
+    "bytes": 2283,
+    "sha256": "f1b12a43295d84ae0c73e59e958c28337c817b8856c1c9df29f16b5772babe7f",
+    "baseline_sha256": "f1b53c4c2c7e81fa2c37f56efa38431ebdba8418bc65d7aaac003c46a0c2afe7"
+  },
+  {
+    "path": "Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp",
+    "bytes": 19726,
+    "sha256": "f04b8793c963811dc972eeb066a6ceb0b9a58e8e3cc5d2eeb677dd3d32f07c44",
+    "baseline_sha256": "515e3b4820a7c04d570c1934e85a931834cebf333de6d9d0e1ef3d5c796f8ea3"
+  },
+  {
+    "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleFallbackViewTests.cpp",
+    "bytes": 8197,
+    "sha256": "763cc542e42aeb8b1a90eb085374dec0b70d0a806975280467f902d25bffe522",
+    "baseline_sha256": "dd218fb9012cd16835c51b2459a2a9ff2ddb7a5efbdf12f505e66c24fe73adb5"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp",
+    "bytes": 15241,
+    "sha256": "1cd0cd9af3e94e05bea010b7097b9a1225dcb89e64ba83056815419d0e78ce81",
+    "baseline_sha256": "333f484b552c28fb6bdf6dbfb3ba098d3e6d4669cac172c76cb4ad2553552147"
+  },
+  {
+    "path": "Tools/verify_live_grid_smoke.ps1",
+    "bytes": 6381,
+    "sha256": "fd607ad9347a7b9d904b09e32ef3e4af20f5e1b74b837596045b91937ef345ab",
+    "baseline_sha256": "8824d59fb4442606ffae49bf16b50025b4576897a613f28d86a7f363837442c3"
+  },
+  {
+    "path": ".vscode/tasks.json",
+    "bytes": 8540,
+    "sha256": "dac315c5e914b31b989ab4c545bcac19ce9f19963a28f247ed61fd1bcf923055",
+    "baseline_sha256": "9d2d80ef551f9a12c48a6288a40e4880288c5547c88a648fe7307fd05a07de5c"
+  }
+]

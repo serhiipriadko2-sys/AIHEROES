@@ -1,0 +1,13 @@
+warning: in the working copy of 'Docs/MAIN_CAMPAIGN_EXECUTION_LEDGER_2026-10-29.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Private/AIHeroesBattleArt.cpp', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Private/AIHeroesBattleFallbackView.cpp', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Private/AIHeroesBattleHUD.cpp', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Private/AIHeroesLiveBattleStage.cpp', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Private/Tests/AIHeroesBattleFallbackViewTests.cpp', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Public/AIHeroesBattleArt.h', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Public/AIHeroesBattleFallbackView.h', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Source/AIHeroes/Public/AIHeroesLiveBattleStage.h', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Tools/verify_live_grid_smoke.ps1', LF will be replaced by CRLF the next time Git touches it

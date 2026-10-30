@@ -1,0 +1,592 @@
+--- a/Source/AIHeroes/Public/AIHeroesGameMode.h
++++ b/Source/AIHeroes/Public/AIHeroesGameMode.h
+@@ -178,7 +178,9 @@
+     int32 GetLiveBattleActionCount() const { return LiveSession.Actions.Num(); }
+     FString GetLiveBattleStatus() const;
+     FString GetLiveArmyStatus(bool bPlayer) const;
+-    const AAIHeroesLiveBattleStage* GetLiveBattlePresentation() const { return LiveBattleStage.Get(); }
++    const AAIHeroesLiveBattleStage* GetLiveBattlePresentation() const;
++    // Copy of an already produced Step only; never advances or selects an action.
++    bool TryGetLatestLiveBattleAction(FAIHeroesGridAction& OutAction) const;
+     float GetLiveBattleSpeed() const { return LiveBattleSpeed; }
+     void ToggleLiveBattlePause();
+     void CycleLiveBattleSpeed();
+@@ -259,6 +261,8 @@
+     int32 LiveDay = 0;
+     int32 LiveProtocolTier = 0;
+     float LiveBattleSpeed = 1.f;
++    // Transient presentation time only; never part of a save or Grid session.
++    float LiveTextPresentationSeconds = 0.f;
+     bool bFastFinishingLiveBattle = false;
+     bool bLiveBattleCommitted = false;
+     bool BlockStrategicAction();
+--- a/Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp
++++ b/Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp
+@@ -103,6 +103,7 @@
+     bLiveBattleCommitted = false;
+     bFastFinishingLiveBattle = false;
+     LiveBattleSpeed = 1.f;
++    LiveTextPresentationSeconds = 0.f;
+     LiveResultText.Empty();
+     LiveBattlePhase = EAIHeroesLiveBattlePhase::Running;
+     InvalidateRoutePreview();
+@@ -132,6 +133,18 @@
+     }
+     if (LiveBattlePhase != EAIHeroesLiveBattlePhase::Running) return;
+     if (IsValid(LiveBattleStage.Get()) && LiveBattleStage->IsPresenting()) return;
++
++    // Missing geometry must not turn normal playback into one Step per frame.
++    // Time is measured in 1x presentation seconds; pause freezes this branch,
++    // speed scales only its duration, and fast finish bypasses it entirely.
++    if (!IsValid(LiveBattleStage.Get()) && !bFastFinishingLiveBattle &&
++        LiveTextPresentationSeconds > 0.f)
++    {
++        if (!FMath::IsFinite(DeltaSeconds) || DeltaSeconds < 0.f) return;
++        LiveTextPresentationSeconds = FMath::Max(0.f,
++            LiveTextPresentationSeconds - DeltaSeconds * LiveBattleSpeed);
++        if (LiveTextPresentationSeconds > 0.f) return;
++    }
+ 
+     // Even fast completion uses the same current session, bounded per frame.
+     const int32 Budget = bFastFinishingLiveBattle ? 16 : 1;
+@@ -164,6 +177,8 @@
+                 LiveBattleStage->FinishPresentationImmediately();
+             }
+         }
++        if (!IsValid(LiveBattleStage.Get()) && !bFastFinishingLiveBattle)
++            LiveTextPresentationSeconds = .6f;
+     }
+ }
+ 
+@@ -243,6 +258,7 @@
+ void AAIHeroesGameMode::AbortLiveBattle(const FString& Error)
+ {
+     ClearLiveStage();
++    LiveTextPresentationSeconds = 0.f;
+     LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
+     bFastFinishingLiveBattle = false;
+     LiveBattleNode.Reset();
+@@ -282,11 +298,25 @@
+ {
+     if (LiveBattlePhase != EAIHeroesLiveBattlePhase::Result) return;
+     ClearLiveStage();
++    LiveTextPresentationSeconds = 0.f;
+     LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
+     bFastFinishingLiveBattle = false;
+     LiveBattleNode.Reset();
+     SetEvent(TEXT("Returned to map. Battle result already applied once; K saves, L loads."));
+     AnnounceCampaignVictoryIfEarned();
++}
++
++const AAIHeroesLiveBattleStage* AAIHeroesGameMode::GetLiveBattlePresentation() const
++{
++    return IsValid(LiveBattleStage.Get()) ? LiveBattleStage.Get() : nullptr;
++}
++
++bool AAIHeroesGameMode::TryGetLatestLiveBattleAction(FAIHeroesGridAction& OutAction) const
++{
++    OutAction = FAIHeroesGridAction();
++    if (!IsLiveBattleActive() || LiveSession.Actions.IsEmpty()) return false;
++    OutAction = LiveSession.Actions.Last();
++    return true;
+ }
+ 
+ FString AAIHeroesGameMode::GetLiveBattleStatus() const
+--- a/Source/AIHeroes/Public/AIHeroesBattleArt.h
++++ b/Source/AIHeroes/Public/AIHeroesBattleArt.h
+@@ -5,6 +5,7 @@
+ 
+ class AActor;
+ class AStaticMeshActor;
++struct FAIHeroesGridAction;
+ 
+ // Visual-only mapping. No combat rules, damage, save data or campaign authority.
+ class AIHEROES_API FAIHeroesBattleArt
+@@ -15,6 +16,8 @@
+     static FString UnitName(FName Unit);
+     static FString Role(FName Unit);
+     static FString GroupCode(bool bPlayer, int32 Index);
++    static FString ActionCaption(const FAIHeroesGridAction& Action);
++    static FString ActionReason(const FAIHeroesGridAction& Action);
+     static bool Apply(AStaticMeshActor& Body, FName Unit, bool bPlayer);
+     static bool HasUnitMesh(const AStaticMeshActor& Body);
+     static void TeamMark(AStaticMeshActor& Body, bool bPlayer, bool bHit = false);
+--- a/Source/AIHeroes/Private/AIHeroesBattleArt.cpp
++++ b/Source/AIHeroes/Private/AIHeroesBattleArt.cpp
+@@ -1,4 +1,5 @@
+ #include "AIHeroesBattleArt.h"
++#include "AIHeroesGridBattle.h"
+ 
+ #include "Components/InstancedStaticMeshComponent.h"
+ #include "Components/StaticMeshComponent.h"
+@@ -6,6 +7,43 @@
+ #include "Engine/StaticMesh.h"
+ #include "Materials/MaterialInstanceDynamic.h"
+ #include "Materials/MaterialInterface.h"
++
++FString FAIHeroesBattleArt::ActionCaption(const FAIHeroesGridAction& Action)
++{
++    if(Action.Round<=0)return FString();
++    const FString Actor=GroupCode(Action.bPlayerAttacker,Action.AttackerStackIndex)
++        +TEXT(" ")+UnitName(Action.AttackerId);
++    switch(Action.Kind)
++    {
++        case EAIHeroesGridActionKind::Move:
++            return FString::Printf(TEXT("%s: (%d,%d) → (%d,%d)."),*Actor,
++                Action.FromCell.X,Action.FromCell.Y,Action.ToCell.X,Action.ToCell.Y);
++        case EAIHeroesGridActionKind::Attack:
++            return FString::Printf(TEXT("%s атакует %s: %d урона."),*Actor,
++                *GroupCode(!Action.bPlayerAttacker,Action.TargetStackIndex),Action.Damage);
++        case EAIHeroesGridActionKind::Wait:
++            return Actor+TEXT(" ожидает: сейчас нет допустимой атаки.");
++        default:return TEXT("Событие боя не распознано.");
++    }
++}
++
++FString FAIHeroesBattleArt::ActionReason(const FAIHeroesGridAction& Action)
++{
++    if(Action.Round<=0)return FString();
++    const FString& Reason=Action.Reason;
++    if(Reason==TEXT("first legal target"))return TEXT("Причина: первая допустимая цель.");
++    if(Reason==TEXT("highest threat"))return TEXT("Причина: цель с наибольшей угрозой.");
++    if(Reason==TEXT("finish damaged stack"))return TEXT("Причина: добить повреждённый отряд.");
++    if(Reason==TEXT("lethal priority"))return TEXT("Причина: приоритет уничтожения отряда.");
++    if(Reason==TEXT("no reachable target"))return TEXT("Причина: нет достижимой цели.");
++    if(Reason==TEXT("no target in range after movement"))
++        return TEXT("Причина: после движения нет цели в радиусе атаки.");
++    if(Reason.IsEmpty())return TEXT("Причина в событии не записана.");
++    // Unknown future vocabulary is quoted as event data, never inferred policy.
++    FString Safe=Reason.Left(160);
++    Safe.ReplaceInline(TEXT("\r"),TEXT(" "));Safe.ReplaceInline(TEXT("\n"),TEXT(" "));
++    return TEXT("Причина из события: ")+Safe;
++}
+ 
+ namespace AIHeroesBattleArtDetail
+ {
+--- a/Source/AIHeroes/Public/AIHeroesLiveBattleStage.h
++++ b/Source/AIHeroes/Public/AIHeroesLiveBattleStage.h
+@@ -53,6 +53,7 @@
+     int32 GetInitialHealth(bool bPlayer, int32 Index) const;
+     int32 GetPresentedRound() const { return CurrentAction.Round; }
+     FString GetPresentedCaption() const;
++    FString GetPresentedDecisionReason() const;
+ 
+ private:
+     UPROPERTY()
+--- a/Source/AIHeroes/Private/AIHeroesLiveBattleStage.cpp
++++ b/Source/AIHeroes/Private/AIHeroesLiveBattleStage.cpp
+@@ -590,14 +590,10 @@
+ {
+     if(bResultShown) return TEXT("Бой завершён. Результат применён один раз; вернитесь на карту.");
+     if(CurrentAction.Round<=0) return TEXT("Отряды готовы. Нажмите «Продолжить», чтобы наблюдать бой.");
+-    const FString Actor=FAIHeroesBattleArt::GroupCode(CurrentAction.bPlayerAttacker,CurrentAction.AttackerStackIndex)
+-        +TEXT(" ")+FAIHeroesBattleArt::UnitName(CurrentAction.AttackerId);
+-    if(CurrentAction.Kind==EAIHeroesGridActionKind::Move)
+-        return Actor+TEXT(" меняет позицию по клеткам поля.");
+-    if(CurrentAction.Kind==EAIHeroesGridActionKind::Wait)
+-        return Actor+TEXT(" ожидает: сейчас нет допустимой атаки.");
+-    if(CurrentAction.Kind==EAIHeroesGridActionKind::Attack)
+-        return FString::Printf(TEXT("%s атакует %s: %d урона."),*Actor,
+-            *FAIHeroesBattleArt::GroupCode(!CurrentAction.bPlayerAttacker,CurrentAction.TargetStackIndex),CurrentAction.Damage);
+-    return TEXT("Герой выбирает следующее действие.");
+-}
++    return FAIHeroesBattleArt::ActionCaption(CurrentAction);
++}
++
++FString AAIHeroesLiveBattleStage::GetPresentedDecisionReason() const
++{
++    return bResultShown ? FString() : FAIHeroesBattleArt::ActionReason(CurrentAction);
++}
+--- a/Source/AIHeroes/Private/AIHeroesBattleHUD.cpp
++++ b/Source/AIHeroes/Private/AIHeroesBattleHUD.cpp
+@@ -28,10 +28,12 @@
+     const bool Result=Phase==EAIHeroesLiveBattlePhase::Result;
+     const bool Paused=Phase==EAIHeroesLiveBattlePhase::Paused;
+     const AAIHeroesLiveBattleStage* Stage=G.GetLiveBattlePresentation();
++    FAIHeroesGridAction LastAction;
++    const bool HasTextAction=!Stage&&!Result&&G.TryGetLatestLiveBattleAction(LastAction);
+     const auto Fallback=FAIHeroesBattleFallbackView::Build(
+         Stage!=nullptr,Result,Paused,G.GetLiveBattleActionCount(),
+         Stage?FString():G.GetLiveArmyStatus(true),
+-        Stage?FString():G.GetLiveArmyStatus(false));
++        Stage?FString():G.GetLiveArmyStatus(false),HasTextAction?&LastAction:nullptr);
+     const FString Title=Result
+         ? G.LastBattleRecord.bVictory ? TEXT("ПОБЕДА") : G.LastBattleRecord.bDefeat ? TEXT("ПОРАЖЕНИЕ") : TEXT("БОЙ ЗАВЕРШЁН")
+         : Paused ? TEXT("СРАЖЕНИЕ / ПАУЗА") : TEXT("СРАЖЕНИЕ");
+@@ -105,8 +107,10 @@
+     Text(Caption,16,Bottom+12,V.X-32,Paper,1.15f);
+     // Live combat never invents a result or rewards just because its visual
+     // stage is missing. Only a committed result can show player casualties.
++    const FString Decision=Stage?Stage->GetPresentedDecisionReason():Fallback.DecisionReason;
+     const FString Guidance = Result
+         ? FAIHeroesBattleAftermath::Build(G.LastBattleRecord).PlayerLine
++        : !Decision.IsEmpty() ? Decision
+         : Fallback.bVisible
+         ? TEXT("Пауза, скорость и досмотреть быстро — кнопки внизу.")
+         : V.X>=900?TEXT("Q / E — поворот   R / F — масштаб   Пробел — пауза. A и B — стороны, цифра — отряд.")
+--- a/Source/AIHeroes/Public/AIHeroesBattleFallbackView.h
++++ b/Source/AIHeroes/Public/AIHeroesBattleFallbackView.h
+@@ -1,6 +1,8 @@
+ #pragma once
+ 
+ #include "CoreMinimal.h"
++
++struct FAIHeroesGridAction;
+ 
+ // Presentation-only projection of an already active live combat session.
+ // It never simulates actions, resolves combat, or mutates the campaign.
+@@ -9,11 +11,13 @@
+     bool bVisible = false;
+     FString ActionLabel;
+     FString Status;
++    FString DecisionReason;
+     TArray<FString> PlayerRoster;
+     TArray<FString> EnemyRoster;
+ 
+     static FAIHeroesBattleFallbackView Build(
+         bool bSceneAvailable, bool bResult, bool bPaused,
+         int32 CommittedActions,
+-        const FString& PlayerStatus, const FString& EnemyStatus);
++        const FString& PlayerStatus, const FString& EnemyStatus,
++        const FAIHeroesGridAction* LastAction = nullptr);
+ };
+--- a/Source/AIHeroes/Private/AIHeroesBattleFallbackView.cpp
++++ b/Source/AIHeroes/Private/AIHeroesBattleFallbackView.cpp
+@@ -1,4 +1,6 @@
+ #include "AIHeroesBattleFallbackView.h"
++#include "AIHeroesBattleArt.h"
++#include "AIHeroesGridBattle.h"
+ 
+ namespace
+ {
+@@ -27,7 +29,8 @@
+ FAIHeroesBattleFallbackView FAIHeroesBattleFallbackView::Build(
+     bool bSceneAvailable, bool bResult, bool bPaused,
+     int32 CommittedActions,
+-    const FString& PlayerStatus, const FString& EnemyStatus)
++    const FString& PlayerStatus, const FString& EnemyStatus,
++    const FAIHeroesGridAction* LastAction)
+ {
+     FAIHeroesBattleFallbackView View;
+     if (bSceneAvailable)
+@@ -44,6 +47,14 @@
+     else
+         View.Status = TEXT("3D-сцена недоступна. Герой продолжает бой по правилам V2.");
+ 
++    if(!bResult && LastAction && LastAction->Round>0)
++    {
++        View.Status=FAIHeroesBattleArt::ActionCaption(*LastAction);
++        View.DecisionReason=FAIHeroesBattleArt::ActionReason(*LastAction);
++        View.ActionLabel=FString::Printf(TEXT("Раунд %d / %d"),LastAction->Round,
++            FMath::Max(0,CommittedActions));
++    }
++
+     View.PlayerRoster = LocalizedRoster(PlayerStatus);
+     View.EnemyRoster = LocalizedRoster(EnemyStatus);
+     return View;
+--- a/Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp
++++ b/Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp
+@@ -325,4 +325,87 @@
+     }
+     return true;
+ }
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveDestroyedStageIsNotAView,
++    "AIHeroes.Playability.LiveBattleFallback.DestroyedStageIsNotAView",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FLiveDestroyedStageIsNotAView::RunTest(const FString&)
++{
++    FLiveBattleWorld F;
++    if(!TestTrue(TEXT("Disposable world exists"),F.IsValid()))return false;
++    F.Game->InteractWithNode(F.Node);
++    auto* Stage=const_cast<AAIHeroesLiveBattleStage*>(F.Game->GetLiveBattlePresentation());
++    if(!TestNotNull(TEXT("Initial live presentation exists"),Stage))return false;
++    F.Game->ToggleLiveBattlePause();
++    Stage->Destroy();
++    TestNull(TEXT("Destroyed presentation is not a valid HUD view"),
++        F.Game->GetLiveBattlePresentation());
++    const int32 Moves=F.Game->MovesLeft,Gold=F.Game->Gold;
++    F.Game->EndTurn();F.Game->RecruitMilitia();F.Game->UpgradeProtocol();
++    F.Game->Tick(.2f);
++    TestEqual(TEXT("Visual loss keeps strategic movement locked"),F.Game->MovesLeft,Moves);
++    TestEqual(TEXT("Visual loss keeps purchases locked"),F.Game->Gold,Gold);
++    TestEqual(TEXT("Paused visual loss calculates no future action"),
++        F.Game->GetLiveBattleActionCount(),0);
++    F.Finish();
++    TestEqual(TEXT("Visual loss commits exactly once"),F.Game->BattleJournal.Num(),1);
++    return true;
++}
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveActionReadbackIsNotAStep,
++    "AIHeroes.Playability.LiveBattleFallback.ActionReadbackDoesNotAdvanceOrPersist",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FLiveActionReadbackIsNotAStep::RunTest(const FString&)
++{
++    FLiveBattleWorld F;
++    if(!TestTrue(TEXT("Disposable world exists"),F.IsValid()))return false;
++    FAIHeroesGridAction Action;Action.Reason=TEXT("stale");
++    TestFalse(TEXT("Exploration exposes no stale battle event"),F.Game->TryGetLatestLiveBattleAction(Action));
++    TestTrue(TEXT("Missing readback clears prior caller data"),Action.Reason.IsEmpty());
++    F.Game->InteractWithNode(F.Node);
++    TestFalse(TEXT("Begin has no precomputed future action"),F.Game->TryGetLatestLiveBattleAction(Action));
++    F.Game->Tick(1.f/60.f);
++    TestTrue(TEXT("One Step yields a current event copy"),F.Game->TryGetLatestLiveBattleAction(Action));
++    const auto* Stage=F.Game->GetLiveBattlePresentation();
++    if(!TestNotNull(TEXT("Normal stage remains present"),Stage))return false;
++    TestFalse(TEXT("Presented event has a reason from the actual Step"),Stage->GetPresentedDecisionReason().IsEmpty());
++    const int32 Count=F.Game->GetLiveBattleActionCount();
++    const FString Before=F.Game->GetLiveBattleStatus();
++    Action.Reason=TEXT("changed only in caller");
++    TestEqual(TEXT("Returned copy cannot alter the logical event"),F.Game->GetLiveBattleStatus(),Before);
++    TestEqual(TEXT("View and reason reads are not additional Steps"),F.Game->GetLiveBattleActionCount(),Count);
++    F.Finish();F.Game->ReturnFromLiveBattle();
++    TestFalse(TEXT("Returning to exploration closes live event readback"),F.Game->TryGetLatestLiveBattleAction(Action));
++    return true;
++}
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveTextPresentationTempo,
++    "AIHeroes.Playability.LiveBattleFallback.SpeedIsPresentationOnlyWithoutArena",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FLiveTextPresentationTempo::RunTest(const FString&)
++{
++    FLiveBattleWorld F;
++    if(!TestTrue(TEXT("Disposable world exists"),F.IsValid()))return false;
++    F.Game->InteractWithNode(F.Node);
++    auto* Stage=const_cast<AAIHeroesLiveBattleStage*>(F.Game->GetLiveBattlePresentation());
++    if(!TestNotNull(TEXT("Initial presentation exists"),Stage))return false;
++    Stage->Destroy();
++    F.Game->Tick(.01f);
++    TestEqual(TEXT("First text event is available immediately"),F.Game->GetLiveBattleActionCount(),1);
++    F.Game->Tick(.1f);
++    TestEqual(TEXT("At 1x the current text event remains readable"),F.Game->GetLiveBattleActionCount(),1);
++    F.Game->CycleLiveBattleSpeed();
++    F.Game->Tick(.26f);
++    TestEqual(TEXT("At 2x presentation time advances the same session"),F.Game->GetLiveBattleActionCount(),2);
++    F.Game->CycleLiveBattleSpeed();
++    F.Game->Tick(.16f);
++    TestEqual(TEXT("At 4x the next display interval is shorter"),F.Game->GetLiveBattleActionCount(),3);
++    F.Game->ToggleLiveBattlePause();
++    const int32 PausedCount=F.Game->GetLiveBattleActionCount();
++    F.Game->Tick(10.f);
++    TestEqual(TEXT("Pause freezes text presentation and calculation"),F.Game->GetLiveBattleActionCount(),PausedCount);
++    F.Finish();
++    TestEqual(TEXT("Fast finish bypasses display waiting but commits once"),F.Game->BattleJournal.Num(),1);
++    FString Error;
++    TestTrue(TEXT("Final record still verifies with unchanged Grid V2"),
++        FAIHeroesBattleRecordRules::Verify(F.Game->LastBattleRecord,Error));
++    return true;
++}
+ #endif
+--- a/Source/AIHeroes/Private/Tests/AIHeroesBattleFallbackViewTests.cpp
++++ b/Source/AIHeroes/Private/Tests/AIHeroesBattleFallbackViewTests.cpp
+@@ -1,6 +1,8 @@
+ #include "AIHeroesBattleFallbackView.h"
+ 
+ #if WITH_DEV_AUTOMATION_TESTS
++#include "AIHeroesGridBattle.h"
++#include "AIHeroesBattleArt.h"
+ #include "Misc/AutomationTest.h"
+ 
+ namespace
+@@ -99,4 +101,65 @@
+         Copy.PlayerRoster[0].Contains(TEXT("недоступны")));
+     return true;
+ }
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBattleFallbackActualEvent,
++    "AIHeroes.Playability.LiveBattleFallback.ActualEventAndDecisionReason",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FBattleFallbackActualEvent::RunTest(const FString&)
++{
++    FAIHeroesGridAction Action;
++    Action.Kind=EAIHeroesGridActionKind::Attack;Action.Round=2;
++    Action.bPlayerAttacker=true;Action.AttackerStackIndex=0;
++    Action.TargetStackIndex=1;Action.AttackerId=TEXT("Militia");
++    Action.TargetId=TEXT("Raider");Action.Damage=7;
++    Action.TargetHealthBefore=20;Action.TargetHealthAfter=13;
++    Action.Reason=TEXT("highest threat");
++    const auto Before=Action.ToLogLine();
++    const auto View=FAIHeroesBattleFallbackView::Build(
++        false,false,true,7,TEXT("Militia #1: 8 units / 90 HP / INIT 3"),
++        TEXT("Raider #2: 2 units / 13 HP / INIT 5"),&Action);
++    TestTrue(TEXT("Fallback describes the actual attacker and target group"),
++        View.Status.Contains(TEXT("A1"))&&View.Status.Contains(TEXT("B2")));
++    TestTrue(TEXT("Fallback exposes actual damage, not generic preparation"),
++        View.Status.Contains(TEXT("7")));
++    TestTrue(TEXT("Target choice is grounded in the event's threat reason"),
++        View.DecisionReason.Contains(TEXT("угроз")));
++    TestEqual(TEXT("Display never modifies the event"),Action.ToLogLine(),Before);
++    const auto Normal=FAIHeroesBattleFallbackView::Build(true,false,false,7,
++        TEXT("Unused"),TEXT("Unused"),&Action);
++    TestTrue(TEXT("An intact arena never leaks an ahead-of-animation fallback"),
++        Normal.Status.IsEmpty()&&Normal.DecisionReason.IsEmpty());
++    return true;
++}
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBattleFallbackReasonBoundaries,
++    "AIHeroes.Playability.LiveBattleFallback.ReasonVocabularyAndBoundaries",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FBattleFallbackReasonBoundaries::RunTest(const FString&)
++{
++    FAIHeroesGridAction Action;
++    Action.Round=1;Action.AttackerId=TEXT("Scout");Action.AttackerStackIndex=1;
++    Action.bPlayerAttacker=true;
++    const TCHAR* Reasons[]={TEXT("first legal target"),TEXT("highest threat"),
++        TEXT("finish damaged stack"),TEXT("lethal priority"),TEXT("no reachable target"),
++        TEXT("no target in range after movement")};
++    for(const TCHAR* Reason:Reasons)
++    {
++        Action.Reason=Reason;
++        const auto Text=FAIHeroesBattleArt::ActionReason(Action);
++        TestTrue(TEXT("Known reason is a translated label, not an inferred new policy"),
++            Text.StartsWith(TEXT("Причина: "))&&!Text.Contains(Reason));
++    }
++    Action.Reason=TEXT("future-policy\nraw-event");
++    const auto Unknown=FAIHeroesBattleArt::ActionReason(Action);
++    TestTrue(TEXT("Unknown vocabulary remains explicitly quoted event data"),
++        Unknown.Contains(TEXT("future-policy raw-event")));
++    TestFalse(TEXT("Unknown event reason cannot introduce a second UI line"),Unknown.Contains(TEXT("\n")));
++    Action.Reason.Reset();
++    TestTrue(TEXT("Missing reason is not invented"),
++        FAIHeroesBattleArt::ActionReason(Action).Contains(TEXT("не записана")));
++    Action.Round=0;
++    TestTrue(TEXT("No action yet means no claimed decision"),
++        FAIHeroesBattleArt::ActionReason(Action).IsEmpty()&&
++        FAIHeroesBattleArt::ActionCaption(Action).IsEmpty());
++    return true;
++}
+ #endif
+--- a/Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp
++++ b/Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp
+@@ -22,11 +22,12 @@
+ #if !UE_BUILD_SHIPPING
+     FString Scenario = TEXT("Victory");
+     FParse::Value(FCommandLine::Get(), TEXT("AIHeroesLiveSmokeScenario="), Scenario);
+-    if (Scenario != TEXT("Victory") && Scenario != TEXT("Defeat") && Scenario != TEXT("TwoGroups"))
++    if (Scenario != TEXT("Victory") && Scenario != TEXT("Defeat") &&
++        Scenario != TEXT("TwoGroups") && Scenario != TEXT("MissingStage"))
+     {
+         // Reject the development fixture selector before touching any army or
+         // starting a session. No unsupported value silently falls back to victory.
+-        UE_LOG(LogTemp, Error, TEXT("[LIVE GRID SMOKE] FAIL unknown scenario; use Victory, Defeat or TwoGroups"));
++        UE_LOG(LogTemp, Error, TEXT("[LIVE GRID SMOKE] FAIL unknown scenario; use Victory, Defeat, TwoGroups or MissingStage"));
+         FPlatformMisc::RequestExitWithStatus(false, 2);
+         return;
+     }
+@@ -39,6 +40,7 @@
+         int32 InitialData = 0;
+         int32 InitialGold = 0;
+         int32 ExpectedMoveCost = 0;
++        int32 PausedActions = 0;
+         FString Scenario;
+         FString ScreenshotPrefix;
+         FString BeforeBattleFingerprint;
+@@ -52,7 +54,8 @@
+     };
+     TSharedRef<FSmokeState> State = MakeShared<FSmokeState>();
+     State->Scenario = Scenario;
+-    State->ScreenshotPrefix = Scenario == TEXT("Victory") ? TEXT("LIVE_GRID_V2") :
++    State->ScreenshotPrefix = Scenario == TEXT("MissingStage") ? TEXT("LIVE_GRID_V2_MISSING_STAGE") :
++        Scenario == TEXT("Victory") ? TEXT("LIVE_GRID_V2") :
+         Scenario == TEXT("Defeat") ? TEXT("LIVE_GRID_V2_DEFEAT") : TEXT("LIVE_GRID_V2_TWO_GROUPS");
+     TWeakObjectPtr<AAIHeroesGameMode> WeakThis(this);
+     FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda(
+@@ -145,6 +148,17 @@
+             case 2:
+                 if (G->GetLiveBattleActionCount() < 1) break;
+                 G->ToggleLiveBattlePause();
++                if(State->Scenario==TEXT("MissingStage"))
++                {
++                    auto* Stage=const_cast<AAIHeroesLiveBattleStage*>(G->GetLiveBattlePresentation());
++                    if(!IsValid(Stage))return Fail(TEXT("stage missing before deliberate loss"));
++                    Stage->Destroy();
++                    if(G->GetLiveBattlePresentation())return Fail(TEXT("destroyed stage still offered as HUD view"));
++                    State->PausedActions=G->GetLiveBattleActionCount();
++                    G->EndTurn();G->RecruitMilitia();G->UpgradeProtocol();
++                    if(G->CampaignFingerprint()!=State->BeforeBattleFingerprint)
++                        return Fail(TEXT("presentation loss opened a strategic action"));
++                }
+                 State->Due = State->Elapsed + 0.8f;
+                 ++State->Phase;
+                 break;
+@@ -157,6 +171,12 @@
+                 break;
+             case 11:
+                 G->CycleLiveBattleSpeed();
++                if(State->Scenario==TEXT("MissingStage"))
++                {
++                    if(G->GetLiveBattleActionCount()!=State->PausedActions)
++                        return Fail(TEXT("text-mode pause advanced the session"));
++                    G->ToggleLiveBattlePause();State->Phase=30;break;
++                }
+                 for (TActorIterator<AAIHeroesLiveBattleStage> It(G->GetWorld()); It; ++It)
+                     It->OrbitCamera(28.f, -100.f);
+                 G->ToggleLiveBattlePause();
+@@ -167,6 +187,13 @@
+                 Capture(TEXT("2X"));
+                 State->Phase = 12;
+                 break;
++            case 30:
++                if(G->GetLiveBattleActionCount()<=State->PausedActions)break;
++                G->ToggleLiveBattlePause();
++                if(G->GetLiveBattlePhase()!=EAIHeroesLiveBattlePhase::Paused ||
++                    G->CampaignFingerprint()!=State->BeforeBattleFingerprint)
++                    return Fail(TEXT("text-mode resume committed early or failed to pause"));
++                State->Due=State->Elapsed+.5f;State->Phase=4;break;
+             case 12:
+                 G->CycleLiveBattleSpeed();
+                 G->FastFinishLiveBattle();
+@@ -193,6 +220,15 @@
+                      G->LastBattleRecord.EnemyBefore[1].UnitId != FName(TEXT("Raider"))))
+                     return Fail(TEXT("duplicate enemy formations were collapsed"));
+                 const FString Committed = G->CampaignFingerprint();
++                if(State->Scenario==TEXT("MissingStage"))
++                {
++                    const auto& R=G->LastBattleRecord;
++                    const auto Outcome=FAIHeroesGridBattle::RunToEnd(R.PlayerBefore,R.EnemyBefore,R.ProtocolTier);
++                    const auto Reference=FAIHeroesBattleRecordRules::Capture(
++                        R.NodeId,R.Day,R.ProtocolTier,R.PlayerBefore,R.EnemyBefore,Outcome,2);
++                    if(!FAIHeroesBattleRecordRules::Equivalent(R,Reference))
++                        return Fail(TEXT("visual loss differs from the same V2 session outcome"));
++                }
+                 G->CommitLiveBattle(); // A repeated completion callback is inert.
+                 G->FastFinishLiveBattle();
+                 if (G->CampaignFingerprint() != Committed ||
+--- a/Tools/verify_live_grid_smoke.ps1
++++ b/Tools/verify_live_grid_smoke.ps1
+@@ -1,5 +1,5 @@
+ param(
+-    [ValidateSet('Victory', 'Defeat', 'TwoGroups')]
++    [ValidateSet('Victory', 'Defeat', 'TwoGroups', 'MissingStage')]
+     [string]$Scenario = 'Victory',
+     [string]$CompiledSnapshot
+ )
+@@ -10,6 +10,7 @@
+ $Scenario = switch ($Scenario.ToLowerInvariant()) {
+     'defeat' { 'Defeat' }
+     'twogroups' { 'TwoGroups' }
++    'missingstage' { 'MissingStage' }
+     default { 'Victory' }
+ }
+ $Root = Split-Path -Parent $PSScriptRoot
+@@ -47,6 +48,7 @@
+     $Prefix = switch ($Scenario) {
+         'Defeat' { 'LIVE_GRID_V2_DEFEAT' }
+         'TwoGroups' { 'LIVE_GRID_V2_TWO_GROUPS' }
++        'MissingStage' { 'LIVE_GRID_V2_MISSING_STAGE' }
+         default { 'LIVE_GRID_V2' }
+     }
+     $Names = @('START', 'PAUSED', '2X', 'RESULT', 'RETURN', 'DOSSIER') |
+--- a/.vscode/tasks.json
++++ b/.vscode/tasks.json
+@@ -312,6 +312,15 @@
+         "clear": true
+       },
+       "problemMatcher": []
++    },
++    {
++      "label": "AIHEROES: Verify live battle text fallback (visible)",
++      "type": "process",
++      "command": "powershell.exe",
++      "args": ["-NoProfile", "-File", "${workspaceFolder}\\Tools\\verify_live_grid_smoke.ps1", "-Scenario", "MissingStage"],
++      "options": {"cwd": "${workspaceFolder}"},
++      "presentation": {"reveal": "always", "panel": "dedicated", "clear": true},
++      "problemMatcher": []
+     }
+   ]
+ }

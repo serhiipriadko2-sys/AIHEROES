@@ -1,4 +1,6 @@
 #include "AIHeroesBattleFallbackView.h"
+#include "AIHeroesBattleArt.h"
+#include "AIHeroesGridBattle.h"
 
 namespace
 {
@@ -27,7 +29,8 @@ TArray<FString> LocalizedRoster(const FString& Source)
 FAIHeroesBattleFallbackView FAIHeroesBattleFallbackView::Build(
     bool bSceneAvailable, bool bResult, bool bPaused,
     int32 CommittedActions,
-    const FString& PlayerStatus, const FString& EnemyStatus)
+    const FString& PlayerStatus, const FString& EnemyStatus,
+    const FAIHeroesGridAction* LastAction)
 {
     FAIHeroesBattleFallbackView View;
     if (bSceneAvailable)
@@ -43,6 +46,14 @@ FAIHeroesBattleFallbackView FAIHeroesBattleFallbackView::Build(
         View.Status = TEXT("3D-сцена недоступна. Пауза: герой ждёт продолжения.");
     else
         View.Status = TEXT("3D-сцена недоступна. Герой продолжает бой по правилам V2.");
+
+    if(!bResult && LastAction && LastAction->Round>0)
+    {
+        View.Status=FAIHeroesBattleArt::ActionCaption(*LastAction);
+        View.DecisionReason=FAIHeroesBattleArt::ActionReason(*LastAction);
+        View.ActionLabel=FString::Printf(TEXT("Раунд %d / %d"),LastAction->Round,
+            FMath::Max(0,CommittedActions));
+    }
 
     View.PlayerRoster = LocalizedRoster(PlayerStatus);
     View.EnemyRoster = LocalizedRoster(EnemyStatus);

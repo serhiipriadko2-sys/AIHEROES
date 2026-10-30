@@ -1,0 +1,130 @@
+{
+    "schema":  "aiheroes.e2e-native-playthrough.v1",
+    "status":  "PASS_GAME_MODE_VICTORY_AND_ISOLATED_SAVE_READBACK",
+    "run_date":  "2026-10-30",
+    "created_utc":  "2026-10-30T12:45:19.5581046Z",
+    "tested_source_files":  254,
+    "editor_dll_sha256":  "a9940ed0c407b08adbaefd36cf2936f88d23c2871eaa594077267367a12bc37e",
+    "targeted_test":  "AIHeroes.Playability.RealCampaign.EndToEndVictoryAndSaveReadback",
+    "targeted_tests_passed":  1,
+    "full_native_tests_passed":  283,
+    "full_native_tests_failed":  0,
+    "full_native_tests_skipped":  0,
+    "full_native_tests_warned":  0,
+    "source_binary_verified":  true,
+    "actual_captured_nodes":  [
+                                  "FOREST",
+                                  "ORE",
+                                  "OUTPOST",
+                                  "RUINS"
+                              ],
+    "victory_day":  10,
+    "final_protocol_tier":  3,
+    "final_model_slot_tier":  2,
+    "final_gold":  0,
+    "final_wood":  55,
+    "final_ore":  24,
+    "final_data":  2,
+    "persisted_journal_entries":  4,
+    "disk_save_namespace":  "AIHEROES_E2E_QA_\u003cGUID\u003e_A/B",
+    "user_saves_checked":  4,
+    "user_saves_changed":  0,
+    "test_saves_remaining":  0,
+    "evidence_file_count":  15,
+    "evidence":  [
+                     {
+                         "path":  "Source/AIHeroes/Private/Tests/AIHeroesFullCampaignJourneyTests.cpp",
+                         "bytes":  16430,
+                         "sha256":  "072ef458b266acddc265d92822c625516bb7c0f6e0bc3f1e1fd88df212cc992e"
+                     },
+                     {
+                         "path":  "Docs/MAIN_CAMPAIGN_REAL_JOURNEY_2026-10-30.md",
+                         "bytes":  9185,
+                         "sha256":  "915fdeba9fe856105c2f5f319d2ed4a5bf88f2cc3e834bf05ccd480d0c0c2400"
+                     },
+                     {
+                         "path":  "Docs/BuildRuns/20261030T123448990Z/compiled.json",
+                         "bytes":  70137,
+                         "sha256":  "bf3ef5f1c176d6a13b49d956962d3904193e90aa3479ac4c52ea5ce7e56beaa3"
+                     },
+                     {
+                         "path":  "Docs/AutomationRuns/20261030T123824431Z/index.json",
+                         "bytes":  1150,
+                         "sha256":  "285c168e9337c43e40874e4dc90b8fc234f8b3b1eed068c46605f984439b1191"
+                     },
+                     {
+                         "path":  "Docs/AutomationRuns/20261030T123824431Z/provenance.json",
+                         "bytes":  70311,
+                         "sha256":  "697a1a53bece828fa3f06e433bb4554da6ec6badf6b8576b2ec09625017ad785"
+                     },
+                     {
+                         "path":  "Docs/AutomationRuns/20261030T123824431Z/run.log",
+                         "bytes":  276043,
+                         "sha256":  "ab272df028b89b99da8d34d4c461fb2139cbb046fe5140a025c01194a6dfc921"
+                     },
+                     {
+                         "path":  "Docs/AutomationRuns/20261030T123950754Z/index.json",
+                         "bytes":  113043,
+                         "sha256":  "4392de39301979a72f7669ccc8d147553d026e4db6a748465b43a249e759b0f4"
+                     },
+                     {
+                         "path":  "Docs/AutomationRuns/20261030T123950754Z/provenance.json",
+                         "bytes":  70257,
+                         "sha256":  "5e492cbaa6fea626995bca3a62241f9c82868a03df2cf6b8c83ae68af68a7e33"
+                     },
+                     {
+                         "path":  "Docs/AutomationRuns/20261030T123950754Z/run.log",
+                         "bytes":  632540,
+                         "sha256":  "666896fc9ac93774df026b1a1de165b393b6f2fbd143e9c859a9ad83524031c0"
+                     },
+                     {
+                         "path":  "Saved/QA/FullCampaignJourney_20261030/user_saves_before.json",
+                         "bytes":  757,
+                         "sha256":  "5c0d30720d80916257876bbc760a0fe0307d5373af56b654482d92cebc1859b7"
+                     },
+                     {
+                         "path":  "Saved/QA/FullCampaignJourney_20261030/manifest_before_full_journey_build.json",
+                         "bytes":  69846,
+                         "sha256":  "941f11ff1127162675bcfdb39be0cfb78704dac86ea546c2c42e1aec93a5b01d"
+                     },
+                     {
+                         "path":  "Saved/QA/FullCampaignJourney_20261030/build_stdout.txt",
+                         "bytes":  166158,
+                         "sha256":  "0bf65aa2c03c1cc3507638253415fb1a318b05c7d7e4a0ba3d8ffedfe154ba8b"
+                     },
+                     {
+                         "path":  "Saved/QA/FullCampaignJourney_20261030/targeted_unreal_stdout.log",
+                         "bytes":  458,
+                         "sha256":  "fbb69b3c88ff037119d8400e198d5e6716500837d4e3ae804c4df1e3d6c7e957"
+                     },
+                     {
+                         "path":  "Saved/QA/FullCampaignJourney_20261030/verify_receipt.ps1",
+                         "bytes":  9977,
+                         "sha256":  "724631da2a4392c9e35281d90bf5fcd2eafa85a420f2d7d5cc5846f8cf0f3c7b"
+                     },
+                     {
+                         "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
+                         "bytes":  3035648,
+                         "sha256":  "a9940ed0c407b08adbaefd36cf2936f88d23c2871eaa594077267367a12bc37e"
+                     }
+                 ],
+    "lifecycle":  {
+                      "source_created":  true,
+                      "locally_compiled":  true,
+                      "unreal_native_tested":  true,
+                      "source_binary_pin_verified":  true,
+                      "isolated_save_read_back":  true,
+                      "manual_gameplay_accepted":  false,
+                      "keyboard_save_load_accepted":  false,
+                      "packaged_or_android_verified":  false,
+                      "committed_or_pushed":  false,
+                      "published":  false
+                  },
+    "limitations":  [
+                        "Proof of one deterministic successful gameplay sequence, not every strategy or subjective player experience.",
+                        "Test drives genuine GameMode commands, not a human clicking the live HUD.",
+                        "CaptureRealVictory copies actual GameMode fields into the production SaveGame schema and tests SaveSystem read-back.",
+                        "The exact UI K/L functions and packaged/mobile applications were not exercised.",
+                        "Content/ asset hashes are outside the UBT source manifest."
+                    ]
+}

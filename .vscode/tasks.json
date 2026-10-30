@@ -312,6 +312,15 @@
         "clear": true
       },
       "problemMatcher": []
+    },
+    {
+      "label": "AIHEROES: Verify live battle text fallback (visible)",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-File", "${workspaceFolder}\\Tools\\verify_live_grid_smoke.ps1", "-Scenario", "MissingStage"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "presentation": {"reveal": "always", "panel": "dedicated", "clear": true},
+      "problemMatcher": []
     }
   ]
 }
