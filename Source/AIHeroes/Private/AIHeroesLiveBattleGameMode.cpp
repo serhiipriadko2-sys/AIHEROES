@@ -105,6 +105,8 @@ bool AAIHeroesGameMode::StartLiveBattle(AAIHeroesWorldNode* Node, int32 MoveCost
     LiveBattleSpeed = 1.f;
     LiveTextPresentationSeconds = 0.f;
     LiveResultText.Empty();
+    LiveBattleCommitReceipt = FAIHeroesBattleCommitReceipt();
+    LiveBattleAftermathView = FAIHeroesBattleAftermathView();
     LiveBattlePhase = EAIHeroesLiveBattlePhase::Running;
     InvalidateRoutePreview();
     if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
@@ -232,6 +234,20 @@ void AAIHeroesGameMode::CommitLiveBattle()
         RevealAfterArrival(FName(*Node->GetDisplayName()));
     }
     InvalidateRoutePreview();
+    // One-time transient evidence is populated ONLY after the campaign
+    // mutation and battle record have both been committed successfully.
+    LiveBattleCommitReceipt.BoundRecord = Record;
+    LiveBattleCommitReceipt.NodeId = Record.NodeId;
+    LiveBattleCommitReceipt.Day = Record.Day;
+    LiveBattleCommitReceipt.RuleVersion = Record.RuleVersion;
+    LiveBattleCommitReceipt.MovesSpent = LiveMoveCost;
+    LiveBattleCommitReceipt.GoldGranted = Rewards.GoldReward;
+    LiveBattleCommitReceipt.DataGranted = Rewards.DataReward;
+    LiveBattleCommitReceipt.bApplied = true;
+    // Cached report is immutable for the entire result screen. The
+    // canonical V2 verifier is never run 60 times per second by the HUD.
+    LiveBattleAftermathView = FAIHeroesBattleAftermath::Build(
+        LastBattleRecord, &LiveBattleCommitReceipt);
     LiveBattlePhase = EAIHeroesLiveBattlePhase::Result;
     LiveResultText = Outcome.Summary;
     if (IsValid(LiveBattleStage.Get())) LiveBattleStage->ShowResult(LiveResultText);
@@ -259,6 +275,8 @@ void AAIHeroesGameMode::AbortLiveBattle(const FString& Error)
 {
     ClearLiveStage();
     LiveTextPresentationSeconds = 0.f;
+    LiveBattleCommitReceipt = FAIHeroesBattleCommitReceipt();
+    LiveBattleAftermathView = FAIHeroesBattleAftermathView();
     LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
     bFastFinishingLiveBattle = false;
     LiveBattleNode.Reset();
@@ -299,6 +317,8 @@ void AAIHeroesGameMode::ReturnFromLiveBattle()
     if (LiveBattlePhase != EAIHeroesLiveBattlePhase::Result) return;
     ClearLiveStage();
     LiveTextPresentationSeconds = 0.f;
+    LiveBattleCommitReceipt = FAIHeroesBattleCommitReceipt();
+    LiveBattleAftermathView = FAIHeroesBattleAftermathView();
     LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
     bFastFinishingLiveBattle = false;
     LiveBattleNode.Reset();

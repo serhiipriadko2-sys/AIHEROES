@@ -108,14 +108,34 @@ void AAIHeroesHUD::DrawAmberBattle(const AAIHeroesGameMode& G)
     // Live combat never invents a result or rewards just because its visual
     // stage is missing. Only a committed result can show player casualties.
     const FString Decision=Stage?Stage->GetPresentedDecisionReason():Fallback.DecisionReason;
+    const FAIHeroesBattleAftermathView Aftermath = Result
+        ? FAIHeroesBattleAftermath::Build(
+            G.LastBattleRecord, &G.GetLiveBattleCommitReceipt())
+        : FAIHeroesBattleAftermathView();
     const FString Guidance = Result
-        ? FAIHeroesBattleAftermath::Build(G.LastBattleRecord).PlayerLine
+        ? Aftermath.PlayerLine
         : !Decision.IsEmpty() ? Decision
         : Fallback.bVisible
         ? TEXT("Пауза, скорость и досмотреть быстро — кнопки внизу.")
         : V.X>=900?TEXT("Q / E — поворот   R / F — масштаб   Пробел — пауза. A и B — стороны, цифра — отряд.")
         : TEXT("A — ваши, B — враг. Поворот: Q / E. Масштаб: R / F.");
-    Text(Guidance,16,Bottom+37,V.X-32,Muted,.9f);
+    Text(Guidance,16,Bottom+31,V.X-32,Muted,.9f);
+    if(Result)
+    {
+        // The bottom row is a read-only report, never a second reward grant.
+        Text(Aftermath.RewardLine,16,Bottom+47,V.X-32,
+            Aftermath.bRewardsVerified?Teal:Muted,.89f);
+        if(!Aftermath.PlayerGroups.IsEmpty())
+        {
+            // Two indexed groups, including duplicate unit IDs, remain
+            // distinguishable on compact and wide viewports.
+            const float Width=FMath::Min(V.X-24.f,650.f);
+            DrawRect(Ink,12.f,Bottom-55.f,Width,50.f);
+            for(int32 I=0;I<Aftermath.PlayerGroups.Num()&&I<2;++I)
+                Text(Aftermath.PlayerGroups[I],20.f,Bottom-49.f+I*21.f,
+                    Width-16.f,I==0?Teal:Paper,V.X>=800?1.f:.88f);
+        }
+    }
     const FString Labels[]={Paused?TEXT("Продолжить"):TEXT("Пауза"),
         FString::Printf(TEXT("Скорость %dx"),FMath::RoundToInt(G.GetLiveBattleSpeed())),
         V.X<800?TEXT("Завершить"):TEXT("Досмотреть быстро"),Result?TEXT("На карту"):TEXT("Бой идёт")};

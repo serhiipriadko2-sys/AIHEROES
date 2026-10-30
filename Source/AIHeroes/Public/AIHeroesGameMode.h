@@ -6,6 +6,7 @@
 #include "AIHeroesAdventurePath.h"
 #include "AIHeroesBasePanel.h"
 #include "AIHeroesBattleRecord.h"
+#include "AIHeroesBattleAftermath.h"
 #include "AIHeroesRoutePlanner.h"
 #include "AIHeroesGridBattle.h"
 #include "AIHeroesGridReplay.h"
@@ -181,6 +182,17 @@ public:
     const AAIHeroesLiveBattleStage* GetLiveBattlePresentation() const;
     // Copy of an already produced Step only; never advances or selects an action.
     bool TryGetLatestLiveBattleAction(FAIHeroesGridAction& OutAction) const;
+    // Transient, bound to the last one-time live commit. Not in SaveGame.
+    const FAIHeroesBattleCommitReceipt& GetLiveBattleCommitReceipt() const
+    {
+        return LiveBattleCommitReceipt;
+    }
+    // Immutable during the result screen: deterministic verification runs
+    // at commit, never on each HUD paint.
+    const FAIHeroesBattleAftermathView& GetLiveBattleAftermathView() const
+    {
+        return LiveBattleAftermathView;
+    }
     float GetLiveBattleSpeed() const { return LiveBattleSpeed; }
     void ToggleLiveBattlePause();
     void CycleLiveBattleSpeed();
@@ -256,6 +268,8 @@ private:
     TArray<FAIHeroesArmyStack> LiveEnemyBefore;
     FString PreBattleFingerprint;
     FString LiveResultText;
+    FAIHeroesBattleCommitReceipt LiveBattleCommitReceipt;
+    FAIHeroesBattleAftermathView LiveBattleAftermathView;
     EAIHeroesLiveBattlePhase LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
     int32 LiveMoveCost = 0;
     int32 LiveDay = 0;

@@ -727,6 +727,8 @@ void AAIHeroesGameMode::SaveCampaign()
 void AAIHeroesGameMode::LoadCampaign()
 {
     if (BlockStrategicAction()) return;
+    // Session-only reward evidence must never outlive a load attempt.
+    LiveBattleCommitReceipt = FAIHeroesBattleCommitReceipt();
     CancelLocalModelExchange();
     LocalModelReplies.Reset(); // Pending inference cannot cross a load attempt.
     PendingSupplyFingerprint.Empty(); // Quote authorization never survives load.

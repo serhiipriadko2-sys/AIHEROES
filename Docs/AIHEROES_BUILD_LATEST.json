@@ -2,7 +2,7 @@
     "schema":  1,
     "status":  "compiled",
     "build_verified":  true,
-    "created_utc":  "2026-10-30T12:53:05.2910998Z",
+    "created_utc":  "2026-10-30T13:21:35.8798855Z",
     "target":  "AIHeroesEditor Win64 Development",
     "scope":  "AIHeroes.uproject + all Source/ and Config/ files; engine and Content excluded",
     "inputs":  [
@@ -178,8 +178,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesBattleAftermath.cpp",
-                       "bytes":  2072,
-                       "sha256":  "c3d6e785d9e9e6223d6e7a25cc7b6330f79cce1ac4f2ed9fabf0b05ce1f4f031"
+                       "bytes":  4821,
+                       "sha256":  "41e0ba810addd874586c41f10a56e31755ffffdf4d0a08477fb4c3a503d96300"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesBattleArt.cpp",
@@ -198,8 +198,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp",
-                       "bytes":  7078,
-                       "sha256":  "ea03cbb83fb15005374c721b52293125807a7707c2b17d9f3c397e8242252e14"
+                       "bytes":  7980,
+                       "sha256":  "0b87e5fc310c5f2699bb58587411bdad36378f62d32fde8a063dc1d92897bd44"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesBattleRecord.cpp",
@@ -293,8 +293,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
-                       "bytes":  37618,
-                       "sha256":  "19d24cfd0bf3e1ae18b4e56cdab714f56483a1b43f20215d0fdf4d14a0663321"
+                       "bytes":  37751,
+                       "sha256":  "01afe9e3ec1e57df21314433857eb1dddc271261e9531e488a18a59f496f3c19"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesGridBattle.cpp",
@@ -323,8 +323,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
-                       "bytes":  14113,
-                       "sha256":  "34de8120243fa8238132ba117d8432b688c2700a51c7616f567f02b300ee595d"
+                       "bytes":  14828,
+                       "sha256":  "232b23fb1bdcf7950218488c53136a4ef1ca6ce856656d2a5205d60d43cb14a8"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp",
@@ -597,6 +597,11 @@
                        "sha256":  "51ef3b4c740a3d46310903630826032b2c1508fd464d83725e59de807bebaea7"
                    },
                    {
+                       "path":  "Source/AIHeroes/Private/Tests/AIHeroesAftermathIntegrityTests.cpp",
+                       "bytes":  3042,
+                       "sha256":  "a316ead0c9f3a45a66fc3b29f3b772a2a963eb103e32d08ee24abbedef5d942c"
+                   },
+                   {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesAIProposalTests.cpp",
                        "bytes":  12497,
                        "sha256":  "fbe34eecd9d3cab0a4b2eb411666bf330b9d69def178389ed77f278f2275e233"
@@ -618,8 +623,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp",
-                       "bytes":  4686,
-                       "sha256":  "6344a13bf7ec1b034da37c7033a0054251ad3cb66b9cb9180fcd1951f9f45257"
+                       "bytes":  9391,
+                       "sha256":  "6d05ae624445cd1fbb59689e48c926e880a1c54aa6e7e7adfd7103a3ddcb2cab"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesBattleArtTests.cpp",
@@ -733,8 +738,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp",
-                       "bytes":  21484,
-                       "sha256":  "5fbba7328b4b5b1134e551486c5c1ea0f39512b85a78980192c30a367a656c54"
+                       "bytes":  25380,
+                       "sha256":  "876131d5cdbb106448493125dbd7309bed72e4f8e115dd9bc85710641b389cad"
                    },
                    {
                        "path":  "Source/AIHeroes/Private/Tests/AIHeroesLiveStageTests.cpp",
@@ -953,8 +958,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesBattleAftermath.h",
-                       "bytes":  469,
-                       "sha256":  "c2df0e0a7ea4489aaeb06fcca172196d321e3b7384c75532feb7cd5c69658a89"
+                       "bytes":  1178,
+                       "sha256":  "c1d4ef97c0bfa7bdc85c9a598569fc9eebf2e45080746a5a06d8a0cd9c340ffb"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesBattleArt.h",
@@ -1038,8 +1043,8 @@
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesGameMode.h",
-                       "bytes":  13982,
-                       "sha256":  "ee85c327eb6a2d073f28e3cc879b3ce109dfdec9bd435d0576279605faa3ec98"
+                       "bytes":  14286,
+                       "sha256":  "b215f9bb1b143823aba17ecb79bebf49dc509b7866ca6312f010987f00308c00"
                    },
                    {
                        "path":  "Source/AIHeroes/Public/AIHeroesGridBattle.h",
@@ -1279,7 +1284,7 @@
                ],
     "binary":  {
                    "path":  "Binaries/Win64/UnrealEditor-AIHeroes.dll",
-                   "bytes":  3039744,
-                   "sha256":  "155a2d4a139a944793fa5848cbbdc3a4c9d3aa1747810ccacc0c9e2babf3f1b0"
+                   "bytes":  3065344,
+                   "sha256":  "b6678b9cca87d9313b40370aa5356565b6ceb8628d55cf89b5f7be8fe530054a"
                }
 }

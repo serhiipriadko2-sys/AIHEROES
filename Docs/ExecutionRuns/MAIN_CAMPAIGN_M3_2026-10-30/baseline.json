@@ -1,0 +1,350 @@
+{
+  "client_date": "2026-10-30",
+  "created_utc": "2026-10-30T13:13:08.850757+00:00",
+  "head": "1ff88bb4538c3526f0a76c9bfe56612fd0afc72a",
+  "files": [
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesBattleAftermath.h",
+      "bytes": 1178,
+      "sha256": "c1d4ef97c0bfa7bdc85c9a598569fc9eebf2e45080746a5a06d8a0cd9c340ffb",
+      "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/before_Source__AIHeroes__Public__AIHeroesBattleAftermath.h"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleAftermath.cpp",
+      "bytes": 4821,
+      "sha256": "41e0ba810addd874586c41f10a56e31755ffffdf4d0a08477fb4c3a503d96300",
+      "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/before_Source__AIHeroes__Private__AIHeroesBattleAftermath.cpp"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp",
+      "bytes": 4686,
+      "sha256": "6344a13bf7ec1b034da37c7033a0054251ad3cb66b9cb9180fcd1951f9f45257",
+      "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/before_Source__AIHeroes__Private__Tests__AIHeroesBattleAftermathTests.cpp"
+    },
+    {
+      "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+      "bytes": 14286,
+      "sha256": "b215f9bb1b143823aba17ecb79bebf49dc509b7866ca6312f010987f00308c00",
+      "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/before_Source__AIHeroes__Public__AIHeroesGameMode.h"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+      "bytes": 37751,
+      "sha256": "01afe9e3ec1e57df21314433857eb1dddc271261e9531e488a18a59f496f3c19",
+      "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/before_Source__AIHeroes__Private__AIHeroesGameMode.cpp"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+      "bytes": 14828,
+      "sha256": "232b23fb1bdcf7950218488c53136a4ef1ca6ce856656d2a5205d60d43cb14a8",
+      "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/before_Source__AIHeroes__Private__AIHeroesLiveBattleGameMode.cpp"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp",
+      "bytes": 7078,
+      "sha256": "ea03cbb83fb15005374c721b52293125807a7707c2b17d9f3c397e8242252e14",
+      "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/before_Source__AIHeroes__Private__AIHeroesBattleHUD.cpp"
+    },
+    {
+      "path": "Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp",
+      "bytes": 15241,
+      "sha256": "1cd0cd9af3e94e05bea010b7097b9a1225dcb89e64ba83056815419d0e78ce81",
+      "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/before_Source__AIHeroes__Private__AIHeroesLiveBattleSmoke.cpp"
+    },
+    {
+      "path": "Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp",
+      "bytes": 21484,
+      "sha256": "5fbba7328b4b5b1134e551486c5c1ea0f39512b85a78980192c30a367a656c54",
+      "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/before_Source__AIHeroes__Private__Tests__AIHeroesLiveBattleTests.cpp"
+    }
+  ],
+  "content": [
+    {
+      "path": "Content/.gitkeep",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Amber.uasset",
+      "bytes": 6202,
+      "sha256": "a321c8512d4be5b15750921b7d980283f291b3c89f149c1fe81e675618e5e564"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Bark.uasset",
+      "bytes": 6261,
+      "sha256": "3e567486465429aaed87defbc107503be18be1b3b9dc7ab34f3187667966ae93"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Bronze.uasset",
+      "bytes": 6207,
+      "sha256": "57871b0d994a0266d41c314eef4ca2445bbebcc4955979065b73db6873b66dba"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Crystal.uasset",
+      "bytes": 6212,
+      "sha256": "f5e242ae0a13f0998c4fe271fdb939db560b889d7e49236e413edbe43f2fe700"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Dark.uasset",
+      "bytes": 6197,
+      "sha256": "d80d70c443644dc0174675d56b0c51f81b358d2664782a43127dee030e9ddd57"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Grass.uasset",
+      "bytes": 6202,
+      "sha256": "543ec257993d12827af4986f52e08a6417e9a8b37c1717496ba0c57382eebb3c"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Ivory.uasset",
+      "bytes": 6202,
+      "sha256": "e1ea4064a2949c356858313624038d4a8eefc95eb8d5cfd078a93b232ff3eaac"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Leaf.uasset",
+      "bytes": 6261,
+      "sha256": "f2465c11dd00ef5a5e906a46f49b3390d6c53eab6b6f1e1822bda4ce656aca88"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Moss.uasset",
+      "bytes": 6197,
+      "sha256": "24beac405bb32b87d5fbdd9782fc445e3608e7e93e155941dd3bb59eba7b7dfa"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Path.uasset",
+      "bytes": 6197,
+      "sha256": "37ef3ab0f112be5b718ff31b83622803852d6a4d17e83dbfe7ea4bee7725b884"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Pine.uasset",
+      "bytes": 6261,
+      "sha256": "9394606e0ffcc15e7f5d997108feea254d485756a5e4001c32d6ecdec2333060"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Slate.uasset",
+      "bytes": 6202,
+      "sha256": "6e95b4c2679f2d8430f5839b3dd98d086b11fd4f7b2ff5e18d78322b15b21b4d"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Stone.uasset",
+      "bytes": 6266,
+      "sha256": "1f0915ce18ea60455f06fc3f0b4a7a687b3bf9ed2ffda427e14a6c38c3a221a2"
+    },
+    {
+      "path": "Content/AmberMarch/Materials/M_Water.uasset",
+      "bytes": 6202,
+      "sha256": "e19299dc5b614dd7c701855127a7639a16aa3acdc35b50e3212ca1a4259e1f10"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Archive.uasset",
+      "bytes": 80855,
+      "sha256": "2f638e0e985cc86fa99fec70048bc21b040696485b82ef771cc53f1f857a42a7"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Boulder.uasset",
+      "bytes": 69067,
+      "sha256": "8149def012d0a590b7882212ce697ec74d9cc5e61827a0ad7987c244862a5421"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_BrookBridge.uasset",
+      "bytes": 78725,
+      "sha256": "f6edfc31ed88e338127f047a237d71c1815ef2f59aa8315f527a039d93f70957"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Hearth.uasset",
+      "bytes": 83752,
+      "sha256": "2e7916a8aab551254524a1d0ea8d5cc914239e9e3dd5329c864f5b35587d224f"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Island.uasset",
+      "bytes": 88099,
+      "sha256": "4104fc1fea1c91e186a3b1df3291eb010631200ce768e687d27f0ab4fbfb7a69"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_IslandReliefV5.uasset",
+      "bytes": 569103,
+      "sha256": "bddd965c1cfd558e6603a2405634b12c7cd7fb659a166f3c7af7334a90d3b7ff"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_IslandReliefV5_Mobile.uasset",
+      "bytes": 290385,
+      "sha256": "7bbfa6af1cd32b1f067783298963cfaa8a94d15ad450a0ce0589849c1a61032a"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Pine.uasset",
+      "bytes": 72250,
+      "sha256": "60dca87200f2048f9dd54498cd4867ea9ffb739b87bcd8ca8d2a347e4ea765bd"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Quarry.uasset",
+      "bytes": 76920,
+      "sha256": "ba58e3dfa26ac25e11c338ad61fc286375829337ba2e80bffaa2a16f1f332b45"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_RidgeOutcrop.uasset",
+      "bytes": 75713,
+      "sha256": "6b82da5134f3f52643d824e77ff338ebdf13519ee2912d8cb5dfc1466bdad846"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Sawmill.uasset",
+      "bytes": 85449,
+      "sha256": "8e8658a221e8545a816fac901e2cd780170742fd2b81b7d62f6359caad2021af"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Seeker.uasset",
+      "bytes": 74076,
+      "sha256": "85609669a7e71d111390cedc2cd08ddc91942431bbda89befdc840cc26b1d82b"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Silverbrook.uasset",
+      "bytes": 109528,
+      "sha256": "f277667e310e4f2082d951e51050eb10d34497b4d5294b16b08768b6a0364c34"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Watchtower.uasset",
+      "bytes": 79578,
+      "sha256": "cd1b1004098a2fc1e62da9d7452d9e3cc5534c0302ac63252bbef2c3a952b9a2"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Waystation.uasset",
+      "bytes": 79765,
+      "sha256": "8a67c455a09b2bf0b41f13ac6301cf77c956e27b0b3cd58b0bb151d9b87d23f5"
+    },
+    {
+      "path": "Content/AmberMarch/Meshes/SM_Waystone.uasset",
+      "bytes": 76833,
+      "sha256": "100f65777b90789b34b19b345774bc35d02d3269a367e6a4693ac1cbcae3a1c8"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_Amber.uasset",
+      "bytes": 6219,
+      "sha256": "82f7ebd22555bc634404918b24589e0df55147b70b8123a8bbd809ecc20845f8"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_Bronze.uasset",
+      "bytes": 6224,
+      "sha256": "83fdc05912811cab79c901848f4628e9298c0464ab38300e56ead39a4275d757"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_Cloth.uasset",
+      "bytes": 6219,
+      "sha256": "6faa2ea47275ea8407c555151690342db787bb7686e63d31ac840acfb964decb"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_Dark.uasset",
+      "bytes": 6214,
+      "sha256": "f4595e4534e31125098a8e8d12a0df05d4d939e77ae4d2b8bc86a5abc7cd02fa"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_Fur.uasset",
+      "bytes": 6209,
+      "sha256": "a24cf63f714bb159427dc1c0d61bcc9f32f3f45e556ecff0dced88811fe6ac5d"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_Ivory.uasset",
+      "bytes": 6219,
+      "sha256": "875c19c92023bc2447711394271ef13d3a7d95284fbdded27fd22ba59d824a13"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_Leather.uasset",
+      "bytes": 6229,
+      "sha256": "ff51290a0e689eabebd9b1a246ebd65fa36c5675d192c8e656b00f41a1d080b6"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_PaleFur.uasset",
+      "bytes": 6229,
+      "sha256": "eae1e9aba4bf214a72216cfc30fffaa0741f006235c3a659e4e840561b5c67c7"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_Rust.uasset",
+      "bytes": 6214,
+      "sha256": "af0fa1e88f7b89df9763272f04d275abf0bdf815c34f021e985c121e20e9c902"
+    },
+    {
+      "path": "Content/AmberMarch/Units/Materials/UM_Stone.uasset",
+      "bytes": 6219,
+      "sha256": "7f0d17b4ff495021db0dd62f9289d806cd73fc3bc20bd3a8ebdcfe6222fd1240"
+    },
+    {
+      "path": "Content/AmberMarch/Units/SM_Bandit.uasset",
+      "bytes": 81642,
+      "sha256": "44e3173c81d9e2243dc9bf877f02c3ebb77e699ffe1f2fa4ac663e472cb69ac9"
+    },
+    {
+      "path": "Content/AmberMarch/Units/SM_Guardian.uasset",
+      "bytes": 76791,
+      "sha256": "f86899a6db49476b8761efc184c2622002a56fbf4a8174ae925f3a5ff5bcf45a"
+    },
+    {
+      "path": "Content/AmberMarch/Units/SM_Militia.uasset",
+      "bytes": 83836,
+      "sha256": "973b829cca6ad7b2293a670d82134b1ce62dde59b11422eb0eea40f291040167"
+    },
+    {
+      "path": "Content/AmberMarch/Units/SM_Raider.uasset",
+      "bytes": 81877,
+      "sha256": "012a57fa2481739856a438ef253cb4ef05008aecb03dcea218907b2f5d15add8"
+    },
+    {
+      "path": "Content/AmberMarch/Units/SM_Scout.uasset",
+      "bytes": 83137,
+      "sha256": "385e17beada583188329ad442c47ccc107afbcb0db026052d494a9a008ae61dc"
+    },
+    {
+      "path": "Content/AmberMarch/Units/SM_Wolf.uasset",
+      "bytes": 80728,
+      "sha256": "8990adc1a7d021214cdd0074b9030ea9224a3dd950d030188c3d630ab98866d7"
+    },
+    {
+      "path": "Content/AmberMarch/Units/T_Bandit.uasset",
+      "bytes": 45567,
+      "sha256": "cc1ee29f857ecfd2826f4c4deeff9a0d6f55bc862fb1d04ec3e4c34390ee073c"
+    },
+    {
+      "path": "Content/AmberMarch/Units/T_Guardian.uasset",
+      "bytes": 52450,
+      "sha256": "487e03734255d011ce805e1d8e5ba1321053ff9a748b971da10bafb59849b3b5"
+    },
+    {
+      "path": "Content/AmberMarch/Units/T_Militia.uasset",
+      "bytes": 47116,
+      "sha256": "6f5e662ede8bb70ae949a84cd087477d1fc3bf5901e47ce61c6f2f88ae21b428"
+    },
+    {
+      "path": "Content/AmberMarch/Units/T_Raider.uasset",
+      "bytes": 48940,
+      "sha256": "a615f7bec14ee449818001d21d0fe77da75a8f3874c79a46dade0488b10b68a9"
+    },
+    {
+      "path": "Content/AmberMarch/Units/T_Scout.uasset",
+      "bytes": 45642,
+      "sha256": "94358e395610b8e60352cf28b1fdd600b9e8baa5b5305e6a1e933a24cbdaf3e9"
+    },
+    {
+      "path": "Content/AmberMarch/Units/T_Wolf.uasset",
+      "bytes": 45826,
+      "sha256": "4d4885baa6081a8e7ae5db7a25bc4e797959d959084030aca504b02c35b72ae3"
+    }
+  ],
+  "saves": [
+    {
+      "path": "Saved/SaveGames/AIHEROES_Campaign_Resilient_v1_Player2_A.sav",
+      "bytes": 8530,
+      "sha256": "d12466b364e271c7e58ff96bdd208b4ad61efc608e91d90afc258ca27268b88b"
+    },
+    {
+      "path": "Saved/SaveGames/AIHEROES_Campaign_Resilient_v1_Player2_B.sav",
+      "bytes": 5889,
+      "sha256": "a445bc8c044d885ded728d8721985c9091bd087bddbcf465f4eff3e15d1fc032"
+    },
+    {
+      "path": "Saved/SaveGames/AIHEROES_Campaign_Resilient_v1_Player3_A.sav",
+      "bytes": 5814,
+      "sha256": "c38e74f81ab3abfa8d50c85b0786eef41fbf86856d518f36effdc8e2351938c0"
+    },
+    {
+      "path": "Saved/SaveGames/AIHEROES_Campaign_v1.sav",
+      "bytes": 5915,
+      "sha256": "b8f625fb811c83cba8f45db97ddf2628feef0af7245cfc2ebb460ff00048000b"
+    }
+  ]
+}

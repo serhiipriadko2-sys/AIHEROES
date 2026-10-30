@@ -249,3 +249,20 @@ not relabelled as human campaign acceptance or this task's implementation.
 ΔDΩΛ: Δ robust, reason-grounded, speed-controlled text combat; D two initial
 REDs + timing RED → 284/284 GREEN → four final visible scenarios; Ω95% for
 automated observations; Λ source drift, narrow-layout or human feedback.
+
+## M3 / 2026-10-30, parallel ownership discovered
+
+Initial SoT integrity PASS, clean HEAD 1ff88bb and no native process. Captured
+nine baseline files, 53 Content and four saves. Before our implementation,
+another writer changed the same M3 production files. Our first-file context
+check failed atomically; no production hunks were applied. Preserve external
+Aftermath/GameMode/HUD and their test work rather than implementing M3 twice.
+
+Ruling: switch to independently owned regression coverage until ownership is
+coordinated. Price: M3 implementation acceptance is pending a stable integration
+window. Asked user to pause parallel M3 writing; no editor/process force-close.
+
+Own addition: AIHeroesAftermathIntegrityTests.cpp, two positive/negative-control
+cases for invalid replay evidence and same-metadata receipt confusion. Details
+and candidate fixes are in MAIN_CAMPAIGN_M3_2026-10-30/PARALLEL_HANDOFF.md.
+No runtime failure or M3 completion claim until the native report is read.

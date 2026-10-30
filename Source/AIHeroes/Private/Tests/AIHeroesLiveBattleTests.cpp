@@ -408,4 +408,75 @@ bool FLiveTextPresentationTempo::RunTest(const FString&)
         FAIHeroesBattleRecordRules::Verify(F.Game->LastBattleRecord,Error));
     return true;
 }
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveCommittedRewardEvidence,
+    "AIHeroes.Playability.BattleAftermath.LiveCommitReceiptLifecycle",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FLiveCommittedRewardEvidence::RunTest(const FString&)
+{
+    {
+        FLiveBattleWorld F;
+        if(!TestTrue(TEXT("Disposable winner world exists"),F.IsValid()))return false;
+        AAIHeroesGameMode& G=*F.Game;
+        const int32 GoldBefore=G.Gold,DataBefore=G.DataFragments,MovesBefore=G.MovesLeft;
+        G.InteractWithNode(F.Node);
+        TestFalse(TEXT("Uncommitted battle cannot claim receipt"),
+            G.GetLiveBattleCommitReceipt().bApplied);
+        F.Finish();
+        if(!TestTrue(TEXT("Battle reaches a successful committed result"),
+            G.GetLiveBattlePhase()==EAIHeroesLiveBattlePhase::Result &&
+            G.LastBattleRecord.bVictory))return false;
+        const auto& Receipt=G.GetLiveBattleCommitReceipt();
+        TestTrue(TEXT("Receipt is bound to the one committed record"),
+            Receipt.bApplied && Receipt.NodeId==G.LastBattleRecord.NodeId &&
+            Receipt.Day==G.LastBattleRecord.Day &&
+            Receipt.RuleVersion==G.LastBattleRecord.RuleVersion);
+        TestEqual(TEXT("Gold receipt matches actual treasury delta"),
+            Receipt.GoldGranted,G.Gold-GoldBefore);
+        TestEqual(TEXT("Data receipt matches actually earned fragments"),
+            Receipt.DataGranted,G.DataFragments-DataBefore);
+        TestEqual(TEXT("Spent moves match authoritative game delta"),
+            Receipt.MovesSpent,MovesBefore-G.MovesLeft);
+        const auto View=FAIHeroesBattleAftermath::Build(G.LastBattleRecord,&Receipt);
+        TestTrue(TEXT("Results screen has trustworthy reward evidence"),
+            View.bRewardsVerified && View.RewardLine.Contains(TEXT("данных")));
+        const int32 Moves=G.MovesLeft,Data=G.DataFragments;
+        G.FastFinishLiveBattle();G.Tick(1.f);
+        TestEqual(TEXT("Second finish cannot spend moves again"),G.MovesLeft,Moves);
+        TestEqual(TEXT("Second finish cannot reward again"),G.DataFragments,Data);
+        TestEqual(TEXT("Receipt remains for result display"),
+            G.GetLiveBattleCommitReceipt().DataGranted,Receipt.DataGranted);
+        G.ReturnFromLiveBattle();
+        TestFalse(TEXT("Returning to map clears ephemeral reward receipt"),
+            G.GetLiveBattleCommitReceipt().bApplied);
+        TestFalse(TEXT("Historical record after return no longer claims a live receipt"),
+            FAIHeroesBattleAftermath::Build(G.LastBattleRecord,
+                &G.GetLiveBattleCommitReceipt()).bRewardsVerified);
+    }
+    {
+        FLiveBattleWorld F(true);
+        if(!TestTrue(TEXT("Disposable loser world exists"),F.IsValid()))return false;
+        AAIHeroesGameMode& G=*F.Game;
+        G.InteractWithNode(F.Node);F.Finish();
+        TestTrue(TEXT("Defeat still has a real committed result"),
+            G.GetLiveBattlePhase()==EAIHeroesLiveBattlePhase::Result &&
+            G.LastBattleRecord.bDefeat);
+        const auto& Receipt=G.GetLiveBattleCommitReceipt();
+        TestTrue(TEXT("Defeat commits zero rewards, not a guessed bounty"),
+            Receipt.bApplied && Receipt.GoldGranted==0 && Receipt.DataGranted==0);
+        TestTrue(TEXT("The zero-reward committed defeat is readable"),
+            FAIHeroesBattleAftermath::Build(G.LastBattleRecord,&Receipt).bRewardsVerified);
+        G.ReturnFromLiveBattle();
+    }
+    {
+        FLiveBattleWorld F;
+        if(!TestTrue(TEXT("Disposable abort world exists"),F.IsValid()))return false;
+        F.Game->InteractWithNode(F.Node);
+        F.Game->Gold+=1; // Existing deliberate conflict: abort is atomic.
+        F.Finish();
+        TestFalse(TEXT("Aborted battle never gets a committed reward receipt"),
+            F.Game->GetLiveBattleCommitReceipt().bApplied);
+    }
+    return true;
+}
 #endif
