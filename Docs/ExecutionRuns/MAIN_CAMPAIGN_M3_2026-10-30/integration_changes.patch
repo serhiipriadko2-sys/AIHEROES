@@ -1,0 +1,728 @@
+--- a/Source/AIHeroes/Public/AIHeroesBattleAftermath.h
++++ b/Source/AIHeroes/Public/AIHeroesBattleAftermath.h
+@@ -1,20 +1,40 @@
+ #pragma once
+ 
+ #include "CoreMinimal.h"
++#include "AIHeroesBattleRecord.h"
+ 
+-struct FAIHeroesBattleRecord;
++// A receipt for THIS running session only. Created from the reward plan
++// inside the authoritative, one-time battle commit. Never written to SaveGame,
++// and never reconstructed by applying today's reward rules to old history.
++struct FAIHeroesBattleCommitReceipt
++{
++    // Full immutable result identity, not merely node/day/version metadata.
++    FAIHeroesBattleRecord BoundRecord;
++    FName NodeId = NAME_None;
++    int32 Day = 0;
++    int32 RuleVersion = 0;
++    int32 MovesSpent = -1;
++    int32 GoldGranted = 0;
++    int32 DataGranted = 0;
++    bool bApplied = false;
++};
+ 
+-// Player-facing explanation of an already committed battle. No combat,
+-// reward, save, movement or campaign mutation is performed here.
++// Presentation only: no combat, reward, save, movement or campaign mutation.
+ struct FAIHeroesBattleAftermathView
+ {
+     FString PlayerLine;
++    FString RewardLine;
++    TArray<FString> PlayerGroups;
+     bool bCountsAvailable = false;
++    bool bRewardsVerified = false;
+ };
+ 
+ class AIHEROES_API FAIHeroesBattleAftermath
+ {
+ public:
++    // A missing/mismatched transient receipt can NEVER invent old rewards.
++    // The original one-argument API stays valid for historic battle views.
+     static FAIHeroesBattleAftermathView Build(
+-        const FAIHeroesBattleRecord& CommittedRecord);
++        const FAIHeroesBattleRecord& CommittedRecord,
++        const FAIHeroesBattleCommitReceipt* AppliedReward = nullptr);
+ };
+--- a/Source/AIHeroes/Private/AIHeroesBattleAftermath.cpp
++++ b/Source/AIHeroes/Private/AIHeroesBattleAftermath.cpp
+@@ -1,5 +1,7 @@
+ #include "AIHeroesBattleAftermath.h"
+ 
++#include "AIHeroesBaseRules.h"
++#include "AIHeroesBattleArt.h"
+ #include "AIHeroesBattleRecord.h"
+ 
+ namespace
+@@ -10,53 +12,117 @@
+     for (const FAIHeroesArmyStack& Stack : Army)
+     {
+         if (Stack.UnitId.IsNone() || Stack.UnitHealth <= 0 || Stack.TotalHealth < 0)
+-        {
+             return false;
+-        }
+         if (Stack.TotalHealth > 0)
+-        {
+-            // Use 64-bit arithmetic: TotalHealth + UnitHealth - 1 can overflow int32.
+             Count += (static_cast<int64>(Stack.TotalHealth) + Stack.UnitHealth - 1)
+                 / Stack.UnitHealth;
+-        }
+     }
+     OutCount = Count;
++    return true;
++}
++
++int64 Living(const FAIHeroesArmyStack& Stack)
++{
++    return Stack.TotalHealth > 0
++        ? (static_cast<int64>(Stack.TotalHealth) + Stack.UnitHealth - 1)
++            / Stack.UnitHealth
++        : 0;
++}
++
++bool MatchesCommit(const FAIHeroesBattleRecord& Battle,
++                   const FAIHeroesBattleCommitReceipt* Receipt)
++{
++    if (!Receipt || !Receipt->bApplied ||
++        !FAIHeroesBattleRecordRules::Equivalent(Receipt->BoundRecord, Battle) ||
++        Receipt->NodeId != Battle.NodeId ||
++        Receipt->Day != Battle.Day || Receipt->RuleVersion != Battle.RuleVersion ||
++        Receipt->MovesSpent < 0 || Receipt->MovesSpent > 4 ||
++        Receipt->GoldGranted < 0 || Receipt->DataGranted < 0 ||
++        Receipt->GoldGranted > FAIHeroesBaseRules::MaxResource ||
++        Receipt->DataGranted > FAIHeroesBaseRules::MaxResource)
++        return false;
++
++    // Non-victories cannot have been awarded a successful-capture bonus.
++    if (!Battle.bVictory &&
++        (Receipt->GoldGranted > 0 || Receipt->DataGranted > 0))
++        return false;
+     return true;
+ }
+ }
+ 
+ FAIHeroesBattleAftermathView FAIHeroesBattleAftermath::Build(
+-    const FAIHeroesBattleRecord& CommittedRecord)
++    const FAIHeroesBattleRecord& CommittedRecord,
++    const FAIHeroesBattleCommitReceipt* AppliedReward)
+ {
+     FAIHeroesBattleAftermathView View;
+     View.PlayerLine = TEXT("На карту — продолжить. Данные о потерях недоступны.");
++    View.RewardLine = TEXT("Награды: нет подтверждённой записи о выдаче.");
+ 
+-    // This is a read-only view, never an attempt to infer campaign rewards.
+-    // The caller must only show it after the live battle has been committed.
+-    if (CommittedRecord.NodeId.IsNone() ||
+-        CommittedRecord.Day < 1 ||
++    // Legacy/invalid records never produce casualties or invented rewards.
++    if (CommittedRecord.NodeId.IsNone() || CommittedRecord.Day < 1 ||
+         (CommittedRecord.RuleVersion != 1 && CommittedRecord.RuleVersion != 2) ||
+         (CommittedRecord.bVictory && CommittedRecord.bDefeat) ||
+-        CommittedRecord.PlayerBefore.IsEmpty())
+-    {
++        CommittedRecord.PlayerBefore.IsEmpty() ||
++        CommittedRecord.PlayerBefore.Num() > 2 ||
++        CommittedRecord.PlayerAfter.Num() > CommittedRecord.PlayerBefore.Num())
+         return View;
+-    }
+ 
+-    int64 Before = 0;
+-    int64 After = 0;
++    // The UI must never turn a plausible-looking but tampered battle history
++    // into verified losses. This deterministic verification is intentionally
++    // performed once when the result is prepared, not once per HUD frame.
++    FString VerificationError;
++    if (!FAIHeroesBattleRecordRules::Verify(CommittedRecord, VerificationError))
++        return View;
++
++    int64 Before = 0, After = 0;
+     if (!CountLiving(CommittedRecord.PlayerBefore, Before) ||
+         !CountLiving(CommittedRecord.PlayerAfter, After) ||
+         Before == 0 || After > Before)
++        return View;
++
++    // Use the original stack INDEX, not UnitId, as the group identity.
++    // Two same-name stacks must not collapse into one casualty line.
++    TArray<FString> Groups;
++    for (int32 Index = 0; Index < CommittedRecord.PlayerBefore.Num(); ++Index)
+     {
+-        // Missing/corrupt historical records must not create invented casualties.
+-        return View;
++        const FAIHeroesArmyStack& Original = CommittedRecord.PlayerBefore[Index];
++        const FAIHeroesArmyStack* Final =
++            CommittedRecord.PlayerAfter.IsValidIndex(Index)
++                ? &CommittedRecord.PlayerAfter[Index] : nullptr;
++        if (Final &&
++            (Final->UnitId != Original.UnitId ||
++             Final->UnitHealth != Original.UnitHealth ||
++             Final->TotalHealth > Original.TotalHealth))
++            return View;
++
++        const int64 Start = Living(Original);
++        const int64 End = Final ? Living(*Final) : 0;
++        Groups.Add(FString::Printf(
++            TEXT("A%d %s: %lld из %lld, потери %lld; ОЗ %d"),
++            Index + 1, *FAIHeroesBattleArt::UnitName(Original.UnitId),
++            static_cast<long long>(End), static_cast<long long>(Start),
++            static_cast<long long>(Start - End),
++            Final ? Final->TotalHealth : 0));
+     }
+ 
+     View.bCountsAvailable = true;
++    View.PlayerGroups = MoveTemp(Groups);
+     View.PlayerLine = FString::Printf(
+         TEXT("На карту — продолжить. Бойцов: %lld из %lld; потери: %lld."),
+         static_cast<long long>(After),
+         static_cast<long long>(Before),
+         static_cast<long long>(Before - After));
++
++    // Only the CURRENT session's one-time committed plan may supply rewards.
++    // Historic SaveGame records have no receipt, and keep the fallback text.
++    if (MatchesCommit(CommittedRecord, AppliedReward))
++    {
++        View.bRewardsVerified = true;
++        View.RewardLine = FString::Printf(
++            TEXT("Получено: +%d золота, +%d данных  |  Потрачено ходов: %d"),
++            AppliedReward->GoldGranted,
++            AppliedReward->DataGranted,
++            AppliedReward->MovesSpent);
++    }
+     return View;
+ }
+--- a/Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp
++++ b/Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp
+@@ -2,28 +2,20 @@
+ #include "AIHeroesBattleRecord.h"
+ 
+ #if WITH_DEV_AUTOMATION_TESTS
++#include "AIHeroesGridBattle.h"
+ #include "Misc/AutomationTest.h"
+ 
+ namespace
+ {
+-FAIHeroesBattleRecord MakeRecord()
+-{
+-    FAIHeroesBattleRecord Record;
+-    Record.NodeId = FName(TEXT("FOREST"));
+-    Record.Day = 2;
+-    Record.RuleVersion = 2;
+-    Record.bVictory = true;
+-    Record.PlayerBefore = {
+-        FAIHeroesArmyStack(TEXT("Militia"), 8, 10, 4, 2, 4),
+-        FAIHeroesArmyStack(TEXT("Scout"), 3, 8, 6, 1, 7)
+-    };
+-    Record.PlayerAfter = {
+-        FAIHeroesArmyStack(TEXT("Militia"), 5, 10, 4, 2, 4),
+-        FAIHeroesArmyStack(TEXT("Scout"), 2, 8, 6, 1, 7)
+-    };
+-    // Two living scouts, even with one of them wounded.
+-    Record.PlayerAfter[1].TotalHealth = 9;
+-    return Record;
++FAIHeroesBattleRecord MakeRecord(bool bDefeat=false)
++{
++    TArray<FAIHeroesArmyStack> Player={FAIHeroesArmyStack(TEXT("Militia"),
++        bDefeat?1:8,12,4,2,3)};
++    if(!bDefeat)Player.Add(FAIHeroesArmyStack(TEXT("Scout"),3,8,6,1,7));
++    const TArray<FAIHeroesArmyStack> Enemy={FAIHeroesArmyStack(TEXT("Wolf"),
++        bDefeat?40:4,9,3,1,8)};
++    return FAIHeroesBattleRecordRules::Capture(TEXT("FOREST"),2,0,Player,Enemy,
++        FAIHeroesGridBattle::RunToEnd(Player,Enemy,0),2);
+ }
+ }
+ 
+@@ -34,11 +26,14 @@
+ {
+     const auto Record = MakeRecord();
+     const auto View = FAIHeroesBattleAftermath::Build(Record);
++    TestTrue(TEXT("Fixture has genuine partial-HP survivors"),
++        Record.bVictory&&Record.PlayerAfter[0].TotalHealth>0&&
++        Record.PlayerAfter[0].TotalHealth<Record.PlayerBefore[0].TotalHealth);
+     TestTrue(TEXT("Valid committed data has count display"), View.bCountsAvailable);
+     TestTrue(TEXT("After/before troop counts reflect partial HP"),
+-        View.PlayerLine.Contains(TEXT("7 из 11")));
++        View.PlayerLine.Contains(TEXT("11 из 11")));
+     TestTrue(TEXT("Only actual whole-unit casualties are claimed"),
+-        View.PlayerLine.Contains(TEXT("потери: 4")));
++        View.PlayerLine.Contains(TEXT("потери: 0")));
+     TestTrue(TEXT("Player sees the available next action"),
+         View.PlayerLine.Contains(TEXT("На карту")));
+     TestFalse(TEXT("No unsupported reward amount is invented"),
+@@ -51,15 +46,12 @@
+     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+ bool FBattleAftermathDefeat::RunTest(const FString&)
+ {
+-    auto Record = MakeRecord();
+-    Record.bVictory = false;
+-    Record.bDefeat = true;
+-    Record.PlayerAfter.Empty();
++    const auto Record = MakeRecord(true);
+     const auto View = FAIHeroesBattleAftermath::Build(Record);
+     TestTrue(TEXT("Defeat still reports observed own-army losses"), View.bCountsAvailable);
+-    TestTrue(TEXT("All eleven fighters are lost"),
+-        View.PlayerLine.Contains(TEXT("0 из 11")) &&
+-        View.PlayerLine.Contains(TEXT("потери: 11")));
++    TestTrue(TEXT("Actual lone fighter is lost"),
++        Record.bDefeat && View.PlayerLine.Contains(TEXT("0 из 1")) &&
++        View.PlayerLine.Contains(TEXT("потери: 1")));
+     return true;
+ }
+ 
+@@ -108,10 +100,103 @@
+     Record.EnemyBefore.Add(FAIHeroesArmyStack(TEXT("SecretGuard"), 999, 100, 1, 1, 1));
+     Record.EnemyAfter.Add(FAIHeroesArmyStack(TEXT("SecretGuard"), 1, 100, 1, 1, 1));
+     const auto After = FAIHeroesBattleAftermath::Build(Record);
+-    TestEqual(TEXT("Enemy metadata does not change player casualty text"),
+-        Before.PlayerLine, After.PlayerLine);
++    TestTrue(TEXT("Positive control has verified casualty facts"),Before.bCountsAvailable);
++    TestFalse(TEXT("Unverifiable enemy metadata invalidates the whole record"),After.bCountsAvailable);
+     TestFalse(TEXT("No opponent identity in player casualty text"),
+         After.PlayerLine.Contains(TEXT("SecretGuard")));
+     return true;
+ }
++
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBattleAftermathAppliedRewards,
++    "AIHeroes.Playability.BattleAftermath.OnlyActualCommittedRewards",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FBattleAftermathAppliedRewards::RunTest(const FString&)
++{
++    const auto Record=MakeRecord();
++    const auto Historic=FAIHeroesBattleAftermath::Build(Record);
++    TestFalse(TEXT("Historical record has no authoritative reward receipt"),
++        Historic.bRewardsVerified);
++    TestTrue(TEXT("Legacy dossier never guesses current reward amounts"),
++        Historic.RewardLine.Contains(TEXT("нет подтверждённой")));
++    FAIHeroesBattleCommitReceipt Receipt;
++    Receipt.BoundRecord=Record;
++    Receipt.NodeId=Record.NodeId;
++    Receipt.Day=Record.Day;
++    Receipt.RuleVersion=Record.RuleVersion;
++    Receipt.MovesSpent=2;
++    Receipt.GoldGranted=0;
++    Receipt.DataGranted=2;
++    Receipt.bApplied=true;
++    const auto Applied=FAIHeroesBattleAftermath::Build(Record,&Receipt);
++    TestTrue(TEXT("Matching one-time actual commit allows the reward line"),
++        Applied.bRewardsVerified);
++    TestTrue(TEXT("Only committed data are displayed"),
++        Applied.RewardLine.Contains(TEXT("+2 данных")) &&
++        Applied.RewardLine.Contains(TEXT("ходов: 2")));
++    Receipt.bApplied=false;
++    TestFalse(TEXT("Preflight without commit never grants UI reward evidence"),
++        FAIHeroesBattleAftermath::Build(Record,&Receipt).bRewardsVerified);
++    Receipt.bApplied=true;
++    Receipt.NodeId=FName(TEXT("RUINS"));
++    TestFalse(TEXT("Another battle cannot lend its reward receipt"),
++        FAIHeroesBattleAftermath::Build(Record,&Receipt).bRewardsVerified);
++    Receipt.NodeId=Record.NodeId;
++    Receipt.Day=Record.Day+1;
++    TestFalse(TEXT("A receipt from another day cannot match"),
++        FAIHeroesBattleAftermath::Build(Record,&Receipt).bRewardsVerified);
++    Receipt.Day=Record.Day;
++    Receipt.RuleVersion=1;
++    TestFalse(TEXT("Another rule revision cannot lend rewards"),
++        FAIHeroesBattleAftermath::Build(Record,&Receipt).bRewardsVerified);
++    Receipt.RuleVersion=Record.RuleVersion;
++    Receipt.DataGranted=-2;
++    TestFalse(TEXT("Negative or corrupt reward data fails closed"),
++        FAIHeroesBattleAftermath::Build(Record,&Receipt).bRewardsVerified);
++    Receipt.DataGranted=2;
++    Receipt.MovesSpent=5;
++    TestFalse(TEXT("Impossible move cost cannot be displayed as paid"),
++        FAIHeroesBattleAftermath::Build(Record,&Receipt).bRewardsVerified);
++    const auto Defeat=MakeRecord(true);
++    Receipt.BoundRecord=Defeat;
++    Receipt.MovesSpent=2;
++    TestFalse(TEXT("Defeat cannot display a fabricated positive reward"),
++        FAIHeroesBattleAftermath::Build(Defeat,&Receipt).bRewardsVerified);
++    Receipt.DataGranted=0;
++    TestTrue(TEXT("A committed defeat honestly shows zero reward"),
++        FAIHeroesBattleAftermath::Build(Defeat,&Receipt).bRewardsVerified);
++    return true;
++}
++
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBattleAftermathDuplicateGroups,
++    "AIHeroes.Playability.BattleAftermath.IndexedGroupsPartialHP",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FBattleAftermathDuplicateGroups::RunTest(const FString&)
++{
++    auto Record=MakeRecord();
++    TArray<FAIHeroesArmyStack> Player={
++        FAIHeroesArmyStack(TEXT("Militia"),8,12,4,2,3),
++        FAIHeroesArmyStack(TEXT("Militia"),4,12,4,2,3)};
++    Player[1].TotalHealth=37; // Four living units; the last is wounded.
++    const TArray<FAIHeroesArmyStack> Enemy={FAIHeroesArmyStack(TEXT("Wolf"),4,9,3,1,8)};
++    Record=FAIHeroesBattleRecordRules::Capture(TEXT("FOREST"),2,0,Player,Enemy,
++        FAIHeroesGridBattle::RunToEnd(Player,Enemy,0),2);
++    const auto View=FAIHeroesBattleAftermath::Build(Record);
++    TestTrue(TEXT("Two indexed copies of the same unit have safe counts"),
++        View.bCountsAvailable && View.PlayerGroups.Num()==2);
++    if(View.PlayerGroups.Num()!=2)return false;
++    TestTrue(TEXT("First group retains its own initial count"),
++        View.PlayerGroups[0].Contains(TEXT("A1")) &&
++        View.PlayerGroups[0].Contains(TEXT("8 из 8")));
++    TestTrue(TEXT("Second group has its own four living units and partial HP"),
++        View.PlayerGroups[1].Contains(TEXT("A2")) &&
++        View.PlayerGroups[1].Contains(TEXT("4 из 4")) &&
++        View.PlayerGroups[1].Contains(TEXT("ОЗ 37")));
++    TestTrue(TEXT("Pre-existing wounds never become fictitious new whole-unit losses"),
++        View.PlayerLine.Contains(TEXT("12 из 12")) &&
++        View.PlayerLine.Contains(TEXT("потери: 0")));
++    Record.PlayerAfter[1].UnitId=FName(TEXT("Scout"));
++    TestFalse(TEXT("Mismatched group identity fails closed"),
++        FAIHeroesBattleAftermath::Build(Record).bCountsAvailable);
++    return true;
++}
+ #endif
+--- a/Source/AIHeroes/Public/AIHeroesGameMode.h
++++ b/Source/AIHeroes/Public/AIHeroesGameMode.h
+@@ -6,6 +6,7 @@
+ #include "AIHeroesAdventurePath.h"
+ #include "AIHeroesBasePanel.h"
+ #include "AIHeroesBattleRecord.h"
++#include "AIHeroesBattleAftermath.h"
+ #include "AIHeroesRoutePlanner.h"
+ #include "AIHeroesGridBattle.h"
+ #include "AIHeroesGridReplay.h"
+@@ -181,6 +182,17 @@
+     const AAIHeroesLiveBattleStage* GetLiveBattlePresentation() const;
+     // Copy of an already produced Step only; never advances or selects an action.
+     bool TryGetLatestLiveBattleAction(FAIHeroesGridAction& OutAction) const;
++    // Transient, bound to the last one-time live commit. Not in SaveGame.
++    const FAIHeroesBattleCommitReceipt& GetLiveBattleCommitReceipt() const
++    {
++        return LiveBattleCommitReceipt;
++    }
++    // Immutable during the result screen: deterministic verification runs
++    // at commit, never on each HUD paint.
++    const FAIHeroesBattleAftermathView& GetLiveBattleAftermathView() const
++    {
++        return LiveBattleAftermathView;
++    }
+     float GetLiveBattleSpeed() const { return LiveBattleSpeed; }
+     void ToggleLiveBattlePause();
+     void CycleLiveBattleSpeed();
+@@ -256,6 +268,8 @@
+     TArray<FAIHeroesArmyStack> LiveEnemyBefore;
+     FString PreBattleFingerprint;
+     FString LiveResultText;
++    FAIHeroesBattleCommitReceipt LiveBattleCommitReceipt;
++    FAIHeroesBattleAftermathView LiveBattleAftermathView;
+     EAIHeroesLiveBattlePhase LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
+     int32 LiveMoveCost = 0;
+     int32 LiveDay = 0;
+--- a/Source/AIHeroes/Private/AIHeroesGameMode.cpp
++++ b/Source/AIHeroes/Private/AIHeroesGameMode.cpp
+@@ -727,6 +727,9 @@
+ void AAIHeroesGameMode::LoadCampaign()
+ {
+     if (BlockStrategicAction()) return;
++    // Session-only reward evidence must never outlive a load attempt.
++    LiveBattleCommitReceipt = FAIHeroesBattleCommitReceipt();
++    LiveBattleAftermathView = FAIHeroesBattleAftermathView();
+     CancelLocalModelExchange();
+     LocalModelReplies.Reset(); // Pending inference cannot cross a load attempt.
+     PendingSupplyFingerprint.Empty(); // Quote authorization never survives load.
+--- a/Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp
++++ b/Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp
+@@ -105,6 +105,8 @@
+     LiveBattleSpeed = 1.f;
+     LiveTextPresentationSeconds = 0.f;
+     LiveResultText.Empty();
++    LiveBattleCommitReceipt = FAIHeroesBattleCommitReceipt();
++    LiveBattleAftermathView = FAIHeroesBattleAftermathView();
+     LiveBattlePhase = EAIHeroesLiveBattlePhase::Running;
+     InvalidateRoutePreview();
+     if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+@@ -208,6 +210,26 @@
+         Outcome.bVictory, Node->NodeType, Gold, DataFragments, Rewards, Error))
+     {
+         AbortLiveBattle(TEXT("Reward preflight failed: ") + Error);
++        return;
++    }
++
++    // Prepare and verify the UI report before the atomic transaction as well.
++    // This local candidate is not published as applied evidence until after
++    // the actual campaign writes below. No replay is performed by HUD paints.
++    FAIHeroesBattleCommitReceipt PreparedReceipt;
++    PreparedReceipt.BoundRecord = Record;
++    PreparedReceipt.NodeId = Record.NodeId;
++    PreparedReceipt.Day = Record.Day;
++    PreparedReceipt.RuleVersion = Record.RuleVersion;
++    PreparedReceipt.MovesSpent = LiveMoveCost;
++    PreparedReceipt.GoldGranted = Rewards.GoldReward;
++    PreparedReceipt.DataGranted = Rewards.DataReward;
++    PreparedReceipt.bApplied = true;
++    FAIHeroesBattleAftermathView PreparedAftermath =
++        FAIHeroesBattleAftermath::Build(Record, &PreparedReceipt);
++    if (!PreparedAftermath.bCountsAvailable || !PreparedAftermath.bRewardsVerified)
++    {
++        AbortLiveBattle(TEXT("Final report preflight failed; no partial result applied."));
+         return;
+     }
+ 
+@@ -232,6 +254,10 @@
+         RevealAfterArrival(FName(*Node->GetDisplayName()));
+     }
+     InvalidateRoutePreview();
++    // One-time transient evidence is populated ONLY after the campaign
++    // mutation and battle record have both been committed successfully.
++    LiveBattleCommitReceipt = MoveTemp(PreparedReceipt);
++    LiveBattleAftermathView = MoveTemp(PreparedAftermath);
+     LiveBattlePhase = EAIHeroesLiveBattlePhase::Result;
+     LiveResultText = Outcome.Summary;
+     if (IsValid(LiveBattleStage.Get())) LiveBattleStage->ShowResult(LiveResultText);
+@@ -259,6 +285,8 @@
+ {
+     ClearLiveStage();
+     LiveTextPresentationSeconds = 0.f;
++    LiveBattleCommitReceipt = FAIHeroesBattleCommitReceipt();
++    LiveBattleAftermathView = FAIHeroesBattleAftermathView();
+     LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
+     bFastFinishingLiveBattle = false;
+     LiveBattleNode.Reset();
+@@ -299,6 +327,8 @@
+     if (LiveBattlePhase != EAIHeroesLiveBattlePhase::Result) return;
+     ClearLiveStage();
+     LiveTextPresentationSeconds = 0.f;
++    LiveBattleCommitReceipt = FAIHeroesBattleCommitReceipt();
++    LiveBattleAftermathView = FAIHeroesBattleAftermathView();
+     LiveBattlePhase = EAIHeroesLiveBattlePhase::Exploration;
+     bFastFinishingLiveBattle = false;
+     LiveBattleNode.Reset();
+--- a/Source/AIHeroes/Private/AIHeroesBattleHUD.cpp
++++ b/Source/AIHeroes/Private/AIHeroesBattleHUD.cpp
+@@ -108,14 +108,31 @@
+     // Live combat never invents a result or rewards just because its visual
+     // stage is missing. Only a committed result can show player casualties.
+     const FString Decision=Stage?Stage->GetPresentedDecisionReason():Fallback.DecisionReason;
++    const auto& Aftermath=G.GetLiveBattleAftermathView();
+     const FString Guidance = Result
+-        ? FAIHeroesBattleAftermath::Build(G.LastBattleRecord).PlayerLine
++        ? Aftermath.PlayerLine
+         : !Decision.IsEmpty() ? Decision
+         : Fallback.bVisible
+         ? TEXT("Пауза, скорость и досмотреть быстро — кнопки внизу.")
+         : V.X>=900?TEXT("Q / E — поворот   R / F — масштаб   Пробел — пауза. A и B — стороны, цифра — отряд.")
+         : TEXT("A — ваши, B — враг. Поворот: Q / E. Масштаб: R / F.");
+-    Text(Guidance,16,Bottom+37,V.X-32,Muted,.9f);
++    Text(Guidance,16,Bottom+31,V.X-32,Muted,.9f);
++    if(Result)
++    {
++        // The bottom row is a read-only report, never a second reward grant.
++        Text(Aftermath.RewardLine,16,Bottom+47,V.X-32,
++            Aftermath.bRewardsVerified?Teal:Muted,.89f);
++        if(!Aftermath.PlayerGroups.IsEmpty())
++        {
++            // Two indexed groups, including duplicate unit IDs, remain
++            // distinguishable on compact and wide viewports.
++            const float Width=FMath::Min(V.X-24.f,650.f);
++            DrawRect(Ink,12.f,Bottom-55.f,Width,50.f);
++            for(int32 I=0;I<Aftermath.PlayerGroups.Num()&&I<2;++I)
++                Text(Aftermath.PlayerGroups[I],20.f,Bottom-49.f+I*21.f,
++                    Width-16.f,I==0?Teal:Paper,V.X>=800?1.f:.88f);
++        }
++    }
+     const FString Labels[]={Paused?TEXT("Продолжить"):TEXT("Пауза"),
+         FString::Printf(TEXT("Скорость %dx"),FMath::RoundToInt(G.GetLiveBattleSpeed())),
+         V.X<800?TEXT("Завершить"):TEXT("Досмотреть быстро"),Result?TEXT("На карту"):TEXT("Бой идёт")};
+--- a/Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp
++++ b/Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp
+@@ -408,4 +408,109 @@
+         FAIHeroesBattleRecordRules::Verify(F.Game->LastBattleRecord,Error));
+     return true;
+ }
++
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveCommittedRewardEvidence,
++    "AIHeroes.Playability.BattleAftermath.LiveCommitReceiptLifecycle",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FLiveCommittedRewardEvidence::RunTest(const FString&)
++{
++    {
++        FLiveBattleWorld F;
++        if(!TestTrue(TEXT("Disposable winner world exists"),F.IsValid()))return false;
++        AAIHeroesGameMode& G=*F.Game;
++        const int32 GoldBefore=G.Gold,DataBefore=G.DataFragments,MovesBefore=G.MovesLeft;
++        G.InteractWithNode(F.Node);
++        TestFalse(TEXT("Uncommitted battle cannot claim receipt"),
++            G.GetLiveBattleCommitReceipt().bApplied);
++        F.Finish();
++        if(!TestTrue(TEXT("Battle reaches a successful committed result"),
++            G.GetLiveBattlePhase()==EAIHeroesLiveBattlePhase::Result &&
++            G.LastBattleRecord.bVictory))return false;
++        const auto& Receipt=G.GetLiveBattleCommitReceipt();
++        TestTrue(TEXT("Receipt is bound to the one committed record"),
++            Receipt.bApplied && Receipt.NodeId==G.LastBattleRecord.NodeId &&
++            Receipt.Day==G.LastBattleRecord.Day &&
++            Receipt.RuleVersion==G.LastBattleRecord.RuleVersion);
++        TestEqual(TEXT("Gold receipt matches actual treasury delta"),
++            Receipt.GoldGranted,G.Gold-GoldBefore);
++        TestEqual(TEXT("Data receipt matches actually earned fragments"),
++            Receipt.DataGranted,G.DataFragments-DataBefore);
++        TestEqual(TEXT("Spent moves match authoritative game delta"),
++            Receipt.MovesSpent,MovesBefore-G.MovesLeft);
++        const auto View=FAIHeroesBattleAftermath::Build(G.LastBattleRecord,&Receipt);
++        TestTrue(TEXT("Results screen has trustworthy reward evidence"),
++            View.bRewardsVerified && View.RewardLine.Contains(TEXT("данных")));
++        const auto* Cached=&G.GetLiveBattleAftermathView();
++        TestTrue(TEXT("HUD has a pre-verified cached result"),Cached->bRewardsVerified&&Cached->bCountsAvailable);
++        const FString CachedLine=Cached->RewardLine;
++        for(int32 Read=0;Read<100;++Read)
++            TestTrue(TEXT("Repeated result reads reuse the immutable prepared view"),
++                &G.GetLiveBattleAftermathView()==Cached&&G.GetLiveBattleAftermathView().RewardLine==CachedLine);
++        const int32 Moves=G.MovesLeft,Data=G.DataFragments;
++        G.FastFinishLiveBattle();G.Tick(1.f);
++        TestEqual(TEXT("Second finish cannot spend moves again"),G.MovesLeft,Moves);
++        TestEqual(TEXT("Second finish cannot reward again"),G.DataFragments,Data);
++        TestEqual(TEXT("Receipt remains for result display"),
++            G.GetLiveBattleCommitReceipt().DataGranted,Receipt.DataGranted);
++        G.ReturnFromLiveBattle();
++        TestFalse(TEXT("Returning to map clears ephemeral reward receipt"),
++            G.GetLiveBattleCommitReceipt().bApplied);
++        TestFalse(TEXT("Returning to map clears the live result cache"),
++            G.GetLiveBattleAftermathView().bRewardsVerified);
++        TestFalse(TEXT("Historical record after return no longer claims a live receipt"),
++            FAIHeroesBattleAftermath::Build(G.LastBattleRecord,
++                &G.GetLiveBattleCommitReceipt()).bRewardsVerified);
++    }
++    {
++        FLiveBattleWorld F(true);
++        if(!TestTrue(TEXT("Disposable loser world exists"),F.IsValid()))return false;
++        AAIHeroesGameMode& G=*F.Game;
++        G.InteractWithNode(F.Node);F.Finish();
++        TestTrue(TEXT("Defeat still has a real committed result"),
++            G.GetLiveBattlePhase()==EAIHeroesLiveBattlePhase::Result &&
++            G.LastBattleRecord.bDefeat);
++        const auto& Receipt=G.GetLiveBattleCommitReceipt();
++        TestTrue(TEXT("Defeat commits zero rewards, not a guessed bounty"),
++            Receipt.bApplied && Receipt.GoldGranted==0 && Receipt.DataGranted==0);
++        TestTrue(TEXT("The zero-reward committed defeat is readable"),
++            FAIHeroesBattleAftermath::Build(G.LastBattleRecord,&Receipt).bRewardsVerified);
++        G.ReturnFromLiveBattle();
++    }
++    {
++        FLiveBattleWorld F;
++        if(!TestTrue(TEXT("Disposable abort world exists"),F.IsValid()))return false;
++        F.Game->InteractWithNode(F.Node);
++        F.Game->Gold+=1; // Existing deliberate conflict: abort is atomic.
++        F.Finish();
++        TestFalse(TEXT("Aborted battle never gets a committed reward receipt"),
++            F.Game->GetLiveBattleCommitReceipt().bApplied);
++    }
++    return true;
++}
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveRuinsRewardEvidence,
++    "AIHeroes.Playability.BattleAftermath.RuinsReceiptMatchesActualGoldAndData",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FLiveRuinsRewardEvidence::RunTest(const FString&)
++{
++    FLiveBattleWorld F;
++    if(!TestTrue(TEXT("Disposable reward world exists"),F.IsValid()))return false;
++    // Explicit weak-guard ruins fixture for transaction QA, not balance proof.
++    F.Node->Configure(EAIHeroesNodeType::Ruins,TEXT("RUINS"),
++        {FAIHeroesArmyStack(TEXT("Wolf"),4,9,3,1,8)});
++    const int32 Gold=F.Game->Gold,Data=F.Game->DataFragments,Moves=F.Game->MovesLeft;
++    F.Game->InteractWithNode(F.Node);F.Finish();
++    if(!TestTrue(TEXT("Ruins fixture completed as victory"),F.Game->LastBattleRecord.bVictory))return false;
++    const auto& Receipt=F.Game->GetLiveBattleCommitReceipt();
++    const auto& View=F.Game->GetLiveBattleAftermathView();
++    TestEqual(TEXT("Receipt gold is the real 100-gold mutation"),Receipt.GoldGranted,F.Game->Gold-Gold);
++    TestEqual(TEXT("Ruins gold amount was actually granted"),Receipt.GoldGranted,100);
++    TestEqual(TEXT("Receipt data is the real four-fragment mutation"),Receipt.DataGranted,F.Game->DataFragments-Data);
++    TestEqual(TEXT("Ruins data amount was actually granted"),Receipt.DataGranted,4);
++    TestEqual(TEXT("Receipt travel cost is the actual debit"),Receipt.MovesSpent,Moves-F.Game->MovesLeft);
++    TestTrue(TEXT("UI displays the committed amounts"),View.bRewardsVerified&&
++        View.RewardLine.Contains(TEXT("+100 золота"))&&View.RewardLine.Contains(TEXT("+4 данных")));
++    F.Game->FastFinishLiveBattle();F.Game->Tick(1.f);
++    TestEqual(TEXT("Repeated callback never grants another hundred gold"),F.Game->Gold,Gold+100);
++    return true;
++}
+ #endif
+--- /dev/null
++++ b/Source/AIHeroes/Private/Tests/AIHeroesAftermathIntegrityTests.cpp
+@@ -0,0 +1,85 @@
++#include "AIHeroesBattleAftermath.h"
++
++#if WITH_DEV_AUTOMATION_TESTS
++#include "AIHeroesBattleRecord.h"
++#include "AIHeroesBattleEngine.h"
++#include "AIHeroesGridBattle.h"
++#include "Misc/AutomationTest.h"
++
++namespace
++{
++FAIHeroesBattleRecord MakeAftermathIntegrityRecord(int32 Tier)
++{
++    const TArray<FAIHeroesArmyStack> Player={
++        FAIHeroesArmyStack(TEXT("Militia"),8,12,4,2,3),
++        FAIHeroesArmyStack(TEXT("Scout"),3,8,6,1,7)};
++    const TArray<FAIHeroesArmyStack> Enemy={
++        FAIHeroesArmyStack(TEXT("Wolf"),4,9,3,1,8)};
++    return FAIHeroesBattleRecordRules::Capture(TEXT("FOREST"),1,Tier,
++        Player,Enemy,FAIHeroesGridBattle::RunToEnd(Player,Enemy,Tier),2);
++}
++}
++
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAftermathRejectsCorruptTrace,
++    "AIHeroes.Playability.AftermathIntegrity.CorruptTraceHasNoCasualtyFacts",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FAftermathRejectsCorruptTrace::RunTest(const FString&)
++{
++    auto Record=MakeAftermathIntegrityRecord(0);
++    FString Error;
++    if(!TestTrue(TEXT("Control record is genuinely replay-verifiable"),
++        FAIHeroesBattleRecordRules::Verify(Record,Error)))return false;
++    if(!TestTrue(TEXT("Control record has actual events"),!Record.Trace.IsEmpty()))return false;
++    Record.Trace[0]+=TEXT(" corrupted");
++    TestFalse(TEXT("The modified transcript fails the existing verifier"),
++        FAIHeroesBattleRecordRules::Verify(Record,Error));
++    const auto View=FAIHeroesBattleAftermath::Build(Record);
++    TestFalse(TEXT("Unverified history cannot claim casualty analysis"),View.bCountsAvailable);
++    TestFalse(TEXT("Unverified history cannot claim a reward"),View.bRewardsVerified);
++    return true;
++}
++
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAftermathBindsWholeBattle,
++    "AIHeroes.Playability.AftermathIntegrity.SameMetadataCannotBorrowReward",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FAftermathBindsWholeBattle::RunTest(const FString&)
++{
++    const auto Original=MakeAftermathIntegrityRecord(0);
++    const auto Different=MakeAftermathIntegrityRecord(1);
++    FString Error;
++    if(!TestTrue(TEXT("Original record verifies"),FAIHeroesBattleRecordRules::Verify(Original,Error)) ||
++       !TestTrue(TEXT("Different-policy record verifies"),FAIHeroesBattleRecordRules::Verify(Different,Error)))return false;
++    TestFalse(TEXT("Same site/day/rule version need not mean the same battle"),
++        FAIHeroesBattleRecordRules::Equivalent(Original,Different));
++    FAIHeroesBattleCommitReceipt Receipt;
++    Receipt.BoundRecord=Original;
++    Receipt.NodeId=Original.NodeId;Receipt.Day=Original.Day;
++    Receipt.RuleVersion=Original.RuleVersion;Receipt.MovesSpent=2;
++    Receipt.GoldGranted=0;Receipt.DataGranted=2;Receipt.bApplied=true;
++    TestTrue(TEXT("Positive control accepts its own applied evidence"),
++        FAIHeroesBattleAftermath::Build(Original,&Receipt).bRewardsVerified);
++    TestFalse(TEXT("Applied evidence must not be borrowed by another battle"),
++        FAIHeroesBattleAftermath::Build(Different,&Receipt).bRewardsVerified);
++    return true;
++}
++IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAftermathLegacyDraw,
++    "AIHeroes.Playability.AftermathIntegrity.LegacyDrawPreservesUnknownRewards",
++    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
++bool FAftermathLegacyDraw::RunTest(const FString&)
++{
++    // V1 permitted old prototype stats. Recompute with V1, never reinterpret as V2.
++    const TArray<FAIHeroesArmyStack> Player={FAIHeroesArmyStack(TEXT("Militia"),1,100,1,100,3)};
++    const TArray<FAIHeroesArmyStack> Enemy={FAIHeroesArmyStack(TEXT("Bandit"),1,100,1,100,3)};
++    const auto Outcome=FAIHeroesBattleEngine::Resolve(Player,Enemy,0);
++    const auto Record=FAIHeroesBattleRecordRules::Capture(TEXT("FOREST"),2,0,Player,Enemy,Outcome,1);
++    FString Error;
++    if(!TestTrue(TEXT("Old V1 draw remains verifiable"),FAIHeroesBattleRecordRules::Verify(Record,Error)))return false;
++    TestTrue(TEXT("Actual old-rules fixture reaches round-limit draw"),
++        Record.Rounds==30&&!Record.bVictory&&!Record.bDefeat);
++    const auto View=FAIHeroesBattleAftermath::Build(Record);
++    TestTrue(TEXT("Verified legacy survivors can be described"),View.bCountsAvailable);
++    TestFalse(TEXT("No current-rule reward is retroactively invented"),View.bRewardsVerified);
++    TestTrue(TEXT("Absent historic award stays explicit"),View.RewardLine.Contains(TEXT("нет подтверждённой")));
++    return true;
++}
++#endif

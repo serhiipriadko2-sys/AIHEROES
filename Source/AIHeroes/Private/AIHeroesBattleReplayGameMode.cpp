@@ -181,13 +181,13 @@ FString AAIHeroesGameMode::GetBattleReplayStatus() const
 {
     if (IsValid(GridReplayStage.Get()))
     {
-        return FString::Printf(TEXT("GRID V2 3D REPLAY %d/%d | %s | SPACE pause T speed ESC skip"),
+        return FString::Printf(TEXT("ИСТОРИЯ: награда не записана. GRID V2 3D REPLAY %d/%d | %s | SPACE pause T speed ESC skip"),
             GridReplayCursor, GridReplay.Actions.Num(),
             *(bGridReplayPaused ? TEXT("PAUSED | ") + GridReplayStage->GetStatusText()
                 : GridReplayStage->GetStatusText()));
     }
     return IsBattleReplayActive()
-        ? ActiveBattleStage->GetStatusLine() : FString();
+        ? TEXT("ИСТОРИЯ: награда не записана. ")+ActiveBattleStage->GetStatusLine() : FString();
 }
 
 FString AAIHeroesGameMode::GetBattleReplayArmyStatus(bool bPlayer) const

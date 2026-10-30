@@ -53,6 +53,7 @@ try {
     }
     $Names = @('START', 'PAUSED', '2X', 'RESULT', 'RETURN', 'DOSSIER') |
         ForEach-Object { "${Prefix}_$_.png" }
+    if ($Scenario -eq 'Victory') { $Names += "${Prefix}_HISTORY.png" }
     foreach ($Name in $Names) {
         $Path = Join-Path $Root "Docs\$Name"
         if (Test-Path -LiteralPath $Path) {

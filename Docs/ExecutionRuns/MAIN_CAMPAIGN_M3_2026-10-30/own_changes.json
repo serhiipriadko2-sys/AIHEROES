@@ -1,0 +1,38 @@
+[
+  {
+    "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp",
+    "bytes": 9594,
+    "sha256": "6c31b62039d51fdeff0b315cf90a7a547ebba884c476cd7834e85d09efa2e4b3",
+    "baseline_sha256": "6d05ae624445cd1fbb59689e48c926e880a1c54aa6e7e7adfd7103a3ddcb2cab"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+    "bytes": 37813,
+    "sha256": "34b43c29ebf5a6518b1296f60564373106dfe842cd4b5ca7e352b43447763fe8",
+    "baseline_sha256": "01afe9e3ec1e57df21314433857eb1dddc271261e9531e488a18a59f496f3c19"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+    "bytes": 15726,
+    "sha256": "5679b3d288f931ab79c32dcd654d31c5973560b30478b187589d51c438cb7e2b",
+    "baseline_sha256": "bf324eea8943280e5dc3f2a0d1eea6b2a6b8fbfbebaad5881699b06dc3fd9eb7"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp",
+    "bytes": 7830,
+    "sha256": "25e507552384614761e35b2e8705bde090525de803e2eba259ffd7de33c1cace",
+    "baseline_sha256": "0b87e5fc310c5f2699bb58587411bdad36378f62d32fde8a063dc1d92897bd44"
+  },
+  {
+    "path": "Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp",
+    "bytes": 27794,
+    "sha256": "692ea19d8b049b52ac2903a52066f28343fe40bfac821f049d66ab5a744a7b6f",
+    "baseline_sha256": "876131d5cdbb106448493125dbd7309bed72e4f8e115dd9bc85710641b389cad"
+  },
+  {
+    "path": "Source/AIHeroes/Private/Tests/AIHeroesAftermathIntegrityTests.cpp",
+    "bytes": 4494,
+    "sha256": "0fdad6a5e5310b8b464dfe788614fc09dbe819e0a9e6121a08c63b2727d81bcd",
+    "baseline_sha256": null
+  }
+]

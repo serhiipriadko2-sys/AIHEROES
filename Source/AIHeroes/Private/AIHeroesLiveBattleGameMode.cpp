@@ -213,6 +213,26 @@ void AAIHeroesGameMode::CommitLiveBattle()
         return;
     }
 
+    // Prepare and verify the UI report before the atomic transaction as well.
+    // This local candidate is not published as applied evidence until after
+    // the actual campaign writes below. No replay is performed by HUD paints.
+    FAIHeroesBattleCommitReceipt PreparedReceipt;
+    PreparedReceipt.BoundRecord = Record;
+    PreparedReceipt.NodeId = Record.NodeId;
+    PreparedReceipt.Day = Record.Day;
+    PreparedReceipt.RuleVersion = Record.RuleVersion;
+    PreparedReceipt.MovesSpent = LiveMoveCost;
+    PreparedReceipt.GoldGranted = Rewards.GoldReward;
+    PreparedReceipt.DataGranted = Rewards.DataReward;
+    PreparedReceipt.bApplied = true;
+    FAIHeroesBattleAftermathView PreparedAftermath =
+        FAIHeroesBattleAftermath::Build(Record, &PreparedReceipt);
+    if (!PreparedAftermath.bCountsAvailable || !PreparedAftermath.bRewardsVerified)
+    {
+        AbortLiveBattle(TEXT("Final report preflight failed; no partial result applied."));
+        return;
+    }
+
     // Preflight is complete. No fallible operation below this point.
     bLiveBattleCommitted = true;
     Gold = Rewards.GoldAfter;
@@ -236,18 +256,8 @@ void AAIHeroesGameMode::CommitLiveBattle()
     InvalidateRoutePreview();
     // One-time transient evidence is populated ONLY after the campaign
     // mutation and battle record have both been committed successfully.
-    LiveBattleCommitReceipt.BoundRecord = Record;
-    LiveBattleCommitReceipt.NodeId = Record.NodeId;
-    LiveBattleCommitReceipt.Day = Record.Day;
-    LiveBattleCommitReceipt.RuleVersion = Record.RuleVersion;
-    LiveBattleCommitReceipt.MovesSpent = LiveMoveCost;
-    LiveBattleCommitReceipt.GoldGranted = Rewards.GoldReward;
-    LiveBattleCommitReceipt.DataGranted = Rewards.DataReward;
-    LiveBattleCommitReceipt.bApplied = true;
-    // Cached report is immutable for the entire result screen. The
-    // canonical V2 verifier is never run 60 times per second by the HUD.
-    LiveBattleAftermathView = FAIHeroesBattleAftermath::Build(
-        LastBattleRecord, &LiveBattleCommitReceipt);
+    LiveBattleCommitReceipt = MoveTemp(PreparedReceipt);
+    LiveBattleAftermathView = MoveTemp(PreparedAftermath);
     LiveBattlePhase = EAIHeroesLiveBattlePhase::Result;
     LiveResultText = Outcome.Summary;
     if (IsValid(LiveBattleStage.Get())) LiveBattleStage->ShowResult(LiveResultText);

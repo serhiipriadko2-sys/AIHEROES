@@ -275,6 +275,27 @@ void AAIHeroesGameMode::BeginLiveBattleSmoke()
                 break;
             case 21:
                 G->CloseAdvisorDossier();
+                if(State->Scenario==TEXT("Victory"))
+                {
+                    State->BeforeDossierFingerprint=G->CampaignFingerprint();
+                    G->AdvanceBattleReplay();
+                    if(!G->GetReplayDisplayText().Contains(TEXT("награда не записана")))
+                        return Fail(TEXT("historical step surface hides absent award evidence"));
+                    G->PlayLastBattleIn3D();
+                    if(!G->IsBattleReplayActive() ||
+                        !G->GetBattleReplayStatus().Contains(TEXT("награда не записана")))
+                        return Fail(TEXT("historical 3D surface hides absent award evidence"));
+                    State->Due=State->Elapsed+.5f;State->Phase=22;break;
+                }
+                State->Phase=24;break;
+            case 22:
+                Capture(TEXT("HISTORY"));State->Phase=23;break;
+            case 23:
+                G->SkipBattleReplay();
+                if(G->CampaignFingerprint()!=State->BeforeDossierFingerprint)
+                    return Fail(TEXT("history altered the already committed campaign"));
+                State->Phase=24;break;
+            case 24:
                 for (int32 I = 0; I < State->Screenshots.Num(); ++I)
                 {
                     const FString& Path = State->Screenshots[I];

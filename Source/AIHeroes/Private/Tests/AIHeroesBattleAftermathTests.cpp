@@ -2,28 +2,20 @@
 #include "AIHeroesBattleRecord.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
+#include "AIHeroesGridBattle.h"
 #include "Misc/AutomationTest.h"
 
 namespace
 {
-FAIHeroesBattleRecord MakeRecord()
+FAIHeroesBattleRecord MakeRecord(bool bDefeat=false)
 {
-    FAIHeroesBattleRecord Record;
-    Record.NodeId = FName(TEXT("FOREST"));
-    Record.Day = 2;
-    Record.RuleVersion = 2;
-    Record.bVictory = true;
-    Record.PlayerBefore = {
-        FAIHeroesArmyStack(TEXT("Militia"), 8, 10, 4, 2, 4),
-        FAIHeroesArmyStack(TEXT("Scout"), 3, 8, 6, 1, 7)
-    };
-    Record.PlayerAfter = {
-        FAIHeroesArmyStack(TEXT("Militia"), 5, 10, 4, 2, 4),
-        FAIHeroesArmyStack(TEXT("Scout"), 2, 8, 6, 1, 7)
-    };
-    // Two living scouts, even with one of them wounded.
-    Record.PlayerAfter[1].TotalHealth = 9;
-    return Record;
+    TArray<FAIHeroesArmyStack> Player={FAIHeroesArmyStack(TEXT("Militia"),
+        bDefeat?1:8,12,4,2,3)};
+    if(!bDefeat)Player.Add(FAIHeroesArmyStack(TEXT("Scout"),3,8,6,1,7));
+    const TArray<FAIHeroesArmyStack> Enemy={FAIHeroesArmyStack(TEXT("Wolf"),
+        bDefeat?40:4,9,3,1,8)};
+    return FAIHeroesBattleRecordRules::Capture(TEXT("FOREST"),2,0,Player,Enemy,
+        FAIHeroesGridBattle::RunToEnd(Player,Enemy,0),2);
 }
 }
 
@@ -34,11 +26,14 @@ bool FBattleAftermathLosses::RunTest(const FString&)
 {
     const auto Record = MakeRecord();
     const auto View = FAIHeroesBattleAftermath::Build(Record);
+    TestTrue(TEXT("Fixture has genuine partial-HP survivors"),
+        Record.bVictory&&Record.PlayerAfter[0].TotalHealth>0&&
+        Record.PlayerAfter[0].TotalHealth<Record.PlayerBefore[0].TotalHealth);
     TestTrue(TEXT("Valid committed data has count display"), View.bCountsAvailable);
     TestTrue(TEXT("After/before troop counts reflect partial HP"),
-        View.PlayerLine.Contains(TEXT("7 из 11")));
+        View.PlayerLine.Contains(TEXT("11 из 11")));
     TestTrue(TEXT("Only actual whole-unit casualties are claimed"),
-        View.PlayerLine.Contains(TEXT("потери: 4")));
+        View.PlayerLine.Contains(TEXT("потери: 0")));
     TestTrue(TEXT("Player sees the available next action"),
         View.PlayerLine.Contains(TEXT("На карту")));
     TestFalse(TEXT("No unsupported reward amount is invented"),
@@ -51,15 +46,12 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBattleAftermathDefeat,
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 bool FBattleAftermathDefeat::RunTest(const FString&)
 {
-    auto Record = MakeRecord();
-    Record.bVictory = false;
-    Record.bDefeat = true;
-    Record.PlayerAfter.Empty();
+    const auto Record = MakeRecord(true);
     const auto View = FAIHeroesBattleAftermath::Build(Record);
     TestTrue(TEXT("Defeat still reports observed own-army losses"), View.bCountsAvailable);
-    TestTrue(TEXT("All eleven fighters are lost"),
-        View.PlayerLine.Contains(TEXT("0 из 11")) &&
-        View.PlayerLine.Contains(TEXT("потери: 11")));
+    TestTrue(TEXT("Actual lone fighter is lost"),
+        Record.bDefeat && View.PlayerLine.Contains(TEXT("0 из 1")) &&
+        View.PlayerLine.Contains(TEXT("потери: 1")));
     return true;
 }
 
@@ -108,8 +100,8 @@ bool FBattleAftermathFogSafety::RunTest(const FString&)
     Record.EnemyBefore.Add(FAIHeroesArmyStack(TEXT("SecretGuard"), 999, 100, 1, 1, 1));
     Record.EnemyAfter.Add(FAIHeroesArmyStack(TEXT("SecretGuard"), 1, 100, 1, 1, 1));
     const auto After = FAIHeroesBattleAftermath::Build(Record);
-    TestEqual(TEXT("Enemy metadata does not change player casualty text"),
-        Before.PlayerLine, After.PlayerLine);
+    TestTrue(TEXT("Positive control has verified casualty facts"),Before.bCountsAvailable);
+    TestFalse(TEXT("Unverifiable enemy metadata invalidates the whole record"),After.bCountsAvailable);
     TestFalse(TEXT("No opponent identity in player casualty text"),
         After.PlayerLine.Contains(TEXT("SecretGuard")));
     return true;
@@ -127,6 +119,7 @@ bool FBattleAftermathAppliedRewards::RunTest(const FString&)
     TestTrue(TEXT("Legacy dossier never guesses current reward amounts"),
         Historic.RewardLine.Contains(TEXT("нет подтверждённой")));
     FAIHeroesBattleCommitReceipt Receipt;
+    Receipt.BoundRecord=Record;
     Receipt.NodeId=Record.NodeId;
     Receipt.Day=Record.Day;
     Receipt.RuleVersion=Record.RuleVersion;
@@ -163,10 +156,8 @@ bool FBattleAftermathAppliedRewards::RunTest(const FString&)
     Receipt.MovesSpent=5;
     TestFalse(TEXT("Impossible move cost cannot be displayed as paid"),
         FAIHeroesBattleAftermath::Build(Record,&Receipt).bRewardsVerified);
-    auto Defeat=Record;
-    Defeat.bVictory=false;
-    Defeat.bDefeat=true;
-    Defeat.PlayerAfter.Empty();
+    const auto Defeat=MakeRecord(true);
+    Receipt.BoundRecord=Defeat;
     Receipt.MovesSpent=2;
     TestFalse(TEXT("Defeat cannot display a fabricated positive reward"),
         FAIHeroesBattleAftermath::Build(Defeat,&Receipt).bRewardsVerified);
@@ -182,30 +173,27 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FBattleAftermathDuplicateGroups,
 bool FBattleAftermathDuplicateGroups::RunTest(const FString&)
 {
     auto Record=MakeRecord();
-    Record.PlayerBefore={
-        FAIHeroesArmyStack(TEXT("Militia"),8,10,4,2,4),
-        FAIHeroesArmyStack(TEXT("Militia"),4,10,4,2,4)
-    };
-    Record.PlayerAfter={
-        FAIHeroesArmyStack(TEXT("Militia"),6,10,4,2,4),
-        FAIHeroesArmyStack(TEXT("Militia"),3,10,4,2,4)
-    };
-    Record.PlayerAfter[1].TotalHealth=25;
+    TArray<FAIHeroesArmyStack> Player={
+        FAIHeroesArmyStack(TEXT("Militia"),8,12,4,2,3),
+        FAIHeroesArmyStack(TEXT("Militia"),4,12,4,2,3)};
+    Player[1].TotalHealth=37; // Four living units; the last is wounded.
+    const TArray<FAIHeroesArmyStack> Enemy={FAIHeroesArmyStack(TEXT("Wolf"),4,9,3,1,8)};
+    Record=FAIHeroesBattleRecordRules::Capture(TEXT("FOREST"),2,0,Player,Enemy,
+        FAIHeroesGridBattle::RunToEnd(Player,Enemy,0),2);
     const auto View=FAIHeroesBattleAftermath::Build(Record);
     TestTrue(TEXT("Two indexed copies of the same unit have safe counts"),
         View.bCountsAvailable && View.PlayerGroups.Num()==2);
     if(View.PlayerGroups.Num()!=2)return false;
-    TestTrue(TEXT("First group has its own 8 to 6 losses"),
+    TestTrue(TEXT("First group retains its own initial count"),
         View.PlayerGroups[0].Contains(TEXT("A1")) &&
-        View.PlayerGroups[0].Contains(TEXT("6 из 8")) &&
-        View.PlayerGroups[0].Contains(TEXT("потери 2")));
-    TestTrue(TEXT("Second group has its own 4 to 3 partial HP"),
+        View.PlayerGroups[0].Contains(TEXT("8 из 8")));
+    TestTrue(TEXT("Second group has its own four living units and partial HP"),
         View.PlayerGroups[1].Contains(TEXT("A2")) &&
-        View.PlayerGroups[1].Contains(TEXT("3 из 4")) &&
-        View.PlayerGroups[1].Contains(TEXT("ОЗ 25")));
-    TestTrue(TEXT("Overall losses are 3, never two groups merged by UnitId"),
-        View.PlayerLine.Contains(TEXT("9 из 12")) &&
-        View.PlayerLine.Contains(TEXT("потери: 3")));
+        View.PlayerGroups[1].Contains(TEXT("4 из 4")) &&
+        View.PlayerGroups[1].Contains(TEXT("ОЗ 37")));
+    TestTrue(TEXT("Pre-existing wounds never become fictitious new whole-unit losses"),
+        View.PlayerLine.Contains(TEXT("12 из 12")) &&
+        View.PlayerLine.Contains(TEXT("потери: 0")));
     Record.PlayerAfter[1].UnitId=FName(TEXT("Scout"));
     TestFalse(TEXT("Mismatched group identity fails closed"),
         FAIHeroesBattleAftermath::Build(Record).bCountsAvailable);

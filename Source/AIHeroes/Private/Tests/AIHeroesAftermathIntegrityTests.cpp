@@ -2,6 +2,7 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 #include "AIHeroesBattleRecord.h"
+#include "AIHeroesBattleEngine.h"
 #include "AIHeroesGridBattle.h"
 #include "Misc/AutomationTest.h"
 
@@ -51,6 +52,7 @@ bool FAftermathBindsWholeBattle::RunTest(const FString&)
     TestFalse(TEXT("Same site/day/rule version need not mean the same battle"),
         FAIHeroesBattleRecordRules::Equivalent(Original,Different));
     FAIHeroesBattleCommitReceipt Receipt;
+    Receipt.BoundRecord=Original;
     Receipt.NodeId=Original.NodeId;Receipt.Day=Original.Day;
     Receipt.RuleVersion=Original.RuleVersion;Receipt.MovesSpent=2;
     Receipt.GoldGranted=0;Receipt.DataGranted=2;Receipt.bApplied=true;
@@ -58,6 +60,26 @@ bool FAftermathBindsWholeBattle::RunTest(const FString&)
         FAIHeroesBattleAftermath::Build(Original,&Receipt).bRewardsVerified);
     TestFalse(TEXT("Applied evidence must not be borrowed by another battle"),
         FAIHeroesBattleAftermath::Build(Different,&Receipt).bRewardsVerified);
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAftermathLegacyDraw,
+    "AIHeroes.Playability.AftermathIntegrity.LegacyDrawPreservesUnknownRewards",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FAftermathLegacyDraw::RunTest(const FString&)
+{
+    // V1 permitted old prototype stats. Recompute with V1, never reinterpret as V2.
+    const TArray<FAIHeroesArmyStack> Player={FAIHeroesArmyStack(TEXT("Militia"),1,100,1,100,3)};
+    const TArray<FAIHeroesArmyStack> Enemy={FAIHeroesArmyStack(TEXT("Bandit"),1,100,1,100,3)};
+    const auto Outcome=FAIHeroesBattleEngine::Resolve(Player,Enemy,0);
+    const auto Record=FAIHeroesBattleRecordRules::Capture(TEXT("FOREST"),2,0,Player,Enemy,Outcome,1);
+    FString Error;
+    if(!TestTrue(TEXT("Old V1 draw remains verifiable"),FAIHeroesBattleRecordRules::Verify(Record,Error)))return false;
+    TestTrue(TEXT("Actual old-rules fixture reaches round-limit draw"),
+        Record.Rounds==30&&!Record.bVictory&&!Record.bDefeat);
+    const auto View=FAIHeroesBattleAftermath::Build(Record);
+    TestTrue(TEXT("Verified legacy survivors can be described"),View.bCountsAvailable);
+    TestFalse(TEXT("No current-rule reward is retroactively invented"),View.bRewardsVerified);
+    TestTrue(TEXT("Absent historic award stays explicit"),View.RewardLine.Contains(TEXT("нет подтверждённой")));
     return true;
 }
 #endif

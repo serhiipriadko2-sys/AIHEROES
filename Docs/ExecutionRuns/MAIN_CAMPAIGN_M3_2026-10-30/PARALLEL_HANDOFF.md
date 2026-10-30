@@ -29,6 +29,29 @@ First native run 20261030T131839045Z failed its positive controls: our fixture
 used modified unit profiles, which Grid V2 correctly rejects. NOT regression
 RED. Corrected fixture to canonical Militia/Scout/Wolf profiles; rerun required.
 
+## Verified transition / user-paused handoff
+
+Corrected run Docs/AutomationRuns/20261030T132137682Z/index.json: two genuine
+negative controls failed, while genuine-record and own-receipt positive controls
+passed. This is the actual regression RED: corrupt trace still received counts,
+and another full record borrowed same-metadata reward evidence.
+
+Before the user's pause arrived, the parallel writer added full BoundRecord
+identity, canonical verification and a cache API. These are adopted external
+changes, not ours. User then explicitly paused parallel M3 writes. Current files
+were read back and copied into handoff_snapshot.json / handoff_* for attribution.
+
+Own minimum integration after that pause: HUD uses the prepared cache rather
+than verifying each paint (separate source-contract RED→GREEN); load clears the
+cache too; view preparation is preflighted before the irreversible transaction
+and only published after actual writes. Existing fabricated record tests were
+converted to real canonical Grid V2 outcomes, keeping invalid-input controls.
+Added actual ruins gold/data/cache lifecycle checks and a genuine V1 draw case.
+
+Original reviewed/parallel code remains in the handoff copies. Do not attribute
+the whole final Git diff to this executor. Full acceptance needs the final
+native report, live result frames and immutable source/DLL proof.
+
 ## Candidate follow-up (not applied)
 
 Use full `BattleRecordRules::Verify` at preparation/opening boundaries and

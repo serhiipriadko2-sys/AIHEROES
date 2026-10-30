@@ -266,3 +266,38 @@ Own addition: AIHeroesAftermathIntegrityTests.cpp, two positive/negative-control
 cases for invalid replay evidence and same-metadata receipt confusion. Details
 and candidate fixes are in MAIN_CAMPAIGN_M3_2026-10-30/PARALLEL_HANDOFF.md.
 No runtime failure or M3 completion claim until the native report is read.
+
+M3 handoff: user explicitly confirmed pausing the other writer. Before that,
+two independent RED controls were verified in 20261030T132137682Z (initial
+131839045Z was an invalid-fixture run, NOT RED). Parallel implementation then
+supplied BoundRecord + Verify + cache API; adopted without claiming authorship.
+Captured a second, paused handoff snapshot before own production edits.
+
+Own integration: cache-only HUD paint (source contract RED→GREEN), load-cache
+reset, report preparation before atomic mutation, actual-profile fixtures,
+ruins actual-delta and repeated-cache-read tests, verified legacy draw.
+No save schema, reward balance, V1/V2 algorithm or canonical instruction changes.
+
+Ruling: full deterministic view verification belongs at preparation boundaries,
+not HUD frames. Reuse the paused writer's cache API and full record identity.
+Price: one additional bounded report verification per completed battle and
+transient report/record copies; no inferred historical rewards.
+
+Fresh whole-M3 review: no Critical; Important historical UI integration gap:
+API fallback existed but J/V user surfaces did not show absent award evidence.
+Accept finding within agreed M3 scope; one fix pass, first a native surface RED,
+then history note / boundary verification and fresh full suite. Do not narrow
+the user-approved scope silently. No re-review after the tested fix pass.
+Minor deferred: one borrowed receipt-reference equality in a test is tautological;
+actual treasury/data/move checks still cover repeat-callback resource safety.
+
+M3 review-fix RED: Docs/AutomationRuns/20261030T134650396Z/index.json — exactly
+the two expected J/V absence-note assertions failed. Existing corrupt-history
+boundary verification already passed and was preserved. Added explicit missing
+award evidence to historical J/V status, not a guessed zero amount. Victory's
+scripted smoke now adds a HISTORY frame and a no-campaign-mutation check.
+
+Ruling: historical BattleRecord has no award fields by design; surface that
+absence directly in the existing J/V status rather than add a save migration or
+recompute today's rewards. Price: history cannot show old numeric awards that
+were never recorded. No second review is claimed after the one tested fix pass.

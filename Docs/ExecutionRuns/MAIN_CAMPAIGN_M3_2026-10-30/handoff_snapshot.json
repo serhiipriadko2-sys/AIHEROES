@@ -1,0 +1,56 @@
+[
+  {
+    "path": "Source/AIHeroes/Public/AIHeroesBattleAftermath.h",
+    "bytes": 1297,
+    "sha256": "e409ce9b2f7fd7f3640f3f313bf1b928a0999517cba26f91e807362cdef6bb13",
+    "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/handoff_Source__AIHeroes__Public__AIHeroesBattleAftermath.h"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesBattleAftermath.cpp",
+    "bytes": 5275,
+    "sha256": "8fa20c7ca04efd9c1003cc437ff0fe66089341d967cdf6ddb3b7695640053308",
+    "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/handoff_Source__AIHeroes__Private__AIHeroesBattleAftermath.cpp"
+  },
+  {
+    "path": "Source/AIHeroes/Private/Tests/AIHeroesBattleAftermathTests.cpp",
+    "bytes": 9391,
+    "sha256": "6d05ae624445cd1fbb59689e48c926e880a1c54aa6e7e7adfd7103a3ddcb2cab",
+    "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/handoff_Source__AIHeroes__Private__Tests__AIHeroesBattleAftermathTests.cpp"
+  },
+  {
+    "path": "Source/AIHeroes/Public/AIHeroesGameMode.h",
+    "bytes": 14596,
+    "sha256": "bd523a018d4e641ea10ae3723e5639498c1fe32f17bf8a9acf06c3f818c1a857",
+    "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/handoff_Source__AIHeroes__Public__AIHeroesGameMode.h"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesGameMode.cpp",
+    "bytes": 37751,
+    "sha256": "01afe9e3ec1e57df21314433857eb1dddc271261e9531e488a18a59f496f3c19",
+    "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/handoff_Source__AIHeroes__Private__AIHeroesGameMode.cpp"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesLiveBattleGameMode.cpp",
+    "bytes": 15322,
+    "sha256": "bf324eea8943280e5dc3f2a0d1eea6b2a6b8fbfbebaad5881699b06dc3fd9eb7",
+    "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/handoff_Source__AIHeroes__Private__AIHeroesLiveBattleGameMode.cpp"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesBattleHUD.cpp",
+    "bytes": 7980,
+    "sha256": "0b87e5fc310c5f2699bb58587411bdad36378f62d32fde8a063dc1d92897bd44",
+    "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/handoff_Source__AIHeroes__Private__AIHeroesBattleHUD.cpp"
+  },
+  {
+    "path": "Source/AIHeroes/Private/AIHeroesLiveBattleSmoke.cpp",
+    "bytes": 15241,
+    "sha256": "1cd0cd9af3e94e05bea010b7097b9a1225dcb89e64ba83056815419d0e78ce81",
+    "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/handoff_Source__AIHeroes__Private__AIHeroesLiveBattleSmoke.cpp"
+  },
+  {
+    "path": "Source/AIHeroes/Private/Tests/AIHeroesLiveBattleTests.cpp",
+    "bytes": 25380,
+    "sha256": "876131d5cdbb106448493125dbd7309bed72e4f8e115dd9bc85710641b389cad",
+    "baseline": "Docs/ExecutionRuns/MAIN_CAMPAIGN_M3_2026-10-30/handoff_Source__AIHeroes__Private__Tests__AIHeroesLiveBattleTests.cpp"
+  }
+]

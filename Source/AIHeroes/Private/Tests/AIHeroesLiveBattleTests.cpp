@@ -440,6 +440,12 @@ bool FLiveCommittedRewardEvidence::RunTest(const FString&)
         const auto View=FAIHeroesBattleAftermath::Build(G.LastBattleRecord,&Receipt);
         TestTrue(TEXT("Results screen has trustworthy reward evidence"),
             View.bRewardsVerified && View.RewardLine.Contains(TEXT("данных")));
+        const auto* Cached=&G.GetLiveBattleAftermathView();
+        TestTrue(TEXT("HUD has a pre-verified cached result"),Cached->bRewardsVerified&&Cached->bCountsAvailable);
+        const FString CachedLine=Cached->RewardLine;
+        for(int32 Read=0;Read<100;++Read)
+            TestTrue(TEXT("Repeated result reads reuse the immutable prepared view"),
+                &G.GetLiveBattleAftermathView()==Cached&&G.GetLiveBattleAftermathView().RewardLine==CachedLine);
         const int32 Moves=G.MovesLeft,Data=G.DataFragments;
         G.FastFinishLiveBattle();G.Tick(1.f);
         TestEqual(TEXT("Second finish cannot spend moves again"),G.MovesLeft,Moves);
@@ -449,6 +455,8 @@ bool FLiveCommittedRewardEvidence::RunTest(const FString&)
         G.ReturnFromLiveBattle();
         TestFalse(TEXT("Returning to map clears ephemeral reward receipt"),
             G.GetLiveBattleCommitReceipt().bApplied);
+        TestFalse(TEXT("Returning to map clears the live result cache"),
+            G.GetLiveBattleAftermathView().bRewardsVerified);
         TestFalse(TEXT("Historical record after return no longer claims a live receipt"),
             FAIHeroesBattleAftermath::Build(G.LastBattleRecord,
                 &G.GetLiveBattleCommitReceipt()).bRewardsVerified);
@@ -477,6 +485,58 @@ bool FLiveCommittedRewardEvidence::RunTest(const FString&)
         TestFalse(TEXT("Aborted battle never gets a committed reward receipt"),
             F.Game->GetLiveBattleCommitReceipt().bApplied);
     }
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveRuinsRewardEvidence,
+    "AIHeroes.Playability.BattleAftermath.RuinsReceiptMatchesActualGoldAndData",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FLiveRuinsRewardEvidence::RunTest(const FString&)
+{
+    FLiveBattleWorld F;
+    if(!TestTrue(TEXT("Disposable reward world exists"),F.IsValid()))return false;
+    // Explicit weak-guard ruins fixture for transaction QA, not balance proof.
+    F.Node->Configure(EAIHeroesNodeType::Ruins,TEXT("RUINS"),
+        {FAIHeroesArmyStack(TEXT("Wolf"),4,9,3,1,8)});
+    const int32 Gold=F.Game->Gold,Data=F.Game->DataFragments,Moves=F.Game->MovesLeft;
+    F.Game->InteractWithNode(F.Node);F.Finish();
+    if(!TestTrue(TEXT("Ruins fixture completed as victory"),F.Game->LastBattleRecord.bVictory))return false;
+    const auto& Receipt=F.Game->GetLiveBattleCommitReceipt();
+    const auto& View=F.Game->GetLiveBattleAftermathView();
+    TestEqual(TEXT("Receipt gold is the real 100-gold mutation"),Receipt.GoldGranted,F.Game->Gold-Gold);
+    TestEqual(TEXT("Ruins gold amount was actually granted"),Receipt.GoldGranted,100);
+    TestEqual(TEXT("Receipt data is the real four-fragment mutation"),Receipt.DataGranted,F.Game->DataFragments-Data);
+    TestEqual(TEXT("Ruins data amount was actually granted"),Receipt.DataGranted,4);
+    TestEqual(TEXT("Receipt travel cost is the actual debit"),Receipt.MovesSpent,Moves-F.Game->MovesLeft);
+    TestTrue(TEXT("UI displays the committed amounts"),View.bRewardsVerified&&
+        View.RewardLine.Contains(TEXT("+100 золота"))&&View.RewardLine.Contains(TEXT("+4 данных")));
+    F.Game->FastFinishLiveBattle();F.Game->Tick(1.f);
+    TestEqual(TEXT("Repeated callback never grants another hundred gold"),F.Game->Gold,Gold+100);
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLiveHistoryHasNoAwardRecord,
+    "AIHeroes.Playability.BattleAftermath.HistorySurfaceDeclaresMissingAward",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FLiveHistoryHasNoAwardRecord::RunTest(const FString&)
+{
+    FLiveBattleWorld F;
+    if(!TestTrue(TEXT("Disposable history world exists"),F.IsValid()))return false;
+    auto& G=*F.Game;
+    G.InteractWithNode(F.Node);F.Finish();G.ReturnFromLiveBattle();
+    const int32 Gold=G.Gold,Data=G.DataFragments,Moves=G.MovesLeft;
+    G.AdvanceBattleReplay();
+    TestTrue(TEXT("J history surface explicitly lacks recorded award evidence"),
+        G.GetReplayDisplayText().Contains(TEXT("награда не записана")));
+    G.PlayLastBattleIn3D();
+    if(TestTrue(TEXT("Recorded V2 scene opens as historical replay"),G.IsBattleReplayActive()))
+        TestTrue(TEXT("V scene status also distinguishes absent historic award"),
+            G.GetBattleReplayStatus().Contains(TEXT("награда не записана")));
+    G.SkipBattleReplay();
+    TestEqual(TEXT("History does not grant gold again"),G.Gold,Gold);
+    TestEqual(TEXT("History does not grant data again"),G.DataFragments,Data);
+    TestEqual(TEXT("History does not charge movement"),G.MovesLeft,Moves);
+    G.LastBattleRecord.Trace[0]+=TEXT(" corrupted");G.ReplayCursor=INDEX_NONE;
+    G.AdvanceBattleReplay();
+    TestEqual(TEXT("Invalid history cannot open a step view"),G.ReplayCursor,INDEX_NONE);
     return true;
 }
 #endif

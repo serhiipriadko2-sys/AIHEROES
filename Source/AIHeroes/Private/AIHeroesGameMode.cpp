@@ -729,6 +729,7 @@ void AAIHeroesGameMode::LoadCampaign()
     if (BlockStrategicAction()) return;
     // Session-only reward evidence must never outlive a load attempt.
     LiveBattleCommitReceipt = FAIHeroesBattleCommitReceipt();
+    LiveBattleAftermathView = FAIHeroesBattleAftermathView();
     CancelLocalModelExchange();
     LocalModelReplies.Reset(); // Pending inference cannot cross a load attempt.
     PendingSupplyFingerprint.Empty(); // Quote authorization never survives load.
@@ -893,11 +894,15 @@ void AAIHeroesGameMode::AdvanceBattleReplay()
 
 FString AAIHeroesGameMode::GetReplayDisplayText() const
 {
+    // BattleRecord deliberately has no persisted award fields. This is an
+    // absence-of-evidence label, never a current-rules reward calculation.
+    const FString HistoryNote=LastBattleRecord.NodeId.IsNone()
+        ? FString():TEXT("ИСТОРИЯ: награда не записана. ");
     if (LastBattleRecord.Trace.IsValidIndex(ReplayCursor))
     {
-        return FAIHeroesBattleRecordRules::DescribeStep(LastBattleRecord, ReplayCursor);
+        return HistoryNote+FAIHeroesBattleRecordRules::DescribeStep(LastBattleRecord, ReplayCursor);
     }
-    return TEXT("LAST TACTIC: ") + LastCombatStep;
+    return HistoryNote+TEXT("LAST TACTIC: ")+LastCombatStep;
 }
 
 FAIHeroesAdvisorSnapshot AAIHeroesGameMode::BuildAdvisorSnapshot() const

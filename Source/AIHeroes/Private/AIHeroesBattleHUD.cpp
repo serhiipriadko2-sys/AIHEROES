@@ -108,10 +108,7 @@ void AAIHeroesHUD::DrawAmberBattle(const AAIHeroesGameMode& G)
     // Live combat never invents a result or rewards just because its visual
     // stage is missing. Only a committed result can show player casualties.
     const FString Decision=Stage?Stage->GetPresentedDecisionReason():Fallback.DecisionReason;
-    const FAIHeroesBattleAftermathView Aftermath = Result
-        ? FAIHeroesBattleAftermath::Build(
-            G.LastBattleRecord, &G.GetLiveBattleCommitReceipt())
-        : FAIHeroesBattleAftermathView();
+    const auto& Aftermath=G.GetLiveBattleAftermathView();
     const FString Guidance = Result
         ? Aftermath.PlayerLine
         : !Decision.IsEmpty() ? Decision
